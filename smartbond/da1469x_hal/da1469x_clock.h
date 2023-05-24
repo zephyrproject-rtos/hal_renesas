@@ -27,6 +27,10 @@
 extern "C" {
 #endif
 
+#ifndef CLK_FREQ_TRIM_REG__XTAL32M_TRIM__DEFAULT
+#define CLK_FREQ_TRIM_REG__XTAL32M_TRIM__DEFAULT   0x120
+#endif
+
 /**
  * Initialize XTAL32M
  */
