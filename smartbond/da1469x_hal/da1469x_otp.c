@@ -23,6 +23,16 @@
 #include <da1469x_config.h>
 #include <da1469x_otp.h>
 
+#define OTPC_TIM1_REG_2MHz       0x09990001
+#define OTPC_TIM1_REG_4MHz       0x09990003
+#define OTPC_TIM1_REG_8MHz       0x09990007
+#define OTPC_TIM1_REG_16MHz      0x0999000F
+#define OTPC_TIM1_REG_32MHz      0x0999101F
+#define OTPC_TIM1_REG_48MHz      0x0999202F
+#define OTPC_TIM1_REG_96MHz      0x0999515F
+
+#define OTPC_TIM2_REG_DEFAULT    0xA4040409
+
 static inline void
 da1469x_clock_amba_enable(uint32_t mask)
 {
@@ -41,6 +51,35 @@ da1469x_clock_amba_disable(uint32_t mask)
     primask = DA1469X_IRQ_DISABLE();
     CRG_TOP->CLK_AMBA_REG &= ~mask;
     DA1469X_IRQ_ENABLE(primask);
+}
+
+static inline void
+da1469x_otp_tim1_adjust(int clk_speed)
+{
+    switch (clk_speed) {
+    default:
+        /* Unsupported access speed, fall-through to default 32MHz */
+        assert(0);
+    case 32000000:
+        OTPC->OTPC_TIM1_REG = OTPC_TIM1_REG_32MHz;
+        break;
+    /* 48MHz is not supported as PLL is only allowed when HDIV and PDIV are both 0 */
+    case 96000000:
+        OTPC->OTPC_TIM1_REG = OTPC_TIM1_REG_96MHz;
+        break;
+    case 2000000:
+        OTPC->OTPC_TIM1_REG = OTPC_TIM1_REG_2MHz;
+        break;
+    case 4000000:
+        OTPC->OTPC_TIM1_REG = OTPC_TIM1_REG_4MHz;
+        break;
+    case 8000000:
+        OTPC->OTPC_TIM1_REG = OTPC_TIM1_REG_8MHz;
+        break;
+    case 16000000:
+        OTPC->OTPC_TIM1_REG = OTPC_TIM1_REG_16MHz;
+        break;
+    }
 }
 
 int
@@ -129,6 +168,21 @@ fail_write:
     return ret;
 }
 
+void 
+da1469x_otp_set_speed(uint32_t clk_speed)
+{
+    /* Enable OTP clock and set mode to standby */
+    da1469x_clock_amba_enable(CRG_TOP_CLK_AMBA_REG_OTP_ENABLE_Msk);
+
+    da1469x_otp_set_mode(OTPC_MODE_DSTBY);
+
+    da1469x_otp_tim1_adjust(clk_speed);
+
+    /* Disable OTP clock */
+    da1469x_clock_amba_disable(CRG_TOP_CLK_AMBA_REG_OTP_ENABLE_Msk);
+}
+
+
 void
 da1469x_otp_init(void)
 {
@@ -137,20 +191,10 @@ da1469x_otp_init(void)
 
     da1469x_otp_set_mode(OTPC_MODE_STBY);
 
-    /* set clk timing */
-    switch (SystemCoreClock) {
-    default:
-        /* Unsupported sys_clk value, fall-through to default 32MHz */
-        assert(0);
-    case 32000000:
-        OTPC->OTPC_TIM1_REG = 0x0999101f;
-        break;
-    case 96000000:
-        OTPC->OTPC_TIM1_REG = 0x0999515f;
-        break;
-    }
+    /* Set clk timing */
+    da1469x_otp_tim1_adjust(SystemCoreClock);
 
-    OTPC->OTPC_TIM2_REG = 0xa4040409;
+    OTPC->OTPC_TIM2_REG = OTPC_TIM2_REG_DEFAULT;
 
     /* Disable OTP clock */
     da1469x_clock_amba_disable(CRG_TOP_CLK_AMBA_REG_OTP_ENABLE_Msk);
