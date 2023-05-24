@@ -67,6 +67,8 @@ int da1469x_otp_read(uint32_t address, void *dst, uint32_t num_bytes);
 
 void da1469x_otp_init(void);
 
+void da1469x_otp_set_speed(uint32_t clk_speed);
+
 
 #ifdef __cplusplus
 }
