@@ -46,6 +46,61 @@ struct da1469x_trimv_group {
 static struct da1469x_trimv_group g_mcu_trimv_groups[GROUP_ID_MAX + 1];
 
 void
+da1469x_trimv_is_reg_pairs_in_otp(const uint32_t *regs_buf, uint32_t num_entries, bool *status_buf)
+{
+    uint32_t offset_start;
+    uint32_t offset_end;
+    uint32_t offset;
+    uint32_t ow;
+
+    assert(regs_buf);
+    assert(status_buf);
+
+    /* Initialize the status buffer to indicate invalid entries */
+    memset(status_buf, 0, num_entries);
+
+    if (!num_entries) {
+        return;
+    }
+
+    offset_start = CS_OFFSET;
+    offset_end = CS_OFFSET + CS_LENGTH;
+    offset = offset_start;
+
+    da1469x_otp_read(offset, &ow, sizeof(ow));
+    /* Check if there is a valid CS entry in OTP */
+    if (ow != CS_WORD_START) {
+        return;
+    }
+
+    offset += 4;
+
+    /* Iterate the whole CS section  */
+    while (offset < offset_end) {
+        da1469x_otp_read(offset, &ow, sizeof(ow));
+
+        offset += 4;
+
+        /* Check if the end of the CS section has been reached */
+        if (ow == CS_WORD_END || ow == CS_WORD_INVALID) {
+            return;
+        /* Check if the entry accommodates a TCS section and compute its size (num. of words) so it can be skipped */
+        } else if ((ow & CS_WORD_TYPE_MASK) == CS_WORD_TYPE_TRIM) {
+            offset += ((ow & 0x0000ff00) >> 8) << 2;
+        /* Check if the entry accommodates a register-value pair and compare it with the register buffer provided */
+        } else if (ow <= MEMCTRL_BASE + 0x100) {
+            for (int i = 0 ; i < num_entries; i++) {
+                if (ow == regs_buf[i]) {
+                    status_buf[i] = true;
+                    break;
+                }
+            }
+            offset += 4; // Skip register's value
+        }
+    }
+}
+
+void
 da1469x_trimv_init_from_otp(void)
 {
     uint32_t offset_start;

@@ -26,6 +26,17 @@
 extern "C" {
 #endif
 
+/**
+ * Check if one or more register addresses are present in the CS section in OTP. The function will parse the whole CS section
+ * and update a status buffer, provided by user, indicating whether the corresponding register addresses were found or not.
+ *
+ * @param regs_buf    Pointer to a bufer containing the register addresses that need to be exercised.
+ * @param num_entries Number of register entries in regs_buf. The value should also match the entries of status_buf.
+ * @param status_buf  Pointer to a buffer that will be updated by the function, indicating whether the corresponding
+ *                    register address has been found or not.
+ */
+void da1469x_trimv_is_reg_pairs_in_otp(const uint32_t *regs_buf, uint32_t num_entries, bool *status_buf);
+
 void da1469x_trimv_init_from_otp(void);
 
 uint8_t da1469x_trimv_group_num_words_get(uint8_t group);
