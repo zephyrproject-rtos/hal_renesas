@@ -490,8 +490,7 @@ typedef struct {                                /*!< (@ 0x50010000) CRG_XTAL Str
   __IOM uint32_t  XTAL32M_CTRL1_REG;            /*!< (@ 0x00000034) Control register for XTAL32M                               */
   __IOM uint32_t  XTAL32M_CTRL2_REG;            /*!< (@ 0x00000038) Control register for XTAL32M                               */
   __IOM uint32_t  XTAL32M_CTRL3_REG;            /*!< (@ 0x0000003C) Control register for XTAL32M                               */
-  __IOM uint32_t  XTAL32M_CTRL4_REG;            /*!< (@ 0x00000040) Control register for XTAL32M                               */
-  __IM  uint32_t  RESERVED3[3];
+  __IM  uint32_t  RESERVED3[4];
   __IOM uint32_t  XTAL32M_STAT0_REG;            /*!< (@ 0x00000050) Status register for XTAL32M                                */
   __IOM uint32_t  XTAL32M_STAT1_REG;            /*!< (@ 0x00000054) Status register for XTAL32M                                */
   __IM  uint32_t  RESERVED4[2];
@@ -3250,7 +3249,6 @@ typedef struct {                                /*!< (@ 0x50000100) WAKEUP Struc
 #define CRG_XTAL_XTAL32M_CTRL3_REG_XTAL32M_RCOSC_BAND_SELECT_Msk (0x3c000UL) /*!< XTAL32M_RCOSC_BAND_SELECT (Bitfield-Mask: 0x0f) */
 #define CRG_XTAL_XTAL32M_CTRL3_REG_XTAL32M_RCOSC_TRIM_Pos (4UL)     /*!< XTAL32M_RCOSC_TRIM (Bit 4)                            */
 #define CRG_XTAL_XTAL32M_CTRL3_REG_XTAL32M_RCOSC_TRIM_Msk (0x3ff0UL) /*!< XTAL32M_RCOSC_TRIM (Bitfield-Mask: 0x3ff)            */
-/* ===================================================  XTAL32M_CTRL4_REG  =================================================== */
 /* ===================================================  XTAL32M_STAT0_REG  =================================================== */
 #define CRG_XTAL_XTAL32M_STAT0_REG_XTAL32M_RCOSC_BAND_SELECT_STAT_Pos (28UL) /*!< XTAL32M_RCOSC_BAND_SELECT_STAT (Bit 28)      */
 #define CRG_XTAL_XTAL32M_STAT0_REG_XTAL32M_RCOSC_BAND_SELECT_STAT_Msk (0xf0000000UL) /*!< XTAL32M_RCOSC_BAND_SELECT_STAT (Bitfield-Mask: 0x0f) */
