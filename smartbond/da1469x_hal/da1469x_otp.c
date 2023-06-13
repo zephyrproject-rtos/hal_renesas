@@ -85,7 +85,7 @@ da1469x_otp_tim1_adjust(int clk_speed)
 int
 da1469x_otp_read(uint32_t offset, void *dst, uint32_t num_bytes)
 {
-    uint32_t *src_addr = (uint32_t *)(MCU_OTPM_BASE + offset);
+    uint32_t *src_addr = (uint32_t *)(MCU_OTP_M_BASE + offset);
     uint32_t *dst_addr = dst;
 
     if (offset >= MCU_OTPM_SIZE || (offset + num_bytes) > MCU_OTPM_SIZE) {
@@ -115,7 +115,7 @@ da1469x_otp_read(uint32_t offset, void *dst, uint32_t num_bytes)
 int
 da1469x_otp_write(uint32_t offset, const void *src, uint32_t num_bytes)
 {
-    uint32_t *dst_addr = (uint32_t *)(MCU_OTPM_BASE + offset);
+    uint32_t *dst_addr = (uint32_t *)(MCU_OTP_M_BASE + offset);
     const uint32_t *src_addr = src;
     int ret = 0;
 

@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <assert.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,10 +37,19 @@ extern "C" {
 #define OTP_SEGMENT_USER_DATA_KEYS  0xa00
 #define OTP_SEGMENT_SIGNATURE_KEYS  0x8c0
 #define OTP_SEGMENT_USER_DATA_LEN   0x100
+#define OTP_SEGMENT_QSPI_FW_LEN     0x100
 
-#define OTP_ADDRESS_RANGE_USER_DATA_KEYS(x) \
-    (((uint32_t)(x) >= (uint32_t)MCU_OTPM_BASE + OTP_SEGMENT_USER_DATA_KEYS) && \
-     ((uint32_t)(x) < (uint32_t)MCU_OTPM_BASE + OTP_SEGMENT_USER_DATA_KEYS + OTP_SEGMENT_USER_DATA_LEN))
+#define IS_ADDRESS_USER_DATA_KEYS_SEGMENT(_a)                                                                  \
+    ((((uint32_t)(_a) >= (uint32_t)MCU_OTP_M_BASE + OTP_SEGMENT_USER_DATA_KEYS) &&                             \
+      ((uint32_t)(_a) < (uint32_t)MCU_OTP_M_BASE + OTP_SEGMENT_USER_DATA_KEYS + OTP_SEGMENT_USER_DATA_LEN)) || \
+     (((uint32_t)(_a) >= (uint32_t)MCU_OTP_M_P_BASE + OTP_SEGMENT_USER_DATA_KEYS) &&                           \
+      ((uint32_t)(_a) < (uint32_t)MCU_OTP_M_P_BASE + OTP_SEGMENT_USER_DATA_KEYS + OTP_SEGMENT_USER_DATA_LEN)))
+
+#define IS_ADDRESS_QSPI_FW_KEYS_SEGMENT(_a)                                                                \
+    ((((uint32_t)(_a) >= (uint32_t)MCU_OTP_M_BASE + OTP_SEGMENT_QSPI_FW_KEYS) &&                           \
+      ((uint32_t)(_a) < (uint32_t)MCU_OTP_M_BASE + OTP_SEGMENT_QSPI_FW_KEYS + OTP_SEGMENT_QSPI_FW_LEN)) || \
+     (((uint32_t)(_a) >= (uint32_t)MCU_OTP_M_P_BASE + OTP_SEGMENT_QSPI_FW_KEYS) &&                         \
+      ((uint32_t)(_a) < (uint32_t)MCU_OTP_M_P_BASE + OTP_SEGMENT_QSPI_FW_KEYS + OTP_SEGMENT_QSPI_FW_LEN)))
 
 enum otpc_mode_val {
     OTPC_MODE_PDOWN = 0,
@@ -60,10 +70,24 @@ da1469x_otp_set_mode(enum otpc_mode_val mode)
     while (!(OTPC->OTPC_STAT_REG & OTPC_OTPC_STAT_REG_OTPC_STAT_MRDY_Msk));
 }
 
-int da1469x_otp_write(uint32_t address, const void *src,
+static inline uint32_t
+da1469x_otp_address_to_cell_offset(uint32_t addr)
+{
+    assert(IS_OTP_ADDRESS(addr) || IS_OTP_P_ADDRESS(addr));
+    /* Address should be cell size alinged */
+    assert(!(addr % 4));
+
+    if (addr < MCU_OTP_M_P_BASE) {
+        return (addr - MCU_OTP_M_BASE) / 4;
+    } else {
+        return (addr - MCU_OTP_M_P_BASE) / 4;
+    }
+}
+
+int da1469x_otp_write(uint32_t offset, const void *src,
                              uint32_t num_bytes);
 
-int da1469x_otp_read(uint32_t address, void *dst, uint32_t num_bytes);
+int da1469x_otp_read(uint32_t offset, void *dst, uint32_t num_bytes);
 
 void da1469x_otp_init(void);
 
