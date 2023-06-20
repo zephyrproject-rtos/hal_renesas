@@ -35,6 +35,9 @@ struct da1469x_pd_desc {
     uint8_t stat_down_bit; /* up is +1 */
 };
 
+static uint32_t trimv_words_buf[16];
+static uint32_t trimv_words_idx = 0;
+
 struct da1469x_pd_data {
     uint8_t refcnt;
     uint8_t trimv_count;
@@ -84,8 +87,10 @@ da1469x_pd_load_trimv(uint8_t pd, uint8_t group)
         return;
     }
 
-    pdd->trimv_words = calloc(pdd->trimv_count, 4);
-    if (!pdd->trimv_words) {
+    if (trimv_words_idx + pdd->trimv_count <= ARRAY_SIZE(trimv_words_buf)) {
+        pdd->trimv_words = &trimv_words_buf[trimv_words_idx];
+        trimv_words_idx += pdd->trimv_count;
+    } else {
         pdd->trimv_count = 0;
         assert(0);
         return;
