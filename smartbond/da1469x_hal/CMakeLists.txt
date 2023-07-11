@@ -6,4 +6,5 @@ zephyr_library_sources(
   da1469x_pd.c
   da1469x_pdc.c
   da1469x_trimv.c
+  system_da1469x.c
 )
