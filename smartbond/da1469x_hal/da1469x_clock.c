@@ -235,7 +235,7 @@ void
 da1469x_clock_sys_xtal32m_switch(void)
 {
     if (CRG_TOP->CLK_CTRL_REG & CRG_TOP_CLK_CTRL_REG_RUNNING_AT_RC32M_Msk) {
-        assert(da1469x_clock_sys_xtal32m_switch_check_restrictions() != 0);
+        assert(da1469x_clock_sys_xtal32m_switch_check_restrictions() == 0);
 
         CRG_TOP->CLK_SWITCH2XTAL_REG = CRG_TOP_CLK_SWITCH2XTAL_REG_SWITCH2XTAL_Msk;
     } else {
