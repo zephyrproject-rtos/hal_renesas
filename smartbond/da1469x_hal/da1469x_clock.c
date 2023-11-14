@@ -41,6 +41,11 @@ static uint32_t g_mcu_clock_rc32m_freq;
 
 uint32_t SystemCoreClock = RC32M_FREQ;
 
+enum {
+    XTALRDY_CLK_SEL_32KHz = 0x0,
+    XTALRDY_CLK_SEL_256KHz
+} XTALRDY_CLK_SEL;
+
 #define CLK_FREQ_TRIM_REG_SET(_field, _val) \
     CRG_XTAL->CLK_FREQ_TRIM_REG = \
     ((CRG_XTAL->CLK_FREQ_TRIM_REG & ~CRG_XTAL_CLK_FREQ_TRIM_REG_ ## _field ## _Msk) | \
@@ -176,27 +181,22 @@ da1469x_clock_sys_xtal32m_configure(void)
 }
 
 static void
-da1469x_clock_sys_xtal32m_rdy_cnt_update(int count, bool high_clock)
-{
-    XTALRDY_CTRL_REG_SET(XTALRDY_CNT, count);
-    XTALRDY_CTRL_REG_SET(XTALRDY_CLK_SEL, high_clock ? 1 : 0);
-}
-
-static void
 da1469x_clock_sys_xtal32m_rdy_cnt_finetune(void)
 {
 #define XTALRDY_CTRL_REG_XTALRDY_CNT_MIN_LIMIT   ( 4 )
 #define XTALRDY_CTRL_REG_XTALRDY_CNT_OFFSET      ( 3 )
 
-    if (CRG_XTAL->XTAL32M_STAT1_REG & 0x100UL) {
-        int16_t xtalrdy_cnt = XTALRDY_CTRL_REG_GET(XTALRDY_CNT);
-        int16_t xtalrdy_stat = XTALRDY_CTRL_REG_XTALRDY_CNT_OFFSET - XTALRDY_STAT_REG_GET(XTALRDY_STAT);
-        xtalrdy_cnt += xtalrdy_stat;
+    if (XTALRDY_CTRL_REG_GET(XTALRDY_CLK_SEL) == XTALRDY_CLK_SEL_32KHz) {
+        if (CRG_XTAL->XTAL32M_STAT1_REG & 0x100UL) {
+            int16_t xtalrdy_cnt = XTALRDY_CTRL_REG_GET(XTALRDY_CNT);
+            int16_t xtalrdy_stat = XTALRDY_CTRL_REG_XTALRDY_CNT_OFFSET - XTALRDY_STAT_REG_GET(XTALRDY_STAT);
+            xtalrdy_cnt += xtalrdy_stat;
 
-        if (xtalrdy_cnt < XTALRDY_CTRL_REG_XTALRDY_CNT_MIN_LIMIT) {
-            xtalrdy_cnt = XTALRDY_CTRL_REG_XTALRDY_CNT_MIN_LIMIT;
+            if (xtalrdy_cnt < XTALRDY_CTRL_REG_XTALRDY_CNT_MIN_LIMIT) {
+                xtalrdy_cnt = XTALRDY_CTRL_REG_XTALRDY_CNT_MIN_LIMIT;
+            }
+            XTALRDY_CTRL_REG_SET(XTALRDY_CNT, xtalrdy_cnt);
         }
-        XTALRDY_CTRL_REG_SET(XTALRDY_CNT, xtalrdy_cnt);
     }
 }
 
@@ -204,11 +204,9 @@ void
 da1469x_clock_sys_xtal32m_init(void)
 {
     da1469x_clock_sys_xtal32m_configure();
-    /*
-     * Number of 256kHz clock cycles (~4.085us) assuming worst case when actual frequency is 244800.
-     * RC32M is in range <30.6, 32.6> so 256Khz can ba as low as 30.6MHz / 125 = 244.8kHz.
-     */
-    da1469x_clock_sys_xtal32m_rdy_cnt_update(1000 * 1000 / 4085, true);
+
+    /* Select normal XTAL32M start-up */
+    XTALRDY_CTRL_REG_SET(XTALRDY_CLK_SEL, XTALRDY_CLK_SEL_32KHz);
 }
 
 void
