@@ -334,7 +334,13 @@ da1469x_clock_calibrate(uint8_t clock_sel, uint16_t ref_cnt)
 
     da1469x_pd_acquire(MCU_PD_DOMAIN_PER);
 
-    assert(CRG_TOP->CLK_CTRL_REG & CRG_TOP_CLK_CTRL_REG_RUNNING_AT_XTAL32M_Msk);
+    /* Clock reference is hardcoded to DIVN so make sure that XTAL32M is settled. */
+    assert(da1469x_clock_is_xtal32m_settled());
+    /*
+     * Make sure calibration is not employed by multiple calibrations tasks at the same time.
+     * Developers are responsible to ensure that two or more calibration tasks do not overlap
+     * each other.
+     */
     assert(!(ANAMISC_BIF->CLK_REF_SEL_REG & ANAMISC_BIF_CLK_REF_SEL_REG_REF_CAL_START_Msk));
 
     ANAMISC_BIF->CLK_REF_CNT_REG = ref_cnt;
@@ -566,7 +572,7 @@ da1469x_clock_pll_wait_to_lock(void)
 void
 da1469x_clock_sys_pll_switch(void)
 {
-    assert(da1469x_clock_sys_pll_switch_check_restrictions() != 0);
+    assert(da1469x_clock_sys_pll_switch_check_restrictions() == 0);
 
     /* CLK_SEL_Msk == 3 means PLL */
     CRG_TOP->CLK_CTRL_REG |= CRG_TOP_CLK_CTRL_REG_SYS_CLK_SEL_Msk;
