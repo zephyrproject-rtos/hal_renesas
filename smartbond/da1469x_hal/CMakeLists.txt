@@ -8,4 +8,5 @@ zephyr_library_sources(
   da1469x_trimv.c
   system_da1469x.c
   da1469x_lcdc.c
+  da1469x_qspic.c
 )
