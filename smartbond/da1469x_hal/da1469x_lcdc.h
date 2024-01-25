@@ -21,6 +21,7 @@
 #define __DA1469X_LCDC_H
 
 #include <stdint.h>
+#include <DA1469xAB.h>
 
 #ifdef __cplusplus
 extern "C" {

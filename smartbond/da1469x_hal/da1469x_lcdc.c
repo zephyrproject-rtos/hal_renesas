@@ -22,7 +22,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <zephyr/irq.h>
-#include <DA1469xAB.h>
 #include <system_DA1469x.h>
 #include <da1469x_config.h>
 #include <da1469x_lcdc.h>
