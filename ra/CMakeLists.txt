@@ -5,6 +5,7 @@ set(include_dirs
 	fsp/ra/fsp/inc/api
 	fsp/ra/fsp/inc/instances
 	ra_cfg/fsp_cfg
+	portable
 )
 
 set(srcs

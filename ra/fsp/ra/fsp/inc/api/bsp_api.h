@@ -51,7 +51,7 @@
 
 /* BSP MCU Specific Includes. */
  #include "../../src/bsp/mcu/all/bsp_register_protection.h"
- #include "../../src/bsp/mcu/all/bsp_irq.h"
+ #include "bsp_irq.h"
  #include "../../src/bsp/mcu/all/bsp_io.h"
  #include "../../src/bsp/mcu/all/bsp_group_irq.h"
  #include "../../src/bsp/mcu/all/bsp_clocks.h"
