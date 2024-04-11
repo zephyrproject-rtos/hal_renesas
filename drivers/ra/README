@@ -119,3 +119,7 @@ Patch List:
    * Remove include <cmath> in bsp_tfu.h to avoid build error
    Impacted files:
       zephyr/ra/portable/bsp_tfu.h
+
+   * Disable the priority setting for IRQ in FSP HAL layer so that priority setting will not be override when Open() API is called.
+   Impacted files:
+      zephyr/ra/portable/bsp_irq.h
