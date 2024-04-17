@@ -129,6 +129,7 @@ struct cmac_shm {
 
 extern struct cmac_shm g_cmac_shm;
 extern void cmac_read_req(void);
+extern void cmac_rng_req(void);
 
 void cmac_cmac2sys_isr(void);
 

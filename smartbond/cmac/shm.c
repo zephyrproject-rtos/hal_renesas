@@ -22,8 +22,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <zephyr/random/rand32.h>
-
 #include <DA1469xAB.h>
 #include <da1469x_pdc.h>
 #include <da1469x_trimv.h>
@@ -76,8 +74,6 @@ static int8_t g_cmac_host_pdc_sys2cmac;
 /* PDC entry for waking up M33 */
 static int8_t g_cmac_host_pdc_cmac2sys;
 
-static void cmac_host_rand_chk_fill(void);
-
 void
 cmac_cmac2sys_isr(void)
 {
@@ -92,20 +88,9 @@ cmac_cmac2sys_isr(void)
         return;
     }
 
-    cmac_host_rand_chk_fill();
-}
-
-static void
-cmac_host_rand_chk_fill(void)
-{
-    uint32_t word;
-
-    while (cmac_rand_is_active() && !cmac_rand_is_full()) {
-        word = sys_rand32_get();
-        cmac_rand_fill(&word, 1);
+    if (cmac_rand_needs_data()) {
+        cmac_rng_req();
     }
-
-    cmac_signal();
 }
 
 static void
