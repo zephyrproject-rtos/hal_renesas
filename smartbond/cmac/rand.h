@@ -40,6 +40,12 @@ void cmac_rand_set_isr_cb(cmac_rand_isr_cb_t cb);
 
 void cmac_rand_put(uint32_t word);
 
+static inline bool
+cmac_rand_needs_data(void)
+{
+    return (cmac_rand_is_active() && !cmac_rand_is_full());
+}
+
 #ifdef __cplusplus
 }
 #endif
