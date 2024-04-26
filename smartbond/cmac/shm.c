@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <zephyr/random/rand32.h>
+#include <zephyr/random/random.h>
 
 #include <DA1469xAB.h>
 #include <da1469x_pdc.h>
