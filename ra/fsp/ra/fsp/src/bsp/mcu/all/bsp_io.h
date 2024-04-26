@@ -364,7 +364,11 @@ __STATIC_INLINE void R_BSP_PinWrite (bsp_io_port_pin_t pin, bsp_io_level_t level
 
     /* Set output level and pin direction to output. */
     uint32_t lvl = ((uint32_t) level | pfs_bits);
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+    R_PFS->PORT[pin >> 8].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = (uint16_t) (BSP_IO_PFS_PDR_OUTPUT | lvl);
+#else
     R_PFS->PORT[pin >> 8].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = (BSP_IO_PFS_PDR_OUTPUT | lvl);
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -377,7 +381,11 @@ __STATIC_INLINE void R_BSP_PinWrite (bsp_io_port_pin_t pin, bsp_io_level_t level
 __STATIC_INLINE void R_BSP_PinCfg (bsp_io_port_pin_t pin, uint32_t cfg)
 {
     /* Configure a pin. */
+#if (3U == BSP_FEATURE_IOPORT_VERSION)
+    R_PFS->PORT[pin >> 8].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = (uint16_t) cfg;
+#else
     R_PFS->PORT[pin >> 8].PIN[pin & BSP_IO_PRV_8BIT_MASK].PmnPFS = cfg;
+#endif
 }
 
 /*******************************************************************************************************************//**

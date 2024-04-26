@@ -22,7 +22,9 @@ typedef enum e_bsp_clocks_octaclk_div
     BSP_CLOCKS_OCTACLK_DIV_2,          ///< Divide OCTA source clock by 2
     BSP_CLOCKS_OCTACLK_DIV_4,          ///< Divide OCTA source clock by 4
     BSP_CLOCKS_OCTACLK_DIV_6,          ///< Divide OCTA source clock by 6
-    BSP_CLOCKS_OCTACLK_DIV_8           ///< Divide OCTA source clock by 8
+    BSP_CLOCKS_OCTACLK_DIV_8,          ///< Divide OCTA source clock by 8
+    BSP_CLOCKS_OCTACLK_DIV_3,          ///< Divide OCTA source clock by 3
+    BSP_CLOCKS_OCTACLK_DIV_5           ///< Divide OCTA source clock by 5
 } bsp_clocks_octaclk_div_t;
 
 typedef enum e_bsp_clocks_source

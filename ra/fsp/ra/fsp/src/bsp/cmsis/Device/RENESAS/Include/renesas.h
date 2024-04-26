@@ -53,8 +53,12 @@ extern "C" {
 /* ================                           Processor and Core Peripheral Section                           ================ */
 /* =========================================================================================================================== */
 
- #if BSP_MCU_GROUP_RA2A1
+ #if BSP_MCU_GROUP_RA0E1
+  #include "R7FA0E107.h"
+ #elif BSP_MCU_GROUP_RA2A1
   #include "R7FA2A1AB.h"
+ #elif BSP_MCU_GROUP_RA2A2
+  #include "R7FA2A2AD.h"
  #elif BSP_MCU_GROUP_RA2E1
   #include "R7FA2E1A9.h"
  #elif BSP_MCU_GROUP_RA2E2
