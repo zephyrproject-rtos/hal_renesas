@@ -55,6 +55,9 @@ extern "C" {
  #ifndef BSP_SECTION_STACK
   #define BSP_SECTION_STACK                 BSP_UNINIT_SECTION_PREFIX ".stack"
  #endif
+ #ifndef BSP_SECTION_FLASH_GAP
+  #define BSP_SECTION_FLASH_GAP
+ #endif
  #define BSP_SECTION_NOINIT                 BSP_UNINIT_SECTION_PREFIX ".noinit"
  #define BSP_SECTION_FIXED_VECTORS          ".fixed_vectors"
  #define BSP_SECTION_APPLICATION_VECTORS    ".application_vectors"

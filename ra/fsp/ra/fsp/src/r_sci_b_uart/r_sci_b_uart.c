@@ -344,7 +344,7 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
 
     uint32_t ccr0 = R_SCI_B0_CCR0_IDSEL_Msk;
 
-    /* Enable the SCI channel and reset the registers to their initial state. */
+    /* Enable the SCI channel */
     R_BSP_MODULE_START(FSP_IP_SCI, p_cfg->channel);
 
     /* Initialize registers as defined in section 26.3.7 "SCI Initialization in Asynchronous Mode" in the RA6T2 manual
@@ -1184,6 +1184,8 @@ static fsp_err_t r_sci_b_uart_transfer_open (sci_b_uart_instance_ctrl_t * const 
     {
         transfer_info_t * p_info = p_cfg->p_transfer_rx->p_cfg->p_info;
 
+        p_info->transfer_settings_word = SCI_B_UART_DTC_RX_TRANSFER_SETTINGS;
+
         err =
             r_sci_b_uart_transfer_configure(p_ctrl, p_cfg->p_transfer_rx, (uint32_t *) &p_info->p_src,
                                             (uint32_t) &(p_ctrl->p_reg->RDR));
@@ -1196,6 +1198,8 @@ static fsp_err_t r_sci_b_uart_transfer_open (sci_b_uart_instance_ctrl_t * const 
     if (NULL != p_cfg->p_transfer_tx)
     {
         transfer_info_t * p_info = p_cfg->p_transfer_tx->p_cfg->p_info;
+
+        p_info->transfer_settings_word = SCI_B_UART_DTC_TX_TRANSFER_SETTINGS;
 
         err = r_sci_b_uart_transfer_configure(p_ctrl,
                                               p_cfg->p_transfer_tx,

@@ -283,16 +283,16 @@ typedef enum e_fsp_err
     FSP_ERR_WIFI_FAILED           = 70004,           ///< WiFi Failed.
     FSP_ERR_WIFI_SCAN_COMPLETE    = 70005,           ///< Wifi scan has completed.
     FSP_ERR_WIFI_AP_NOT_CONNECTED = 70006,           ///< WiFi module is not connected to access point
-    FSP_ERR_WIFI_UNKNOWN_AT_CMD   = 70007,           ///< DA16200 Unknown AT command Error
-    FSP_ERR_WIFI_INSUF_PARAM      = 70008,           ///< DA16200 Insufficient parameter
-    FSP_ERR_WIFI_TOO_MANY_PARAMS  = 70009,           ///< DA16200 Too many parameters
-    FSP_ERR_WIFI_INV_PARAM_VAL    = 70010,           ///< DA16200 Wrong parameter value
-    FSP_ERR_WIFI_NO_RESULT        = 70011,           ///< DA16200 No result
-    FSP_ERR_WIFI_RSP_BUF_OVFLW    = 70012,           ///< DA16200 Response buffer overflow
-    FSP_ERR_WIFI_FUNC_NOT_CONFIG  = 70013,           ///< DA16200 Function is not configured
-    FSP_ERR_WIFI_NVRAM_WR_FAIL    = 70014,           ///< DA16200 NVRAM write failure
-    FSP_ERR_WIFI_RET_MEM_WR_FAIL  = 70015,           ///< DA16200 Retention memory write failure
-    FSP_ERR_WIFI_UNKNOWN_ERR      = 70016,           ///< DA16200 unknown error
+    FSP_ERR_WIFI_UNKNOWN_AT_CMD   = 70007,           ///< DA16XXX Unknown AT command Error
+    FSP_ERR_WIFI_INSUF_PARAM      = 70008,           ///< DA16XXX Insufficient parameter
+    FSP_ERR_WIFI_TOO_MANY_PARAMS  = 70009,           ///< DA16XXX Too many parameters
+    FSP_ERR_WIFI_INV_PARAM_VAL    = 70010,           ///< DA16XXX Wrong parameter value
+    FSP_ERR_WIFI_NO_RESULT        = 70011,           ///< DA16XXX No result
+    FSP_ERR_WIFI_RSP_BUF_OVFLW    = 70012,           ///< DA16XXX Response buffer overflow
+    FSP_ERR_WIFI_FUNC_NOT_CONFIG  = 70013,           ///< DA16XXX Function is not configured
+    FSP_ERR_WIFI_NVRAM_WR_FAIL    = 70014,           ///< DA16XXX NVRAM write failure
+    FSP_ERR_WIFI_RET_MEM_WR_FAIL  = 70015,           ///< DA16XXX Retention memory write failure
+    FSP_ERR_WIFI_UNKNOWN_ERR      = 70016,           ///< DA16XXX unknown error
 
     /* Start of SF_CELLULAR Specific */
     FSP_ERR_CELLULAR_CONFIG_FAILED       = 80000,    ///< Cellular module Configuration failed.
@@ -338,6 +338,13 @@ typedef enum e_fsp_err
     FSP_ERR_CRYPTO_SCE_AUTHENTICATION    = 0x10013,  ///< Authentication failed
     FSP_ERR_CRYPTO_SCE_PARAMETER         = 0x10014,  ///< Input date is illegal.
     FSP_ERR_CRYPTO_SCE_PROHIBIT_FUNCTION = 0x10015,  ///< An invalid function call occurred.
+
+    /* Start of Crypto RSIP specific (0x10100) */
+    FSP_ERR_CRYPTO_RSIP_RESOURCE_CONFLICT = 0x10100, ///< Hardware resource is busy
+    FSP_ERR_CRYPTO_RSIP_FATAL             = 0x10101, ///< Hardware fatal error or unexpected return
+    FSP_ERR_CRYPTO_RSIP_FAIL              = 0x10102, ///< Internal error
+    FSP_ERR_CRYPTO_RSIP_KEY_SET_FAIL      = 0x10103, ///< Input key type is illegal
+    FSP_ERR_CRYPTO_RSIP_AUTHENTICATION    = 0x10104, ///< Authentication failed
 
     /* Start of SF_CRYPTO specific */
     FSP_ERR_CRYPTO_COMMON_NOT_OPENED      = 0x20000, ///< Crypto Framework Common is not opened

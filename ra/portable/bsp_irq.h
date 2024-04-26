@@ -45,6 +45,24 @@ __STATIC_INLINE void R_FSP_IsrContextSet (IRQn_Type const irq, void * p_context)
 }
 
 /*******************************************************************************************************************//**
+ * @brief      Finds the ISR context associated with the requested IRQ.
+ *
+ * @param[in]  irq            IRQ number (parameter checking must ensure the IRQ number is valid before calling this
+ *                            function.
+ * @return  ISR context for IRQ.
+ **********************************************************************************************************************/
+__STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
+{
+    /* This provides access to the ISR context array defined in bsp_irq.c. This is an inline function instead of
+     * being part of bsp_irq.c for performance considerations because it is used in interrupt service routines. */
+    return gp_renesas_isr_context[irq];
+}
+
+#if BSP_CFG_INLINE_IRQ_FUNCTIONS
+
+ #if BSP_FEATURE_ICU_HAS_IELSR
+
+/*******************************************************************************************************************//**
  * Clear the interrupt status flag (IR) for a given interrupt. When an interrupt is triggered the IR bit
  * is set. If it is not cleared in the ISR then the interrupt will trigger again immediately.
  *
@@ -63,6 +81,8 @@ __STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
     FSP_REGISTER_READ(R_ICU->IELSR[irq]);
 }
 
+ #endif
+
 /*******************************************************************************************************************//**
  * Clear the interrupt status flag (IR) for a given interrupt and clear the NVIC pending interrupt.
  *
@@ -73,11 +93,14 @@ __STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqClearPending (IRQn_Type irq)
 {
+ #if BSP_FEATURE_ICU_HAS_IELSR
+
     /* Clear the IR bit in the selected IELSR register. */
     R_BSP_IrqStatusClear(irq);
 
     /* Flush memory transactions to ensure that the IR bit is cleared before clearing the pending bit in the NVIC. */
     __DMB();
+ #endif
 
     /* The following statement is used in place of NVIC_ClearPendingIRQ to avoid including a branch for system
      * exceptions every time an interrupt is cleared in the NVIC. */
@@ -172,19 +195,19 @@ __STATIC_INLINE void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority,
     R_BSP_IrqEnable(irq);
 }
 
-/*******************************************************************************************************************//**
- * @brief      Finds the ISR context associated with the requested IRQ.
- *
- * @param[in]  irq            IRQ number (parameter checking must ensure the IRQ number is valid before calling this
- *                            function.
- * @return  ISR context for IRQ.
- **********************************************************************************************************************/
-__STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
-{
-    /* This provides access to the ISR context array defined in bsp_irq.c. This is an inline function instead of
-     * being part of bsp_irq.c for performance considerations because it is used in interrupt service routines. */
-    return gp_renesas_isr_context[irq];
-}
+#else
+ #if BSP_FEATURE_ICU_HAS_IELSR
+void R_BSP_IrqStatusClear(IRQn_Type irq);
+
+ #endif
+void R_BSP_IrqClearPending(IRQn_Type irq);
+void R_BSP_IrqCfg(IRQn_Type const irq, uint32_t priority, void * p_context);
+void R_BSP_IrqEnableNoClear(IRQn_Type const irq);
+void R_BSP_IrqEnable(IRQn_Type const irq);
+void R_BSP_IrqDisable(IRQn_Type const irq);
+void R_BSP_IrqCfgEnable(IRQn_Type const irq, uint32_t priority, void * p_context);
+
+#endif
 
 /*******************************************************************************************************************//**
  * @internal

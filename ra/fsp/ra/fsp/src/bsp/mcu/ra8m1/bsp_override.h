@@ -24,39 +24,28 @@
 
 /* Define overrides required for this MCU. */
 
-#define BSP_OVERRIDE_ELC_PERIPHERAL_T
+#define BSP_OVERRIDE_CGC_SYS_CLOCK_DIV_T
 #define BSP_OVERRIDE_GROUP_IRQ_T
-
-/* Override definitions. */
-
-#define ELC_PERIPHERAL_NUM    (30U)
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
-typedef enum e_elc_peripheral
+/** System clock divider values - The individually selectable divider of each of the system clocks, ICLK, BCLK, FCLK,
+ * PCLKS A-D.  */
+typedef enum e_cgc_sys_clock_div
 {
-    ELC_PERIPHERAL_GPT_A   = (0),
-    ELC_PERIPHERAL_GPT_B   = (1),
-    ELC_PERIPHERAL_GPT_C   = (2),
-    ELC_PERIPHERAL_GPT_D   = (3),
-    ELC_PERIPHERAL_GPT_E   = (4),
-    ELC_PERIPHERAL_GPT_F   = (5),
-    ELC_PERIPHERAL_GPT_G   = (6),
-    ELC_PERIPHERAL_GPT_H   = (7),
-    ELC_PERIPHERAL_ADC0    = (8),
-    ELC_PERIPHERAL_ADC0_B  = (9),
-    ELC_PERIPHERAL_ADC1    = (10),
-    ELC_PERIPHERAL_ADC1_B  = (11),
-    ELC_PERIPHERAL_DAC0    = (12),
-    ELC_PERIPHERAL_DAC1    = (13),
-    ELC_PERIPHERAL_IOPORT1 = (14),
-    ELC_PERIPHERAL_IOPORT2 = (15),
-    ELC_PERIPHERAL_IOPORT3 = (16),
-    ELC_PERIPHERAL_IOPORT4 = (17),
-    ELC_PERIPHERAL_I3C     = (30),
-} elc_peripheral_t;
+    CGC_SYS_CLOCK_DIV_1  = 0,          ///< System clock divided by 1
+    CGC_SYS_CLOCK_DIV_2  = 1,          ///< System clock divided by 2
+    CGC_SYS_CLOCK_DIV_4  = 2,          ///< System clock divided by 4
+    CGC_SYS_CLOCK_DIV_8  = 3,          ///< System clock divided by 8
+    CGC_SYS_CLOCK_DIV_16 = 4,          ///< System clock divided by 16
+    CGC_SYS_CLOCK_DIV_32 = 5,          ///< System clock divided by 32
+    CGC_SYS_CLOCK_DIV_64 = 6,          ///< System clock divided by 64
+    CGC_SYS_CLOCK_DIV_3  = 8,          ///< System clock divided by 3
+    CGC_SYS_CLOCK_DIV_6  = 9,          ///< System clock divided by 6
+    CGC_SYS_CLOCK_DIV_12 = 10,         ///< System clock divided by 12
+} cgc_sys_clock_div_t;
 
 /* Which interrupts can have callbacks registered. */
 typedef enum e_bsp_grp_irq

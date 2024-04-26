@@ -52,7 +52,7 @@ static const uint16_t g_prcr_masks[] =
  *
  * @param[in] regs_to_protect Registers which have write protection enabled.
  **********************************************************************************************************************/
-void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
+BSP_SECTION_FLASH_GAP void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
 {
     /** Get/save the current state of interrupts */
     FSP_CRITICAL_SECTION_DEFINE;
@@ -89,7 +89,7 @@ void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
  *
  * @param[in] regs_to_unprotect Registers which have write protection disabled.
  **********************************************************************************************************************/
-void R_BSP_RegisterProtectDisable (bsp_reg_protect_t regs_to_unprotect)
+BSP_SECTION_FLASH_GAP void R_BSP_RegisterProtectDisable (bsp_reg_protect_t regs_to_unprotect)
 {
     /** Get/save the current state of interrupts */
     FSP_CRITICAL_SECTION_DEFINE;
