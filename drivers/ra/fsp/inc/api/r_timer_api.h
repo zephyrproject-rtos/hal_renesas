@@ -9,7 +9,7 @@
 
 /*******************************************************************************************************************//**
  * @defgroup TIMER_API Timer Interface
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_TIMERS_INTERFACES
  * @brief Interface for timer functions.
  *
  * @section TIMER_API_SUMMARY Summary
@@ -41,6 +41,8 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
+#ifndef BSP_OVERRIDE_TIMER_EVENT_T
+
 /** Events that can trigger a callback function */
 typedef enum e_timer_event
 {
@@ -57,13 +59,21 @@ typedef enum e_timer_event
     TIMER_EVENT_COMPARE_F,                     ///< A compare has occurred on signal F
     TIMER_EVENT_DEAD_TIME                      ///< Dead time event
 } timer_event_t;
+#endif
 
 /** Timer variant types. */
 typedef enum e_timer_variant
 {
-    TIMER_VARIANT_32_BIT,              ///< 32-bit timer
-    TIMER_VARIANT_16_BIT               ///< 16-bit timer
+    TIMER_VARIANT_32_BIT,               ///< 32-bit timer
+    TIMER_VARIANT_16_BIT                ///< 16-bit timer
 } timer_variant_t;
+
+/** Options for storing compare match value */
+typedef enum e_timer_compare_match
+{
+    TIMER_COMPARE_MATCH_A = 0U,        ///< Compare match A value
+    TIMER_COMPARE_MATCH_B = 1U,        ///< Compare match B value
+} timer_compare_match_t;
 
 /** Callback function parameter data */
 typedef struct st_timer_callback_args
@@ -131,6 +141,7 @@ typedef enum e_timer_source_div
     TIMER_SOURCE_DIV_256  = 8,         ///< Timer clock source divided by 256
     TIMER_SOURCE_DIV_512  = 9,         ///< Timer clock source divided by 512
     TIMER_SOURCE_DIV_1024 = 10,        ///< Timer clock source divided by 1024
+    TIMER_SOURCE_DIV_8192 = 13,        ///< Timer clock source divided by 8192
 } timer_source_div_t;
 #endif
 
@@ -237,6 +248,16 @@ typedef struct st_timer_api
      * @param[in]   pin                Which output pin to update.  See implementation for details.
      */
     fsp_err_t (* dutyCycleSet)(timer_ctrl_t * const p_ctrl, uint32_t const duty_cycle_counts, uint32_t const pin);
+
+    /** Set a compare match value in raw counts.
+     *
+     *
+     * @param[in]   p_ctrl               Control block set in @ref timer_api_t::open call for this timer.
+     * @param[in]   compare_match_value  Timer value to trigger a compare match event.
+     * @param[in]   match_channel        Which channel to update.
+     */
+    fsp_err_t (* compareMatchSet)(timer_ctrl_t * const p_ctrl, uint32_t const compare_match_value,
+                                  timer_compare_match_t const match_channel);
 
     /** Stores timer information in p_info.
      *
