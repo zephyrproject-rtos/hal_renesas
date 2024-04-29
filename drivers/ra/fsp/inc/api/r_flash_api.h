@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_STORAGE_INTERFACES
  * @defgroup FLASH_API Flash Interface
  * @brief Interface for the Flash Memory.
  *

@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_POWER_INTERFACES
  * @defgroup LPM_API Low Power Modes Interface
  * @brief Interface for accessing low power modes.
  *
@@ -415,6 +415,27 @@ typedef struct s_lpm_ram_retention
 } lpm_ram_retention_t;
 #endif
 
+/** Flash operating mode select. */
+typedef enum e_lpm_flash_mode_select
+{
+    LPM_FLASH_MODE_SELECT_ACTIVE = 0U, ///< Flash active
+    LPM_FLASH_MODE_SELECT_STOP   = 1U, ///< Flash stop
+} lpm_flash_mode_select_t;
+
+/** Starting the high-speed on-chip oscillator at the times of release from SSTBY mode and of transitions to SNOOZE mode. */
+typedef enum e_lpm_hoco_startup_speed
+{
+    LPM_HOCO_STARTUP_SPEED_NORMAL_SPEED = 0U, ///< Starting of the high-speed on-chip oscillator is at normal speed
+    LPM_HOCO_STARTUP_SPEED_HIGH_SPEED   = 1U, ///< Starting of the high-speed on-chip oscillator is at high speed
+} lpm_hoco_startup_speed_t;
+
+/** SOSC setting in SSTBY mode or in SNOOZE mode. */
+typedef enum e_lpm_standby_sosc
+{
+    LPM_STANDBY_SOSC_ENABLE  = 0U,     ///< Enables supply of SOSC clock to peripheral functions
+    LPM_STANDBY_SOSC_DISABLE = 1U,     ///< Stops supply SOSC clock to peripheral functions other than the Realtime clock.
+} lpm_standby_sosc_t;
+
 /** Configure LDO operation in standby mode. */
 typedef struct lpm_ldo_standby_cfg_s
 {
@@ -481,6 +502,24 @@ typedef struct st_lpm_cfg
 
     /** Configure LDOs that are disabled in standby mode. */
     lpm_ldo_standby_cfg_t ldo_standby_cfg;
+#endif
+
+#if BSP_FEATURE_LPM_HAS_FLASH_MODE_SELECT
+
+    /** Flash mode in sleep mode or in snooze mode. */
+    lpm_flash_mode_select_t lpm_flash_mode_select;
+#endif
+
+#if BSP_FEATURE_LPM_HAS_HOCO_STARTUP_SPEED_MODE
+
+    /** Startup speed of high-speed on-chip oscillator when exiting software standby mode or entering snooze mode. */
+    lpm_hoco_startup_speed_t lpm_hoco_startup_speed;
+#endif
+
+#if BSP_FEATURE_LPM_HAS_STANDBY_SOSC_SELECT
+
+    /** SOSC setting in SSTBY mode or in SNOOZE mode. */
+    lpm_standby_sosc_t lpm_standby_sosc;
 #endif
 
     /** Placeholder for extension. */

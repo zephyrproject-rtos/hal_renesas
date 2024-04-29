@@ -8,7 +8,6 @@
  * Includes
  ***********************************************************************************************************************/
 
-#include <tinycrypt/ctr_mode.h>
 #include "bsp_api.h"
 #include "hw_sce_aes_private.h"
 #include "hw_sce_ra_private.h"
@@ -36,13 +35,13 @@ fsp_err_t HW_SCE_AES_128CtrEncrypt (const uint32_t * InData_Key,
 #endif
 
     R_AES_B->AESCNTL = R_AES_AESCNTL_CTR_128_ENC;
-    tc_aes_set_key((uint8_t *) InData_Key, SIZE_AES_128BIT_KEYLEN_BYTES);
+    hw_aes_set_key((uint8_t *) InData_Key, SIZE_AES_128BIT_KEYLEN_BYTES);
 
     if (FSP_SUCCESS == iret)
     {
-        tc_aes_set_iv((uint8_t *) InData_IV);
+        hw_aes_set_iv((uint8_t *) InData_IV);
         R_AES_B->AESDCNTL = R_AES_AESDCNTL_BIT_2_3_MODE_2;
-        tc_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
+        hw_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
     }
 
     return iret;
@@ -67,13 +66,13 @@ fsp_err_t HW_SCE_AES_192CtrEncrypt (const uint32_t * InData_Key,
 #endif
 
     R_AES_B->AESCNTL = R_AES_AESCNTL_CTR_192_ENC;
-    tc_aes_set_key((uint8_t *) InData_Key, SIZE_AES_192BIT_KEYLEN_BYTES);
+    hw_aes_set_key((uint8_t *) InData_Key, SIZE_AES_192BIT_KEYLEN_BYTES);
 
     if (FSP_SUCCESS == iret)
     {
-        tc_aes_set_iv((uint8_t *) InData_IV);
+        hw_aes_set_iv((uint8_t *) InData_IV);
         R_AES_B->AESDCNTL = R_AES_AESDCNTL_BIT_2_3_MODE_2;
-        tc_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
+        hw_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
     }
 
     return iret;
@@ -98,13 +97,13 @@ fsp_err_t HW_SCE_AES_256CtrEncrypt (const uint32_t * InData_Key,
 #endif
 
     R_AES_B->AESCNTL = R_AES_AESCNTL_CTR_256_ENC;
-    tc_aes_set_key((uint8_t *) InData_Key, SIZE_AES_256BIT_KEYLEN_BYTES);
+    hw_aes_set_key((uint8_t *) InData_Key, SIZE_AES_256BIT_KEYLEN_BYTES);
 
     if (FSP_SUCCESS == iret)
     {
-        tc_aes_set_iv((uint8_t *) InData_IV);
+        hw_aes_set_iv((uint8_t *) InData_IV);
         R_AES_B->AESDCNTL = R_AES_AESDCNTL_BIT_2_3_MODE_2;
-        tc_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
+        hw_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
     }
 
     return iret;
@@ -127,13 +126,13 @@ fsp_err_t HW_SCE_AES_128CtrDecrypt (const uint32_t * InData_Key,
 #endif
 
     R_AES_B->AESCNTL = R_AES_AESCNTL_CTR_128_DEC;
-    tc_aes_set_key((uint8_t *) InData_Key, SIZE_AES_128BIT_KEYLEN_BYTES);
+    hw_aes_set_key((uint8_t *) InData_Key, SIZE_AES_128BIT_KEYLEN_BYTES);
 
     if (FSP_SUCCESS == iret)
     {
-        tc_aes_set_iv((uint8_t *) InData_IV);
+        hw_aes_set_iv((uint8_t *) InData_IV);
         R_AES_B->AESDCNTL = R_AES_AESDCNTL_BIT_2_3_MODE_2;
-        tc_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
+        hw_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
     }
 
     return iret;
@@ -156,13 +155,13 @@ fsp_err_t HW_SCE_AES_192CtrDecrypt (const uint32_t * InData_Key,
 #endif
 
     R_AES_B->AESCNTL = R_AES_AESCNTL_CTR_192_DEC;
-    tc_aes_set_key((uint8_t *) InData_Key, SIZE_AES_192BIT_KEYLEN_BYTES);
+    hw_aes_set_key((uint8_t *) InData_Key, SIZE_AES_192BIT_KEYLEN_BYTES);
 
     if (FSP_SUCCESS == iret)
     {
-        tc_aes_set_iv((uint8_t *) InData_IV);
+        hw_aes_set_iv((uint8_t *) InData_IV);
         R_AES_B->AESDCNTL = R_AES_AESDCNTL_BIT_2_3_MODE_2;
-        tc_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
+        hw_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
     }
 
     return iret;
@@ -185,13 +184,13 @@ fsp_err_t HW_SCE_AES_256CtrDecrypt (const uint32_t * InData_Key,
 #endif
 
     R_AES_B->AESCNTL = R_AES_AESCNTL_CTR_256_DEC;
-    tc_aes_set_key((uint8_t *) InData_Key, SIZE_AES_256BIT_KEYLEN_BYTES);
+    hw_aes_set_key((uint8_t *) InData_Key, SIZE_AES_256BIT_KEYLEN_BYTES);
 
     if (FSP_SUCCESS == iret)
     {
-        tc_aes_set_iv((uint8_t *) InData_IV);
+        hw_aes_set_iv((uint8_t *) InData_IV);
         R_AES_B->AESDCNTL = R_AES_AESDCNTL_BIT_2_3_MODE_2;
-        tc_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
+        hw_aes_start((uint8_t *) InData_Text, (uint8_t *) OutData_Text, num_words);
     }
 
     return iret;
