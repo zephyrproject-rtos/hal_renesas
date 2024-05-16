@@ -88,16 +88,25 @@ int da1469x_sleep(void)
             }
             if (sys_clock_selection != 1) {
                 da1469x_clock_sys_xtal32m_wait_to_settle();
+                /* PLL requires that the current system clock be XTAL32M. */
+                da1469x_clock_sys_xtal32m_switch();
             }
             if (sys_clock_selection == 3 << CRG_TOP_CLK_CTRL_REG_SYS_CLK_SEL_Pos) {
                 da1469x_clock_sys_pll_enable();
                 da1469x_clock_pll_wait_to_lock();
                 da1469x_clock_sys_pll_switch();
-            } else if (sys_clock_selection == 0) {
-                da1469x_clock_sys_xtal32m_switch();
             }
         }
     }
+
+    /*
+     * The SoC did not enter the normal sleep state. Acquire PD_SYS without
+     * applying preferred settings.
+     */
+    if (slept == 0) {
+        da1469x_pd_acquire_noconf(MCU_PD_DOMAIN_SYS);
+    }
+
     return slept;
 }
 
