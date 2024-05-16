@@ -26,7 +26,6 @@
 #include <da1469x_sleep.h>
 
 static int pdc_idx_combo;
-static int pdc_idx_sw_trigger;
 static bool wait_for_jtag;
 static struct da1469x_sleep_config sleep_config;
 static uint32_t sys_clock_selection;
@@ -64,8 +63,6 @@ int da1469x_sleep(void)
         __WFI();
         return 0;
     }
-
-    da1469x_pdc_set(pdc_idx_sw_trigger);
 
     /* PD_SYS will not be disabled here until we enter deep sleep - don't wait */
     if (!da1469x_pd_release_nowait(MCU_PD_DOMAIN_SYS)) {
@@ -119,10 +116,4 @@ void da1469x_sleep_config(const struct da1469x_sleep_config *config)
     __ASSERT_NO_MSG(pdc_idx_combo >= 0);
     da1469x_pdc_set(pdc_idx_combo);
     da1469x_pdc_ack(pdc_idx_combo);
-
-    pdc_idx_sw_trigger = da1469x_pdc_add(MCU_PDC_TRIGGER_SW_TRIGGER, MCU_PDC_MASTER_M33,
-                                         sleep_config.enable_xtal_on_wakeup);
-    __ASSERT_NO_MSG(pdc_idx_sw_trigger >= 0);
-    da1469x_pdc_set(pdc_idx_sw_trigger);
-    da1469x_pdc_ack(pdc_idx_sw_trigger);
 }
