@@ -177,10 +177,14 @@ da1469x_clock_is_pll_locked(void)
     return 0 != (CRG_XTAL->PLL_SYS_STATUS_REG & CRG_XTAL_PLL_SYS_STATUS_REG_PLL_LOCK_FINE_Msk);
 }
 
-/**
- * Waits for PLL96 to lock.
- */
-void da1469x_clock_pll_wait_to_lock(void);
+static inline bool
+da1469x_clock_sys_pll_is_enabled(void)
+{
+#define IS_PLL_ENABLED_BITFIELDS \
+    (CRG_XTAL_PLL_SYS_CTRL1_REG_PLL_EN_Msk | CRG_XTAL_PLL_SYS_CTRL1_REG_LDO_PLL_ENABLE_Msk)
+
+    return ((CRG_XTAL->PLL_SYS_CTRL1_REG & IS_PLL_ENABLED_BITFIELDS) == IS_PLL_ENABLED_BITFIELDS);
+}
 
 /**
  * Switches system clock to PLL96
@@ -188,6 +192,19 @@ void da1469x_clock_pll_wait_to_lock(void);
  * Caller shall ensure that PLL is already locked.
  */
 void da1469x_clock_sys_pll_switch(void);
+
+/**
+ * Checks if a peripheral block is clocked by the DIV1 clock path which should
+ * reflect the main system clock. This API should be used before updating
+ * the main system clock and abort if it's deemed that a peripheral might be affected.
+ * This API can also be used before disabling PLL to check if USB is active. This
+ * is because the USB is normally clocked by PLL divided by 2 in order to produce
+ * the 48MHz required for the full speed mode (12Mbps).
+ *
+ * @return true if the DIV1 clock path is used by a peripheral block and/or USB is enabled
+ *         and clocked by PLL, false otherwise.
+ */
+bool da1469x_clock_check_device_div1_clock(void);
 
 #ifdef __cplusplus
 }

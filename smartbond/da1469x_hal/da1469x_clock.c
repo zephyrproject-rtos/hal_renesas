@@ -80,9 +80,82 @@ enum {
     ((CRG_XTAL->XTALRDY_STAT_REG & CRG_XTAL_XTALRDY_STAT_REG_ ## _field ## _Msk) >> \
     CRG_XTAL_XTALRDY_STAT_REG_ ## _field ## _Pos)
 
+#define COM_DEV_CHECK_DIV1_CLK(_val, _dev)   ((_val) & CRG_COM_CLK_COM_REG_ ## _dev ## _CLK_SEL_Msk) && \
+                                             ((_val) & CRG_COM_CLK_COM_REG_ ## _dev ## _ENABLE_Msk)
+
+#define SYS_DEV_CHECK_DIV1_CLK(_val, _dev)   ((_val) & CRG_SYS_CLK_SYS_REG_ ## _dev ## _CLK_SEL_Msk) && \
+                                             ((_val) & CRG_SYS_CLK_SYS_REG_ ## _dev ## _ENABLE_Msk)
+
+
+bool
+da1469x_clock_check_device_div1_clock(void)
+{
+    uint32_t sys_stat_reg = CRG_TOP->SYS_STAT_REG;
+
+    /*
+     * Exercisie if any block instance powered by PD_COM is enabled
+     * and clocked by DIV1 path (reflects the system clock);
+     */
+    if (sys_stat_reg & CRG_TOP_SYS_STAT_REG_COM_IS_UP_Msk) {
+        uint32_t clk_com_reg = CRG_COM->CLK_COM_REG;
+
+        if (COM_DEV_CHECK_DIV1_CLK(clk_com_reg, I2C)) {
+            return true;
+        }
+
+        if (COM_DEV_CHECK_DIV1_CLK(clk_com_reg, I2C2)) {
+            return true;
+        }
+
+        if (COM_DEV_CHECK_DIV1_CLK(clk_com_reg, SPI)){
+            return true;
+        }
+
+        if (COM_DEV_CHECK_DIV1_CLK(clk_com_reg, SPI2)) {
+            return true;
+        }
+
+        if (COM_DEV_CHECK_DIV1_CLK(clk_com_reg, UART2)) {
+            return true;
+        }
+
+        if (COM_DEV_CHECK_DIV1_CLK(clk_com_reg, UART3)) {
+            return true;
+        }
+    }
+
+    /*
+     * Check if GPADC, which is powered by PD_PER, is enabled and
+     * clocked by DIV1 path.
+     */
+    if (sys_stat_reg & CRG_TOP_SYS_STAT_REG_PER_IS_UP_Msk) {
+        if ((CRG_PER->CLK_PER_REG & CRG_PER_CLK_PER_REG_GPADC_CLK_SEL_Msk) &&
+            (GPADC->GP_ADC_CTRL_REG & GPADC_GP_ADC_CTRL_REG_GP_ADC_EN_Msk)) {
+                return true;
+            }
+    }
+
+    /* Exercise if LCDC is enabled and clocked by DIV1 path */
+    if (SYS_DEV_CHECK_DIV1_CLK(CRG_SYS-> CLK_SYS_REG, LCD)) {
+        return true;
+    }
+
+    /* Exercise if USB is enabled and clocked by PLL */
+    if (USB->USB_MCTRL_REG & USB_USB_MCTRL_REG_USBEN_Msk) {
+
+        uint32_t clk_ctrl_reg = CRG_TOP->CLK_CTRL_REG;
+        if (((clk_ctrl_reg & CRG_TOP_CLK_CTRL_REG_USB_CLK_SRC_Msk) == 0) &&
+            ((clk_ctrl_reg & CRG_TOP_CLK_CTRL_REG_SYS_CLK_SEL_Msk) == 3)) {
+                return true;
+            }
+    }
+
+    return false;
+}
+
 /*
-   OTPC is clocked by the system clock. Therefore, its timing settings
-   should be adjusted upon system clock update.
+ * OTPC is clocked by the system clock. Therefore, its timing settings
+ * should be adjusted upon system clock update.
  */
 static inline void
 da1469x_clock_adjust_otp_access_timings(void)
@@ -234,7 +307,6 @@ da1469x_clock_sys_xtal32m_switch(void)
 {
     if (CRG_TOP->CLK_CTRL_REG & CRG_TOP_CLK_CTRL_REG_RUNNING_AT_RC32M_Msk) {
         assert(da1469x_clock_sys_xtal32m_switch_check_restrictions() == 0);
-
         CRG_TOP->CLK_SWITCH2XTAL_REG = CRG_TOP_CLK_SWITCH2XTAL_REG_SWITCH2XTAL_Msk;
     } else {
         /* ~CLK_SEL_Msk == 0 means XTAL32M */
@@ -539,7 +611,7 @@ da1469x_clock_sys_pll_disable(void)
     CRG_XTAL->XTAL32M_CTRL0_REG &= ~(CRG_XTAL_XTAL32M_CTRL0_REG_XTAL32M_DXTAL_SYSPLL_ENABLE_Msk);
 }
 
-void
+static void
 da1469x_clock_pll_wait_to_lock(void)
 {
     uint32_t primask;
@@ -551,7 +623,16 @@ da1469x_clock_pll_wait_to_lock(void)
     if (!da1469x_clock_is_pll_locked()) {
         NVIC_EnableIRQ(PLL_LOCK_IRQn);
         while (!NVIC_GetPendingIRQ(PLL_LOCK_IRQn)) {
-            __WFI();
+            /*
+             * Wait for event and not for interrupt as the PLL lock interrupt
+             * might fire right after checking its pending flag.
+             * In such a case, and if there are no other interrupts expected
+             * the SoC will not exit the idle state.
+             */
+            __WFE();
+            /* Clear ARM's internal event register. */
+            __SEV();
+            __WFE();
         }
         NVIC_DisableIRQ(PLL_LOCK_IRQn);
 
@@ -573,6 +654,8 @@ void
 da1469x_clock_sys_pll_switch(void)
 {
     assert(da1469x_clock_sys_pll_switch_check_restrictions() == 0);
+
+    da1469x_clock_pll_wait_to_lock();
 
     /* CLK_SEL_Msk == 3 means PLL */
     CRG_TOP->CLK_CTRL_REG |= CRG_TOP_CLK_CTRL_REG_SYS_CLK_SEL_Msk;
