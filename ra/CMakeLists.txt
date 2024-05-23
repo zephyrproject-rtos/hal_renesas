@@ -21,6 +21,7 @@ zephyr_library_sources(${srcs})
 
 message(${CONFIG_SOC_SERIES})
 zephyr_include_directories(fsp/ra/fsp/src/bsp/mcu/${CONFIG_SOC_SERIES})
+zephyr_include_directories(ra_cfg/fsp_cfg/bsp/${CONFIG_SOC_SERIES})
 
 # Optional build base on feature configuration
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_B_UART
