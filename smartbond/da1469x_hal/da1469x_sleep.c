@@ -90,7 +90,6 @@ int da1469x_sleep(void)
             }
             if (sys_clock_selection == 3 << CRG_TOP_CLK_CTRL_REG_SYS_CLK_SEL_Pos) {
                 da1469x_clock_sys_pll_enable();
-                da1469x_clock_pll_wait_to_lock();
                 da1469x_clock_sys_pll_switch();
             }
         }
