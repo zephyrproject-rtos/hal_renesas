@@ -197,12 +197,8 @@ void da1469x_clock_sys_pll_switch(void);
  * Checks if a peripheral block is clocked by the DIV1 clock path which should
  * reflect the main system clock. This API should be used before updating
  * the main system clock and abort if it's deemed that a peripheral might be affected.
- * This API can also be used before disabling PLL to check if USB is active. This
- * is because the USB is normally clocked by PLL divided by 2 in order to produce
- * the 48MHz required for the full speed mode (12Mbps).
  *
- * @return true if the DIV1 clock path is used by a peripheral block and/or USB is enabled
- *         and clocked by PLL, false otherwise.
+ * @return true if the DIV1 clock path is used by a peripheral block, false otherwise.
  */
 bool da1469x_clock_check_device_div1_clock(void);
 

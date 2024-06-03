@@ -140,16 +140,6 @@ da1469x_clock_check_device_div1_clock(void)
         return true;
     }
 
-    /* Exercise if USB is enabled and clocked by PLL */
-    if (USB->USB_MCTRL_REG & USB_USB_MCTRL_REG_USBEN_Msk) {
-
-        uint32_t clk_ctrl_reg = CRG_TOP->CLK_CTRL_REG;
-        if (((clk_ctrl_reg & CRG_TOP_CLK_CTRL_REG_USB_CLK_SRC_Msk) == 0) &&
-            ((clk_ctrl_reg & CRG_TOP_CLK_CTRL_REG_SYS_CLK_SEL_Msk) == 3)) {
-                return true;
-            }
-    }
-
     return false;
 }
 
