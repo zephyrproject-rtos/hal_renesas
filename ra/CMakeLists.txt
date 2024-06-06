@@ -19,7 +19,6 @@ set(srcs
 zephyr_include_directories(${include_dirs})
 zephyr_library_sources(${srcs})
 
-message(${CONFIG_SOC_SERIES})
 zephyr_include_directories(fsp/ra/fsp/src/bsp/mcu/${CONFIG_SOC_SERIES})
 zephyr_include_directories(ra_cfg/fsp_cfg/bsp/${CONFIG_SOC_SERIES})
 

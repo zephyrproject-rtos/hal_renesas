@@ -26,5 +26,15 @@
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
+
+// *UNCRUSTIFY-OFF*
+#define BSP_FEATURE_GPT_AD_DIRECT_START_CHANNEL_MASK  (0xFF)
+#define BSP_FEATURE_GPT_AD_DIRECT_START_SUPPORTED     (0x1)
+#define BSP_FEATURE_GPT_GPTE_CHANNEL_MASK             (0)
+#define BSP_FEATURE_GPT_GPTE_SUPPORTED                (0)
+#define BSP_FEATURE_GPT_GPTEH_CHANNEL_MASK            (0)
+#define BSP_FEATURE_GPT_GPTEH_SUPPORTED               (0)
+#define BSP_FEATURE_GPT_OPS_CHANNEL_MASK              (0x1)
+#define BSP_FEATURE_GPT_OPS_SUPPORTED                 (0x1)
 // *UNCRUSTIFY-ON*
 #endif
