@@ -32,4 +32,6 @@
 #define BSP_CLOCK_CFG_SUBCLOCK_STABILIZATION_MS 1000
 #endif
 
+#define BSP_CFG_PFS_PROTECT (1)
+
 #endif /* BSP_CFG_H_ */
