@@ -5,14 +5,17 @@
 */
 
 #include <zephyr/devicetree.h>
+#include <zephyr/dt-bindings/clock/ra_clock.h>
 
 #ifndef BSP_CLOCK_CFG_H_
 #define BSP_CLOCK_CFG_H_
 
 #define BSP_CFG_CLOCKS_SECURE   (0)
 #define BSP_CFG_CLOCKS_OVERRIDE (0)
+#define BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(node_id, prop, default_value)                            \
+	(COND_CODE_1(DT_NODE_HAS_STATUS(node_id, okay), (DT_PROP(node_id, prop)), (default_value)))
 
-#define BSP_CFG_XTAL_HZ DT_PROP(DT_NODELABEL(xtal), clock_frequency)
+#define BSP_CFG_XTAL_HZ BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(xtal), clock_frequency, 0)
 
 #if DT_PROP(DT_NODELABEL(hoco), clock_frequency) == 16000000
 #define BSP_CFG_HOCO_FREQUENCY 0 /* HOCO 16MHz */
@@ -28,63 +31,90 @@
 #error "Invalid HOCO frequency, only can be set to 16MHz, 18MHz, 20MHz, 32MHz, 48MHz"
 #endif
 
-#define BSP_CFG_PLL_SOURCE DT_PROP(DT_NODELABEL(clock), pll_source)
-#define BSP_CFG_PLL_DIV    DT_PROP(DT_NODELABEL(clock), pll_div)
+#define BSP_CFG_PLL_SOURCE                                                                         \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), source, RA_PLL_SOURCE_DISABLE)
+#define BSP_CFG_PLL_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), div, RA_PLL_DIV_1)
 #define BSP_CFG_PLL_MUL                                                                            \
-	BSP_CLOCKS_PLL_MUL(DT_PROP_BY_IDX(DT_NODELABEL(clock), pll_mul, 0),                        \
-			   DT_PROP_BY_IDX(DT_NODELABEL(clock), pll_mul, 1))
+	DT_NODE_HAS_STATUS(DT_NODELABEL(pll), okay)                                                \
+	? BSP_CLOCKS_PLL_MUL(DT_PROP_BY_IDX(DT_NODELABEL(pll), mul, 0),                            \
+			     DT_PROP_BY_IDX(DT_NODELABEL(pll), mul, 1))                            \
+	: BSP_CLOCKS_PLL_MUL(0, 0)
 
-#define BSP_CFG_PLODIVP            DT_PROP(DT_NODELABEL(clock), pll_divp)
-#define BSP_CFG_PLL1P_FREQUENCY_HZ DT_PROP(DT_NODELABEL(clock), pll_freqp)
-#define BSP_CFG_PLODIVQ            DT_PROP(DT_NODELABEL(clock), pll_divq)
-#define BSP_CFG_PLL1Q_FREQUENCY_HZ DT_PROP(DT_NODELABEL(clock), pll_freqq)
-#define BSP_CFG_PLODIVR            DT_PROP(DT_NODELABEL(clock), pll_divr)
-#define BSP_CFG_PLL1R_FREQUENCY_HZ DT_PROP(DT_NODELABEL(clock), pll_freqr)
+#define BSP_CFG_PLODIVP            BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), divp, RA_PLL_DIV_2)
+#define BSP_CFG_PLL1P_FREQUENCY_HZ BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), freqp, 0)
+#define BSP_CFG_PLODIVQ            BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), divq, RA_PLL_DIV_2)
+#define BSP_CFG_PLL1Q_FREQUENCY_HZ BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), freqq, 0)
+#define BSP_CFG_PLODIVR            BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), divr, RA_PLL_DIV_2)
+#define BSP_CFG_PLL1R_FREQUENCY_HZ BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), freqr, 0)
 
-#define BSP_CFG_PLL2_SOURCE DT_PROP(DT_NODELABEL(clock), pll2_source)
-#define BSP_CFG_PLL2_DIV    DT_PROP(DT_NODELABEL(clock), pll2_div)
+#define BSP_CFG_PLL2_SOURCE                                                                        \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), source, RA_PLL_SOURCE_DISABLE)
+#define BSP_CFG_PLL2_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), div, RA_PLL_DIV_1)
 #define BSP_CFG_PLL2_MUL                                                                           \
-	BSP_CLOCKS_PLL_MUL(DT_PROP_BY_IDX(DT_NODELABEL(clock), pll2_mul, 0),                       \
-			   DT_PROP_BY_IDX(DT_NODELABEL(clock), pll2_mul, 1))
+	DT_NODE_HAS_STATUS(DT_NODELABEL(pll2), okay)                                               \
+	? BSP_CLOCKS_PLL_MUL(DT_PROP_BY_IDX(DT_NODELABEL(pll2), mul, 0),                           \
+			     DT_PROP_BY_IDX(DT_NODELABEL(pll2), mul, 1))                           \
+	: BSP_CLOCKS_PLL_MUL(0, 0)
 
-#define BSP_CFG_PL2ODIVP           DT_PROP(DT_NODELABEL(clock), pll2_divp)
-#define BSP_CFG_PLL2P_FREQUENCY_HZ DT_PROP(DT_NODELABEL(clock), pll2_freqp)
-#define BSP_CFG_PL2ODIVQ           DT_PROP(DT_NODELABEL(clock), pll2_divq)
-#define BSP_CFG_PLL2Q_FREQUENCY_HZ DT_PROP(DT_NODELABEL(clock), pll2_freqq)
-#define BSP_CFG_PL2ODIVR           DT_PROP(DT_NODELABEL(clock), pll2_divr)
-#define BSP_CFG_PLL2R_FREQUENCY_HZ DT_PROP(DT_NODELABEL(clock), pll2_freqr)
+#define BSP_CFG_PL2ODIVP           BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), divp, RA_PLL_DIV_2)
+#define BSP_CFG_PLL2P_FREQUENCY_HZ BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), freqp, 0)
+#define BSP_CFG_PL2ODIVQ           BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), divq, RA_PLL_DIV_2)
+#define BSP_CFG_PLL2Q_FREQUENCY_HZ BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), freqq, 0)
+#define BSP_CFG_PL2ODIVR           BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), divr, RA_PLL_DIV_2)
+#define BSP_CFG_PLL2R_FREQUENCY_HZ BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), freqr, 0)
 
-#define BSP_CFG_CLOCK_SOURCE DT_PROP(DT_NODELABEL(clock), sysclock_source)
-#define BSP_CFG_CPUCLK_DIV   DT_PROP(DT_NODELABEL(clock), cpuclk_div)
+#define BSP_CFG_CLOCK_SOURCE                                                                       \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pclkblock), sysclock_src,                  \
+					  RA_PLL_SOURCE_DISABLE)
+#define BSP_CFG_CPUCLK_DIV                                                                         \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(cpuclk), clk_div, RA_SYS_CLOCK_DIV_1)
 
-#define BSP_CFG_ICLK_DIV     DT_PROP(DT_NODELABEL(clock), iclk_div)
-#define BSP_CFG_PCLKA_DIV    DT_PROP(DT_NODELABEL(clock), pclka_div)
-#define BSP_CFG_PCLKB_DIV    DT_PROP(DT_NODELABEL(clock), pclkb_div)
-#define BSP_CFG_PCLKC_DIV    DT_PROP(DT_NODELABEL(clock), pclkc_div)
-#define BSP_CFG_PCLKD_DIV    DT_PROP(DT_NODELABEL(clock), pclkd_div)
-#define BSP_CFG_PCLKE_DIV    DT_PROP(DT_NODELABEL(clock), pclke_div)
-#define BSP_CFG_BCLK_DIV     DT_PROP(DT_NODELABEL(clock), bclk_div)
-#define BSP_CFG_BCLK_OUTPUT  DT_PROP(DT_NODELABEL(clock), bclk_out)
-#define BSP_CFG_FCLK_DIV     DT_PROP(DT_NODELABEL(clock), fclk_div)
-#define BSP_CFG_SDCLK_OUTPUT DT_PROP(DT_NODELABEL(clock), sdclk_out)
+#define BSP_CFG_ICLK_DIV                                                                           \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(iclk), clk_div, RA_SYS_CLOCK_DIV_2)
+#define BSP_CFG_PCLKA_DIV                                                                          \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pclka), clk_div, RA_SYS_CLOCK_DIV_4)
+#define BSP_CFG_PCLKB_DIV                                                                          \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pclkb), clk_div, RA_SYS_CLOCK_DIV_8)
+#define BSP_CFG_PCLKC_DIV                                                                          \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pclkc), clk_div, RA_SYS_CLOCK_DIV_8)
+#define BSP_CFG_PCLKD_DIV                                                                          \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pclkd), clk_div, RA_SYS_CLOCK_DIV_4)
+#define BSP_CFG_PCLKE_DIV                                                                          \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pclke), clk_div, RA_SYS_CLOCK_DIV_2)
+#define BSP_CFG_BCLK_DIV                                                                           \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(bclk), clk_div, RA_SYS_CLOCK_DIV_4)
+#define BSP_CFG_SDCLK_OUTPUT BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(bclkout), sdclk, 1)
+#define BSP_CFG_BCLK_OUTPUT  BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(bclkout), clk_out_div, 2)
+#define BSP_CFG_FCLK_DIV                                                                           \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(fclk), clk_div, RA_SYS_CLOCK_DIV_8)
 
-#define BSP_CFG_UCK_SOURCE      DT_PROP(DT_NODELABEL(clock), uclk_source)
-#define BSP_CFG_UCK_DIV         DT_PROP(DT_NODELABEL(clock), uclk_div)
-#define BSP_CFG_U60CK_SOURCE    DT_PROP(DT_NODELABEL(clock), u60clk_source)
-#define BSP_CFG_U60CK_DIV       DT_PROP(DT_NODELABEL(clock), u60clk_div)
-#define BSP_CFG_OCTA_SOURCE     DT_PROP(DT_NODELABEL(clock), octaspiclk_source)
-#define BSP_CFG_OCTA_DIV        DT_PROP(DT_NODELABEL(clock), octaspiclk_div)
-#define BSP_CFG_CANFDCLK_SOURCE DT_PROP(DT_NODELABEL(clock), canfdclk_source)
-#define BSP_CFG_CANFDCLK_DIV    DT_PROP(DT_NODELABEL(clock), canfdclk_div)
-#define BSP_CFG_CLKOUT_SOURCE   DT_PROP(DT_NODELABEL(clock), clkout_source)
-#define BSP_CFG_CLKOUT_DIV      DT_PROP(DT_NODELABEL(clock), clkout_div)
-#define BSP_CFG_SCICLK_SOURCE   DT_PROP(DT_NODELABEL(clock), sciclk_source)
-#define BSP_CFG_SCICLK_DIV      DT_PROP(DT_NODELABEL(clock), sciclk_div)
-#define BSP_CFG_SPICLK_SOURCE   DT_PROP(DT_NODELABEL(clock), spiclk_source)
-#define BSP_CFG_SPICLK_DIV      DT_PROP(DT_NODELABEL(clock), spiclk_div)
-#define BSP_CFG_ADCCLK_SOURCE   DT_PROP(DT_NODELABEL(clock), adcclk_source)
-#define BSP_CFG_ADCCLK_DIV      DT_PROP(DT_NODELABEL(clock), adcclk_div)
-#define BSP_CFG_I3CCLK_SOURCE   DT_PROP(DT_NODELABEL(clock), i3cclk_source)
-#define BSP_CFG_I3CCLK_DIV      DT_PROP(DT_NODELABEL(clock), i3cclk_div)
+#define BSP_CFG_UCK_SOURCE                                                                         \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(uclk), clk_src, RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_UCK_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(uclk), clk_div, 0)
+#define BSP_CFG_U60CK_SOURCE                                                                       \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(u60clk), clk_src, RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_U60CK_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(u60clk), clk_div, 0)
+#define BSP_CFG_OCTA_SOURCE                                                                        \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(octaspiclk), clk_src,                       \
+					  RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_OCTA_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(octaspiclk), clk_div, 0)
+#define BSP_CFG_CANFDCLK_SOURCE                                                                    \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(canfdclk), clk_src, RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_CANFDCLK_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(canfdclk), clk_div, 0)
+#define BSP_CFG_CLKOUT_SOURCE                                                                      \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(clkout), clk_src, RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_CLKOUT_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(clkout), clk_div, 0)
+#define BSP_CFG_SCICLK_SOURCE                                                                      \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(sciclk), clk_src, RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_SCICLK_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(sciclk), clk_div, 0)
+#define BSP_CFG_SPICLK_SOURCE                                                                      \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(spiclk), clk_src, RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_SPICLK_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(spiclk), clk_div, 0)
+#define BSP_CFG_ADCCLK_SOURCE                                                                      \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(adcclk), clk_src, RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_ADCCLK_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(adcclk), clk_div, 0)
+#define BSP_CFG_I3CCLK_SOURCE                                                                      \
+	BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(i3cclk), clk_src, RA_CLOCK_SOURCE_DISABLE)
+#define BSP_CFG_I3CCLK_DIV BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(i3cclk), clk_div, 0)
 
 #endif /* BSP_CLOCK_CFG_H_ */
