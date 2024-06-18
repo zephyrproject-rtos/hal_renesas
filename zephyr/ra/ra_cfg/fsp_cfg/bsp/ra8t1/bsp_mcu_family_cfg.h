@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2024 Renesas Electronics Corporation
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
+* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
 #include "bsp_mcu_device_pn_cfg.h"

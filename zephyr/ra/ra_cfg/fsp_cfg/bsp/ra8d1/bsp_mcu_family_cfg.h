@@ -1,15 +1,14 @@
 /*
- * Copyright (c) 2024 Renesas Electronics Corporation
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
+* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_cfg.h"
-#include "ra8d1/bsp_override.h"
-#include "ra8d1/bsp_mcu_info.h"
+#include "bsp_override.h"
+#include "bsp_mcu_info.h"
 #include "bsp_clock_cfg.h"
 #define BSP_MCU_GROUP_RA8D1 (1)
 #define BSP_LOCO_HZ                 (DT_PROP_OR(DT_NODELABEL(loco), clock_frequency, 0))
