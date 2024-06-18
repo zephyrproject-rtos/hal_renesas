@@ -39,6 +39,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_TIMER_ULPT
 	fsp/src/r_ulpt/r_ulpt.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_LPM
 	fsp/src/r_lpm/r_lpm.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I2C_IIC
+	fsp/src/r_iic_master/r_iic_master.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
