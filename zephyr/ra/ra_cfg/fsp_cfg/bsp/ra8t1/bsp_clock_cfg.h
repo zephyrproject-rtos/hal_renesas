@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #include <zephyr/devicetree.h>
 #include <zephyr/dt-bindings/clock/ra_clock.h>
 
