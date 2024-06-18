@@ -11,8 +11,8 @@
 #include "bsp_mcu_info.h"
 #include "bsp_clock_cfg.h"
 #define BSP_MCU_GROUP_RA8M1 (1)
-#define BSP_LOCO_HZ                 (DT_PROP_OR(DT_NODELABEL(loco), clock_frequency, 0))
-#define BSP_MOCO_HZ                 (DT_PROP_OR(DT_NODELABEL(moco), clock_frequency, 0))
+#define BSP_LOCO_HZ         (DT_PROP_OR(DT_NODELABEL(loco), clock_frequency, 0))
+#define BSP_MOCO_HZ         (DT_PROP_OR(DT_NODELABEL(moco), clock_frequency, 0))
 #define BSP_SUB_CLOCK_HZ            (0)
 #if   BSP_CFG_HOCO_FREQUENCY == 0
 #define BSP_HOCO_HZ                 (16000000)
