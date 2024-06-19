@@ -34,6 +34,11 @@ License Link:
    https://opensource.org/licenses/BSD-3-Clause
 
 Patch List:
-	Remove the DTC setting override in SCI B UART
-	Impacted files:
-		drivers/ra/fsp/src/r_sci_b_uart/r_sci_b_uart.c
+
+   * Remove the DTC setting override in SCI B UART
+   Impacted files:
+      drivers/ra/fsp/src/r_sci_b_uart/r_sci_b_uart.c
+
+   * Remove the DTC setting override in SCI UART
+   Impacted files:
+      drivers/ra/fsp/src/r_sci_uart/r_sci_uart.c
