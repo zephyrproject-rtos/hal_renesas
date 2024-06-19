@@ -4,9 +4,9 @@ build:
 blobs:
   # libcmac
   - path: smartbond/cmac/libcmac/libcmac.a
-    sha256: f539bca402f9913086133b7236040744861fae63a249563a93f688fa00805e92
+    sha256: 3d7fcb880a0a2d635e333ff6eb131a17acf466ec7b19947a7d3ea1ebfb68ab1b
     type: lib
-    version: '1.1'
+    version: '1.2'
     license-path: zephyr/blobs/license.txt
     url: https://github.com/dialog-semiconductor/CMAC-library/raw/main/libcmac.a
     description: "Binary libraries with firmware for CMAC controller"
