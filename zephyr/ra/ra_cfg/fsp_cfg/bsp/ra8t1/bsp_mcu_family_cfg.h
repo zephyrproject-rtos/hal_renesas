@@ -46,6 +46,7 @@
 
 #define BSP_CORTEX_VECTOR_TABLE_ENTRIES (16U)
 #define BSP_VECTOR_TABLE_MAX_ENTRIES    (112U)
+#define BSP_CFG_INLINE_IRQ_FUNCTIONS    (1)
 
 #if defined(_RA_TZ_SECURE)
 #define BSP_TZ_SECURE_BUILD    (1)
@@ -110,7 +111,6 @@
 	 (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 11) /* SDHI1 */ |                                    \
 	 (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 12) /* SDHI0 */ |                                    \
 	 (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 13) /* DOC */ |                                      \
-	 (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 15) /* GLCDC/MIPI-DSI/DRW */ |                       \
 	 (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 16) /* CEU */ |                                      \
 	 (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 26) /* CANFD1 */ |                                   \
 	 (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 27) /* CANFD0 */ |                                   \
@@ -189,11 +189,11 @@
 #endif
 /* Deep Standby Interrupt Factor Security Attribution Register. */
 #ifndef BSP_TZ_CFG_DPFSAR
-#define BSP_TZ_CFG_DPFSAR ((RA_NOT_DEFINED > 0) ? 0U : 0xAF1FFFFFU)
+#define BSP_TZ_CFG_DPFSAR ((1 > 0) ? 0U : 0xAF1FFFFFU)
 #endif
 /* RAM Standby Control Security Attribution Register. */
 #ifndef BSP_TZ_CFG_RSCSAR
-#define BSP_TZ_CFG_RSCSAR ((RA_NOT_DEFINED > 0) ? 0U : 0x00037FFFU)
+#define BSP_TZ_CFG_RSCSAR ((1 > 0) ? 0U : 0x00037FFFU)
 #endif
 
 /* Security attribution for CGC registers. */
@@ -253,12 +253,12 @@
 
 /* Security attribution registers for WUPEN0. */
 #ifndef BSP_TZ_CFG_ICUSARE
-#define BSP_TZ_CFG_ICUSARE ((RA_NOT_DEFINED > 0) ? 0U : 0xFF1D0000U)
+#define BSP_TZ_CFG_ICUSARE ((1 > 0) ? 0U : 0xFF1D0000U)
 #endif
 
 /* Security attribution registers for WUPEN1. */
 #ifndef BSP_TZ_CFG_ICUSARF
-#define BSP_TZ_CFG_ICUSARF ((RA_NOT_DEFINED > 0) ? 0U : 0x00007F08U)
+#define BSP_TZ_CFG_ICUSARF ((1 > 0) ? 0U : 0x00007F08U)
 #endif
 
 /* Trusted Event Route Control Register for IELSR, DMAC.DELSR and ELC.ELSR. Note that currently
@@ -359,11 +359,7 @@
 
 /* Dual Mode Select Register */
 #ifndef BSP_CFG_ROM_REG_DUALSEL
-#if CONFIG_DUAL_BANK_MODE
-#define BSP_CFG_ROM_REG_DUALSEL (0xFFFFFFF8U | (0x0U))
-#else
 #define BSP_CFG_ROM_REG_DUALSEL (0xFFFFFFF8U | (0x7U))
-#endif
 #endif
 
 /* Block Protection Register 0 */
