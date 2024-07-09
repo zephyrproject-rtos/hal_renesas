@@ -56,15 +56,14 @@
  #include "bsp_group_irq.h"
  #include "bsp_clocks.h"
  #include "bsp_module_stop.h"
- #include "bsp_security.h"
-
+ 
 /* Factory MCU information. */
  #include "fsp_features.h"
 
 /* BSP Common Includes (Other than bsp_common.h) */
  #include "bsp_delay.h"
  #include "bsp_mcu_api.h"
-
+ #include "bsp_security.h"
 #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
