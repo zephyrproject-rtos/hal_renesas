@@ -357,63 +357,60 @@
 #define BSP_CFG_DCACHE_ENABLED (CONFIG_DCACHE)
 #endif
 
-#ifndef BSP_CFG_SDRAM_ENABLED
+/* SDRAM controller configuration */
+#if DT_NODE_HAS_STATUS_OKAY(DT_INST(0, renesas_ra_sdram))
+#define BSP_CFG_SDRAM_ENABLED (1)
+#define BSP_CFG_SDRAM_TRAS                                                     \
+  DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0),               \
+                 renesas_ra_sdram_timing, 0)
+#define BSP_CFG_SDRAM_TRCD                                                     \
+  DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0),               \
+                 renesas_ra_sdram_timing, 1)
+#define BSP_CFG_SDRAM_TRP                                                      \
+  DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0),               \
+                 renesas_ra_sdram_timing, 2)
+#define BSP_CFG_SDRAM_TWR                                                      \
+  DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0),               \
+                 renesas_ra_sdram_timing, 3)
+#define BSP_CFG_SDRAM_TCL                                                      \
+  DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0),               \
+                 renesas_ra_sdram_timing, 4)
+#define BSP_CFG_SDRAM_TRFC                                                     \
+  DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0),               \
+                 renesas_ra_sdram_timing, 5)
+#define BSP_CFG_SDRAM_TREFW                                                    \
+  DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0),               \
+                 renesas_ra_sdram_timing, 6)
+#define BSP_CFG_SDRAM_INIT_ARFI                                                \
+  DT_PROP(DT_INST(0, renesas_ra_sdram), auto_refresh_interval)
+#define BSP_CFG_SDRAM_INIT_ARFC                                                \
+  DT_PROP(DT_INST(0, renesas_ra_sdram), auto_refresh_count)
+#define BSP_CFG_SDRAM_INIT_PRC                                                 \
+  DT_PROP(DT_INST(0, renesas_ra_sdram), precharge_cycle_count)
+#define BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT                                     \
+  DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), multiplex_addr_shift)
+#define BSP_CFG_SDRAM_ENDIAN_MODE                                              \
+  DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), edian_mode)
+#define BSP_CFG_SDRAM_ACCESS_MODE                                              \
+  DT_PROP(DT_INST(0, renesas_ra_sdram), continuous_access)
+#define BSP_CFG_SDRAM_BUS_WIDTH                                                \
+  DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), bus_width)
+#else
 #define BSP_CFG_SDRAM_ENABLED (0)
-#endif
-
-#ifndef BSP_CFG_SDRAM_TRAS
-#define BSP_CFG_SDRAM_TRAS (6)
-#endif
-
-#ifndef BSP_CFG_SDRAM_TRCD
-#define BSP_CFG_SDRAM_TRCD (3)
-#endif
-
-#ifndef BSP_CFG_SDRAM_TRP
-#define BSP_CFG_SDRAM_TRP (3)
-#endif
-
-#ifndef BSP_CFG_SDRAM_TWR
-#define BSP_CFG_SDRAM_TWR (2)
-#endif
-
-#ifndef BSP_CFG_SDRAM_TCL
-#define BSP_CFG_SDRAM_TCL (3)
-#endif
-
-#ifndef BSP_CFG_SDRAM_TRFC
-#define BSP_CFG_SDRAM_TRFC (937)
-#endif
-
-#ifndef BSP_CFG_SDRAM_TREFW
-#define BSP_CFG_SDRAM_TREFW (8)
-#endif
-
-#ifndef BSP_CFG_SDRAM_INIT_ARFI
-#define BSP_CFG_SDRAM_INIT_ARFI (10)
-#endif
-
-#ifndef BSP_CFG_SDRAM_INIT_ARFC
-#define BSP_CFG_SDRAM_INIT_ARFC (8)
-#endif
-
-#ifndef BSP_CFG_SDRAM_INIT_PRC
-#define BSP_CFG_SDRAM_INIT_PRC (3)
-#endif
-
-#ifndef BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT
-#define BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT (1)
-#endif
-
-#ifndef BSP_CFG_SDRAM_ENDIAN_MODE
+#define BSP_CFG_SDRAM_TRAS (0)
+#define BSP_CFG_SDRAM_TRCD (0)
+#define BSP_CFG_SDRAM_TRP (0)
+#define BSP_CFG_SDRAM_TWR (0)
+#define BSP_CFG_SDRAM_TCL (0)
+#define BSP_CFG_SDRAM_TRFC (0)
+#define BSP_CFG_SDRAM_TREFW (0)
+#define BSP_CFG_SDRAM_INIT_ARFI (0)
+#define BSP_CFG_SDRAM_INIT_ARFC (0)
+#define BSP_CFG_SDRAM_INIT_PRC (0)
+#define BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT (0)
 #define BSP_CFG_SDRAM_ENDIAN_MODE (0)
-#endif
-
-#ifndef BSP_CFG_SDRAM_ACCESS_MODE
-#define BSP_CFG_SDRAM_ACCESS_MODE (1)
-#endif
-
-#ifndef BSP_CFG_SDRAM_BUS_WIDTH
+#define BSP_CFG_SDRAM_ACCESS_MODE (0)
 #define BSP_CFG_SDRAM_BUS_WIDTH (0)
-#endif
+#endif /* DT_NODE_HAS_STATUS_OKAY(DT_INST(0, renesas_ra_sdram)) */
+
 #endif /* BSP_MCU_FAMILY_CFG_H_ */
