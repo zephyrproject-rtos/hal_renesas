@@ -71,6 +71,7 @@ BSP_DONT_REMOVE static const uint32_t g_bsp_id_codes[] BSP_PLACE_IN_SECTION (BSP
 
  #if 33U != __CORTEX_M && 85U != __CORTEX_M // NOLINT(readability-magic-numbers)
 
+ #if !defined(CONFIG_SOC_OPTION_SETTING_MEMORY)
 /** ROM registers defined here. Some have masks to make sure reserved bits are set appropriately. */
 BSP_DONT_REMOVE static const uint32_t g_bsp_rom_registers[] BSP_PLACE_IN_SECTION (BSP_SECTION_ROM_REGISTERS) =
 {
@@ -92,6 +93,7 @@ BSP_DONT_REMOVE static const uint32_t g_bsp_rom_registers[] BSP_PLACE_IN_SECTION
     (uint32_t) BSP_ROM_REG_MPU_CONTROL_SETTING
   #endif
 };
+ #endif /* !defined(CONFIG_SOC_OPTION_SETTING_MEMORY) */
 
  #elif BSP_FEATURE_FLASH_SUPPORTS_ID_CODE == 1
 
