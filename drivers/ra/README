@@ -50,3 +50,7 @@ Patch List:
    * Remove the static definition in FLASH HP
    Impacted files:
       drivers/ra/fsp/src/r_flash_hp/r_flash_hp.c
+
+   * Allows custom implementation of option setting memory
+   Impacted files:
+      drivers/ra/fsp/src/bsp/mcu/all/bsp_rom_registers.c
