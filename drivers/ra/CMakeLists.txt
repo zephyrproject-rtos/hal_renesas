@@ -57,6 +57,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SDHI
 	fsp/src/r_sdhi/r_sdhi.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_OSPI_B_NOR_FLASH
 	fsp/src/r_ospi_b/r_ospi_b.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SDRAM
+	fsp/src/bsp/mcu/all/bsp_sdram.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(

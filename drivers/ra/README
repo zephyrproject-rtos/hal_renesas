@@ -77,3 +77,8 @@ Patch List:
       drivers/ra/fsp/src/r_ether_phy/targets/KSZ8091RNB/r_ether_phy_target_ksz8091rnb.c
       drivers/ra/fsp/inc/instances/r_ether_phy.h
       drivers/ra/fsp/inc/instances/r_ether.h
+
+   * Add support for SDRAM controllers taken from FSP v5.6.0
+   Impacted files:
+      drivers/ra/fsp/src/bsp/mcu/all/bsp_sdram.h
+      drivers/ra/fsp/src/bsp/mcu/all/bsp_sdram.c
