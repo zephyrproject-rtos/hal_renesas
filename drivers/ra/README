@@ -86,11 +86,6 @@ Patch List:
       drivers/ra/fsp/inc/instances/r_ether_phy.h
       drivers/ra/fsp/inc/instances/r_ether.h
 
-   * Add support for SDRAM controllers taken from FSP v5.6.0
-   Impacted files:
-      drivers/ra/fsp/src/bsp/mcu/all/bsp_sdram.h
-      drivers/ra/fsp/src/bsp/mcu/all/bsp_sdram.c
-
    * Create new USB device support for Zephyr HAL (do not use current FSP USB stack)
    Impacted files:
       drivers/ra/fsp/inc/api/r_usb_device_api.h
@@ -116,3 +111,7 @@ Patch List:
    * Add Trigger NO_EDGE enum for comparator module
    Impacted files:
       drivers/ra/fsp/inc/api/r_comparator_api.h
+
+   * Reflect OFS setting for sdram from Zephyr device-tree value
+   Impacted files:
+      zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
