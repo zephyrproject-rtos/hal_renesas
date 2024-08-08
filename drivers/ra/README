@@ -42,3 +42,7 @@ Patch List:
    * Remove the DTC setting override in SCI UART
    Impacted files:
       drivers/ra/fsp/src/r_sci_uart/r_sci_uart.c
+
+   * Add bug fix for CANFD setting wrong value of acepptance filtering rule number
+   Impacted files:
+      drivers/ra/fsp/src/r_canfd/r_canfd.c
