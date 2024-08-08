@@ -317,6 +317,10 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
         /* Configure rule count for both channels */
 #if BSP_FEATURE_CANFD_NUM_INSTANCES > 1
         p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH0_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos);
+        if (channel == 1)
+        {
+            p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH1_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos);
+        }
 #else
         p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH0_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos) |
                              CANFD_CFG_AFL_CH1_RULE_NUM;
