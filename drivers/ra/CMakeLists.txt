@@ -52,7 +52,7 @@ if(CONFIG_USE_RA_FSP_SCE)
 		fsp/src/r_sce/common
 	)
 
-	if(CONFIG_HAS_RENESAS_RA_RSIP7)
+	if(CONFIG_HAS_RENESAS_RA_RSIP_E51A)
 		zephyr_include_directories(
 			fsp/src/r_sce/crypto_procedures/src/rsip7/plainkey/public/inc
 			fsp/src/r_sce/crypto_procedures/src/rsip7/plainkey/private/inc)
