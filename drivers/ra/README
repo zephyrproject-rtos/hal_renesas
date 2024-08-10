@@ -46,3 +46,7 @@ Patch List:
    * Add bug fix for CANFD setting wrong value of acepptance filtering rule number
    Impacted files:
       drivers/ra/fsp/src/r_canfd/r_canfd.c
+
+   * Remove the static definition in FLASH HP
+   Impacted files:
+      drivers/ra/fsp/src/r_flash_hp/r_flash_hp.c
