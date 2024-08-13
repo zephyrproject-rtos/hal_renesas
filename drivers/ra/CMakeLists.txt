@@ -51,6 +51,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CANFD
 	fsp/src/r_canfd/r_canfd.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_QSPI_NOR_FLASH
 	fsp/src/r_qspi/r_qspi.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_USB_DEVICE
+	fsp/src/r_usb_device/r_usb_device.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
