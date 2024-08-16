@@ -364,7 +364,11 @@
 
 /* Dual Mode Select Register */
 #ifndef BSP_CFG_ROM_REG_DUALSEL
+#if CONFIG_DUAL_BANK_MODE
+#define BSP_CFG_ROM_REG_DUALSEL (0xFFFFFFF8U | (0x0U))
+#else
 #define BSP_CFG_ROM_REG_DUALSEL (0xFFFFFFF8U | (0x7U))
+#endif
 #endif
 
 /* Block Protection Register 0 */
