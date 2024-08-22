@@ -97,3 +97,10 @@ Patch List:
    * Add new define for USB module in bsp_feature.h
    Impacted files:
       drivers/ra/fsp/src/bsp/mcu/**/bsp_feature.h
+
+   * Add new support for r_usb_host (not pull from FSP USB)
+   Impacted files:
+      drivers/ra/fsp/inc/api/r_usb_host_api.h
+      drivers/ra/fsp/inc/instances/r_usb_host.h
+      drivers/ra/fsp/src/bsp/mcu/**/bsp_feature.h
+      drivers/ra/fsp/src/r_usb_host/r_usb_host.c
