@@ -12,10 +12,10 @@ extern "C" {
 
 #define CANFD_CFG_PARAM_CHECKING_ENABLE ((BSP_CFG_PARAM_CHECKING_ENABLE))
 
-#define CANFD_CFG_AFL_CH0_RULE_NUM (DT_PROP_OR(DT_NODELABEL(canfd0), rx_max_filters, 0) * 2)
-#define CANFD_CFG_AFL_CH1_RULE_NUM (DT_PROP_OR(DT_NODELABEL(canfd1), rx_max_filters, 0) * 2)
+#define CANFD_CFG_AFL_CH0_RULE_NUM  (DT_PROP_OR(DT_NODELABEL(canfd0), rx_max_filters, 0))
+#define CANFD_CFG_AFL_CH1_RULE_NUM  (DT_PROP_OR(DT_NODELABEL(canfd1), rx_max_filters, 0))
 
-#define CANFD_CFG_GLOBAL_ERROR_CH ((0U))
+#define CANFD_CFG_GLOBAL_ERROR_CH   (DT_PROP(DT_INST(0, renesas_ra_canfd), channel))
 
 #define CANFD_CFG_FD_PROTOCOL_EXCEPTION (0)
 
