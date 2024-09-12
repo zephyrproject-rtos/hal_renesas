@@ -12,8 +12,6 @@
 
 #define BSP_CFG_CLOCKS_SECURE	(0)
 #define BSP_CFG_CLOCKS_OVERRIDE (0)
-#define BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(node_id, prop, default_value)                            \
-	(COND_CODE_1(DT_NODE_HAS_STATUS(node_id, okay), (DT_PROP(node_id, prop)), (default_value)))
 
 #define BSP_CFG_XTAL_HZ BSP_CLOCK_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(xtal), clock_frequency, 0)
 
