@@ -5,7 +5,7 @@
  */
 
 #include <zephyr/devicetree.h>
-#include <zephyr/dt-bindings/clock/ra_clock.h>
+#include <zephyr/drivers/clock_control/renesas_ra_cgc.h>
 
 #ifndef BSP_CLOCK_CFG_H_
 #define BSP_CLOCK_CFG_H_
