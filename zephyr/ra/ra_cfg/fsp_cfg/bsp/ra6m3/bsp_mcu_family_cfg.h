@@ -6,8 +6,8 @@
 
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
+#include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_cfg.h"
-#include "bsp_mcu_info.h"
 #include "bsp_clock_cfg.h"
 #include "bsp_mcu_info.h"
 #define BSP_MCU_GROUP_RA6M3 (1)
