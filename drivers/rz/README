@@ -1,0 +1,34 @@
+Flexible Software Package (FSP)
+###############################
+
+Origin:
+   Renesas Electronics Corporation
+   https://github.com/renesas/rzg-fsp
+
+Status:
+   version v2.1.0
+
+Purpose:
+   Flexible Software Package (FSP) for Renesas RZ MPU Family.
+
+Description:
+   This package is a snapshot from the RZ FSP software released by Renesas Electronics Corporation
+   It contain the HAL and a set of CMSIS headers files for the Renesas RZ MPUs
+
+Dependencies:
+    None.
+
+URL:
+   https://github.com/renesas/rzg-fsp
+
+Commit:
+   8db06f881784144e86361b1266ac4d3c026f6ad8
+
+Maintained-by:
+   Renesas Electronics Corporation
+
+License:
+   BSD-3-Clause
+
+License Link:
+   https://opensource.org/licenses/BSD-3-Clause
