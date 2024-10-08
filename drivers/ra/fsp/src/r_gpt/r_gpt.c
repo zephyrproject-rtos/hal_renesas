@@ -118,7 +118,7 @@ static void gpt_calculate_duty_cycle(gpt_instance_ctrl_t * const p_instance_ctrl
                                      gpt_prv_duty_registers_t  * p_duty_reg,
                                      uint32_t                    pin);
 
-static uint32_t gpt_gtior_calculate(timer_cfg_t const * const p_cfg, gpt_pin_level_t const stop_level);
+uint32_t gpt_gtior_calculate(timer_cfg_t const * const p_cfg, gpt_pin_level_t const stop_level);
 
 #endif
 
@@ -1686,7 +1686,7 @@ static uint32_t gpt_clock_frequency_get (gpt_instance_ctrl_t * const p_instance_
  * @param[in]  p_cfg                   Timer configuration
  * @param[in]  level                   Output level after timer stops
  **********************************************************************************************************************/
-static uint32_t gpt_gtior_calculate (timer_cfg_t const * const p_cfg, gpt_pin_level_t const stop_level)
+uint32_t gpt_gtior_calculate (timer_cfg_t const * const p_cfg, gpt_pin_level_t const stop_level)
 {
     /* The stop level is used as both the initial level and the stop level. */
     uint32_t gtior = R_GPT0_GTIOR_OAE_Msk | ((uint32_t) stop_level << R_GPT0_GTIOR_OADFLT_Pos) |

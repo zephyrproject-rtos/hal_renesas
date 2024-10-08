@@ -54,3 +54,7 @@ Patch List:
    * Allows custom implementation of option setting memory
    Impacted files:
       drivers/ra/fsp/src/bsp/mcu/all/bsp_rom_registers.c
+
+   * Remove the static definition in GPT
+   Impacted files:
+      drivers/ra/fsp/src/r_gpt/r_gpt.c
