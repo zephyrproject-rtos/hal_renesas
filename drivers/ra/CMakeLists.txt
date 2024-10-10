@@ -61,6 +61,9 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SDRAM
 	fsp/src/bsp/mcu/all/bsp_sdram.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_DISPLAY
 	fsp/src/r_glcdc/r_glcdc.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_MIPI_DSI
+	fsp/src/r_mipi_dsi/r_mipi_dsi.c
+	fsp/src/r_mipi_phy/r_mipi_phy.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
