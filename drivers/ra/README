@@ -54,3 +54,7 @@ Patch List:
    * Allows custom implementation of option setting memory
    Impacted files:
       drivers/ra/fsp/src/bsp/mcu/all/bsp_rom_registers.c
+
+   * Move the include for cmsis_compiler.h after include for Renesas CMSIS header file
+   Impacted files:
+      drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/renesas.h
