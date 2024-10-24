@@ -218,8 +218,7 @@ fsp_err_t R_ETHER_PHY_Open (ether_phy_ctrl_t * const p_ctrl, ether_phy_cfg_t con
     /* Initialize configuration of ethernet phy module. */
     p_instance_ctrl->p_ether_phy_cfg = p_cfg;
 
-    /* Configure pins for MII or RMII. Set PHYMODE0 if MII is selected. */
-    R_PMISC->PFENET = (uint8_t) ((ETHER_PHY_MII_TYPE_MII == p_cfg->mii_type) << R_PMISC_PFENET_PHYMODE0_Pos);
+    R_BSP_MODULE_START(FSP_IP_ETHER, p_instance_ctrl->p_ether_phy_cfg->channel);
 
 #if ETHER_PHY_CFG_INIT_PHY_LSI_AUTOMATIC
     uint32_t reg   = 0;
