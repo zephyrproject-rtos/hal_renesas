@@ -42,6 +42,7 @@ typedef enum e_ether_phy_interface_status
 typedef struct st_ether_phy_instance_ctrl
 {
     uint32_t open;                                 ///< Used to determine if the channel is configured
+    uint8_t phy_lsi_address;                       ///< Address of PHY-LSI
 
     /* Configuration of Ethernet PHY-LSI module. */
     ether_phy_cfg_t const * p_ether_phy_cfg;       ///< Pointer to initial configurations.
