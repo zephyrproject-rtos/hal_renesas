@@ -190,7 +190,7 @@ static void      ether_enable_icu(ether_instance_ctrl_t * const p_instance_ctrl)
 static void      ether_disable_icu(ether_instance_ctrl_t * const p_instance_ctrl);
 static void      ether_reset_mac(R_ETHERC_EDMAC_Type * const p_reg);
 static void      ether_init_descriptors(ether_instance_ctrl_t * const p_instance_ctrl);
-static void      ether_init_buffers(ether_instance_ctrl_t * const p_instance_ctrl);
+void             ether_init_buffers(ether_instance_ctrl_t * const p_instance_ctrl);
 static fsp_err_t ether_buffer_get(ether_instance_ctrl_t * const p_instance_ctrl,
                                   void ** const                 p_buffer,
                                   uint32_t                    * p_buffer_size);
@@ -199,10 +199,10 @@ static void ether_pause_resolution(uint32_t const local_ability,
                                    uint32_t const partner_ability,
                                    uint32_t     * ptx_pause,
                                    uint32_t     * prx_pause);
-static void ether_configure_mac(ether_instance_ctrl_t * const p_instance_ctrl,
+void             ether_configure_mac(ether_instance_ctrl_t * const p_instance_ctrl,
                                 const uint8_t                 mac_addr[],
                                 const uint8_t                 mode);
-static fsp_err_t ether_do_link(ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode);
+fsp_err_t        ether_do_link(ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode);
 static fsp_err_t ether_link_status_check(ether_instance_ctrl_t const * const p_instance_ctrl);
 static uint8_t   ether_check_magic_packet_detection_bit(ether_instance_ctrl_t const * const p_instance_ctrl);
 static void      ether_configure_padding(ether_instance_ctrl_t * const p_instance_ctrl);
@@ -350,7 +350,6 @@ fsp_err_t R_ETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const p
     p_instance_ctrl->p_context         = p_cfg->p_context;
     p_instance_ctrl->p_callback_memory = NULL;
 
-    R_BSP_MODULE_START(FSP_IP_ETHER, p_instance_ctrl->p_ether_cfg->channel);
 
     /* Software reset */
     ether_reset_mac(p_instance_ctrl->p_reg_edmac);
@@ -358,6 +357,7 @@ fsp_err_t R_ETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const p
     /* Setting the padding function */
     ether_configure_padding(p_instance_ctrl);
 
+#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
     /* Software reset the PHY */
     phy_ret = p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->open(
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl,
@@ -373,11 +373,16 @@ fsp_err_t R_ETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const p
             p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_cfg);
     }
 #endif
+#else
+    phy_ret = FSP_SUCCESS;
+#endif
 
     if (FSP_SUCCESS == phy_ret)
     {
+#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->startAutoNegotiate(
             p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl);
+#endif
 
         /* Clear all ETHERC status BFR, PSRTO, LCHNG, MPD, ICD */
         p_reg_etherc->ECSR = ETHER_ETHERC_INTERRUPT_FACTOR_ALL;
@@ -441,8 +446,10 @@ fsp_err_t R_ETHER_Close (ether_ctrl_t * const p_ctrl)
     /* Disable Ethernet interrupt. */
     ether_disable_icu(p_instance_ctrl);
 
+#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
     p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->close(
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl);
+#endif
 
     p_reg_etherc->ECSIPR_b.LCHNGIP = 0;
     p_reg_edmac->EESIPR_b.ECIIP    = 0;
@@ -1371,7 +1378,7 @@ static void ether_init_descriptors (ether_instance_ctrl_t * const p_instance_ctr
  *                    ETHERC control block.
  * Return Value : none
  ***********************************************************************************************************************/
-static void ether_init_buffers (ether_instance_ctrl_t * const p_instance_ctrl)
+void ether_init_buffers (ether_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
     uint32_t buffer_num;
@@ -1590,7 +1597,7 @@ static void ether_pause_resolution (uint32_t const local_ability,
  *                    USE_MAGIC_PACKET_DETECT    (1) - Magic packet detection mode
  * Return Value : none
  ***********************************************************************************************************************/
-static void ether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
+void ether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
                                  const uint8_t                 mac_addr[],
                                  const uint8_t                 mode)
 {
@@ -1646,7 +1653,7 @@ static void ether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
  *                                      or result of Auto-negotiation is abnormal.
  *
  ***********************************************************************************************************************/
-static fsp_err_t ether_do_link (ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode)
+fsp_err_t ether_do_link (ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode)
 {
     fsp_err_t err;
     R_ETHERC0_Type * p_reg_etherc;
@@ -1668,12 +1675,17 @@ static fsp_err_t ether_do_link (ether_instance_ctrl_t * const p_instance_ctrl, c
     p_reg_etherc = (R_ETHERC0_Type *) p_instance_ctrl->p_reg_etherc;
     p_reg_edmac  = (R_ETHERC_EDMAC_Type *) p_instance_ctrl->p_reg_edmac;
 
+#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
     /* Set the link status */
     link_result = p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->linkPartnerAbilityGet(
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl,
         &link_speed_duplex,
         &local_pause_bits,
         &partner_pause_bits);
+#else
+    link_result = FSP_SUCCESS;
+    link_speed_duplex = p_instance_ctrl->link_speed_duplex;
+#endif
 
     if (FSP_SUCCESS == link_result)
     {
@@ -1850,11 +1862,15 @@ static uint8_t ether_check_magic_packet_detection_bit (ether_instance_ctrl_t con
  **********************************************************************************************************************/
 static fsp_err_t ether_link_status_check (ether_instance_ctrl_t const * const p_instance_ctrl)
 {
-    fsp_err_t err = FSP_SUCCESS;
+    fsp_err_t err;
     fsp_err_t link_status;
 
+#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
     link_status = p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->linkStatusGet(
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl);
+#else
+    link_status = FSP_SUCCESS;
+#endif
 
     if (FSP_ERR_ETHER_PHY_ERROR_LINK == link_status)
     {
