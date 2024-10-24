@@ -81,12 +81,8 @@ if(CONFIG_USE_RA_FSP_SDHI)
 	)
 endif()
 
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER_PHY
+	fsp/src/r_ether_phy/r_ether_phy.c)
+
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER
 	fsp/src/r_ether/r_ether.c)
-
-if (CONFIG_USE_RA_FSP_ETHER)
-	file(GLOB ether_phy_srcs
-		"fsp/src/r_ether_phy/r_ether_phy.c"
-		"fsp/src/r_ether_phy/targets/*/*.c")
-	zephyr_sources(${ether_phy_srcs})
-endif()
