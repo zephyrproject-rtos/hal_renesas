@@ -144,6 +144,7 @@ typedef struct st_ether_instance_ctrl
     ether_link_change_t           link_change;           ///< status of link change
     ether_magic_packet_t          magic_packet;          ///< status of magic packet detection
     ether_link_establish_status_t link_establish_status; ///< Current Link status
+    uint32_t                       link_speed_duplex;    ///< Current Link speed and duplex status
 
     /* Pointer to callback and optional working memory */
     void (* p_callback)(ether_callback_args_t *);
