@@ -15,6 +15,7 @@ set(srcs
 	rdp/src/r_bsp/mcu/all/r_bsp_interrupts.c
 	rdp/src/r_bsp/mcu/all/r_bsp_software_interrupt.c
 	rdp/src/r_bsp/mcu/all/r_rx_intrinsic_functions.c
+	rdp/src/r_bsp/mcu/all/mcu_locks.c
 	rdp/src/r_bsp/mcu/${CONFIG_SOC_SERIES}/mcu_clocks.c
 	rdp/src/r_bsp/mcu/${CONFIG_SOC_SERIES}/mcu_init.c
 	rdp/src/r_bsp/mcu/${CONFIG_SOC_SERIES}/mcu_interrupts.c
