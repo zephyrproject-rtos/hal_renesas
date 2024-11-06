@@ -619,6 +619,8 @@
 #define BSP_FEATURE_USB_REG_USBMC_VDDUSBE                         (0UL)             // Feature not available on this device.
 #define BSP_FEATURE_USB_SCKDIVCR2_HAS_CLOCK_DIV                   (0UL)             // Feature not available on this device.
 
+#define BSP_FEATURE_USB_NUM_IP                                    (0UL)
+
 #define BSP_FEATURE_VIN_IS_AVAILABLE                              (0UL)
 
 // *UNCRUSTIFY-ON*
