@@ -445,4 +445,7 @@
 #define BSP_FEATURE_ULPT_MAX_CHANNEL_NUM                     (2)
 #define BSP_FEATURE_ULPT_VALID_CHANNEL_MASK                  (0x3U)
 
+#define BSP_FEATURE_USB_NUM_IP                               (2U)
+#define BSP_FEATURE_USB_HAS_USBHS                            (1U)
+
 #endif

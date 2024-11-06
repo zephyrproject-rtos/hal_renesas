@@ -82,3 +82,14 @@ Patch List:
    Impacted files:
       drivers/ra/fsp/src/bsp/mcu/all/bsp_sdram.h
       drivers/ra/fsp/src/bsp/mcu/all/bsp_sdram.c
+
+   * Create new USB device support for Zephyr HAL (do not use current FSP USB stack)
+   Impacted files:
+      drivers/ra/fsp/inc/api/r_usb_device_api.h
+      drivers/ra/fsp/inc/instances/r_usb_device.h
+      drivers/ra/fsp/src/r_usb_device/r_usb_device_define.h
+      drivers/ra/fsp/src/r_usb_device/r_usb_device.c
+
+   * Add new define for USB module in bsp_feature.h
+   Impacted files:
+      drivers/ra/fsp/src/bsp/mcu/**/bsp_feature.h
