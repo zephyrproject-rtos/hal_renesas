@@ -608,6 +608,8 @@
 #define BSP_FEATURE_USB_REG_USBMC_VDCEN                           (0UL)             // Indicates the USBMC.VDCEN bit field is available.
 #define BSP_FEATURE_USB_REG_USBMC_VDDUSBE                         (0UL)             // Indicates the USBMC.VDDUSBE bit field is available.
 
+#define BSP_FEATURE_USB_NUM_IP                            (1UL)
+
 #define BSP_FEATURE_VIN_IS_AVAILABLE                              (0UL)
 
 // *UNCRUSTIFY-ON*
