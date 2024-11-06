@@ -579,6 +579,8 @@
 #define BSP_FEATURE_USB_REG_USBMC_VDCEN                   (0UL)             // Feature not available on this device.
 #define BSP_FEATURE_USB_REG_USBMC_VDDUSBE                 (0UL)             // Feature not available on this device.
 
+#define BSP_FEATURE_USB_NUM_IP                            (0UL)
+
 // *UNCRUSTIFY-ON*
 
 #endif
