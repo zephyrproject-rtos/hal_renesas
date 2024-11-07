@@ -7,4 +7,5 @@
 #ifndef BSP_MCU_DEVICE_PN_CFG_H_
 #define BSP_MCU_DEVICE_PN_CFG_H_
 #define BSP_PACKAGE_PINS (64)
+#define BSP_MCU_FEATURE_SET 'B'
 #endif /* BSP_MCU_DEVICE_PN_CFG_H_ */
