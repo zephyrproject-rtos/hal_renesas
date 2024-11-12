@@ -58,3 +58,7 @@ Patch List:
    * Move the include for cmsis_compiler.h after include for Renesas CMSIS header file
    Impacted files:
       drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/renesas.h
+
+   * Remove the static definition in SDHI
+   Impacted files:
+      drivers/ra/fsp/src/r_sdhi/r_sdhi.c
