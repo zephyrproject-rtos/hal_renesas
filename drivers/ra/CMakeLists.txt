@@ -36,7 +36,7 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_FLASH_HP
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SPI_B
 	fsp/src/r_spi_b/r_spi_b.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SPI
-	fsp/src/r_spi/r_spi.c)	
+	fsp/src/r_spi/r_spi.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_TIMER_ULPT
 	fsp/src/r_ulpt/r_ulpt.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_LPM
@@ -53,6 +53,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_QSPI_NOR_FLASH
 	fsp/src/r_qspi/r_qspi.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_USB_DEVICE
 	fsp/src/r_usb_device/r_usb_device.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SDHI
+	fsp/src/r_sdhi/r_sdhi.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
@@ -69,4 +71,10 @@ if(CONFIG_USE_RA_FSP_SCE)
 			"fsp/src/r_sce/crypto_procedures/src/rsip7/plainkey/primitive/*.c")
 		zephyr_sources(${rsip7_srcs})
 	endif()
+endif()
+
+if(CONFIG_USE_RA_FSP_SDHI)
+	zephyr_include_directories(
+		fsp/src/r_sdhi
+	)
 endif()
