@@ -190,7 +190,7 @@ static fsp_err_t r_sdhi_csd_save(sdhi_instance_ctrl_t * const p_ctrl,
                                  uint32_t                     rca,
                                  sdmmc_priv_csd_reg_t * const p_csd_reg);
 
-static fsp_err_t r_sdhi_read_and_block(sdhi_instance_ctrl_t * const p_ctrl,
+fsp_err_t r_sdhi_read_and_block(sdhi_instance_ctrl_t * const p_ctrl,
                                        uint32_t                     command,
                                        uint32_t                     argument,
                                        uint32_t                     byte_count);
@@ -210,36 +210,36 @@ static void r_sdhi_irq_disable(IRQn_Type irq);
 
 static void r_sdhi_access_irq_process(sdhi_instance_ctrl_t * p_ctrl, sdmmc_callback_args_t * p_args);
 
-static void r_sdhi_command_send_no_wait(sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument);
+void r_sdhi_command_send_no_wait(sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument);
 
-static fsp_err_t r_sdhi_command_send(sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument);
+fsp_err_t r_sdhi_command_send(sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument);
 
-static fsp_err_t r_sdhi_max_clock_rate_set(sdhi_instance_ctrl_t * p_ctrl, uint32_t max_rate);
+fsp_err_t r_sdhi_max_clock_rate_set(sdhi_instance_ctrl_t * p_ctrl, uint32_t max_rate);
 
-static fsp_err_t r_sdhi_wait_for_event(sdhi_instance_ctrl_t * const p_ctrl, uint32_t bit, uint32_t timeout);
+fsp_err_t r_sdhi_wait_for_event(sdhi_instance_ctrl_t * const p_ctrl, uint32_t bit, uint32_t timeout);
 
 static fsp_err_t r_sdhi_rca_get(sdhi_instance_ctrl_t * const p_ctrl, uint32_t * p_rca);
 
-static fsp_err_t r_sdhi_hw_cfg(sdhi_instance_ctrl_t * const p_ctrl);
+fsp_err_t r_sdhi_hw_cfg(sdhi_instance_ctrl_t * const p_ctrl);
 
 static fsp_err_t r_sdhi_card_identify(sdhi_instance_ctrl_t * const p_ctrl);
 
 static fsp_err_t r_sdhi_bus_cfg(sdhi_instance_ctrl_t * const p_ctrl);
 
-static fsp_err_t r_sdhi_wait_for_device(sdhi_instance_ctrl_t * const p_ctrl);
+fsp_err_t r_sdhi_wait_for_device(sdhi_instance_ctrl_t * const p_ctrl);
 
-static void r_sdhi_read_write_common(sdhi_instance_ctrl_t * const p_ctrl,
+void r_sdhi_read_write_common(sdhi_instance_ctrl_t * const p_ctrl,
                                      uint32_t                     sector_count,
                                      uint32_t                     sector_size,
                                      uint32_t                     command,
                                      uint32_t                     argument);
 
-static fsp_err_t r_sdhi_transfer_read(sdhi_instance_ctrl_t * const p_ctrl,
+fsp_err_t r_sdhi_transfer_read(sdhi_instance_ctrl_t * const p_ctrl,
                                       uint32_t                     block_count,
                                       uint32_t                     bytes,
                                       void                       * p_data);
 
-static fsp_err_t r_sdhi_transfer_write(sdhi_instance_ctrl_t * const p_ctrl,
+fsp_err_t r_sdhi_transfer_write(sdhi_instance_ctrl_t * const p_ctrl,
                                        uint32_t                     block_count,
                                        uint32_t                     bytes,
                                        const uint8_t              * p_data);
@@ -1124,7 +1124,7 @@ static void r_sdhi_access_irq_process (sdhi_instance_ctrl_t * p_ctrl, sdmmc_call
  * @param[in]  command         Command to send.
  * @param[in]  argument        Argument to send with the command.
  **********************************************************************************************************************/
-static void r_sdhi_command_send_no_wait (sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument)
+void r_sdhi_command_send_no_wait (sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument)
 {
     /* Clear Status */
     p_ctrl->p_reg->SD_INFO1 = 0U;
@@ -1160,7 +1160,7 @@ static void r_sdhi_command_send_no_wait (sdhi_instance_ctrl_t * p_ctrl, uint32_t
  * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
-static fsp_err_t r_sdhi_command_send (sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument)
+fsp_err_t r_sdhi_command_send (sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument)
 {
     /* Verify the device is not busy. */
     r_sdhi_wait_for_device(p_ctrl);
@@ -1182,7 +1182,7 @@ static fsp_err_t r_sdhi_command_send (sdhi_instance_ctrl_t * p_ctrl, uint32_t co
  * @retval     FSP_ERR_CARD_INIT_FAILED  Timeout setting divider or operation is still too fast at maximum divider
  *                                       (unlikely).
  **********************************************************************************************************************/
-static fsp_err_t r_sdhi_max_clock_rate_set (sdhi_instance_ctrl_t * p_ctrl, uint32_t max_rate)
+fsp_err_t r_sdhi_max_clock_rate_set (sdhi_instance_ctrl_t * p_ctrl, uint32_t max_rate)
 {
     uint32_t setting = SDHI_PRV_CLK_CTRL_DIV_INVALID;
 
@@ -1241,7 +1241,7 @@ static fsp_err_t r_sdhi_max_clock_rate_set (sdhi_instance_ctrl_t * p_ctrl, uint3
  * @retval     FSP_ERR_CARD_INIT_FAILED  Timeout setting divider or operation is still too fast at maximum divider
  *                                       (unlikely).
  **********************************************************************************************************************/
-static fsp_err_t r_sdhi_hw_cfg (sdhi_instance_ctrl_t * const p_ctrl)
+fsp_err_t r_sdhi_hw_cfg (sdhi_instance_ctrl_t * const p_ctrl)
 {
     /* Reset SDHI. */
     p_ctrl->p_reg->SOFT_RST = 0x0U;
@@ -1380,7 +1380,7 @@ static fsp_err_t r_sdhi_bus_cfg (sdhi_instance_ctrl_t * const p_ctrl)
  * @param[in]  command         Command number
  * @param[in]  argument        Argument
  **********************************************************************************************************************/
-static void r_sdhi_read_write_common (sdhi_instance_ctrl_t * const p_ctrl,
+void r_sdhi_read_write_common (sdhi_instance_ctrl_t * const p_ctrl,
                                       uint32_t                     sector_count,
                                       uint32_t                     sector_size,
                                       uint32_t                     command,
@@ -1554,7 +1554,7 @@ static void r_sdhi_write_protect_get (sdhi_instance_ctrl_t * const p_ctrl)
  * @retval     FSP_SUCCESS          Previous operation is complete, and SDHI is ready for the next operation.
  * @retval     FSP_ERR_DEVICE_BUSY  Device is holding DAT0 low (device is busy) or another operation is ongoing.
  **********************************************************************************************************************/
-static fsp_err_t r_sdhi_wait_for_device (sdhi_instance_ctrl_t * const p_ctrl)
+fsp_err_t r_sdhi_wait_for_device (sdhi_instance_ctrl_t * const p_ctrl)
 {
     /* Wait for the device to stop holding DAT0 low. */
     uint32_t timeout = SDHI_PRV_BUSY_TIMEOUT_US;
@@ -1654,7 +1654,7 @@ static fsp_err_t r_sdhi_clock_optimize (sdhi_instance_ctrl_t * const p_ctrl,
  * @retval     FSP_ERR_RESPONSE     Device responded with an error.
  * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  **********************************************************************************************************************/
-static fsp_err_t r_sdhi_wait_for_event (sdhi_instance_ctrl_t * const p_ctrl, uint32_t bit, uint32_t timeout_us)
+fsp_err_t r_sdhi_wait_for_event (sdhi_instance_ctrl_t * const p_ctrl, uint32_t bit, uint32_t timeout_us)
 {
     /* The event status is updated in the access interrupt.  Use a local copy of the event status to make sure
      * it isn't updated during the loop. */
@@ -1866,7 +1866,7 @@ static fsp_err_t r_sdhi_csd_extended_get (sdhi_instance_ctrl_t * const p_ctrl, u
  * @retval     FSP_ERR_RESPONSE     Device responded with an error.
  * @retval     FSP_ERR_TIMEOUT      Device did not respond.
  **********************************************************************************************************************/
-static fsp_err_t r_sdhi_read_and_block (sdhi_instance_ctrl_t * const p_ctrl,
+fsp_err_t r_sdhi_read_and_block (sdhi_instance_ctrl_t * const p_ctrl,
                                         uint32_t                     command,
                                         uint32_t                     argument,
                                         uint32_t                     byte_count)
@@ -2054,7 +2054,7 @@ void r_sdhi_transfer_callback (sdhi_instance_ctrl_t * p_ctrl)
  *             function calls:
  *               * @ref transfer_api_t::reconfigure
  **********************************************************************************************************************/
-static fsp_err_t r_sdhi_transfer_read (sdhi_instance_ctrl_t * const p_ctrl,
+fsp_err_t r_sdhi_transfer_read (sdhi_instance_ctrl_t * const p_ctrl,
                                        uint32_t                     block_count,
                                        uint32_t                     bytes,
                                        void                       * p_data)
@@ -2120,7 +2120,7 @@ static fsp_err_t r_sdhi_transfer_read (sdhi_instance_ctrl_t * const p_ctrl,
  *             function calls:
  *               * @ref transfer_api_t::reconfigure
  **********************************************************************************************************************/
-static fsp_err_t r_sdhi_transfer_write (sdhi_instance_ctrl_t * const p_ctrl,
+fsp_err_t r_sdhi_transfer_write (sdhi_instance_ctrl_t * const p_ctrl,
                                         uint32_t                     block_count,
                                         uint32_t                     bytes,
                                         const uint8_t              * p_data)
