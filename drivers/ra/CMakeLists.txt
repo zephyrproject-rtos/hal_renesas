@@ -70,3 +70,9 @@ if(CONFIG_USE_RA_FSP_SCE)
 		zephyr_sources(${rsip7_srcs})
 	endif()
 endif()
+
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER_PHY
+	fsp/src/r_ether_phy/r_ether_phy.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER
+	fsp/src/r_ether/r_ether.c)
