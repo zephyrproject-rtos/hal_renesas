@@ -62,3 +62,18 @@ Patch List:
    * Remove the static definition in SDHI
    Impacted files:
       drivers/ra/fsp/src/r_sdhi/r_sdhi.c
+
+   * Add in ETHER_CFG_USE_CUSTOM_PHY_DRIVER to Ethernet controller driver to skip the phy control and allow the use of Zephyr phy driver.
+     Add phy link speed to Ethernet controller driver instance control.
+     Remove static definition of some internal function is ethernet driver to allow their usage in Zephyr side
+     Add phy_lsi_address to Ethernet phy instance control to allow the control of phy address as input.
+     Remove the phy target settings as they are not used.
+   Impacted files:
+      drivers/ra/fsp/src/r_ether/r_ether.c
+      drivers/ra/fsp/src/r_ether_phy/r_ether_phy.c
+      drivers/ra/fsp/src/r_ether_phy/targets/DP83620/r_ether_phy_target_dp83620.c
+      drivers/ra/fsp/src/r_ether_phy/targets/ICS1894/r_ether_phy_target_ics1894.c
+      drivers/ra/fsp/src/r_ether_phy/targets/KSZ8041/r_ether_phy_target_ksz8041.c
+      drivers/ra/fsp/src/r_ether_phy/targets/KSZ8091RNB/r_ether_phy_target_ksz8091rnb.c
+      drivers/ra/fsp/inc/instances/r_ether_phy.h
+      drivers/ra/fsp/inc/instances/r_ether.h
