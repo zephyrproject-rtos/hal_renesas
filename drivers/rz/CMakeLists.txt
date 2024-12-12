@@ -25,3 +25,7 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_SCIF_UART
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_ADC
 	fsp/src/${SOC_SERIES_PREFIX}/r_adc_c/r_adc_c.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_EXT_IRQ
+	fsp/src/${SOC_SERIES_PREFIX}/r_intc_irq/r_intc_irq.c
+	fsp/src/${SOC_SERIES_PREFIX}/r_intc_nmi/r_intc_nmi.c)
