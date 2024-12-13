@@ -93,6 +93,14 @@ if(CONFIG_USE_RA_FSP_SCE)
 			"fsp/src/r_sce/crypto_procedures/src/sce7/plainkey/primitive/*.c")
 		zephyr_library_sources(${sce7_srcs})
 	endif()
+
+	if (CONFIG_HAS_RENESAS_RA_TRNG)
+		zephyr_include_directories(
+			fsp/src/r_sce/trng)
+		file(GLOB trng_srcs
+			"fsp/src/r_sce/trng/*.c")
+		zephyr_library_sources(${trng_srcs})
+	endif()
 			
 endif()
 
