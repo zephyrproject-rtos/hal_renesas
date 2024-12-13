@@ -28,3 +28,6 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_ADC
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_MHU
 	fsp/src/${SOC_SERIES_PREFIX}/r_mhu_ns/r_mhu_ns.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_RIIC_MASTER
+	fsp/src/${SOC_SERIES_PREFIX}/r_riic_master/r_riic_master.c)
