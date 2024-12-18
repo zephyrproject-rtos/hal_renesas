@@ -22,3 +22,6 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_IOPORT
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_SCIF_UART
 	fsp/src/${SOC_SERIES_PREFIX}/r_scif_uart/r_scif_uart.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_MHU
+	fsp/src/${SOC_SERIES_PREFIX}/r_mhu_ns/r_mhu_ns.c)
