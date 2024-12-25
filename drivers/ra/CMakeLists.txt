@@ -101,6 +101,16 @@ if(CONFIG_USE_RA_FSP_SCE)
 		zephyr_library_sources(${sce7_srcs})
 	endif()
 
+	if (CONFIG_HAS_RENESAS_RA_SCE9)
+		zephyr_include_directories(
+			fsp/src/r_sce/crypto_procedures/src/sce9/plainkey/public/inc
+			fsp/src/r_sce/crypto_procedures/src/sce9/plainkey/private/inc)
+		file(GLOB sce9_srcs
+			"fsp/src/r_sce/crypto_procedures/src/sce9/plainkey/adaptors/*.c"
+			"fsp/src/r_sce/crypto_procedures/src/sce9/plainkey/primitive/*.c")
+		zephyr_library_sources(${sce9_srcs})
+	endif()
+
 	if (CONFIG_HAS_RENESAS_RA_TRNG)
 		zephyr_include_directories(
 			fsp/src/r_sce/trng)
