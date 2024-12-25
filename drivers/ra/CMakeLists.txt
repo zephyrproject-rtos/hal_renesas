@@ -15,6 +15,7 @@ set(srcs
 	fsp/src/bsp/mcu/all/bsp_delay.c
 	fsp/src/bsp/mcu/all/bsp_register_protection.c
 	fsp/src/bsp/mcu/all/bsp_irq.c
+	fsp/src/bsp/mcu/all/bsp_group_irq.c
 )
 
 zephyr_include_directories(${include_dirs})
