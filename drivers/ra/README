@@ -130,6 +130,7 @@ Patch List:
    * Reflect OFS setting for WDT from Zephyr Kconfig value
       Impacted files:
          zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_ofs_cfg.h
 
    * Correct IO define for R_ELC_ELSEGR_Type on RA8M1, RA8D1, RA8T1
       Impacted files:
