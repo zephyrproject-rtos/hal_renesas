@@ -127,3 +127,7 @@ Patch List:
    * Add new implementation for R_BSP_SecurityInit on Zephyr.
       Impacted files:
          zephyr/ra/portable/bsp_security.h
+
+   * Reflect OFS setting for WDT from Zephyr Kconfig value
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
