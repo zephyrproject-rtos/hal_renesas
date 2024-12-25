@@ -10,8 +10,14 @@
 #define BSP_MCU_OFS_CFG_H_
 
 #if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(option_setting_ofs0))
+#ifdef CONFIG_WDT_RENESAS_RA_START_IN_BOOT
+#define WDTSTRT    (0)
+#else
+#define WDTSTRT    (1)
+#endif /* CONFIG_WDT_RENESAS_RA_START_IN_BOOT */
+
 #define OFS_IWDT (0xA001A001 | 1 << 1 | 3 << 2 | 15 << 4 | 3 << 8 | 3 << 10 | 1 << 12 | 1 << 14)
-#define OFS_WDT  (1 << 17 | 3 << 18 | 15 << 20 | 3 << 24 | 3 << 26 | 1 << 28 | 1 << 30)
+#define OFS_WDT  (WDTSTRT << 17 | 3 << 18 | 15 << 20 | 3 << 24 | 3 << 26 | 1 << 28 | 1 << 30)
 #define BSP_CFG_OPTION_SETTING_OFS0  (OFS_IWDT | OFS_WDT)
 #endif /* option_setting_ofs0 */
 
