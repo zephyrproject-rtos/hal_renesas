@@ -38,13 +38,6 @@ extern "C" {
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)
 #endif
 
-/* OFS0 WDT configurations */
-#ifdef CONFIG_WDT_RENESAS_RA_START_IN_BOOT
-#define WDTSTRT (0)
-#else
-#define WDTSTRT (1)
-#endif
-
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
 #define BSP_PRV_IELS_ENUM(vector)    CONCAT(ELC_, vector)
