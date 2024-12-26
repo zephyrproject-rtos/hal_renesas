@@ -51,6 +51,10 @@ Patch List:
    Impacted files:
       drivers/ra/fsp/src/r_flash_hp/r_flash_hp.c
 
+   * Change the section to place code in ram from `.code_in_ram` to `.ramfunc`
+   Impacted files:
+      drivers/ra/fsp/inc/instances/r_flash_hp.h
+
    * Allows custom implementation of option setting memory
    Impacted files:
       drivers/ra/fsp/src/bsp/mcu/all/bsp_rom_registers.c
