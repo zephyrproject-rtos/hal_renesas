@@ -31,12 +31,12 @@ FSP_HEADER
 /* If Code Flash programming is enabled, then all API functions must execute out of RAM. */
 #if (FLASH_HP_CFG_CODE_FLASH_PROGRAMMING_ENABLE == 1)
  #if defined(__ICCARM__)
-  #pragma section=".ram_from_flash"
+  #pragma section=".ramfunc"
  #endif
  #if defined(__ARMCC_VERSION) || defined(__GNUC__)
-  #define PLACE_IN_RAM_SECTION    __attribute__((noinline)) BSP_PLACE_IN_SECTION(".ram_from_flash")
+  #define PLACE_IN_RAM_SECTION    __attribute__((noinline)) BSP_PLACE_IN_SECTION(".ramfunc")
  #else
-  #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".ram_from_flash")
+  #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".ramfunc")
  #endif
 #else
  #define PLACE_IN_RAM_SECTION
