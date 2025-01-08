@@ -1,0 +1,10 @@
+/*
+* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
+
+#ifndef R_DMAC_B_CFG_H_
+#define R_DMAC_B_CFG_H_
+#define DMAC_B_CFG_PARAM_CHECKING_ENABLE (BSP_CFG_PARAM_CHECKING_ENABLE)
+#endif /* R_DMAC_B_CFG_H_ */
