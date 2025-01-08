@@ -44,3 +44,9 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_GPT
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_CANFD
 	fsp/src/${SOC_SERIES_PREFIX}/r_canfd/r_canfd.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_RSPI_SPI
+	fsp/src/${SOC_SERIES_PREFIX}/r_rspi/r_rspi.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_DMA
+	fsp/src/${SOC_SERIES_PREFIX}/r_dmac_b/r_dmac_b.c)
