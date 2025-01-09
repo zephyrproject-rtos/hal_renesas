@@ -4,3 +4,7 @@ string(SUBSTRING ${CONFIG_SOC_SERIES} 0 3 SOC_SERIES_PREFIX)
 zephyr_include_directories(portable/${SOC_SERIES_PREFIX})
 zephyr_include_directories(rz_cfg/fsp_cfg/${SOC_SERIES_PREFIX})
 zephyr_include_directories(rz_cfg/fsp_cfg/bsp/${CONFIG_SOC_SERIES})
+
+if(CONFIG_SOC_SERIES_RZA3UL)
+	zephyr_library_sources(portable/${SOC_SERIES_PREFIX}/bsp_delay_asm.asm)
+endif()
