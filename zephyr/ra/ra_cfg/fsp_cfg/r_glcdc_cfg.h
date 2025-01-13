@@ -11,7 +11,7 @@ extern "C" {
 #endif
 
 #define GLCDC_CFG_PARAM_CHECKING_ENABLE      (BSP_CFG_PARAM_CHECKING_ENABLE)
-#define GLCDC_CFG_COLOR_CORRECTION_ENABLE    (false)
+#define GLCDC_CFG_COLOR_CORRECTION_ENABLE    (true)
 
 /* Disable DSI function handling */
 #ifdef GLCDC_CFG_USING_DSI
