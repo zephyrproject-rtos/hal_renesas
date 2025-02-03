@@ -44,3 +44,6 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_GPT
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_CANFD
 	fsp/src/${SOC_SERIES_PREFIX}/r_canfd/r_canfd.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_SCI_UART
+	fsp/src/${SOC_SERIES_PREFIX}/r_sci_uart/r_sci_uart.c)
