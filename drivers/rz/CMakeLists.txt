@@ -35,9 +35,14 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_RIIC_MASTER
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_GTM
 	fsp/src/${SOC_SERIES_PREFIX}/r_gtm/r_gtm.c)
 
-zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_EXT_IRQ
-	fsp/src/${SOC_SERIES_PREFIX}/r_intc_irq/r_intc_irq.c
-	fsp/src/${SOC_SERIES_PREFIX}/r_intc_nmi/r_intc_nmi.c)
+if("${CONFIG_SOC_SERIES}" MATCHES "rzg.*")
+	zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_EXT_IRQ
+		fsp/src/${SOC_SERIES_PREFIX}/r_intc_irq/r_intc_irq.c
+		fsp/src/${SOC_SERIES_PREFIX}/r_intc_nmi/r_intc_nmi.c)
+elseif("${CONFIG_SOC_SERIES}" MATCHES "rz[tn].*")
+	zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_EXT_IRQ
+		fsp/src/${SOC_SERIES_PREFIX}/r_icu/r_icu.c)
+endif()
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_GPT
 	fsp/src/${SOC_SERIES_PREFIX}/r_gpt/r_gpt.c)
