@@ -55,6 +55,10 @@ Patch List:
    Impacted files:
       drivers/ra/fsp/inc/instances/r_flash_hp.h
 
+   * Add SCB_CleanInvalidateDCache() for flash hp when using DCACHE
+   Impacted files:
+      drivers/ra/fsp/src/r_flash_hp/r_flash_hp.c
+
    * Allows custom implementation of option setting memory
    Impacted files:
       drivers/ra/fsp/src/bsp/mcu/all/bsp_rom_registers.c
