@@ -2640,6 +2640,13 @@ fsp_err_t flash_hp_pe_mode_exit (void)
         err = temp_err;
     }
 
+#if defined(BSP_CFG_DCACHE_ENABLED)
+ #if (1U == BSP_CFG_DCACHE_ENABLED)
+    /* Clean and Invalidates D-Cache */
+    SCB_CleanInvalidateDCache();
+ #endif
+#endif
+
     return err;
 }
 
