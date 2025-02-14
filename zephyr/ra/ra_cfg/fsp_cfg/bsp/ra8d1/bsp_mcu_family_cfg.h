@@ -575,7 +575,7 @@
 #endif
 
 #ifndef BSP_CFG_DCACHE_ENABLED
-#define BSP_CFG_DCACHE_ENABLED (0)
+#define BSP_CFG_DCACHE_ENABLED (CONFIG_DCACHE)
 #endif
 
 /* SDRAM controller configuration */
