@@ -66,6 +66,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_MIPI_DSI
 	fsp/src/r_mipi_phy/r_mipi_phy.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_DAC
 	fsp/src/r_dac/r_dac.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_USB_HOST
+	fsp/src/r_usb_host/r_usb_host.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
