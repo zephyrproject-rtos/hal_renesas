@@ -143,3 +143,6 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER_PHY
 
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER
 	fsp/src/r_ether/r_ether.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CRC
+	fsp/src/r_crc/r_crc.c)
