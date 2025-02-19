@@ -29,6 +29,9 @@
 
 #include "bsp_cfg.h"
 
+#include <zephyr/irq.h>
+
+
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
@@ -143,35 +146,9 @@ FSP_HEADER
  #define BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION    (0U)
 #endif
 
-/* This macro defines a variable for saving previous mask value */
-#ifndef FSP_CRITICAL_SECTION_DEFINE
-
- #define FSP_CRITICAL_SECTION_DEFINE               uint32_t old_mask_level = 0U
-#endif
-
-/* These macros abstract methods to save and restore the interrupt state for different architectures. */
-#if (0 == BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION)
- #define FSP_CRITICAL_SECTION_GET_CURRENT_STATE    __get_PRIMASK
- #define FSP_CRITICAL_SECTION_SET_STATE            __set_PRIMASK
- #define FSP_CRITICAL_SECTION_IRQ_MASK_SET         (1U)
-#else
- #define FSP_CRITICAL_SECTION_GET_CURRENT_STATE    __get_BASEPRI
- #define FSP_CRITICAL_SECTION_SET_STATE            __set_BASEPRI
- #define FSP_CRITICAL_SECTION_IRQ_MASK_SET         ((uint8_t) (BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION << \
-                                                               (8U - __NVIC_PRIO_BITS)))
-#endif
-
-/** This macro temporarily saves the current interrupt state and disables interrupts. */
-#ifndef FSP_CRITICAL_SECTION_ENTER
- #define FSP_CRITICAL_SECTION_ENTER                            \
-    old_mask_level = FSP_CRITICAL_SECTION_GET_CURRENT_STATE(); \
-    FSP_CRITICAL_SECTION_SET_STATE(FSP_CRITICAL_SECTION_IRQ_MASK_SET)
-#endif
-
-/** This macro restores the previously saved interrupt state, reenabling interrupts. */
-#ifndef FSP_CRITICAL_SECTION_EXIT
- #define FSP_CRITICAL_SECTION_EXIT              FSP_CRITICAL_SECTION_SET_STATE(old_mask_level)
-#endif
+#define FSP_CRITICAL_SECTION_DEFINE            unsigned int irq_lock_key
+#define FSP_CRITICAL_SECTION_ENTER             irq_lock_key = irq_lock();
+#define FSP_CRITICAL_SECTION_EXIT              irq_unlock(irq_lock_key);
 
 /* Number of Cortex processor exceptions, used as an offset from XPSR value for the IRQn_Type macro. */
 #define FSP_PRIV_CORTEX_PROCESSOR_EXCEPTIONS    (16U)
