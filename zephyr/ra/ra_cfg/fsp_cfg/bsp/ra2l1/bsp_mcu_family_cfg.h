@@ -66,7 +66,7 @@ extern "C" {
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)
 #endif
 /* Used to create IELS values for the interrupt initialization table g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector)    (ICU_ ## vector)
+#define BSP_PRV_IELS_ENUM(vector)    CONCAT(ICU_, vector)
 
 #define BSP_CFG_DCDC_ENABLE          (0)
 #define BSP_CFG_DCDC_VOLTAGE_RANGE   (BSP_POWER_MODE_DCDC_2V7_TO_3V6)

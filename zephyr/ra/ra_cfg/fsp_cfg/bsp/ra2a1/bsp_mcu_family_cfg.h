@@ -68,7 +68,7 @@ extern "C" {
 
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector) (ELC_##vector)
+#define BSP_PRV_IELS_ENUM(vector)    CONCAT(ELC_, vector)
 /*
  ID Code
  Note: To permanently lock and disable the debug interface define the
