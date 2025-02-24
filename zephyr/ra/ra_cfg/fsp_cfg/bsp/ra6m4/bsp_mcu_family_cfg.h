@@ -226,8 +226,9 @@ extern "C" {
 
 /* Security attribution for NMI registers. */
 #ifndef BSP_TZ_CFG_ICUSARB
-#define BSP_TZ_CFG_ICUSARB (0 | 0xFFFFFFFEU) /* Should match AIRCR.BFHFNMINS.  \
-                                              */
+#define BSP_TZ_CFG_ICUSARB                                                     \
+  (0 | 0xFFFFFFFEU) /* Should match AIRCR.BFHFNMINS.                           \
+                     */
 #endif
 
 /* Security attribution for registers for DMAC channels */
@@ -316,7 +317,7 @@ extern "C" {
 
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector) (ELC_##vector)
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ELC_, vector)
 
 #ifndef BSP_CLOCK_CFG_MAIN_OSC_WAIT
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)
