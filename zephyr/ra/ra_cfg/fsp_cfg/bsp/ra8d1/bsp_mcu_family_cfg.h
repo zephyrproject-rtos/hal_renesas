@@ -351,7 +351,7 @@
 
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector) (ELC_##vector)
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ELC_, vector)
 
 #ifndef BSP_CLOCK_CFG_MAIN_OSC_WAIT
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)
