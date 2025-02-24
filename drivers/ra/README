@@ -108,3 +108,7 @@ Patch List:
       drivers/ra/fsp/inc/instances/r_usb_host.h
       drivers/ra/fsp/src/bsp/mcu/**/bsp_feature.h
       drivers/ra/fsp/src/r_usb_host/r_usb_host.c
+
+   * Modify BSP_PRV_IELS_ENUM to use CONCAT instead of "##"
+   Impacted files:
+      zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
