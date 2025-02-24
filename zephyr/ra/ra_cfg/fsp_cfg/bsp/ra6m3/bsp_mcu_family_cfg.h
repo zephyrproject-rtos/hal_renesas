@@ -67,7 +67,7 @@
 #define BSP_CFG_ROM_REG_MPU_REGION3_END (0x400DFFFF)
 
 /* Used to create IELS values for the interrupt initialization table g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector)    (ELC_ ## vector)
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ELC_, vector)
 /*
  ID Code
  Note: To permanently lock and disable the debug interface define the BSP_ID_CODE_PERMANENTLY_LOCKED in the compiler settings.
