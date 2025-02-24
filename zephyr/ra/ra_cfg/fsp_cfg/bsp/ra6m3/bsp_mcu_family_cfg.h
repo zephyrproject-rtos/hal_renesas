@@ -43,7 +43,7 @@ extern "C" {
 
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector) (ELC_##vector)
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ELC_, vector)
 
 /* SDRAM controller configuration */
 #if DT_NODE_HAS_STATUS_OKAY(DT_INST(0, renesas_ra_sdram))
