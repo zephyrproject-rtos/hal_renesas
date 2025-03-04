@@ -32,3 +32,10 @@ if(CONFIG_USE_RX_RDP_GPIO)
 	)
 	zephyr_include_directories(rdp/src/r_gpio_rx)
 endif()
+
+if(CONFIG_USE_RX_RDP_MPC)
+	zephyr_library_sources(
+		rdp/src/r_mpc_rx/src/r_mpc_rx.c
+	)
+	zephyr_include_directories(rdp/src/r_mpc_rx)
+endif()
