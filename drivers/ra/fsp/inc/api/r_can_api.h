@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -47,6 +47,8 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
+#ifndef BSP_OVERRIDE_CAN_EVENT_T
+
 /** CAN event codes */
 typedef enum e_can_event
 {
@@ -64,6 +66,8 @@ typedef enum e_can_event
     CAN_EVENT_TX_FIFO_EMPTY        = 0x2000, ///< Transmit FIFO is empty.
     CAN_EVENT_FIFO_MESSAGE_LOST    = 0x4000, ///< Receive FIFO overrun.
 } can_event_t;
+
+#endif
 
 /** CAN Operation modes */
 typedef enum e_can_operation_mode
@@ -88,6 +92,8 @@ typedef enum e_can_test_mode
     CAN_TEST_MODE_INTERNAL_BUS      = 0x80 ///< CANFD Internal CAN Bus Communication Test Mode.
 } can_test_mode_t;
 
+#ifndef BSP_OVERRIDE_CAN_INFO_T
+
 /** CAN status info */
 typedef struct st_can_info
 {
@@ -99,6 +105,10 @@ typedef struct st_can_info
     uint32_t error_code;               ///< Error code, cleared after reading.
 } can_info_t;
 
+#endif
+
+#ifndef BSP_OVERRIDE_CAN_ID_MODE_T
+
 /** CAN ID modes */
 typedef enum e_can_id_mode
 {
@@ -106,12 +116,18 @@ typedef enum e_can_id_mode
     CAN_ID_MODE_EXTENDED,              ///< Extended IDs of 29 bits used.
 } can_id_mode_t;
 
+#endif
+
+#ifndef BSP_OVERRIDE_CAN_FRAME_TYPE_T
+
 /** CAN frame types */
 typedef enum e_can_frame_type
 {
     CAN_FRAME_TYPE_DATA,               ///< Data frame.
     CAN_FRAME_TYPE_REMOTE,             ///< Remote frame.
 } can_frame_type_t;
+
+#endif
 
 /** CAN bit rate configuration. */
 typedef struct st_can_bit_timing_cfg
@@ -121,6 +137,8 @@ typedef struct st_can_bit_timing_cfg
     uint32_t time_segment_2;             ///< Time segment 2 control.
     uint32_t synchronization_jump_width; ///< Synchronization jump width.
 } can_bit_timing_cfg_t;
+
+#ifndef BSP_OVERRIDE_CAN_FRAME_T
 
 /** CAN data Frame */
 typedef struct st_can_frame
@@ -132,6 +150,10 @@ typedef struct st_can_frame
     uint32_t         options;                      ///< Implementation-specific options.
     uint8_t          data[CAN_DATA_BUFFER_LENGTH]; ///< CAN data.
 } can_frame_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_CAN_CALLBACK_ARGS_T
 
 /** CAN callback parameter definition */
 typedef struct st_can_callback_args
@@ -147,6 +169,8 @@ typedef struct st_can_callback_args
     void const * p_context;            ///< Context provided to user during callback.
     can_frame_t  frame;                ///< Received frame data.
 } can_callback_args_t;
+
+#endif
 
 /** CAN Configuration */
 typedef struct st_can_cfg

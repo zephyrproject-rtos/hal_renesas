@@ -1,11 +1,15 @@
 /*
- * Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_cfg.h"
 #include "bsp_mcu_info.h"
@@ -17,12 +21,12 @@
 #if   BSP_CFG_HOCO_FREQUENCY == 0
 #define BSP_HOCO_HZ                 (16000000)
 #elif BSP_CFG_HOCO_FREQUENCY == 1
-#define BSP_HOCO_HZ                 (18000000)
-#elif BSP_CFG_HOCO_FREQUENCY == 2
-#define BSP_HOCO_HZ                 (20000000)
-#else
-#error "Invalid HOCO frequency chosen (BSP_CFG_HOCO_FREQUENCY) in bsp_clock_cfg.h"
-#endif
+                #define BSP_HOCO_HZ                 (18000000)
+            #elif BSP_CFG_HOCO_FREQUENCY == 2
+                #define BSP_HOCO_HZ                 (20000000)
+            #else
+                #error "Invalid HOCO frequency chosen (BSP_CFG_HOCO_FREQUENCY) in bsp_clock_cfg.h"
+            #endif
 
 #define BSP_CFG_FLL_ENABLE                 (0)
 
@@ -31,12 +35,12 @@
 #define BSP_CFG_INLINE_IRQ_FUNCTIONS       (1)
 
 #if defined(_RA_TZ_SECURE)
-#define BSP_TZ_SECURE_BUILD           (1)
-#define BSP_TZ_NONSECURE_BUILD        (0)
-#elif defined(_RA_TZ_NONSECURE)
-#define BSP_TZ_SECURE_BUILD           (0)
-#define BSP_TZ_NONSECURE_BUILD        (1)
-#else
+            #define BSP_TZ_SECURE_BUILD           (1)
+            #define BSP_TZ_NONSECURE_BUILD        (0)
+            #elif defined(_RA_TZ_NONSECURE)
+            #define BSP_TZ_SECURE_BUILD           (0)
+            #define BSP_TZ_NONSECURE_BUILD        (1)
+            #else
 #define BSP_TZ_SECURE_BUILD           (0)
 #define BSP_TZ_NONSECURE_BUILD        (0)
 #endif
@@ -151,10 +155,12 @@
 
 /* Security attribution for registers of LVD channels. */
 #ifndef BSP_TZ_CFG_LVDSAR
-#define BSP_TZ_CFG_LVDSAR (\
-            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 0) | /* LVD Channel 1 */ \
-            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 1) | /* LVD Channel 2 */ \
-            0xFFFFFFFCU)
+/* The LVD driver needs to access both channels. This means that the security attribution for both channels must be the same. */
+#if (RA_NOT_DEFINED > 0) || (RA_NOT_DEFINED > 0)
+#define BSP_TZ_CFG_LVDSAR (0U)
+#else
+#define BSP_TZ_CFG_LVDSAR (3U)
+#endif
 #endif
 
 /* Security attribution for LPM registers. */
@@ -170,7 +176,7 @@
 #ifndef BSP_TZ_CFG_CGFSAR
 #if BSP_CFG_CLOCKS_SECURE
 /* Protect all CGC registers from Non-secure write access. */
-#define BSP_TZ_CFG_CGFSAR (0xFFFEE402U)
+#define BSP_TZ_CFG_CGFSAR (0xFFFEF402U)
 #else
 /* Allow Secure and Non-secure write access. */
 #define BSP_TZ_CFG_CGFSAR (0xFFFFFFFFU)
@@ -265,8 +271,7 @@
 #define BSP_TZ_CFG_SRAMSAR (\
         1 | \
         ((BSP_CFG_CLOCKS_SECURE == 0) ? (1U << 1U) : 0U) | \
-        4 | \
-        0xFFFFFFF8U)
+        0xFFFFFFFCU)
 #endif
 
 /* Security attribution for Standby RAM registers. */
@@ -320,7 +325,7 @@
 #define BSP_CFG_ROM_REG_OFS1 (0xFFFFFEF8 | (1 << 2) | (3) |  (0 << 8))
 
 /* Used to create IELS values for the interrupt initialization table g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector)    CONCAT(ELC_, vector)
+#define BSP_PRV_IELS_ENUM(vector)    (ELC_ ## vector)
 
 /* Dual Mode Select Register */
 #ifndef BSP_CFG_ROM_REG_DUALSEL
@@ -378,4 +383,7 @@
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)
 #endif
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */
