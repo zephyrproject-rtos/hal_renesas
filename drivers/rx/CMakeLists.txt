@@ -2,6 +2,7 @@
 
 set(include_dirs
 	rdp/src/r_bsp
+	rdp/src/r_bsp/board/generic_${CONFIG_SOC_SERIES}
 	rdp/src/r_bsp/mcu
 	rdp/src/r_bsp/mcu/all
 	rdp/src/r_bsp/mcu/${CONFIG_SOC_SERIES}
@@ -36,4 +37,20 @@ if(CONFIG_USE_RX_RDP_MPC)
 		rdp/src/r_mpc_rx/src/r_mpc_rx.c
 	)
 	zephyr_include_directories(rdp/src/r_mpc_rx)
+endif()
+
+if(CONFIG_USE_RX_RDP_SCI_UART)
+	zephyr_include_directories(
+		rdp/src/r_byteq
+		rdp/src/r_byteq/src
+		rdp/src/r_sci_rx
+		rdp/src/r_sci_rx/src
+		rdp/src/r_sci_rx/src/targets/${CONFIG_SOC_SERIES}
+	)
+	zephyr_library_sources(
+		rdp/src/r_sci_rx/src/r_sci_rx.c
+		rdp/src/r_sci_rx/src/targets/${CONFIG_SOC_SERIES}/r_sci_${CONFIG_SOC_SERIES}.c
+		rdp/src/r_sci_rx/src/targets/${CONFIG_SOC_SERIES}/r_sci_${CONFIG_SOC_SERIES}_data.c
+		rdp/src/r_byteq/src/r_byteq.c
+	)
 endif()
