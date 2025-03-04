@@ -52,7 +52,9 @@
 /* BSP MCU Specific Includes. */
  #include "bsp_register_protection.h"
  #include "bsp_irq.h"
- #include "bsp_io.h"
+ #ifdef irq_lock
+  #include "bsp_io.h"
+ #endif
  #include "bsp_group_irq.h"
  #include "bsp_clocks.h"
  #include "bsp_module_stop.h"
