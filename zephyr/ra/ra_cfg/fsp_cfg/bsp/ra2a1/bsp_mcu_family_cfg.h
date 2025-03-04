@@ -1,15 +1,19 @@
 /*
- * Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
  * Copyright (c) 2024 TOKITA Hiroshi
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
-#include "bsp_mcu_device_pn_cfg.h"
-#include "bsp_mcu_device_cfg.h"
-#include "bsp_mcu_info.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "bsp_clock_cfg.h"
+#include "bsp_mcu_device_cfg.h"
+#include "bsp_mcu_device_pn_cfg.h"
+#include "bsp_mcu_info.h"
 #define BSP_MCU_GROUP_RA2A1 (1)
 #define BSP_LOCO_HZ (DT_PROP_OR(DT_NODELABEL(loco), clock_frequency, 0))
 #define BSP_MOCO_HZ (DT_PROP_OR(DT_NODELABEL(moco), clock_frequency, 0))
@@ -31,16 +35,9 @@
 #define BSP_VECTOR_TABLE_MAX_ENTRIES (48U)
 #define BSP_CFG_INLINE_IRQ_FUNCTIONS (0)
 
-/* OFS0 WDT configurations */
-#ifdef CONFIG_WDT_RENESAS_RA_START_IN_BOOT
-#define WDTSTRT    (0)
-#else
-#define WDTSTRT    (1)
-#endif
-
 #define OFS_SEQ1 0xA001A001 | (1 << 1) | (3 << 2)
 #define OFS_SEQ2 (15 << 4) | (3 << 8) | (3 << 10)
-#define OFS_SEQ3 (1 << 12) | (1 << 14) | (WDTSTRT << 17)
+#define OFS_SEQ3 (1 << 12) | (1 << 14) | (1 << 17)
 #define OFS_SEQ4 (3 << 18) | (15 << 20) | (3 << 24) | (3 << 26)
 #define OFS_SEQ5 (1 << 28) | (1 << 30)
 #define BSP_CFG_USE_LOW_VOLTAGE_MODE ((0))
@@ -68,18 +65,17 @@
 #ifndef BSP_CLOCK_CFG_MAIN_OSC_WAIT
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)
 #endif
+
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector) CONCAT(ELC_, vector)
-
+#define BSP_PRV_IELS_ENUM(vector) (ELC_##vector)
 /*
  ID Code
- Note: To lock and disable the debug interface define BSP_ID_CODE_LOCKED in
- compiler settings. WARNING: This will disable debug access to the part.
- However, ALeRASE command will be accepted, which will clear (reset) the ID
- code. After clearing ID code, debug access will be enabled.
+ Note: To permanently lock and disable the debug interface define the
+ BSP_ID_CODE_PERMANENTLY_LOCKED in the compiler settings. WARNING: This will
+ disable debug access to the part and cannot be reversed by a debug probe.
  */
-#if defined(BSP_ID_CODE_LOCKED)
+#if defined(BSP_ID_CODE_PERMANENTLY_LOCKED)
 #define BSP_CFG_ID_CODE_LONG_1 (0x00000000)
 #define BSP_CFG_ID_CODE_LONG_2 (0x00000000)
 #define BSP_CFG_ID_CODE_LONG_3 (0x00000000)
@@ -92,4 +88,11 @@
 #define BSP_CFG_ID_CODE_LONG_4 (0xffFFFFFF)
 #endif
 
+#if (0)
+#define BSP_SECTION_FLASH_GAP BSP_PLACE_IN_SECTION(".flash_gap")
+#endif
+
+#ifdef __cplusplus
+}
+#endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its
  * affiliates
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -14,6 +14,7 @@ extern "C" {
 #define ETHER_CFG_LINK_PRESENT (0)
 #define ETHER_CFG_USE_LINKSTA (0)
 #define ETHER_CFG_USE_CUSTOM_PHY_DRIVER (1)
+#define ETHER_CFG_KEEP_INTERRUPT_EVENT_BACKWORD_COMPATIBILITY (1)
 
 #ifdef __cplusplus
 }

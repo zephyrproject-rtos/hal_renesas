@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -429,10 +429,10 @@ fsp_err_t R_DTC_Reload (transfer_ctrl_t * const p_api_ctrl,
  *
  * @retval FSP_ERR_UNSUPPORTED      DTC does not support direct callbacks.
  **********************************************************************************************************************/
-fsp_err_t R_DTC_CallbackSet (transfer_ctrl_t * const       p_api_ctrl,
-                             void (                      * p_callback)(transfer_callback_args_t *),
-                             void const * const            p_context,
-                             transfer_callback_args_t * const  p_callback_memory)
+fsp_err_t R_DTC_CallbackSet (transfer_ctrl_t * const          p_api_ctrl,
+                             void (                         * p_callback)(transfer_callback_args_t *),
+                             void const * const               p_context,
+                             transfer_callback_args_t * const p_callback_memory)
 {
     /* This function isn't supported.  It is defined only to implement a required function of transfer_api_t.
      * Mark the input parameter as unused since this function isn't supported. */

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -130,6 +130,29 @@
 
 /* PAUSE link mask and shift values */
 
+#define ETHER_NO_DATA                                   (0)
+
+/* Event mask for EESR register. */
+#define ETHER_EESR_ERR_GLOBAL_MASK                      (ETHER_EESR_EVENT_MASK_CERF | ETHER_EESR_EVENT_MASK_PRE |  \
+                                                         ETHER_EESR_EVENT_MASK_RTSF | ETHER_EESR_EVENT_MASK_RTLF | \
+                                                         ETHER_EESR_EVENT_MASK_RRF | ETHER_EESR_EVENT_MASK_RMAF |  \
+                                                         ETHER_EESR_EVENT_MASK_TRO | ETHER_EESR_EVENT_MASK_CD |    \
+                                                         ETHER_EESR_EVENT_MASK_DLC | ETHER_EESR_EVENT_MASK_CND |   \
+                                                         ETHER_EESR_EVENT_MASK_ADE | ETHER_EESR_EVENT_MASK_RFCOF | \
+                                                         ETHER_EESR_EVENT_MASK_RABT | ETHER_EESR_EVENT_MASK_TWB)
+#define ETHER_EESR_RX_COMPLETE_MASK                     (ETHER_EESR_EVENT_MASK_FR)
+#define ETHER_EESR_RX_MESSAGE_LOST_MASK                 (ETHER_EESR_EVENT_MASK_RFOF | ETHER_EESR_EVENT_MASK_RDE)
+#define ETHER_EESR_TX_ABORTED_MASK                      (ETHER_EESR_EVENT_MASK_TABT)
+#define ETHER_EESR_TX_BUFFER_EMPTY_MASK                 (ETHER_EESR_EVENT_MASK_TFUF | ETHER_EESR_EVENT_MASK_TDE)
+#define ETHER_EESR_TX_COMPLETE_MASK                     (ETHER_EESR_EVENT_MASK_TC)
+
+/* Event mask for ECSR register. */
+#define ETHER_ECSR_ERR_GLOBAL_MASK                      (ETHER_ECSR_EVENT_MASK_ICD)
+#define ETHER_ECSR_WAKEON_LAN_MASK                      (ETHER_ECSR_EVENT_MASK_MPD)
+
+#define ETHER_EESR_EVENT_NUM                            (6)
+#define ETHER_ECSR_EVENT_NUM                            (2)
+
 /***********************************************************************************************************************
  * Typedef definitions
  ***********************************************************************************************************************/
@@ -138,6 +161,12 @@ typedef void (BSP_CMSE_NONSECURE_CALL * ether_prv_ns_callback)(ether_callback_ar
 #elif defined(__GNUC__)
 typedef BSP_CMSE_NONSECURE_CALL void (*volatile ether_prv_ns_callback)(ether_callback_args_t * p_args);
 #endif
+
+typedef struct st_ether_event_mask
+{
+    ether_event_t event;               // Event code which is passed to user callback
+    uint32_t      mask;                // Mask to determine whether to call callback
+} ether_event_mask_t;
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
@@ -161,7 +190,7 @@ static void      ether_enable_icu(ether_instance_ctrl_t * const p_instance_ctrl)
 static void      ether_disable_icu(ether_instance_ctrl_t * const p_instance_ctrl);
 static void      ether_reset_mac(R_ETHERC_EDMAC_Type * const p_reg);
 static void      ether_init_descriptors(ether_instance_ctrl_t * const p_instance_ctrl);
-void             ether_init_buffers(ether_instance_ctrl_t * const p_instance_ctrl);
+static void      ether_init_buffers(ether_instance_ctrl_t * const p_instance_ctrl);
 static fsp_err_t ether_buffer_get(ether_instance_ctrl_t * const p_instance_ctrl,
                                   void ** const                 p_buffer,
                                   uint32_t                    * p_buffer_size);
@@ -170,10 +199,10 @@ static void ether_pause_resolution(uint32_t const local_ability,
                                    uint32_t const partner_ability,
                                    uint32_t     * ptx_pause,
                                    uint32_t     * prx_pause);
-void             ether_configure_mac(ether_instance_ctrl_t * const p_instance_ctrl,
+static void ether_configure_mac(ether_instance_ctrl_t * const p_instance_ctrl,
                                 const uint8_t                 mac_addr[],
                                 const uint8_t                 mode);
-fsp_err_t        ether_do_link(ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode);
+static fsp_err_t ether_do_link(ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode);
 static fsp_err_t ether_link_status_check(ether_instance_ctrl_t const * const p_instance_ctrl);
 static uint8_t   ether_check_magic_packet_detection_bit(ether_instance_ctrl_t const * const p_instance_ctrl);
 static void      ether_configure_padding(ether_instance_ctrl_t * const p_instance_ctrl);
@@ -182,11 +211,6 @@ static void      ether_call_callback(ether_instance_ctrl_t * p_instance_ctrl, et
 /***********************************************************************************************************************
  * Private global variables
  **********************************************************************************************************************/
-
-/** Name of module used by error logger macro */
-#if BSP_CFG_ERROR_LOG != 0
-static const char g_module_name[] = "ether";
-#endif
 
 #if defined(__GNUC__)
 
@@ -228,6 +252,25 @@ static const ether_pause_resolution_t pause_resolution[ETHER_PAUSE_TABLE_ENTRIES
     {ETHER_PAUSE_MASKF, ETHER_PAUSE_VALC, ETHER_PAUSE_XMIT_OFF, ETHER_PAUSE_RECV_OFF  },
     {ETHER_PAUSE_MASKF, ETHER_PAUSE_VALD, ETHER_PAUSE_XMIT_OFF, ETHER_PAUSE_RECV_ON   }
 };
+
+#if (!ETHER_CFG_KEEP_INTERRUPT_EVENT_BACKWORD_COMPATIBILITY)
+
+static const ether_event_mask_t ether_eesr_event_mask[ETHER_EESR_EVENT_NUM] =
+{
+    {.event = ETHER_EVENT_RX_COMPLETE,     .mask           = ETHER_EESR_RX_COMPLETE_MASK    },
+    {.event = ETHER_EVENT_RX_MESSAGE_LOST, .mask           = ETHER_EESR_RX_MESSAGE_LOST_MASK},
+    {.event = ETHER_EVENT_TX_COMPLETE,     .mask           = ETHER_EESR_TX_COMPLETE_MASK    },
+    {.event = ETHER_EVENT_TX_BUFFER_EMPTY, .mask           = ETHER_EESR_TX_BUFFER_EMPTY_MASK},
+    {.event = ETHER_EVENT_TX_ABORTED,      .mask           = ETHER_EESR_TX_ABORTED_MASK     },
+    {.event = ETHER_EVENT_ERR_GLOBAL,      .mask           = ETHER_EESR_ERR_GLOBAL_MASK     },
+};
+
+static const ether_event_mask_t ether_ecsr_event_mask[ETHER_ECSR_EVENT_NUM] =
+{
+    {.event = ETHER_EVENT_WAKEON_LAN, .mask = ETHER_ECSR_WAKEON_LAN_MASK},
+    {.event = ETHER_EVENT_ERR_GLOBAL, .mask = ETHER_EESR_ERR_GLOBAL_MASK},
+};
+#endif
 
 /*******************************************************************************************************************//**
  * @addtogroup ETHER
@@ -307,6 +350,7 @@ fsp_err_t R_ETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const p
     p_instance_ctrl->p_context         = p_cfg->p_context;
     p_instance_ctrl->p_callback_memory = NULL;
 
+    R_BSP_MODULE_START(FSP_IP_ETHER, p_instance_ctrl->p_ether_cfg->channel);
 
     /* Software reset */
     ether_reset_mac(p_instance_ctrl->p_reg_edmac);
@@ -314,7 +358,6 @@ fsp_err_t R_ETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const p
     /* Setting the padding function */
     ether_configure_padding(p_instance_ctrl);
 
-#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
     /* Software reset the PHY */
     phy_ret = p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->open(
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl,
@@ -330,16 +373,11 @@ fsp_err_t R_ETHER_Open (ether_ctrl_t * const p_ctrl, ether_cfg_t const * const p
             p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_cfg);
     }
 #endif
-#else
-    phy_ret = FSP_SUCCESS;
-#endif
 
     if (FSP_SUCCESS == phy_ret)
     {
-#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->startAutoNegotiate(
             p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl);
-#endif
 
         /* Clear all ETHERC status BFR, PSRTO, LCHNG, MPD, ICD */
         p_reg_etherc->ECSR = ETHER_ETHERC_INTERRUPT_FACTOR_ALL;
@@ -403,10 +441,8 @@ fsp_err_t R_ETHER_Close (ether_ctrl_t * const p_ctrl)
     /* Disable Ethernet interrupt. */
     ether_disable_icu(p_instance_ctrl);
 
-#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
     p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->close(
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl);
-#endif
 
     p_reg_etherc->ECSIPR_b.LCHNGIP = 0;
     p_reg_edmac->EESIPR_b.ECIIP    = 0;
@@ -1335,7 +1371,7 @@ static void ether_init_descriptors (ether_instance_ctrl_t * const p_instance_ctr
  *                    ETHERC control block.
  * Return Value : none
  ***********************************************************************************************************************/
-void ether_init_buffers (ether_instance_ctrl_t * const p_instance_ctrl)
+static void ether_init_buffers (ether_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
     uint32_t buffer_num;
@@ -1554,7 +1590,7 @@ static void ether_pause_resolution (uint32_t const local_ability,
  *                    USE_MAGIC_PACKET_DETECT    (1) - Magic packet detection mode
  * Return Value : none
  ***********************************************************************************************************************/
-void ether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
+static void ether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
                                  const uint8_t                 mac_addr[],
                                  const uint8_t                 mode)
 {
@@ -1610,7 +1646,7 @@ void ether_configure_mac (ether_instance_ctrl_t * const p_instance_ctrl,
  *                                      or result of Auto-negotiation is abnormal.
  *
  ***********************************************************************************************************************/
-fsp_err_t ether_do_link (ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode)
+static fsp_err_t ether_do_link (ether_instance_ctrl_t * const p_instance_ctrl, const uint8_t mode)
 {
     fsp_err_t err;
     R_ETHERC0_Type * p_reg_etherc;
@@ -1632,17 +1668,12 @@ fsp_err_t ether_do_link (ether_instance_ctrl_t * const p_instance_ctrl, const ui
     p_reg_etherc = (R_ETHERC0_Type *) p_instance_ctrl->p_reg_etherc;
     p_reg_edmac  = (R_ETHERC_EDMAC_Type *) p_instance_ctrl->p_reg_edmac;
 
-#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
     /* Set the link status */
     link_result = p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->linkPartnerAbilityGet(
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl,
         &link_speed_duplex,
         &local_pause_bits,
         &partner_pause_bits);
-#else
-    link_result = FSP_SUCCESS;
-    link_speed_duplex = p_instance_ctrl->link_speed_duplex;
-#endif
 
     if (FSP_SUCCESS == link_result)
     {
@@ -1819,15 +1850,11 @@ static uint8_t ether_check_magic_packet_detection_bit (ether_instance_ctrl_t con
  **********************************************************************************************************************/
 static fsp_err_t ether_link_status_check (ether_instance_ctrl_t const * const p_instance_ctrl)
 {
-    fsp_err_t err;
+    fsp_err_t err = FSP_SUCCESS;
     fsp_err_t link_status;
 
-#if !ETHER_CFG_USE_CUSTOM_PHY_DRIVER
     link_status = p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_api->linkStatusGet(
         p_instance_ctrl->p_ether_cfg->p_ether_phy_instance->p_ctrl);
-#else
-    link_status = FSP_SUCCESS;
-#endif
 
     if (FSP_ERR_ETHER_PHY_ERROR_LINK == link_status)
     {
@@ -1867,11 +1894,13 @@ static void ether_call_callback (ether_instance_ctrl_t * p_instance_ctrl, ether_
         args = *p_args;
     }
 
-    p_args->event       = p_callback_args->event;
+    p_args->event     = p_callback_args->event;
+    p_args->channel   = p_instance_ctrl->p_ether_cfg->channel;
+    p_args->p_context = p_instance_ctrl->p_context;
+#if (ETHER_CFG_KEEP_INTERRUPT_EVENT_BACKWORD_COMPATIBILITY)
     p_args->status_ecsr = p_callback_args->status_ecsr;
     p_args->status_eesr = p_callback_args->status_eesr;
-    p_args->channel     = p_instance_ctrl->p_ether_cfg->channel;
-    p_args->p_context   = p_instance_ctrl->p_context;
+#endif
 
 #if BSP_TZ_SECURE_BUILD && BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE
 
@@ -1921,6 +1950,9 @@ void ether_eint_isr (void)
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
     ether_instance_ctrl_t * p_instance_ctrl = (ether_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+#if (!ETHER_CFG_KEEP_INTERRUPT_EVENT_BACKWORD_COMPATIBILITY)
+    ether_extended_cfg_t * p_ether_extended_cfg = (ether_extended_cfg_t *) p_instance_ctrl->p_ether_cfg->p_extend;
+#endif
 
     p_reg_etherc = (R_ETHERC0_Type *) p_instance_ctrl->p_reg_etherc;
     p_reg_edmac  = (R_ETHERC_EDMAC_Type *) p_instance_ctrl->p_reg_edmac;
@@ -1972,12 +2004,38 @@ void ether_eint_isr (void)
     /* If a callback is provided, then call it with callback argument. */
     if (NULL != p_instance_ctrl->p_callback)
     {
-        callback_arg.channel     = p_instance_ctrl->p_ether_cfg->channel;
+        callback_arg.channel   = p_instance_ctrl->p_ether_cfg->channel;
+        callback_arg.p_context = p_instance_ctrl->p_ether_cfg->p_context;
+#if (ETHER_CFG_KEEP_INTERRUPT_EVENT_BACKWORD_COMPATIBILITY)
         callback_arg.event       = ETHER_EVENT_INTERRUPT;
         callback_arg.status_ecsr = status_ecsr;
         callback_arg.status_eesr = status_eesr;
-        callback_arg.p_context   = p_instance_ctrl->p_ether_cfg->p_context;
         ether_call_callback(p_instance_ctrl, &callback_arg);
+#else
+
+        /* Callbacks for events related to EESR. */
+        for (int i = 0; i < ETHER_EESR_EVENT_NUM; i++)
+        {
+            if (status_eesr & ether_eesr_event_mask[i].mask & p_ether_extended_cfg->eesr_event_filter)
+            {
+                callback_arg.event = ether_eesr_event_mask[i].event;
+                ether_call_callback(p_instance_ctrl, &callback_arg);
+            }
+        }
+
+        /* Callbacks for events related to ECSR. */
+        if (status_eesr & ETHER_EDMAC_INTERRUPT_FACTOR_ECI)
+        {
+            for (int i = 0; i < ETHER_ECSR_EVENT_NUM; i++)
+            {
+                if (status_ecsr & ether_ecsr_event_mask[i].mask & p_ether_extended_cfg->ecsr_event_filter)
+                {
+                    callback_arg.event = ether_ecsr_event_mask[i].event;
+                    ether_call_callback(p_instance_ctrl, &callback_arg);
+                }
+            }
+        }
+#endif
     }
 
     /* Clear pending interrupt flag to make sure it doesn't fire again

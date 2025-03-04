@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -63,9 +63,9 @@
  #define HW_SCE_MAC_SIZE                                           (16U)
 
 /* For AES operation. */
- #define HW_SCE_AES128_KEY_INDEX_WORD_SIZE     (12U)
- #define HW_SCE_AES192_KEY_INDEX_WORD_SIZE     (16U)
- #define HW_SCE_AES256_KEY_INDEX_WORD_SIZE     (16U)
+ #define HW_SCE_AES128_KEY_INDEX_WORD_SIZE     (9U)
+ #define HW_SCE_AES192_KEY_INDEX_WORD_SIZE     (13U)
+ #define HW_SCE_AES256_KEY_INDEX_WORD_SIZE     (13U)
  #define HW_SCE_AES128_KEY_WORD_SIZE           (4U)
  #define HW_SCE_AES192_KEY_WORD_SIZE           (8U)
  #define HW_SCE_AES256_KEY_WORD_SIZE           (8U)
@@ -461,7 +461,6 @@ typedef enum
      SCE_OEM_CMD_HMAC_SHA512,
      SCE_OEM_CMD_HMAC_SHA512_224,
      SCE_OEM_CMD_HMAC_SHA512_256,
-     SCE_OEM_CMD_RSA2048_PUBLIC_FOR_TLS = 254,
      SCE_OEM_CMD_NUM
  } sce_oem_cmd_t;
 
@@ -691,6 +690,22 @@ typedef struct sce_ecc521_public_key_index
         uint8_t key[HW_SCE_ECC_P521_PUBLIC_KEY_BYTE_SIZE];
     } plain_value;
 } sce_ecc521_public_key_index_t;
+
+/* ECC ED-25519 public key index data structure */
+typedef struct sce_ecc25519_public_key_index
+{
+    uint32_t type;
+    struct
+    {
+        uint32_t key_management_info1[HW_SCE_ECC_PUBLIC_KEY_MANAGEMENT_INFO1_WORD_SIZE];
+        uint8_t  key_q[HW_SCE_ECC_ED25519_PUBLIC_KEY_BYTE_SIZE];
+        uint32_t key_management_info2[HW_SCE_ECC_PUBLIC_KEY_MANAGEMENT_INFO2_WORD_SIZE];
+    } value;
+    struct
+    {
+        uint8_t key[HW_SCE_ECC_ED25519_PUBLIC_KEY_BYTE_SIZE];
+    } plain_value;
+} sce_ecc25519_public_key_index_t;
 
 /* ECC P-192/224/256 private key index data structure */
 typedef struct sce_ecc_private_key_index

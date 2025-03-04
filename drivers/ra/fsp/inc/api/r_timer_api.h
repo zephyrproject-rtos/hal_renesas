@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -73,6 +73,12 @@ typedef enum e_timer_compare_match
 {
     TIMER_COMPARE_MATCH_A = 0U,        ///< Compare match A value
     TIMER_COMPARE_MATCH_B = 1U,        ///< Compare match B value
+    TIMER_COMPARE_MATCH_C = 2U,        ///< Compare match C value
+    TIMER_COMPARE_MATCH_D = 3U,        ///< Compare match D value
+    TIMER_COMPARE_MATCH_E = 4U,        ///< Compare match E value
+    TIMER_COMPARE_MATCH_F = 5U,        ///< Compare match F value
+    TIMER_COMPARE_MATCH_G = 6U,        ///< Compare match G value
+    TIMER_COMPARE_MATCH_H = 7U,        ///< Compare match H value
 } timer_compare_match_t;
 
 /** Callback function parameter data */
@@ -94,7 +100,8 @@ typedef void timer_ctrl_t;
 typedef enum e_timer_state
 {
     TIMER_STATE_STOPPED  = 0,          ///< Timer is stopped
-    TIMER_STATE_COUNTING = 1           ///< Timer is running
+    TIMER_STATE_COUNTING = 1,          ///< Timer is running
+    TIMER_STATE_UNKNOWN  = 2           ///< Timer state could not be defined
 } timer_state_t;
 #ifndef BSP_OVERRIDE_TIMER_MODE_T
 

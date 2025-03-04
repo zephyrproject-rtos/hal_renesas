@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -43,9 +43,10 @@ FSP_HEADER
 /** Communication speed options */
 typedef enum e_i2c_master_rate
 {
-    I2C_MASTER_RATE_STANDARD = 100000, ///< 100 kHz
-    I2C_MASTER_RATE_FAST     = 400000, ///< 400 kHz
-    I2C_MASTER_RATE_FASTPLUS = 1000000 ///< 1 MHz
+    I2C_MASTER_RATE_STANDARD  = 100000,  ///< 100 kHz
+    I2C_MASTER_RATE_FAST      = 400000,  ///< 400 kHz
+    I2C_MASTER_RATE_FASTPLUS  = 1000000, ///< 1 MHz
+    I2C_MASTER_RATE_HIGHSPEED = 3400000  ///< 3.4 MHz
 } i2c_master_rate_t;
 
 /** Addressing mode options */
@@ -60,7 +61,9 @@ typedef enum e_i2c_master_event
 {
     I2C_MASTER_EVENT_ABORTED     = 1,  ///< A transfer was aborted
     I2C_MASTER_EVENT_RX_COMPLETE = 2,  ///< A receive operation was completed successfully
-    I2C_MASTER_EVENT_TX_COMPLETE = 3   ///< A transmit operation was completed successfully
+    I2C_MASTER_EVENT_TX_COMPLETE = 3,  ///< A transmit operation was completed successfully
+    I2C_MASTER_EVENT_START       = 4,  ///< I2C sent a start condition
+    I2C_MASTER_EVENT_BYTE_ACK    = 5,  ///< I2C finished sending/receiving 1 data byte
 } i2c_master_event_t;
 
 /** I2C callback parameter definition */

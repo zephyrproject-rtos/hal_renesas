@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -44,26 +44,23 @@
 
 #if BSP_FEATURE_AGT_AGTW_CHANNEL_COUNT
  #if BSP_FEATURE_AGT_AGT_CHANNEL_COUNT
-  #define AGT_PRV_DETERMINE_IS_AGTW(p_cfg)          (((agt_extended_cfg_t const *) (p_cfg)->p_extend)-> \
-                                                     counter_bit_width == AGT_COUNTER_BIT_WIDTH_32)
+  #define AGT_PRV_DETERMINE_IS_AGTW(p_cfg)    (((agt_extended_cfg_t const *) (p_cfg)->p_extend)-> \
+                                               counter_bit_width == AGT_COUNTER_BIT_WIDTH_32)
  #else
-  #define AGT_PRV_DETERMINE_IS_AGTW(p_cfg)          (true)
+  #define AGT_PRV_DETERMINE_IS_AGTW(p_cfg)    (true)
  #endif
 #else
- #define AGT_PRV_DETERMINE_IS_AGTW(p_cfg)           (false)
+ #define AGT_PRV_DETERMINE_IS_AGTW(p_cfg)     (false)
 #endif
 
-#define AGT_PRV_IS_AGTW(p_instance_ctrl)            ((p_instance_ctrl)->is_agtw)
+#define AGT_PRV_IS_AGTW(p_instance_ctrl)      ((p_instance_ctrl)->is_agtw)
 
-#define AGT_PRV_CHANNEL_OFFSET_AGT_AGTW(p_instance_ctrl,                                                                       \
-                                        channel)    ((uint8_t) ((AGT_PRV_IS_AGTW(p_instance_ctrl)) ? (channel) : ((            \
-                                                                                                                      channel) \
-                                                                                                                  +            \
-                                                                                                                  BSP_FEATURE_AGT_AGTW_CHANNEL_COUNT)))
+#define AGT_PRV_CHANNEL_OFFSET_AGT_AGTW(p_instance_ctrl, channel) \
+    ((uint8_t) ((AGT_PRV_IS_AGTW(p_instance_ctrl)) ? (channel) : ((channel) + BSP_FEATURE_AGT_AGTW_CHANNEL_COUNT)))
 
-#define AGT_PRV_CTRL_PTR(p_instance_ctrl)           ((agt_prv_reg_ctrl_ptr_t) (AGT_PRV_IS_AGTW((p_instance_ctrl))      \
-                                                                               ? &(p_instance_ctrl)->p_reg->AGT32.CTRL \
-                                                                               : &(p_instance_ctrl)->p_reg->AGT16.CTRL))
+#define AGT_PRV_CTRL_PTR(p_instance_ctrl)     ((agt_prv_reg_ctrl_ptr_t) (AGT_PRV_IS_AGTW((p_instance_ctrl))      \
+                                                                         ? &(p_instance_ctrl)->p_reg->AGT32.CTRL \
+                                                                         : &(p_instance_ctrl)->p_reg->AGT16.CTRL))
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -526,7 +523,7 @@ fsp_err_t R_AGT_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_inf
 
         /* Source instance is the channel immediately preceding this one. */
         if (0U ==
-            gp_prv_agt_periods[AGT_PRV_CHANNEL_OFFSET_AGT_AGTW(p_instance_ctrl, p_instance_ctrl->p_cfg->channel - 1)])
+            gp_prv_agt_periods[AGT_PRV_CHANNEL_OFFSET_AGT_AGTW(p_instance_ctrl, p_instance_ctrl->p_cfg->channel - 1U)])
         {
             p_info->clock_frequency = AGT_PRV_MIN_CLOCK_FREQ;
         }
@@ -537,7 +534,7 @@ fsp_err_t R_AGT_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_inf
             p_info->clock_frequency =
                 r_agt_clock_frequency_get(p_source_channel_reg, AGT_PRV_IS_AGTW(p_instance_ctrl)) /
                 gp_prv_agt_periods[AGT_PRV_CHANNEL_OFFSET_AGT_AGTW(p_instance_ctrl,
-                                                                   p_instance_ctrl->p_cfg->channel - 1)];
+                                                                   p_instance_ctrl->p_cfg->channel - 1U)];
         }
     }
     else
@@ -727,17 +724,6 @@ static fsp_err_t r_agt_open_param_checking (agt_instance_ctrl_t * p_instance_ctr
     /* AGT_CLOCK_AGT_UNDERFLOW is not allowed on even AGT channels. */
     agt_extended_cfg_t const * p_extend = (agt_extended_cfg_t const *) p_cfg->p_extend;
     FSP_ASSERT((AGT_CLOCK_AGT_UNDERFLOW != p_extend->count_source) || (p_cfg->channel & 1U));
-
-    /* Devices with RTCCR.TCEN support P402/P403/P404 as count sources. */
- #if !BSP_FEATURE_RTC_HAS_TCEN
-    if (AGT_PRV_IS_AGTW(p_instance_ctrl))
-    {
-        /* Return error for MCUs that do not support P402, P403 and P404 as count sources*/
-        FSP_ASSERT(AGT_CLOCK_P402 != p_extend->count_source);
-        FSP_ASSERT(AGT_CLOCK_P403 != p_extend->count_source);
-        FSP_ASSERT(AGT_CLOCK_P404 != p_extend->count_source);
-    }
- #endif
 
     /* Validate divider. */
     if (AGT_CLOCK_PCLKB == p_extend->count_source)

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -70,6 +70,7 @@ typedef enum e_wdt_clock_division
 } wdt_clock_division_t;
 #endif
 
+#ifndef BSP_OVERRIDE_WDT_WINDOW_START_END_T
 /** WDT refresh permitted period window start position. */
 typedef enum e_wdt_window_start
 {
@@ -87,6 +88,7 @@ typedef enum e_wdt_window_end
     WDT_WINDOW_END_25 = 2,             ///< End position = 25%
     WDT_WINDOW_END_0  = 3,             ///< End position = 0%
 } wdt_window_end_t;
+#endif
 
 /** WDT Counter underflow and refresh error control. */
 typedef enum e_wdt_reset_control
