@@ -15,6 +15,7 @@ set(srcs
 	fsp/src/bsp/mcu/all/bsp_delay.c
 	fsp/src/bsp/mcu/all/bsp_register_protection.c
 	fsp/src/bsp/mcu/all/bsp_irq.c
+	fsp/src/bsp/mcu/all/bsp_group_irq.c
 )
 
 zephyr_include_directories(${include_dirs})
@@ -68,6 +69,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_DAC
 	fsp/src/r_dac/r_dac.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_USB_HOST
 	fsp/src/r_usb_host/r_usb_host.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_WDT
+	fsp/src/r_wdt/r_wdt.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
