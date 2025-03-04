@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -24,6 +24,11 @@
 
 /* BSP TFU Includes. */
 #include "../../src/bsp/mcu/all/bsp_tfu.h"
+
+#include "../../src/bsp/mcu/all/bsp_sdram.h"
+
+/* BSP MMF Includes. */
+#include "../../src/bsp/mcu/all/bsp_mmf.h"
 
 #include "bsp_cfg.h"
 
@@ -73,7 +78,7 @@ FSP_HEADER
 
 /** This function is called before returning an error code. To stop on a runtime error, define fsp_error_log in
  * user code and do required debugging (breakpoints, stack dump, etc) in this function.*/
-#if (1 == BSP_CFG_ERROR_LOG)
+#if (1 == BSP_CFG_ASSERT)
 
  #ifndef FSP_ERROR_LOG
   #define FSP_ERROR_LOG(err) \
@@ -129,12 +134,11 @@ FSP_HEADER
  * The macros __CORE__ , __ARM7EM__ and __ARM_ARCH_8M_BASE__ are undefined for GCC, but defined(__IAR_SYSTEMS_ICC__) is false for GCC, so
  * the left half of the || expression evaluates to false for GCC regardless of the values of these macros. */
 
-#if (defined(__IAR_SYSTEMS_ICC__) && ((__CORE__ == __ARM7EM__) || (__CORE__ == __ARM_ARCH_8M_BASE__))) || \
-    defined(__ARM_ARCH_7EM__)          // CM4
+#if (defined(__IICARM__) && defined(RENESAS_CORTEX_M23)) || defined(RENESAS_CORTEX_M4)
  #ifndef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
   #define BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION    (0U)
  #endif
-#else // CM23
+#else
  #ifdef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
   #undef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
  #endif
@@ -432,9 +436,25 @@ __STATIC_INLINE uint32_t R_FSP_ClockDividerGet (uint32_t ckdivcr)
         /* Clock Divided by 3 */
         return 3U;
     }
+    else if (6U == ckdivcr)
+    {
 
-    /* Clock Divided by 5 */
-    return 5U;
+        /* Clock Divided by 5 */
+        return 5;
+    }
+    else if (7U == ckdivcr)
+    {
+
+        /* Clock Divided by 10 */
+        return 10;
+    }
+    else
+    {
+        /* The remaining case is ckdivcr = 8 which divides the clock by 16. */
+    }
+
+    /* Clock Divided by 16 */
+    return 16U;
 }
 
 #if BSP_FEATURE_BSP_HAS_SCISPI_CLOCK
@@ -520,10 +540,26 @@ __STATIC_INLINE void R_BSP_FlashCacheDisable (void)
     R_FCACHE->FCACHEE = 0U;
 #endif
 
-#if BSP_FEATURE_BSP_HAS_CODE_SYSTEM_CACHE
+#ifdef R_CACHE
+ #if BSP_FEATURE_BSP_CODE_CACHE_VERSION == 2
+
+    /* Writeback and flush cache when disabling
+     * MREF_INTERNAL_12 */
+    if (R_CACHE->CCAWTA_b.WT)
+    {
+        R_CACHE->CCACTL = R_CACHE_CCACTL_FC_Msk;
+    }
+    else
+    {
+        R_CACHE->CCACTL = R_CACHE_CCACTL_FC_Msk | R_CACHE_CCACTL_WB_Msk;
+    }
+
+    FSP_HARDWARE_REGISTER_WAIT(R_CACHE->CCAFCT, 0U);
+ #else
 
     /* Disable the C-Cache. */
     R_CACHE->CCACTL = 0U;
+ #endif
 #endif
 }
 
@@ -543,10 +579,17 @@ __STATIC_INLINE void R_BSP_FlashCacheEnable (void)
     R_FCACHE->FCACHEE = 1U;
 #endif
 
-#if BSP_FEATURE_BSP_HAS_CODE_SYSTEM_CACHE
+#ifdef R_CACHE
+ #if BSP_FEATURE_BSP_CODE_CACHE_VERSION == 1
 
     /* Configure the C-Cache line size. */
     R_CACHE->CCALCF = BSP_CFG_C_CACHE_LINE_SIZE;
+ #else
+
+    /* Check that no flush or writeback are ongoing before enabling
+     * MREF_INTERNAL_13 */
+    FSP_HARDWARE_REGISTER_WAIT(R_CACHE->CCAFCT, 0U);
+ #endif
 
     /* Enable the C-Cache. */
     R_CACHE->CCACTL = 1U;
@@ -556,7 +599,7 @@ __STATIC_INLINE void R_BSP_FlashCacheEnable (void)
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
-#if ((1 == BSP_CFG_ERROR_LOG) || (1 == BSP_CFG_ASSERT))
+#if  (1 == BSP_CFG_ASSERT)
 
 /** Prototype of default function called before errors are returned in FSP code if BSP_CFG_LOG_ERRORS is set to 1. */
 void fsp_error_log(fsp_err_t err, const char * file, int32_t line);
