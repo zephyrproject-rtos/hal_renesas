@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -197,6 +197,28 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
     FSP_ASSERT(p_extend->p_global_cfg);
 
  #if BSP_CFG_CANFDCLK_SOURCE != BSP_CLOCKS_SOURCE_CLOCK_MAIN_OSC
+  #if (BSP_FEATURE_CGC_PLL1_NUM_OUTPUT_CLOCKS > 1U) || (BSP_FEATURE_CGC_PLL2_NUM_OUTPUT_CLOCKS > 1U)
+   #if (BSP_FEATURE_CGC_PLL1_NUM_OUTPUT_CLOCKS == 3U) /* PLL1 has 3 possible outputs that can be used for DLL */
+    uint8_t canFdClockSelect = FSP_STYPE3_REG8_READ(R_SYSTEM->CANFDCKCR, !R_SYSTEM->CGFSAR_b.NONSEC18);
+
+    /* Check that PLL is running when it is selected as the DLL source clock */
+    FSP_ERROR_RETURN(0U ==
+                     (((canFdClockSelect == BSP_CLOCKS_SOURCE_CLOCK_PLL1P) ||
+                       (canFdClockSelect == BSP_CLOCKS_SOURCE_CLOCK_PLL1Q) ||
+                       (canFdClockSelect == BSP_CLOCKS_SOURCE_CLOCK_PLL1R)) ?
+                      FSP_STYPE3_REG8_READ(R_SYSTEM->PLLCR, !R_SYSTEM->CGFSAR_b.NONSEC08) : 0),
+                     FSP_ERR_CLOCK_INACTIVE);
+   #endif
+   #if (BSP_FEATURE_CGC_PLL2_NUM_OUTPUT_CLOCKS == 3U) /* PLL2 has 3 possible outputs that can be used for DLL */
+    /* Check that PLL2 is running when it is selected as the DLL source clock */
+    FSP_ERROR_RETURN(0U ==
+                     (((canFdClockSelect == BSP_CLOCKS_SOURCE_CLOCK_PLL2P) ||
+                       (canFdClockSelect == BSP_CLOCKS_SOURCE_CLOCK_PLL2Q) ||
+                       (canFdClockSelect == BSP_CLOCKS_SOURCE_CLOCK_PLL2R)) ?
+                      FSP_STYPE3_REG8_READ(R_SYSTEM->PLLCR, !R_SYSTEM->CGFSAR_b.NONSEC09) : 0),
+                     FSP_ERR_CLOCK_INACTIVE);
+   #endif
+  #else
 
     /* Check that PLL/PLL2 is running when it is selected as the DLL source clock */
     FSP_ERROR_RETURN(0U ==
@@ -205,6 +227,7 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
                       FSP_STYPE3_REG8_READ(R_SYSTEM->PLLCR, !R_SYSTEM->CGFSAR_b.NONSEC08) :
                       FSP_STYPE3_REG8_READ(R_SYSTEM->PLL2CR, !R_SYSTEM->CGFSAR_b.NONSEC09)),
                      FSP_ERR_CLOCK_INACTIVE);
+  #endif
  #endif
 
     /* Check nominal bit timing parameters for correctness */
@@ -280,10 +303,6 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
         /* Configure rule count for both channels */
 #if BSP_FEATURE_CANFD_NUM_INSTANCES > 1
         p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH0_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos);
-        if (channel == 1)
-        {
-            p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH1_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos);
-        }
 #else
         p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH0_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos) |
                              CANFD_CFG_AFL_CH1_RULE_NUM;
@@ -887,8 +906,11 @@ fsp_err_t R_CANFD_InfoGet (can_ctrl_t * const p_api_ctrl, can_info_t * const p_i
     p_info->rx_fifo_status       = (~p_ctrl->p_reg->CFDFESTS) &
                                    (R_CANFD_CFDFESTS_RFXEMP_Msk | R_CANFD_CFDFESTS_CFXEMP_Msk);
 
-    /* Clear error flags */
-    p_ctrl->p_reg->CFDC[interlaced_channel].ERFL &= ~((uint32_t) UINT16_MAX);
+    /* Clear error flags if the error IRQ is not enabled. */
+    if (p_ctrl->p_cfg->error_irq < 0)
+    {
+        p_ctrl->p_reg->CFDC[interlaced_channel].ERFL = 0;
+    }
 
     return FSP_SUCCESS;
 }
@@ -1051,7 +1073,7 @@ static void r_canfd_mb_read (R_CANFD_Type * p_reg, uint32_t buffer, can_frame_t 
     if (is_mb)
     {
         /* Clear RXMB New Data bit */
-        p_reg->CFDRMND0 &= ~(1U << buffer);
+        p_reg->CFDRMND0 = ~(1U << buffer);
     }
     else if (is_cfifo)
     {

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -196,11 +196,6 @@ void sci_b_uart_tei_isr(void);
 /***********************************************************************************************************************
  * Private global variables
  **********************************************************************************************************************/
-
-/* Name of module used by error logger macro */
-#if BSP_CFG_ERROR_LOG != 0
-static const char g_module_name[] = "sci_b_uart";
-#endif
 
 /* Baud rate divisor information (UART mode) */
 static const baud_setting_const_t g_async_baud[SCI_B_UART_NUM_DIVISORS_ASYNC] =
@@ -1184,6 +1179,8 @@ static fsp_err_t r_sci_b_uart_transfer_open (sci_b_uart_instance_ctrl_t * const 
     {
         transfer_info_t * p_info = p_cfg->p_transfer_rx->p_cfg->p_info;
 
+        p_info->transfer_settings_word = SCI_B_UART_DTC_RX_TRANSFER_SETTINGS;
+
         err =
             r_sci_b_uart_transfer_configure(p_ctrl, p_cfg->p_transfer_rx, (uint32_t *) &p_info->p_src,
                                             (uint32_t) &(p_ctrl->p_reg->RDR));
@@ -1196,6 +1193,8 @@ static fsp_err_t r_sci_b_uart_transfer_open (sci_b_uart_instance_ctrl_t * const 
     if (NULL != p_cfg->p_transfer_tx)
     {
         transfer_info_t * p_info = p_cfg->p_transfer_tx->p_cfg->p_info;
+
+        p_info->transfer_settings_word = SCI_B_UART_DTC_TX_TRANSFER_SETTINGS;
 
         err = r_sci_b_uart_transfer_configure(p_ctrl,
                                               p_cfg->p_transfer_tx,

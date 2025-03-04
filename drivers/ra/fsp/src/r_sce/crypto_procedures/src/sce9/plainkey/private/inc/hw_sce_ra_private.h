@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -84,6 +84,7 @@
  #define RSA_PARAMETERS_SIZE_BYTES(RSA_SIZE_BITS)             (5U)
 
 /** DER encoded size for wrapped RSA key */
+ #define RSA_WRAPPED_1024_EXPORTED_DER_SIZE_BYTES    (1600U)
  #define RSA_WRAPPED_2048_EXPORTED_DER_SIZE_BYTES    (1600U)
  #define RSA_WRAPPED_3072_EXPORTED_DER_SIZE_BYTES    (1500U)
  #define RSA_WRAPPED_4096_EXPORTED_DER_SIZE_BYTES    (1700U)
@@ -362,6 +363,7 @@ fsp_err_t HW_SCE_Ecc384ScalarMultiplicationSub(const uint32_t *InData_CurveType,
         const uint32_t *InData_KeyIndex, const uint32_t *InData_PubKey, uint32_t *OutData_R);
 fsp_err_t HW_SCE_Ecc384ScalarMultiplicationSubAdaptor(const uint32_t InData_CurveType[],
         const uint32_t InData_Cmd[], const uint32_t InData_KeyIndex[], const uint32_t InData_PubKey[], const uint32_t InData_DomainParam[], uint32_t OutData_R[]);
+fsp_err_t HW_SCE_EccEd25519ScalarMultiplicationSubAdaptor(const uint32_t InData_CurveType[], const uint32_t InData_Cmd[], const uint32_t InData_KeyIndex[], const uint32_t InData_PubKey[], const uint32_t InData_DomainParam[], uint32_t OutData_R[]);
 fsp_err_t HW_SCE_TdesEcbEncryptInitPrivate(sce_tdes_key_index_t *key_index);
 fsp_err_t HW_SCE_TdesEcbEncryptUpdatePrivate(uint32_t *InData_Text, uint32_t *OutData_Text, uint32_t MAX_CNT);
 fsp_err_t HW_SCE_TdesEcbEncryptFinalPrivate(void);
@@ -435,8 +437,8 @@ fsp_err_t HW_SCE_GenerateRsa4096PublicKeyIndexSub(uint32_t *InData_SharedKeyInde
         uint32_t *InData_IV, uint32_t *InData_InstData, uint32_t *OutData_KeyIndex);
 fsp_err_t HW_SCE_GenerateRsa4096PrivateKeyIndexSub(uint32_t *InData_SharedKeyIndex, uint32_t *InData_SessionKey,
         uint32_t *InData_IV, uint32_t *InData_InstData, uint32_t *OutData_KeyIndex);
-fsp_err_t HW_SCE_GenerateRsa1024RandomKeyIndexSub(uint32_t MAX_CNT, uint32_t *OutData_PubKeyIndex,
-        uint32_t *OutData_PrivKeyIndex);
+fsp_err_t HW_SCE_GenerateRsa1024RandomKeyIndexSub(uint32_t MAX_CNT, uint32_t *InData_KeyType, uint32_t *OutData_PubKeyIndex,
+        uint32_t *OutData_PubKey, uint32_t *OutData_PrivKeyIndex, uint32_t *OutData_PrivKey);
 fsp_err_t HW_SCE_GenerateRsa2048RandomKeyIndexSub(uint32_t MAX_CNT, uint32_t *InData_KeyType, uint32_t *OutData_PubKeyIndex,
         uint32_t *OutData_PubKey, uint32_t *OutData_PrivKeyIndex, uint32_t *OutData_PrivKey);
 fsp_err_t HW_SCE_GenerateRsa3072RandomKeyIndexSub(uint32_t MAX_CNT, uint32_t *OutData_PubKeyIndex,
@@ -501,6 +503,12 @@ fsp_err_t HW_SCE_GenerateFirmwareMacSub(uint32_t *InData_KeyIndex, uint32_t *InD
 fsp_err_t HW_SCE_VerifyFirmwareMacSub(uint32_t *InData_Program, uint32_t MAX_CNT);
 
 fsp_err_t HW_SCE_Aes128EncryptDecryptInitSub(const uint32_t *InData_KeyType, const uint32_t *InData_Cmd, const uint32_t *InData_KeyIndex, const uint32_t *InData_IV);
+fsp_err_t HW_SCE_Aes128EncryptDecryptInitSubAdaptor (const uint32_t InData_KeyMode[],
+                                              const uint32_t InData_Cmd[],
+                                              const uint32_t InData_KeyIndex[],
+                                              const uint32_t InData_Key[],
+                                              const uint32_t InData_IV[]);
+fsp_err_t HW_SCE_Aes256EncryptDecryptInitSubAdaptor (const uint32_t InData_KeyMode[], const uint32_t InData_Cmd[], const uint32_t InData_KeyIndex[], const uint32_t InData_Key[], const uint32_t InData_IV[]);
 void         HW_SCE_Aes128EncryptDecryptUpdateSub(const uint32_t *InData_Text, uint32_t *OutData_Text, const uint32_t MAX_CNT);
 fsp_err_t HW_SCE_Aes128EncryptDecryptFinalSub(void);
 fsp_err_t HW_SCE_Aes192EncryptDecryptInitSub(const uint32_t *InData_Cmd, const uint32_t *InData_KeyIndex, const uint32_t *InData_IV);
@@ -628,7 +636,14 @@ fsp_err_t HW_SCE_Aes128GcmEncryptInitSubGeneral (uint32_t *InData_KeyType, uint3
         uint32_t *InData_Cmd, uint32_t *InData_KeyIndex, uint32_t *InData_IV, uint32_t *InData_SeqNum);
 fsp_err_t HW_SCE_Aes128GcmDecryptInitSubGeneral (uint32_t *InData_KeyType, uint32_t *InData_DataType, 
         uint32_t *InData_Cmd, uint32_t *InData_KeyIndex, uint32_t *InData_IV, uint32_t *InData_SeqNum);
-
+fsp_err_t HW_SCE_Aes192GcmDecryptInitSubGeneral (uint32_t *InData_KeyType, uint32_t *InData_DataType,
+        uint32_t *InData_Cmd, uint32_t *InData_KeyIndex, uint32_t *InData_IV, uint32_t *InData_SeqNum);
+fsp_err_t HW_SCE_Aes192GcmEncryptInitSubGeneral (uint32_t *InData_KeyType, uint32_t *InData_DataType,
+        uint32_t *InData_Cmd, uint32_t *InData_KeyIndex, uint32_t *InData_IV, uint32_t *InData_SeqNum);
+fsp_err_t HW_SCE_Aes256GcmDecryptInitSubGeneral (uint32_t *InData_KeyType, uint32_t *InData_DataType,
+        uint32_t *InData_Cmd, uint32_t *InData_KeyIndex, uint32_t *InData_IV, uint32_t *InData_SeqNum);
+fsp_err_t HW_SCE_Aes256GcmEncryptInitSubGeneral (uint32_t *InData_KeyType, uint32_t *InData_DataType,
+        uint32_t *InData_Cmd, uint32_t *InData_KeyIndex, uint32_t *InData_IV, uint32_t *InData_SeqNum);
 fsp_err_t HW_SCE_Aes128CmacInitSub(uint32_t *InData_KeyIndex);
 void         HW_SCE_Aes128CmacUpdateSub(uint32_t *InData_Text, uint32_t MAX_CNT);
 fsp_err_t HW_SCE_Aes128CmacFinalSub(uint32_t *InData_Cmd, uint32_t *InData_Text, uint32_t *InData_DataT,

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -12,9 +12,10 @@
  **********************************************************************************************************************/
 
 /* Mathematical Functions includes. */
-#include <math.h>
 #ifdef __cplusplus
-extern "C" {
+ #include <cmath>
+#else
+ #include <math.h>
 #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
@@ -213,9 +214,5 @@ BSP_TFU_INLINE void __atan2hypotf (float y_cord, float x_cord, float * atan2, fl
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif                                 /* RENESAS_TFU */

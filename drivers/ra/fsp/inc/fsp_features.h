@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -114,6 +114,7 @@ typedef enum e_fsp_ip
     FSP_IP_TAU    = 81,                ///< Timer Array Unit
     FSP_IP_TML    = 82,                ///< 32-bit Interval Timer
     FSP_IP_MACL   = 83,                ///< 32-bit Multiply-Accumulator
+    FSP_IP_USBCC  = 84,                ///< USB Type-C Controller
 } fsp_ip_t;
 
 /** Signals that can be mapped to an interrupt. */

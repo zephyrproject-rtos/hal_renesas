@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -191,6 +191,26 @@ fsp_err_t HW_SCE_GenerateOemKeyIndexPrivate (const sce_oem_key_type_t key_type,
 uint32_t change_endian_long (uint32_t a)
 {
     return __REV(a);
+}
+
+fsp_err_t HW_SCE_Aes128EncryptDecryptInitSubAdaptor (const uint32_t InData_KeyMode[],
+                                              const uint32_t InData_Cmd[],
+                                              const uint32_t InData_KeyIndex[],
+                                              const uint32_t InData_Key[],
+                                              const uint32_t InData_IV[])
+{
+    FSP_PARAMETER_NOT_USED(InData_Key);
+    return HW_SCE_Aes128EncryptDecryptInitSub(InData_KeyMode, InData_Cmd, InData_KeyIndex, InData_IV);
+}
+
+fsp_err_t HW_SCE_Aes256EncryptDecryptInitSubAdaptor (const uint32_t InData_KeyMode[],
+                                              const uint32_t InData_Cmd[],
+                                              const uint32_t InData_KeyIndex[],
+                                              const uint32_t InData_Key[],
+                                              const uint32_t InData_IV[])
+{
+    FSP_PARAMETER_NOT_USED(InData_Key);
+    return HW_SCE_Aes256EncryptDecryptInitSub(InData_KeyMode, InData_Cmd, InData_KeyIndex, InData_IV);
 }
 
 fsp_err_t HW_SCE_Aes192EncryptDecryptInitSub (const uint32_t * InData_Cmd,
@@ -566,4 +586,62 @@ fsp_err_t HW_SCE_Aes128GcmDecryptInitSubGeneral (uint32_t * InData_KeyType,
     FSP_PARAMETER_NOT_USED(InData_SeqNum);
 
     return (HW_SCE_Aes128GcmDecryptInitSub(InData_KeyType, InData_KeyIndex, InData_IV));
+}
+
+fsp_err_t HW_SCE_Aes192GcmEncryptInitSubGeneral (uint32_t * InData_KeyType,
+                                                 uint32_t * InData_DataType,
+                                                 uint32_t * InData_Cmd,
+                                                 uint32_t * InData_KeyIndex,
+                                                 uint32_t * InData_IV,
+                                                 uint32_t * InData_SeqNum)
+{
+    FSP_PARAMETER_NOT_USED(InData_KeyType);
+    FSP_PARAMETER_NOT_USED(InData_DataType);
+    FSP_PARAMETER_NOT_USED(InData_Cmd);
+    FSP_PARAMETER_NOT_USED(InData_SeqNum);
+
+    return HW_SCE_Aes192GcmEncryptInitSub(InData_KeyIndex, InData_IV);
+}
+
+fsp_err_t HW_SCE_Aes192GcmDecryptInitSubGeneral (uint32_t * InData_KeyType,
+                                                 uint32_t * InData_DataType,
+                                                 uint32_t * InData_Cmd,
+                                                 uint32_t * InData_KeyIndex,
+                                                 uint32_t * InData_IV,
+                                                 uint32_t * InData_SeqNum)
+{
+    FSP_PARAMETER_NOT_USED(InData_KeyType);
+    FSP_PARAMETER_NOT_USED(InData_DataType);
+    FSP_PARAMETER_NOT_USED(InData_Cmd);
+    FSP_PARAMETER_NOT_USED(InData_SeqNum);
+
+    return HW_SCE_Aes192GcmDecryptInitSub(InData_KeyIndex, InData_IV);
+}
+
+fsp_err_t HW_SCE_Aes256GcmEncryptInitSubGeneral (uint32_t * InData_KeyType,
+                                                 uint32_t * InData_DataType,
+                                                 uint32_t * InData_Cmd,
+                                                 uint32_t * InData_KeyIndex,
+                                                 uint32_t * InData_IV,
+                                                 uint32_t * InData_SeqNum)
+{
+    FSP_PARAMETER_NOT_USED(InData_DataType);
+    FSP_PARAMETER_NOT_USED(InData_Cmd);
+    FSP_PARAMETER_NOT_USED(InData_SeqNum);
+
+    return HW_SCE_Aes256GcmEncryptInitSub(InData_KeyType, InData_KeyIndex, InData_IV);
+}
+
+fsp_err_t HW_SCE_Aes256GcmDecryptInitSubGeneral (uint32_t * InData_KeyType,
+                                                 uint32_t * InData_DataType,
+                                                 uint32_t * InData_Cmd,
+                                                 uint32_t * InData_KeyIndex,
+                                                 uint32_t * InData_IV,
+                                                 uint32_t * InData_SeqNum)
+{
+    FSP_PARAMETER_NOT_USED(InData_DataType);
+    FSP_PARAMETER_NOT_USED(InData_Cmd);
+    FSP_PARAMETER_NOT_USED(InData_SeqNum);
+
+    return HW_SCE_Aes256GcmDecryptInitSub(InData_KeyType, InData_KeyIndex, InData_IV);
 }

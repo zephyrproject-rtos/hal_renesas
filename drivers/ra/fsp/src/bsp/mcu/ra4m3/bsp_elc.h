@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -89,12 +89,12 @@ typedef enum e_elc_event_ra4m3
     ELC_EVENT_AGT5_COMPARE_A                = (0x050), // Compare match A
     ELC_EVENT_AGT5_COMPARE_B                = (0x051), // Compare match B
     ELC_EVENT_IWDT_UNDERFLOW                = (0x052), // IWDT underflow
-    ELC_EVENT_WDT_UNDERFLOW                 = (0x053), // WDT0 underflow
+    ELC_EVENT_WDT_UNDERFLOW                 = (0x053), // WDT underflow
     ELC_EVENT_RTC_ALARM                     = (0x054), // Alarm interrupt
     ELC_EVENT_RTC_PERIOD                    = (0x055), // Periodic interrupt
     ELC_EVENT_RTC_CARRY                     = (0x056), // Carry interrupt
-    ELC_EVENT_USBFS_FIFO_0                  = (0x06B), // DMA transfer request 0
-    ELC_EVENT_USBFS_FIFO_1                  = (0x06C), // DMA transfer request 1
+    ELC_EVENT_USBFS_FIFO_0                  = (0x06B), // DMA/DTC transfer request 0
+    ELC_EVENT_USBFS_FIFO_1                  = (0x06C), // DMA/DTC transfer request 1
     ELC_EVENT_USBFS_INT                     = (0x06D), // USBFS interrupt
     ELC_EVENT_USBFS_RESUME                  = (0x06E), // USBFS resume interrupt
     ELC_EVENT_IIC0_RXI                      = (0x073), // Receive data full
@@ -251,13 +251,21 @@ typedef enum e_elc_event_ra4m3
     ELC_EVENT_SCI9_ERI                      = (0x1B9), // Receive error
     ELC_EVENT_SCI9_AM                       = (0x1BA), // Address match event
     ELC_EVENT_SCIX0_SCIX0                   = (0x1BC), // SCI0 extended serial mode event 0
+    ELC_EVENT_SCI1_SCIX0                    = (0x1BC), // SCI0 extended serial mode event 0
     ELC_EVENT_SCIX0_SCIX1                   = (0x1BD), // SCI0 extended serial mode event 1
+    ELC_EVENT_SCI1_SCIX1                    = (0x1BD), // SCI0 extended serial mode event 1
     ELC_EVENT_SCIX0_SCIX2                   = (0x1BE), // SCI0 extended serial mode event 2
+    ELC_EVENT_SCI1_SCIX2                    = (0x1BE), // SCI0 extended serial mode event 2
     ELC_EVENT_SCIX0_SCIX3                   = (0x1BF), // SCI0 extended serial mode event 3
+    ELC_EVENT_SCI1_SCIX3                    = (0x1BF), // SCI0 extended serial mode event 3
     ELC_EVENT_SCIX1_SCIX0                   = (0x1C0), // SCI1 extended serial mode event 0
+    ELC_EVENT_SCI2_SCIX0                    = (0x1C0), // SCI1 extended serial mode event 0
     ELC_EVENT_SCIX1_SCIX1                   = (0x1C1), // SCI1 extended serial mode event 1
+    ELC_EVENT_SCI2_SCIX1                    = (0x1C1), // SCI1 extended serial mode event 1
     ELC_EVENT_SCIX1_SCIX2                   = (0x1C2), // SCI1 extended serial mode event 2
+    ELC_EVENT_SCI2_SCIX2                    = (0x1C2), // SCI1 extended serial mode event 2
     ELC_EVENT_SCIX1_SCIX3                   = (0x1C3), // SCI1 extended serial mode event 3
+    ELC_EVENT_SCI2_SCIX3                    = (0x1C3), // SCI1 extended serial mode event 3
     ELC_EVENT_SPI0_RXI                      = (0x1C4), // Receive buffer full
     ELC_EVENT_SPI0_TXI                      = (0x1C5), // Transmit buffer empty
     ELC_EVENT_SPI0_IDLE                     = (0x1C6), // Idle

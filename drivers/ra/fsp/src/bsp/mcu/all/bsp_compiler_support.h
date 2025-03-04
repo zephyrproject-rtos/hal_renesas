@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -39,7 +39,7 @@ extern "C" {
   #ifndef BSP_SECTION_HEAP
    #define BSP_SECTION_HEAP                 ".heap"
   #endif
-  #define BSP_DONT_REMOVE
+  #define BSP_DONT_REMOVE                   __attribute__((used))
   #define BSP_ATTRIBUTE_STACKLESS           __attribute__((naked))
   #define BSP_FORCE_INLINE                  __attribute__((always_inline))
  #elif defined(__ICCARM__)             /* IAR compiler */
