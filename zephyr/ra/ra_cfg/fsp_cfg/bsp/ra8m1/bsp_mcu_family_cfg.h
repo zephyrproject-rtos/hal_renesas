@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -116,7 +116,7 @@
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 16) /* CEU */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 26) /* CANFD1 */ | \
             (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 27) /* CANFD0 */ | \
-            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 31) /* RSIP7 */)
+            (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 31) /* RSIP-E51A */)
 #endif
 #ifndef BSP_TZ_CFG_PSARD
 #define BSP_TZ_CFG_PSARD (\
@@ -165,7 +165,7 @@
 
 /* Security attribution for RSTSRn registers. */
 #ifndef BSP_TZ_CFG_RSTSAR
-#define BSP_TZ_CFG_RSTSAR (0x0000000FU)
+#define BSP_TZ_CFG_RSTSAR (0x00000007U)
 #endif
 
 /* Security attribution for registers of LVD channels. */
@@ -203,13 +203,26 @@
 #define BSP_TZ_CFG_CGFSAR (0U)
 #else
 /* Allow Secure and Non-secure write access. */
-#define BSP_TZ_CFG_CGFSAR (0x047F3BFDU)
+#define BSP_TZ_CFG_CGFSAR (0x007F3BFDU)
 #endif
 #endif
 
 /* Security attribution for Battery Backup registers. */
 #ifndef BSP_TZ_CFG_BBFSAR
-#define BSP_TZ_CFG_BBFSAR (0x0000001FU)
+#if 0
+#define BSP_TZ_CFG_BBFSAR   (0U)
+#else
+#define BSP_TZ_CFG_BBFSAR   (0x1FU)
+#endif
+#endif
+
+/* Security attribution for Battery Backup registers (VBTBKRn). */
+#ifndef BSP_TZ_CFG_VBRSABAR
+#if 0
+#define BSP_TZ_CFG_VBRSABAR (0xFFE0)
+#else
+#define BSP_TZ_CFG_VBRSABAR (0xED00)
+#endif
 #endif
 
 /* Security attribution for registers for IRQ channels. */
@@ -235,7 +248,7 @@
 
 /* Security attribution for NMI registers. */
 #ifndef BSP_TZ_CFG_ICUSARB
-#define BSP_TZ_CFG_ICUSARB (0 | 0xFFFFFFFEU) /* Should match AIRCR.BFHFNMINS. */
+#define BSP_TZ_CFG_ICUSARB (0 | 0U) /* Should match AIRCR.BFHFNMINS. */
 #endif
 
 /* Security attribution for registers for DMAC channels */
@@ -353,48 +366,44 @@
 #define BSP_CFG_ROM_REG_OFS1 (0xFCFFFED0 | (1 << 3) | (7) | (1 << 5) |  (1 << 8) | (1 << 24) | (BSP_CFG_ROM_REG_OFS1_INITECCEN))
 
 /* Used to create IELS values for the interrupt initialization table g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector)    CONCAT(ELC_, vector)
+#define BSP_PRV_IELS_ENUM(vector)    (ELC_ ## vector)
 
 /* Dual Mode Select Register */
 #ifndef BSP_CFG_ROM_REG_DUALSEL
-#if CONFIG_DUAL_BANK_MODE
-#define BSP_CFG_ROM_REG_DUALSEL (0xFFFFFFF8U | (0x0U))
-#else
 #define BSP_CFG_ROM_REG_DUALSEL (0xFFFFFFF8U | (0x7U))
-#endif
 #endif
 
 /* Block Protection Register 0 */
 #ifndef BSP_CFG_ROM_REG_BPS0
-#define BSP_CFG_ROM_REG_BPS0 (~(0U))
+#define BSP_CFG_ROM_REG_BPS0 (~( 0U))
 #endif
 /* Block Protection Register 1 */
 #ifndef BSP_CFG_ROM_REG_BPS1
-#define BSP_CFG_ROM_REG_BPS1 (~(0U))
+#define BSP_CFG_ROM_REG_BPS1 (~( 0U))
 #endif
 /* Block Protection Register 2 */
 #ifndef BSP_CFG_ROM_REG_BPS2
-#define BSP_CFG_ROM_REG_BPS2 (~(0U))
+#define BSP_CFG_ROM_REG_BPS2 (~( 0U))
 #endif
 /* Block Protection Register 3 */
 #ifndef BSP_CFG_ROM_REG_BPS3
-#define BSP_CFG_ROM_REG_BPS3 (~(0U))
+#define BSP_CFG_ROM_REG_BPS3 (~( 0U))
 #endif
 /* Permanent Block Protection Register 0 */
 #ifndef BSP_CFG_ROM_REG_PBPS0
-#define BSP_CFG_ROM_REG_PBPS0 (~(0U))
+#define BSP_CFG_ROM_REG_PBPS0 (~( 0U))
 #endif
 /* Permanent Block Protection Register 1 */
 #ifndef BSP_CFG_ROM_REG_PBPS1
-#define BSP_CFG_ROM_REG_PBPS1 (~(0U))
+#define BSP_CFG_ROM_REG_PBPS1 (~( 0U))
 #endif
 /* Permanent Block Protection Register 2 */
 #ifndef BSP_CFG_ROM_REG_PBPS2
-#define BSP_CFG_ROM_REG_PBPS2 (~(0U))
+#define BSP_CFG_ROM_REG_PBPS2 (~( 0U))
 #endif
 /* Permanent Block Protection Register 3 */
 #ifndef BSP_CFG_ROM_REG_PBPS3
-#define BSP_CFG_ROM_REG_PBPS3 (~(0U))
+#define BSP_CFG_ROM_REG_PBPS3 (~( 0U))
 #endif
 /* Security Attribution for Block Protection Register 0 (If any blocks are marked as protected in the secure application, then mark them as secure) */
 #ifndef BSP_CFG_ROM_REG_BPS_SEL0
@@ -460,152 +469,67 @@
 #define BSP_CFG_ROM_REG_SAMR (0xFFFFFFFF)
 #endif
 
-/* Hash of OEM_ROOT_PK Register */
-#ifndef BSP_CFG_ROM_REG_HOEMRTPK
-#define BSP_CFG_ROM_REG_HOEMRTPK (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 0 Lock Bit Register 0 */
-#ifndef BSP_CFG_ROM_REG_CFGD0LOCK0
-#define BSP_CFG_ROM_REG_CFGD0LOCK0 (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 0 Lock Bit Register 1 */
-#ifndef BSP_CFG_ROM_REG_CFGD0LOCK1
-#define BSP_CFG_ROM_REG_CFGD0LOCK1 (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 1 Lock Bit Register 0 */
-#ifndef BSP_CFG_ROM_REG_CFGD1LOCK0
-#define BSP_CFG_ROM_REG_CFGD1LOCK0 (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 1 Lock Bit Register 1 */
-#ifndef BSP_CFG_ROM_REG_CFGD1LOCK1
-#define BSP_CFG_ROM_REG_CFGD1LOCK1 (RA_NOT_DEFINED)
-#endif
-
-/* Configuration Data 2 Lock Bit Register */
-#ifndef BSP_CFG_ROM_REG_CFGD2LOCK
-#define BSP_CFG_ROM_REG_CFGD2LOCK (RA_NOT_DEFINED)
-#endif
-
-/* Anti-Rollback Counter Lock Setting Register */
-#ifndef BSP_CFG_ROM_REG_ARCLS
-#define BSP_CFG_ROM_REG_ARCLS ( \
-            (RA_NOT_DEFINED << R_OFS_DATAFLASH_ARCLS_ARCS_LK_Pos) | \
-            (RA_NOT_DEFINED << R_OFS_DATAFLASH_ARCLS_ARCNS_LK_Pos) | \
-            (RA_NOT_DEFINED << R_OFS_DATAFLASH_ARCLS_ARCBL_LK_Pos) | \
-            0xFFC0)
-#endif
-
-/* Anti-Rollback Counter Configuration Setting for Non-secure Application Register */
-#ifndef BSP_CFG_ROM_REG_ARCCS
-#define BSP_CFG_ROM_REG_ARCCS (RA_NOT_DEFINED | 0xFFFC)
-#endif
-
-/* Anti-Rollback Counter for Secure Application 0 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_SEC0
-#define BSP_CFG_ROM_REG_ARC_SEC0              (0U)
-#endif
-
-/* Anti-Rollback Counter for Secure Application 1 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_SEC1
-#define BSP_CFG_ROM_REG_ARC_SEC1              (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 0 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC0
-#define BSP_CFG_ROM_REG_ARC_NSEC0             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 1 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC1
-#define BSP_CFG_ROM_REG_ARC_NSEC1             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 2 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC2
-#define BSP_CFG_ROM_REG_ARC_NSEC2             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 3 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC3
-#define BSP_CFG_ROM_REG_ARC_NSEC3             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 4 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC4
-#define BSP_CFG_ROM_REG_ARC_NSEC4             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 5 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC5
-#define BSP_CFG_ROM_REG_ARC_NSEC5             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 6 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC6
-#define BSP_CFG_ROM_REG_ARC_NSEC6             (0U)
-#endif
-
-/* Anti-Rollback Counter for Non-secure Application 7 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_NSEC7
-#define BSP_CFG_ROM_REG_ARC_NSEC7             (0U)
-#endif
-
-/* Anti-Rollback Counter for OEMBL 0 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_OEMBL0
-#define BSP_CFG_ROM_REG_ARC_OEMBL0            (0U)
-#endif
-
-/* Anti-Rollback Counter for OEMBL 1 Register */
-#ifndef BSP_CFG_ROM_REG_ARC_OEMBL1
-#define BSP_CFG_ROM_REG_ARC_OEMBL1            (0U)
-#endif
-
 #ifndef BSP_CFG_DCACHE_ENABLED
-#define BSP_CFG_DCACHE_ENABLED (CONFIG_DCACHE)
+#define BSP_CFG_DCACHE_ENABLED (0)
 #endif
 
-/* SDRAM controller configuration */
-#if DT_NODE_HAS_STATUS_OKAY(DT_INST(0, renesas_ra_sdram))
-#define BSP_CFG_SDRAM_TRAS                                                                         \
-	DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0), renesas_ra_sdram_timing, 0)
-#define BSP_CFG_SDRAM_TRCD                                                                         \
-	DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0), renesas_ra_sdram_timing, 1)
-#define BSP_CFG_SDRAM_TRP                                                                          \
-	DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0), renesas_ra_sdram_timing, 2)
-#define BSP_CFG_SDRAM_TWR                                                                          \
-	DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0), renesas_ra_sdram_timing, 3)
-#define BSP_CFG_SDRAM_TCL                                                                          \
-	DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0), renesas_ra_sdram_timing, 4)
-#define BSP_CFG_SDRAM_TRFC                                                                         \
-	DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0), renesas_ra_sdram_timing, 5)
-#define BSP_CFG_SDRAM_TREFW                                                                        \
-	DT_PROP_BY_IDX(DT_CHILD(DT_INST(0, renesas_ra_sdram), bank_0), renesas_ra_sdram_timing, 6)
-#define BSP_CFG_SDRAM_INIT_ARFI            DT_PROP(DT_INST(0, renesas_ra_sdram), auto_refresh_interval)
-#define BSP_CFG_SDRAM_INIT_ARFC            DT_PROP(DT_INST(0, renesas_ra_sdram), auto_refresh_count)
-#define BSP_CFG_SDRAM_INIT_PRC             DT_PROP(DT_INST(0, renesas_ra_sdram), precharge_cycle_count)
-#define BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), multiplex_addr_shift)
-#define BSP_CFG_SDRAM_ENDIAN_MODE          DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), edian_mode)
-#define BSP_CFG_SDRAM_ACCESS_MODE          DT_PROP(DT_INST(0, renesas_ra_sdram), continuous_access)
-#define BSP_CFG_SDRAM_BUS_WIDTH            DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), bus_width)
-#else
-#define BSP_CFG_SDRAM_TRAS 					(0)
-#define BSP_CFG_SDRAM_TRCD 					(0)
-#define BSP_CFG_SDRAM_TRP 					(0)
-#define BSP_CFG_SDRAM_TWR 					(0)
-#define BSP_CFG_SDRAM_TCL 					(0)
-#define BSP_CFG_SDRAM_TRFC 					(0)
-#define BSP_CFG_SDRAM_TREFW 				(0)
-#define BSP_CFG_SDRAM_INIT_ARFI 			(0)
-#define BSP_CFG_SDRAM_INIT_ARFC 			(0)
-#define BSP_CFG_SDRAM_INIT_PRC 				(0)
-#define BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT 	(0)
-#define BSP_CFG_SDRAM_ENDIAN_MODE 			(0)
-#define BSP_CFG_SDRAM_ACCESS_MODE 			(0)
-#define BSP_CFG_SDRAM_BUS_WIDTH 			(0)
-#endif	/* DT_NODE_HAS_STATUS_OKAY(DT_INST(0, renesas_ra_sdram)) */
+#ifndef BSP_CFG_SDRAM_ENABLED
+#define BSP_CFG_SDRAM_ENABLED  (0)
+#endif
 
+#ifndef BSP_CFG_SDRAM_TRAS
+#define BSP_CFG_SDRAM_TRAS  (6)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TRCD
+#define BSP_CFG_SDRAM_TRCD  (3)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TRP
+#define BSP_CFG_SDRAM_TRP  (3)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TWR
+#define BSP_CFG_SDRAM_TWR  (2)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TCL
+#define BSP_CFG_SDRAM_TCL  (3)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TRFC
+#define BSP_CFG_SDRAM_TRFC  (937)
+#endif
+
+#ifndef BSP_CFG_SDRAM_TREFW
+#define BSP_CFG_SDRAM_TREFW  (8)
+#endif
+
+#ifndef BSP_CFG_SDRAM_INIT_ARFI
+#define BSP_CFG_SDRAM_INIT_ARFI  (10)
+#endif
+
+#ifndef BSP_CFG_SDRAM_INIT_ARFC
+#define BSP_CFG_SDRAM_INIT_ARFC  (8)
+#endif
+
+#ifndef BSP_CFG_SDRAM_INIT_PRC
+#define BSP_CFG_SDRAM_INIT_PRC  (3)
+#endif
+
+#ifndef BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT
+#define BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT  (1)
+#endif
+
+#ifndef BSP_CFG_SDRAM_ENDIAN_MODE
+#define BSP_CFG_SDRAM_ENDIAN_MODE  (0)
+#endif
+
+#ifndef BSP_CFG_SDRAM_ACCESS_MODE
+#define BSP_CFG_SDRAM_ACCESS_MODE  (1)
+#endif
+
+#ifndef BSP_CFG_SDRAM_BUS_WIDTH
+#define BSP_CFG_SDRAM_BUS_WIDTH  (0)
+#endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */

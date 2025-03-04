@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -71,7 +71,7 @@ typedef enum e_elc_event_ra4m1
     ELC_EVENT_AGT1_COMPARE_A                = (0x022), // Compare match A
     ELC_EVENT_AGT1_COMPARE_B                = (0x023), // Compare match B
     ELC_EVENT_IWDT_UNDERFLOW                = (0x024), // IWDT underflow
-    ELC_EVENT_WDT_UNDERFLOW                 = (0x025), // WDT0 underflow
+    ELC_EVENT_WDT_UNDERFLOW                 = (0x025), // WDT underflow
     ELC_EVENT_RTC_ALARM                     = (0x026), // Alarm interrupt
     ELC_EVENT_RTC_PERIOD                    = (0x027), // Periodic interrupt
     ELC_EVENT_RTC_CARRY                     = (0x028), // Carry interrupt
@@ -83,8 +83,8 @@ typedef enum e_elc_event_ra4m1
     ELC_EVENT_ADC0_COMPARE_MISMATCH         = (0x02E), // Compare mismatch
     ELC_EVENT_ACMPLP0_INT                   = (0x02F), // Low Power Comparator channel 0 interrupt
     ELC_EVENT_ACMPLP1_INT                   = (0x030), // Low Power Comparator channel 1 interrupt
-    ELC_EVENT_USBFS_FIFO_0                  = (0x031), // DMA transfer request 0
-    ELC_EVENT_USBFS_FIFO_1                  = (0x032), // DMA transfer request 1
+    ELC_EVENT_USBFS_FIFO_0                  = (0x031), // DMA/DTC transfer request 0
+    ELC_EVENT_USBFS_FIFO_1                  = (0x032), // DMA/DTC transfer request 1
     ELC_EVENT_USBFS_INT                     = (0x033), // USBFS interrupt
     ELC_EVENT_USBFS_RESUME                  = (0x034), // USBFS resume interrupt
     ELC_EVENT_IIC0_RXI                      = (0x035), // Receive data full
