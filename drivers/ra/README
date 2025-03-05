@@ -116,3 +116,7 @@ Patch List:
    * Add Trigger NO_EDGE enum for comparator module
    Impacted files:
       drivers/ra/fsp/inc/api/r_comparator_api.h
+
+   * Remove include <cmath> in bsp_tfu.h to avoid build error
+   Impacted files:
+      zephyr/ra/portable/bsp_tfu.h
