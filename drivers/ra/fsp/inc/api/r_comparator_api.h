@@ -52,6 +52,7 @@ typedef enum e_comparator_mode
 /** Trigger type: rising edge, falling edge, both edges, low level. */
 typedef enum e_comparator_trigger
 {
+    COMPARATOR_TRIGGER_NO_EDGE   = 0,  ///< None edge trigger
     COMPARATOR_TRIGGER_RISING    = 1,  ///< Rising edge trigger
     COMPARATOR_TRIGGER_FALLING   = 2,  ///< Falling edge trigger
     COMPARATOR_TRIGGER_BOTH_EDGE = 3,  ///< Both edges trigger
