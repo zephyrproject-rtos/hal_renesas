@@ -112,3 +112,7 @@ Patch List:
    * Modify BSP_PRV_IELS_ENUM to use CONCAT instead of "##"
    Impacted files:
       zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+
+   * Add Trigger NO_EDGE enum for comparator module
+   Impacted files:
+      drivers/ra/fsp/inc/api/r_comparator_api.h
