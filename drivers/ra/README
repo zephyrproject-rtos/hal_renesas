@@ -115,3 +115,7 @@ Patch List:
    * Reflect OFS setting for sdram from Zephyr device-tree value
    Impacted files:
       zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+
+   * Remove include <cmath> in bsp_tfu.h to avoid build error
+   Impacted files:
+      zephyr/ra/portable/bsp_tfu.h
