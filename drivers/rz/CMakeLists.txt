@@ -14,6 +14,18 @@ set(include_dirs
 	fsp/src/${SOC_SERIES_PREFIX}/bsp/mcu/${CONFIG_SOC_SERIES}
 )
 
+if(CONFIG_CPU_CORTEX_M)
+	set(CPU cm)
+elseif(CONFIG_CPU_CORTEX_R)
+	set(CPU cr)
+elseif(CONFIG_CPU_CORTEX_A)
+	set(CPU ca)
+endif()
+
+if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/fsp/src/${SOC_SERIES_PREFIX}/bsp/mcu/all/${CPU}")
+	list(APPEND include_dirs "fsp/src/${SOC_SERIES_PREFIX}/bsp/mcu/all/${CPU}")
+endif()
+
 zephyr_include_directories(${include_dirs})
 
 # Optional build base on feature configuration
