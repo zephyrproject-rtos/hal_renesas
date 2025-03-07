@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -22,18 +22,18 @@ extern "C" {
 #if   BSP_CFG_HOCO_FREQUENCY == 0
 #define BSP_HOCO_HZ                 (48000000)
 #elif BSP_CFG_HOCO_FREQUENCY == 1
-#define BSP_HOCO_HZ                 (64000000)
-#elif BSP_CFG_HOCO_FREQUENCY == 2
-#define BSP_HOCO_HZ                 (80000000)
-#elif BSP_CFG_HOCO_FREQUENCY == 4
-#define BSP_HOCO_HZ                 (24000000)
-#elif BSP_CFG_HOCO_FREQUENCY == 5
-#define BSP_HOCO_HZ                 (32000000)
-#elif BSP_CFG_HOCO_FREQUENCY == 6
-#define BSP_HOCO_HZ                 (40000000)
-#else
-#error "Invalid HOCO frequency chosen (BSP_CFG_HOCO_FREQUENCY) in bsp_clock_cfg.h"
-#endif
+                #define BSP_HOCO_HZ                 (64000000)
+            #elif BSP_CFG_HOCO_FREQUENCY == 2
+                #define BSP_HOCO_HZ                 (80000000)
+            #elif BSP_CFG_HOCO_FREQUENCY == 4
+                #define BSP_HOCO_HZ                 (24000000)
+            #elif BSP_CFG_HOCO_FREQUENCY == 5
+                #define BSP_HOCO_HZ                 (32000000)
+            #elif BSP_CFG_HOCO_FREQUENCY == 6
+                #define BSP_HOCO_HZ                 (40000000)
+            #else
+                #error "Invalid HOCO frequency chosen (BSP_CFG_HOCO_FREQUENCY) in bsp_clock_cfg.h"
+            #endif
 
 #define BSP_CFG_FLL_ENABLE                 (0)
 
@@ -41,12 +41,12 @@ extern "C" {
 #define BSP_VECTOR_TABLE_MAX_ENTRIES       (80U)
 
 #if defined(_RA_TZ_SECURE)
-#define BSP_TZ_SECURE_BUILD           (1)
-#define BSP_TZ_NONSECURE_BUILD        (0)
-#elif defined(_RA_TZ_NONSECURE)
-#define BSP_TZ_SECURE_BUILD           (0)
-#define BSP_TZ_NONSECURE_BUILD        (1)
-#else
+            #define BSP_TZ_SECURE_BUILD           (1)
+            #define BSP_TZ_NONSECURE_BUILD        (0)
+            #elif defined(_RA_TZ_NONSECURE)
+            #define BSP_TZ_SECURE_BUILD           (0)
+            #define BSP_TZ_NONSECURE_BUILD        (1)
+            #else
 #define BSP_TZ_SECURE_BUILD           (0)
 #define BSP_TZ_NONSECURE_BUILD        (0)
 #endif
@@ -297,7 +297,7 @@ extern "C" {
 /* Option Function Select Register 1 Security Attribution */
 #ifndef BSP_CFG_ROM_REG_OFS1_SEL
 #if defined(_RA_TZ_SECURE) || defined(_RA_TZ_NONSECURE)
-#define BSP_CFG_ROM_REG_OFS1_SEL (0xFFFFF0FFU | ((0U << 0U)) | ((0U << 2U)) | ((BSP_CFG_CLOCKS_SECURE == 0) ? 0xF00U : 0U))
+            #define BSP_CFG_ROM_REG_OFS1_SEL (0xFFFFF0FFU | ((0U << 0U)) | ((0U << 2U)) | ((BSP_CFG_CLOCKS_SECURE == 0) ? 0xF00U : 0U))
 #else
 #define BSP_CFG_ROM_REG_OFS1_SEL (0xFFFFF0F8U)
 #endif

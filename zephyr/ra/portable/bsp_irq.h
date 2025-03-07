@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -121,6 +121,7 @@ __STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void 
 {
     /* Zephyr interrupt priority will have offset, remove priority config in FSP to prevent override seting on Zephyr */
     FSP_PARAMETER_NOT_USED(priority);
+
     /* Store the context. The context is recovered in the ISR. */
     R_FSP_IsrContextSet(irq, p_context);
 }

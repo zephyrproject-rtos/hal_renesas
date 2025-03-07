@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -85,8 +85,8 @@ typedef enum e_elc_event_ra8t1
     ELC_EVENT_AGT1_COMPARE_B                = (0x04B), // Compare match B
     ELC_EVENT_IWDT_UNDERFLOW                = (0x052), // IWDT underflow
     ELC_EVENT_WDT0_UNDERFLOW                = (0x053), // WDT0 underflow
-    ELC_EVENT_USBFS_FIFO_0                  = (0x058), // DMA transfer request 0
-    ELC_EVENT_USBFS_FIFO_1                  = (0x059), // DMA transfer request 1
+    ELC_EVENT_USBFS_FIFO_0                  = (0x058), // DMA/DTC transfer request 0
+    ELC_EVENT_USBFS_FIFO_1                  = (0x059), // DMA/DTC transfer request 1
     ELC_EVENT_USBFS_INT                     = (0x05A), // USBFS interrupt
     ELC_EVENT_USBFS_RESUME                  = (0x05B), // USBFS resume interrupt
     ELC_EVENT_IIC0_RXI                      = (0x05C), // Receive data full
@@ -286,7 +286,7 @@ typedef enum e_elc_event_ra8t1
     ELC_EVENT_SPI1_IDLE                     = (0x17F), // Idle
     ELC_EVENT_SPI1_ERI                      = (0x180), // Error
     ELC_EVENT_SPI1_TEI                      = (0x181), // Transmission complete event
-    ELC_EVENT_CAN_RXF                       = (0x185), // Global recieve FIFO interrupt
+    ELC_EVENT_CAN_RXF                       = (0x185), // Global receive FIFO interrupt
     ELC_EVENT_CAN_GLERR                     = (0x186), // Global error
     ELC_EVENT_CAN0_DMAREQ0                  = (0x187), // RX fifo DMA request 0
     ELC_EVENT_CAN0_DMAREQ1                  = (0x188), // RX fifo DMA request 1
@@ -294,12 +294,12 @@ typedef enum e_elc_event_ra8t1
     ELC_EVENT_CAN1_DMAREQ1                  = (0x18C), // RX fifo DMA request 1
     ELC_EVENT_CAN0_TX                       = (0x18F), // Transmit interrupt
     ELC_EVENT_CAN0_CHERR                    = (0x190), // Channel  error
-    ELC_EVENT_CAN0_COMFRX                   = (0x191), // Common FIFO recieve interrupt
+    ELC_EVENT_CAN0_COMFRX                   = (0x191), // Common FIFO receive interrupt
     ELC_EVENT_CAN0_CF_DMAREQ                = (0x192), // Channel  DMA request
     ELC_EVENT_CAN0_RXMB                     = (0x193), // Receive message buffer interrupt
     ELC_EVENT_CAN1_TX                       = (0x194), // Transmit interrupt
     ELC_EVENT_CAN1_CHERR                    = (0x195), // Channel  error
-    ELC_EVENT_CAN1_COMFRX                   = (0x196), // Common FIFO recieve interrupt
+    ELC_EVENT_CAN1_COMFRX                   = (0x196), // Common FIFO receive interrupt
     ELC_EVENT_CAN1_CF_DMAREQ                = (0x197), // Channel  DMA request
     ELC_EVENT_CAN1_RXMB                     = (0x198), // Receive message buffer interrupt
     ELC_EVENT_CAN0_MRAM_ERI                 = (0x19B), // CANFD0 ECC error
@@ -308,14 +308,18 @@ typedef enum e_elc_event_ra8t1
     ELC_EVENT_I3C0_COMMAND                  = (0x19E), // Command buffer empty
     ELC_EVENT_I3C0_IBI                      = (0x19F), // IBI status buffer full
     ELC_EVENT_I3C0_RX                       = (0x1A0), // Receive
+    ELC_EVENT_IICB0_RXI                     = (0x1A0), // Receive
     ELC_EVENT_I3C0_TX                       = (0x1A1), // Transmit
+    ELC_EVENT_IICB0_TXI                     = (0x1A1), // Transmit
     ELC_EVENT_I3C0_RCV_STATUS               = (0x1A2), // Receive status buffer full
     ELC_EVENT_I3C0_HRESP                    = (0x1A3), // High priority response queue full
     ELC_EVENT_I3C0_HCMD                     = (0x1A4), // High priority command queue empty
     ELC_EVENT_I3C0_HRX                      = (0x1A5), // High priority rx data buffer full
     ELC_EVENT_I3C0_HTX                      = (0x1A6), // High priority tx data buffer empty
     ELC_EVENT_I3C0_TEND                     = (0x1A7), // Transmit end
+    ELC_EVENT_IICB0_TEI                     = (0x1A7), // Transmit end
     ELC_EVENT_I3C0_EEI                      = (0x1A8), // Error
+    ELC_EVENT_IICB0_ERI                     = (0x1A8), // Error
     ELC_EVENT_I3C0_STEV                     = (0x1A9), // Synchronous timing
     ELC_EVENT_I3C0_MREFOVF                  = (0x1AA), // MREF counter overflow
     ELC_EVENT_I3C0_MREFCPT                  = (0x1AB), // MREF capture
@@ -334,7 +338,7 @@ typedef enum e_elc_event_ra8t1
     ELC_EVENT_ADC1_COMPARE_MATCH            = (0x1B8), // Compare match
     ELC_EVENT_ADC1_COMPARE_MISMATCH         = (0x1B9), // Compare mismatch
     ELC_EVENT_DOC_INT                       = (0x1BA), // Data operation circuit interrupt
-    ELC_EVENT_RSIP_TADI                     = (0x1BC)  // RSIP Tampler Detection
+    ELC_EVENT_RSIP_TADI                     = (0x1BC)  // RSIP Tamper Detection
 } elc_event_t;
 
 #define BSP_PRV_VECT_ENUM(event,group)  (ELC_ ## event)
