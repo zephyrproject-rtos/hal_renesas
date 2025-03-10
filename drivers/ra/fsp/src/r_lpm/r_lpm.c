@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -17,6 +17,7 @@
 
 #define LPM_LPSCR_SYSTEM_ACTIVE                  (0x0U)
 #define LPM_LPSCR_SOFTWARE_STANDBY_MODE          (0x4U)
+#define LPM_LPSCR_SOFTWARE_STANDBY_MODE2         (0x5U)
 #define LPM_LPSCR_DEEP_SOFTWARE_STANDBY_MODE1    (0x8U)
 #define LPM_LPSCR_DEEP_SOFTWARE_STANDBY_MODE2    (0x9U)
 #define LPM_LPSCR_DEEP_SOFTWARE_STANDBY_MODE3    (0xAU)
@@ -241,7 +242,7 @@ fsp_err_t R_LPM_LowPowerModeEnter (lpm_ctrl_t * const p_api_ctrl)
     }
  #endif
 #endif
-#if BSP_FEATURE_LPM_SNOOZE_REQUEST_DTCST_DTCST == 1
+#if BSP_FEATURE_LPM_STANDBY_MODE_CLEAR_DTCST == 1
     uint8_t saved_dtcst = 0;
 #endif
 
@@ -262,24 +263,17 @@ fsp_err_t R_LPM_LowPowerModeEnter (lpm_ctrl_t * const p_api_ctrl)
     }
  #endif
 #endif
-#if BSP_FEATURE_LPM_HAS_SNOOZE
-    if (LPM_MODE_STANDBY_SNOOZE == p_ctrl->p_cfg->low_power_mode)
+
+#if BSP_FEATURE_LPM_STANDBY_MODE_CLEAR_DTCST == 1
+    if (((LPM_MODE_STANDBY == p_ctrl->p_cfg->low_power_mode) ||
+         ((LPM_MODE_STANDBY_SNOOZE == p_ctrl->p_cfg->low_power_mode) && !p_ctrl->p_cfg->dtc_state_in_snooze)) &&
+        (0 == R_MSTP->MSTPCRA_b.MSTPA22))
     {
-        /* Configure Snooze registers */
- #if BSP_FEATURE_LPM_SNOOZE_REQUEST_DTCST_DTCST == 1
-        if (!p_ctrl->p_cfg->dtc_state_in_snooze)
-        {
-  #if LPM_CFG_PARAM_CHECKING_ENABLE
-            FSP_ERROR_RETURN(0 == R_MSTP->MSTPCRA_b.MSTPA22, FSP_ERR_INVALID_MODE);
-  #endif
+        /* Store the previous state of DTCST. */
+        saved_dtcst = R_DTC->DTCST;
 
-            /* Store the previous state of DTCST. */
-            saved_dtcst = R_DTC->DTCST;
-
-            /* If snooze mode does not use DTC, DTC should be stopped before entering snooze mode. */
-            R_DTC->DTCST = 0U;
-        }
- #endif
+        /* If DTC is not used for requesting snooze mode, it should be stopped before entering standby or snooze mode. */
+        R_DTC->DTCST = 0U;
     }
 #endif
     fsp_err_t err = r_lpm_low_power_enter(p_ctrl);
@@ -298,16 +292,13 @@ fsp_err_t R_LPM_LowPowerModeEnter (lpm_ctrl_t * const p_api_ctrl)
     }
  #endif
 #endif
-#if BSP_FEATURE_LPM_HAS_SNOOZE
-    if (LPM_MODE_STANDBY_SNOOZE == p_ctrl->p_cfg->low_power_mode)
+#if BSP_FEATURE_LPM_STANDBY_MODE_CLEAR_DTCST == 1
+    if (((LPM_MODE_STANDBY == p_ctrl->p_cfg->low_power_mode) ||
+         ((LPM_MODE_STANDBY_SNOOZE == p_ctrl->p_cfg->low_power_mode) && !p_ctrl->p_cfg->dtc_state_in_snooze)) &&
+        (0 == R_MSTP->MSTPCRA_b.MSTPA22))
     {
- #if BSP_FEATURE_LPM_SNOOZE_REQUEST_DTCST_DTCST == 1
-        if (!p_ctrl->p_cfg->dtc_state_in_snooze)
-        {
-            /* If DTC was stopped prior to entering snooze mode, then start it again. */
-            R_DTC->DTCST = saved_dtcst;
-        }
- #endif
+        /* If DTC was stopped prior to entering standby or snooze mode, then start it again. */
+        R_DTC->DTCST = saved_dtcst;
     }
 #endif
 
@@ -408,7 +399,7 @@ fsp_err_t r_lpm_mcu_specific_low_power_check (lpm_cfg_t const * const p_cfg)
         if (LPM_MODE_STANDBY_SNOOZE == p_cfg->low_power_mode)
         {
  #if BSP_FEATURE_LPM_HAS_SNOOZE
-  #if BSP_FEATURE_LPM_SNZREQCR_MASK
+  #if BSP_FEATURE_LPM_SNZREQCR_MASK > 0
             FSP_ERROR_RETURN(0U == ((uint64_t) p_cfg->snooze_request_source & (~BSP_FEATURE_LPM_SNZREQCR_MASK)),
                              FSP_ERR_INVALID_ARGUMENT);
   #endif
@@ -449,7 +440,7 @@ fsp_err_t r_lpm_mcu_specific_low_power_check (lpm_cfg_t const * const p_cfg)
         FSP_ERROR_RETURN(0U == ((uint64_t) p_cfg->standby_wake_sources & ~BSP_FEATURE_ICU_WUPEN_MASK),
                          FSP_ERR_INVALID_MODE);
  #endif
- #if BSP_FEATURE_ICU_SBYEDCR_MASK
+ #if BSP_FEATURE_ICU_SBYEDCR_MASK > 0
         FSP_ERROR_RETURN(0U == ((uint64_t) p_cfg->standby_wake_sources & ~BSP_FEATURE_ICU_SBYEDCR_MASK),
                          FSP_ERR_INVALID_MODE);
  #endif
@@ -539,9 +530,23 @@ fsp_err_t r_lpm_configure (lpm_cfg_t const * const p_cfg)
             R_SYSTEM->DPSIER2 = (uint8_t) (p_cfg->deep_standby_cancel_source >> 16U);
             R_SYSTEM->DPSIER3 = (uint8_t) (p_cfg->deep_standby_cancel_source >> 24U);
 
+ #if BSP_FEATURE_LPM_HAS_DPSIER4
+            R_SYSTEM->DPSIER4 = (uint8_t) (p_cfg->deep_standby_cancel_source >> 32U); // NOLINT(readability-magic-numbers)
+ #endif
+ #if BSP_FEATURE_LPM_HAS_DPSIER5
+            R_SYSTEM->DPSIER5 = (uint8_t) (p_cfg->deep_standby_cancel_source >> 40U); // NOLINT(readability-magic-numbers)
+ #endif
+
             R_SYSTEM->DPSIEGR0 = (uint8_t) (p_cfg->deep_standby_cancel_edge);
             R_SYSTEM->DPSIEGR1 = (uint8_t) (p_cfg->deep_standby_cancel_edge >> 8U);
             R_SYSTEM->DPSIEGR2 = (uint8_t) (p_cfg->deep_standby_cancel_edge >> 16U);
+
+ #if BSP_FEATURE_LPM_HAS_DPSIEGR3
+            R_SYSTEM->DPSIEGR3 = (uint8_t) (p_cfg->deep_standby_cancel_edge >> 24U);
+ #endif
+ #if BSP_FEATURE_LPM_HAS_DPSIEGR4
+            R_SYSTEM->DPSIEGR4 = (uint8_t) (p_cfg->deep_standby_cancel_edge >> 32U); // NOLINT(readability-magic-numbers)
+ #endif
 
  #if BSP_FEATURE_LPM_HAS_DPSBYCR_DPSBY
             dpsbycr |= R_SYSTEM_DPSBYCR_DPSBY_Msk;
@@ -688,8 +693,11 @@ fsp_err_t r_lpm_configure (lpm_cfg_t const * const p_cfg)
 #if BSP_FEATURE_ICU_WUPEN_MASK > 0
         R_ICU->WUPEN = (uint32_t) p_cfg->standby_wake_sources & UINT32_MAX;
 #endif
-#if BSP_FEATURE_ICU_HAS_WUPEN1 == 1
+#if BSP_FEATURE_ICU_HAS_WUPEN1
         R_ICU->WUPEN1 = (uint32_t) (p_cfg->standby_wake_sources >> LPM_WUPEN1_OFFSET) & UINT32_MAX;
+#endif
+#if BSP_FEATURE_ICU_HAS_WUPEN2
+        R_ICU->WUPEN2 = (uint32_t) p_cfg->standby_wake_sources_2 & UINT32_MAX;
 #endif
 #if BSP_FEATURE_ICU_SBYEDCR_MASK > 0
         sbyedcr0 |= (uint32_t) p_cfg->standby_wake_sources & UINT32_MAX;
@@ -952,6 +960,16 @@ fsp_err_t r_lpm_low_power_enter (lpm_instance_ctrl_t * const p_instance_ctrl)
 
             R_SYSTEM->DPSIFR3;
             R_SYSTEM->DPSIFR3 = 0U;
+
+ #if BSP_FEATURE_LPM_HAS_DPSIER4
+            R_SYSTEM->DPSIFR4;
+            R_SYSTEM->DPSIFR4 = 0U;
+ #endif
+
+ #if BSP_FEATURE_LPM_HAS_DPSIER5
+            R_SYSTEM->DPSIFR5;
+            R_SYSTEM->DPSIFR5 = 0U;
+ #endif
         }
 
         /* Save oscillator stop detect state. */
@@ -1003,6 +1021,12 @@ fsp_err_t r_lpm_low_power_enter (lpm_instance_ctrl_t * const p_instance_ctrl)
     }
 #endif
 
+#if BSP_FEATURE_LPM_RTC_REGISTER_CLOCK_DISABLE
+
+    /* Disable RTC Register Read/Write Clock to reduce power consumption. */
+    bool rtc_register_clock_state = bsp_prv_rtc_register_clock_set(false);
+#endif
+
 #if BSP_CFG_SLEEP_MODE_DELAY_ENABLE
     bool clock_slowed = bsp_prv_clock_prepare_pre_sleep();
 #endif
@@ -1015,6 +1039,12 @@ fsp_err_t r_lpm_low_power_enter (lpm_instance_ctrl_t * const p_instance_ctrl)
 
 #if BSP_CFG_SLEEP_MODE_DELAY_ENABLE
     bsp_prv_clock_prepare_post_sleep(clock_slowed);
+#endif
+
+#if BSP_FEATURE_LPM_RTC_REGISTER_CLOCK_DISABLE
+
+    /* Enable the RTC Register Read/Write clock if it was disabled prior to entering LPM. */
+    bsp_prv_rtc_register_clock_set(rtc_register_clock_state);
 #endif
 
 #if BSP_FEATURE_LPM_HAS_DEEP_SLEEP

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -16,6 +16,11 @@
  **********************************************************************************************************************/
 #define BSP_IRQ_UINT32_MAX       (0xFFFFFFFFU)
 #define BSP_PRV_BITS_PER_WORD    (32)
+
+#if BSP_ALT_BUILD
+ #define BSP_EVENT_NUM_TO_INTSELR(x)         (x >> 5)        // Convert event number to INTSELR register number
+ #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)    (1 << (x % 32)) // Convert event number to INTSELR bit mask
+#endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -104,7 +109,7 @@ BSP_SECTION_FLASH_GAP void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority,
     /* The following statement is used in place of NVIC_SetPriority to avoid including a branch for system exceptions
      * every time a priority is configured in the NVIC. */
  #if (4U == __CORTEX_M)
-    NVIC->IP[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
+    NVIC->IPR[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
  #elif (33 == __CORTEX_M)
     NVIC->IPR[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
  #elif (23 == __CORTEX_M)
@@ -253,6 +258,16 @@ BSP_SECTION_FLASH_GAP void bsp_irq_cfg (void)
         if (0U != g_interrupt_event_link_select[i])
         {
             R_ICU->IELSR[i] = (uint32_t) g_interrupt_event_link_select[i];
+
+ #if BSP_ALT_BUILD
+
+            /* Set INTSELR for selected events. */
+            uint32_t intselr_num = BSP_EVENT_NUM_TO_INTSELR((uint32_t) g_interrupt_event_link_select[i]);
+            uint32_t intselr     = R_ICU->INTSELR[intselr_num];
+
+            intselr |= BSP_EVENT_NUM_TO_INTSELR_MASK((uint32_t) g_interrupt_event_link_select[i]);
+            R_ICU->INTSELR[intselr_num] = intselr;
+ #endif
         }
     }
 #endif

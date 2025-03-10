@@ -6,7 +6,7 @@ Origin:
    https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp
 
 Status:
-   version v5.3.0
+   version v5.8.0
 
 Purpose:
    Flexible Software Package (FSP) for Renesas RA MCU Family.
@@ -112,3 +112,15 @@ Patch List:
    * Modify BSP_PRV_IELS_ENUM to use CONCAT instead of "##"
    Impacted files:
       zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+
+   * Remove include <cmath> in bsp_tfu.h to avoid build error
+   Impacted files:
+      zephyr/ra/portable/bsp_tfu.h
+
+   * Disable the priority setting for IRQ in FSP HAL layer so that priority setting will not be override when Open() API is called.
+   Impacted files:
+      zephyr/ra/portable/bsp_irq.h
+
+   * Add new implementation for R_BSP_SecurityInit on Zephyr.
+      Impacted files:
+         zephyr/ra/portable/bsp_security.h
