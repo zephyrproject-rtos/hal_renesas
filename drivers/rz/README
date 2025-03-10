@@ -6,11 +6,13 @@ Origin:
    RZ/G: https://github.com/renesas/rzg-fsp
    RZ/N: https://github.com/renesas/rzn-fsp
    RZ/T: https://github.com/renesas/rzt-fsp
+   RZ/V: https://github.com/renesas/rzv-fsp
 
 Status:
    RZ/G FSP: version v2.1.0
    RZ/N FSP: version v2.1.0
    RZ/T FSP: version v2.2.0
+   RZ/V FSP: version v3.0.0
 
 Purpose:
    Flexible Software Package (FSP) for Renesas RZ MPU Family.
@@ -31,6 +33,9 @@ URL:
 
    https://github.com/renesas/rzt-fsp
    Commit: e66ab13216949c9ce5a09555171c422d5a323f1b
+
+   https://github.com/renesas/rzv-fsp
+   Commit: dbc49dea2a0fe4b2cc7c7f1de40a6f6aadf4b980
 
 Maintained-by:
    Renesas Electronics Corporation
