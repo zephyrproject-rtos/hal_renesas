@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -23,8 +23,8 @@
 #define SIZE_AES_256BIT_KEYLEN_BYTES                     ((SIZE_AES_256BIT_KEYLEN_BITS) / 8)
 #define SIZE_AES_256BIT_KEYLEN_WORDS                     ((SIZE_AES_256BIT_KEYLEN_BITS) / 32)
 
-#define SIZE_AES_BLOCK_BITS                              (128)
-#define SIZE_AES_BLOCK_BYTES                             (128 / 8)
+#define SIZE_AES_BLOCK_BITS                              (128U)
+#define SIZE_AES_BLOCK_BYTES                             ((SIZE_AES_BLOCK_BITS) / 8)
 #define SIZE_AES_BLOCK_WORDS                             ((SIZE_AES_BLOCK_BITS) / 32)
 
 #define SCE_AES_IN_DATA_CMD_ECB_ENCRYPTION               (0x00000000U)
@@ -357,11 +357,6 @@ fsp_err_t HW_SCE_Aes128CtrEncryptDecryptInitSubGeneral(uint32_t * InData_KeyInde
 fsp_err_t HW_SCE_Aes192CtrEncryptDecryptInitSubGeneral(uint32_t * InData_KeyIndex, uint32_t * InData_IV);
 
 fsp_err_t HW_SCE_Aes256CtrEncryptDecryptInitSubGeneral(uint32_t * InData_KeyIndex, uint32_t * InData_IV);
-
-fsp_err_t HW_SCE_Aes128EncryptDecryptInitSub(const uint32_t * InData_KeyType,
-                                             const uint32_t * InData_Cmd,
-                                             const uint32_t * InData_KeyIndex,
-                                             const uint32_t * InData_IV);
 
 void HW_SCE_Aes128EncryptDecryptUpdateSub(const uint32_t * InData_Text, uint32_t * OutData_Text,
                                           const uint32_t MAX_CNT);

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -48,6 +48,26 @@ fsp_err_t HW_SCE_RSA_2048KeyGenerate(uint32_t   num_tries,
                                      uint32_t * OutData_DomainParam);
 
 fsp_err_t HW_SCE_HRK_RSA_2048PrivateKeyDecrypt(const uint32_t * InData_Text,
+                                               const uint32_t * InData_KeyIndex,
+                                               const uint32_t * InData_N,
+                                               uint32_t       * OutData_Text);
+
+fsp_err_t HW_SCE_RSA_1024PublicKeyEncrypt(const uint32_t * InData_Text,
+                                          const uint32_t * InData_PublicKey,
+                                          const uint32_t * InData_N,
+                                          uint32_t       * OutData_Text);
+
+fsp_err_t HW_SCE_RSA_1024PrivateKeyDecrypt(const uint32_t * InData_Text,
+                                           const uint32_t * InData_PrivateKey,
+                                           const uint32_t * InData_N,
+                                           uint32_t       * OutData_Text);
+
+fsp_err_t HW_SCE_RSA_1024KeyGenerate(uint32_t   num_tries,
+                                     uint32_t * OutData_PrivateKey,
+                                     uint32_t * OutData_N,
+                                     uint32_t * OutData_DomainParam);
+
+fsp_err_t HW_SCE_HRK_RSA_1024PrivateKeyDecrypt(const uint32_t * InData_Text,
                                                const uint32_t * InData_KeyIndex,
                                                const uint32_t * InData_N,
                                                uint32_t       * OutData_Text);
