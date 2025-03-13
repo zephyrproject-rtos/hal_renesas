@@ -3,11 +3,13 @@ Flexible Software Package (FSP)
 
 Origin:
    Renesas Electronics Corporation
+   RZ/A: https://github.com/renesas/rza-fsp
    RZ/G: https://github.com/renesas/rzg-fsp
    RZ/N: https://github.com/renesas/rzn-fsp
    RZ/T: https://github.com/renesas/rzt-fsp
 
 Status:
+   RZ/A FSP: version v3.3.0
    RZ/G FSP: version v2.1.0
    RZ/N FSP: version v2.1.0
    RZ/T FSP: version v2.2.0
@@ -23,6 +25,9 @@ Dependencies:
     None.
 
 URL:
+   https://github.com/renesas/rza-fsp
+   Commit: efa73c09f98e6d124d98692fffc1091eac0bbe47
+
    https://github.com/renesas/rzg-fsp
    Commit: 8db06f881784144e86361b1266ac4d3c026f6ad8
 
