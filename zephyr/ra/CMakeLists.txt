@@ -1,4 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory(ra_cfg)
-zephyr_include_directories(portable)
+zephyr_include_directories(
+    portable
+    portable/inc
+)
+
+# Optional build base on feature configuration
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CRC
+    portable/src/rp_crc/rp_crc.c)
