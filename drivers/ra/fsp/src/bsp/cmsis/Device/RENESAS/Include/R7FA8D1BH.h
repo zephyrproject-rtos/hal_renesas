@@ -1550,6 +1550,7 @@ typedef struct
         } BY_b;
     };
     __IM uint8_t RESERVED;
+    __IM uint16_t RESERVED1;
 } R_ELC_ELSEGR_Type;                   /*!< Size = 2 (0x2)                                                            */
 
 /**
@@ -7947,7 +7948,7 @@ typedef struct                         /*!< (@ 0x40201000) R_ELC Structure      
     __IM uint8_t            RESERVED;
     __IM uint16_t           RESERVED1;
     __IOM R_ELC_ELSEGR_Type ELSEGR[2]; /*!< (@ 0x00000004) Event Link Software Event Generation Register              */
-    __IM uint32_t           RESERVED2[6];
+    __IM uint32_t           RESERVED2[5];
     __IOM R_ELC_ELSR_Type   ELSR[31];  /*!< (@ 0x00000020) Event Link Setting Register [0..30]                        */
     __IM uint32_t           RESERVED3[17];
 
