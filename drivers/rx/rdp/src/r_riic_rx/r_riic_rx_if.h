@@ -268,6 +268,7 @@ riic_return_t R_RIIC_Close (riic_info_t *);
  *****************************************************************************/
 uint32_t      R_RIIC_GetVersion (void);
 
+riic_return_t riic_bps_calc (riic_info_t *, uint16_t kbps);
 R_BSP_PRAGMA_PACKOPTION
 #endif /* RIIC_IF_H */
 
