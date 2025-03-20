@@ -54,4 +54,7 @@ if(CONFIG_USE_RX_RDP_SCI_UART)
 		rdp/src/r_sci_rx/src/targets/${CONFIG_SOC_SERIES}/r_sci_${CONFIG_SOC_SERIES}_data.c
 		rdp/src/r_byteq/src/r_byteq.c
 	)
+	zephyr_library_compile_options(
+        "-Wno-missing-braces"
+    )
 endif()
