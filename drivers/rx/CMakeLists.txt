@@ -13,6 +13,7 @@ set(srcs
 	rdp/src/r_bsp/mcu/all/r_bsp_common.c
 	rdp/src/r_bsp/mcu/all/r_bsp_cpu.c
 	rdp/src/r_bsp/mcu/all/r_bsp_interrupts.c
+	rdp/src/r_bsp/mcu/all/r_bsp_locking.c
 	rdp/src/r_bsp/mcu/all/r_bsp_software_interrupt.c
 	rdp/src/r_bsp/mcu/all/r_rx_intrinsic_functions.c
 	rdp/src/r_bsp/mcu/all/mcu_locks.c
@@ -57,4 +58,16 @@ if(CONFIG_USE_RX_RDP_SCI_UART)
 	zephyr_library_compile_options(
         "-Wno-missing-braces"
     )
+endif()
+
+if(CONFIG_USE_RX_RDP_I2C)
+	zephyr_include_directories(
+		rdp/src/r_riic_rx
+		rdp/src/r_riic_rx/src
+		rdp/src/r_riic_rx/src/targets/${CONFIG_SOC_SERIES}
+	)
+	zephyr_library_sources(
+		rdp/src/r_riic_rx/src/r_riic_rx.c
+		rdp/src/r_riic_rx/src/targets/${CONFIG_SOC_SERIES}/r_riic_${CONFIG_SOC_SERIES}.c
+	)
 endif()
