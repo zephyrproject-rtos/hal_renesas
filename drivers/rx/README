@@ -52,3 +52,8 @@ Patch List:
    Impacted files:
       drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx.c
       drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx_private.h
+
+   * Remove the static definition in RIIC driver
+   Impacted files:
+      drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
+      drivers/rx/rdp/src/r_riic_rx/r_riic_rx_if.h
