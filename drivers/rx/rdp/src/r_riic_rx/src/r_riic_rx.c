@@ -162,7 +162,7 @@ static void riic_reset_set (riic_info_t *);
 static void riic_all_reset (riic_info_t *);
 static void riic_clear_ir_flag (riic_info_t *);
 
-static riic_return_t riic_bps_calc (riic_info_t *, uint16_t kbps);
+riic_return_t riic_bps_calc (riic_info_t *, uint16_t kbps);
 
 /* static double riic_check_freq(void); */
 
@@ -3784,7 +3784,7 @@ static void riic_clear_ir_flag(riic_info_t * p_riic_info)
  * Return Value : RIIC_SUCCESS                   ; Successful operation, communication state
  *              : RIIC_ERR_OTHER                 ; Other error
  **********************************************************************************************************************/
-static riic_return_t riic_bps_calc(riic_info_t * p_riic_info, uint16_t kbps)
+riic_return_t riic_bps_calc(riic_info_t * p_riic_info, uint16_t kbps)
 {
     volatile uint8_t uctmp;
 
