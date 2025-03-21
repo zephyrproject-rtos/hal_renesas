@@ -1,0 +1,34 @@
+Firmware Integration Technology (FIT)
+#####################################
+
+Origin:
+   Renesas Electronics Corporation
+   https://www.renesas.com/us/en/software-tool/fit
+
+Status:
+   version v1.46
+
+Purpose:
+   Firmware Integration Technology (FIT) for Renesas RX MCU Family.
+
+Description:
+   This package is a snapshot from the RX FIT software released by Renesas Electronics Corporation
+   It contain the HAL and a set of CMSIS headers files for the Renesas RX MCUs
+
+Dependencies:
+   None.
+
+URL:
+   https://github.com/renesas/rx-driver-package
+
+Commit:
+   aa05cf00f4caade21cc6697c9f24c70d41f2a3b4
+
+Maintained-by:
+   Renesas Electronics Corporation
+
+License:
+   BSD-3-Clause
+
+License Link:
+   https://opensource.org/licenses/BSD-3-Clause
