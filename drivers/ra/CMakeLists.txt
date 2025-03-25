@@ -50,6 +50,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_I2C
 	fsp/src/r_sci_i2c/r_sci_i2c.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_B_I2C
 	fsp/src/r_sci_b_i2c/r_sci_b_i2c.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SSI
+	fsp/src/r_ssi/r_ssi.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_GPT
 	fsp/src/r_gpt/r_gpt.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_AGT
