@@ -43,6 +43,9 @@ FSP_HEADER
 #define BSP_IO_PRV_PIN_REG_BASE_SET(base)    BSP_IO_PRV_PIN_REG_BASE(base)
 #define BSP_IO_PRV_PIN_REG_BASE(base)        (&R_GPIO->PIN ## base)
 
+#define BSP_IO_PRV_SD_POC_REG_BASE    (&R_GPIO->SD_CH0_POC)
+#define BSP_IO_PRV_SD_REG_BASE        (&R_GPIO->SD_ch0)
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -255,12 +258,16 @@ typedef enum e_bsp_io_port_pin_t
 
 #endif
 
+#ifndef BSP_OVERRIDE_BSP_SD_CH_T
+
 /** Superset of SD channels. */
 typedef enum e_bsp_sd_ch
 {
     BSP_SD_CHANNEL_0 = 0x00,           ///< Used to select SD channel 0
     BSP_SD_CHANNEL_1 = 0x01,           ///< Used to select SD channel 1
 } bsp_sd_channel_t;
+
+#endif
 
 /** Superset of Ethernet channels. */
 typedef enum e_bsp_eth_ch
@@ -576,20 +583,22 @@ __STATIC_INLINE void R_BSP_SDVoltageModeCfg (bsp_sd_channel_t channel, bsp_sd_vo
         R_GPIO->SD_ch0 = voltage;
  #endif
     }
+
+ #if (1 < BSP_FEATURE_SDHI_MAX_CHANNELS)
     else if (BSP_SD_CHANNEL_1 == channel)
     {
- #if BSP_FEATURE_BSP_HAS_SD_CH_POC_REG
-        R_GPIO->SD_CH1_POC = voltage;
- #else
-        R_GPIO->SD_ch1 = voltage;
- #endif
+  #if BSP_FEATURE_BSP_HAS_SD_CH_POC_REG
+        *(BSP_IO_PRV_SD_POC_REG_BASE + (32U / BSP_FEATURE_BSP_SD_REG_SIZE_BY_BIT) * channel) = voltage;
+  #else
+        *(BSP_IO_PRV_SD_REG_BASE + (32U / BSP_FEATURE_BSP_SD_REG_SIZE_BY_BIT) * channel) = voltage;
+  #endif
     }
+ #endif
     else
     {
         /* Do nothing. */
         FSP_PARAMETER_NOT_USED(voltage);
     }
-
 #else
     FSP_PARAMETER_NOT_USED(channel);
     FSP_PARAMETER_NOT_USED(voltage);

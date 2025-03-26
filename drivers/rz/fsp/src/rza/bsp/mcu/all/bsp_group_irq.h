@@ -27,7 +27,7 @@ FSP_HEADER
 /** Which interrupts can have callbacks registered. */
 typedef enum e_bsp_grp_irq
 {
-    BSP_GRP_IRQ_UNSUPPORTED = 0,       ///< NMI Group IRQ are not supported in RZ/A3UL.
+    BSP_GRP_IRQ_UNSUPPORTED = 0,       ///< NMI Group IRQ are not supported in RZ/A Devices.
 } bsp_grp_irq_t;
 
 /* Callback type. */

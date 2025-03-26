@@ -195,6 +195,27 @@
  * @param      ch       The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
 
+#define R_BSP_MODULE_START_FSP_IP_MIPI_DSI(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
+                                                        R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTOFF(ip, ch);}
+
+/*******************************************************************************************************************//**
+ * Enables the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
+#define R_BSP_MODULE_STOP_FSP_IP_MIPI_DSI(ip, ch)      {R_BSP_MSTP_STOP(ip, ch); \
+                                                        R_BSP_MODULE_CLKOFF(ip, ch);}
+
+/*******************************************************************************************************************//**
+ * Cancel the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
 #define R_BSP_MODULE_START_FSP_IP_MTU3(ip, ch)         {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}

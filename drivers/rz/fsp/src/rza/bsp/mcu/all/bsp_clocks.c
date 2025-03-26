@@ -54,14 +54,34 @@ static uint32_t g_clock_freq[BSP_PRV_NUM_CLOCKS] =
     BSP_CFG_CLOCK_S0CLK_HZ,            /* Initial value of DDR-PHY Clock */
     BSP_CFG_CLOCK_SPI0CLK_HZ,          /* Initial value of SPI0 Clock */
     BSP_CFG_CLOCK_SPI1CLK_HZ,          /* Initial value of SPI1 Clock */
+#if BSP_FEATURE_CPG_HAS_OC0CLK
     BSP_CFG_CLOCK_OC0CLK_HZ,           /* Initial value of OC0 Clock */
+#else
+    0U,                                /* OC0 Clock is not available on this MPU. */
+#endif
+#if BSP_FEATURE_CPG_HAS_OC1CLK
     BSP_CFG_CLOCK_OC1CLK_HZ,           /* Initial value of OC1 Clock */
+#else
+    0U,                                /* OC1 Clock is not available on this MPU. */
+#endif
+#if BSP_FEATURE_CPG_HAS_SD0CLK
     BSP_CFG_CLOCK_SD0CLK_HZ,           /* Initial value of SDH0 Clock */
+#else
+    0U,                                /* SDH0 Clock is not available on this MPU. */
+#endif
+#if BSP_FEATURE_CPG_HAS_SD1CLK
     BSP_CFG_CLOCK_SD1CLK_HZ,           /* Initial value of SDH1 Clock */
+#else
+    0U,                                /* SDH1 Clock is not available on this MPU. */
+#endif
     BSP_CFG_CLOCK_M0CLK_HZ,            /* Initial value of VCP, LCDC Clock */
     BSP_CFG_CLOCK_M2CLK_HZ,            /* Initial value of CRU, MIPI-DSI Clock */
     BSP_CFG_CLOCK_M3CLK_HZ,            /* Initial value of MIPI-DSI, LCDC Clock */
+#if BSP_FEATURE_CPG_HAS_HPCLK
     BSP_CFG_CLOCK_HPCLK_HZ,            /* Initial value of Ethernet Clock */
+#else
+    0U,                                /* Ethernet Clock is not available on this MPU. */
+#endif
     BSP_CFG_CLOCK_TSUCLK_HZ,           /* Initial value of TSU Clock */
     BSP_CFG_CLOCK_ZTCLK_HZ,            /* Initial value of JAUTH Clock */
     BSP_CFG_CLOCK_P0CLK_HZ,            /* Initial value of APB-BUS Clock */
@@ -95,21 +115,31 @@ static void bsp_clock_freq_var_init (void)
     g_clock_freq[FSP_PRIV_CLOCK_S0CLK]   = BSP_CFG_CLOCK_S0CLK_HZ;
     g_clock_freq[FSP_PRIV_CLOCK_SPI0CLK] = BSP_CFG_CLOCK_SPI0CLK_HZ;
     g_clock_freq[FSP_PRIV_CLOCK_SPI1CLK] = BSP_CFG_CLOCK_SPI1CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_OC0CLK]  = BSP_CFG_CLOCK_OC0CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_OC1CLK]  = BSP_CFG_CLOCK_OC1CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_SD0CLK]  = BSP_CFG_CLOCK_SD0CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_SD1CLK]  = BSP_CFG_CLOCK_SD1CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_M0CLK]   = BSP_CFG_CLOCK_M0CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_M2CLK]   = BSP_CFG_CLOCK_M2CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_M3CLK]   = BSP_CFG_CLOCK_M3CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_HPCLK]   = BSP_CFG_CLOCK_HPCLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_TSUCLK]  = BSP_CFG_CLOCK_TSUCLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_ZTCLK]   = BSP_CFG_CLOCK_ZTCLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_P0CLK]   = BSP_CFG_CLOCK_P0CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_P1CLK]   = BSP_CFG_CLOCK_P1CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_P2CLK]   = BSP_CFG_CLOCK_P2CLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_ATCLK]   = BSP_CFG_CLOCK_ATCLK_HZ;
-    g_clock_freq[FSP_PRIV_CLOCK_OSCCLK]  = BSP_CFG_CLOCK_OSCCLK_HZ;
+#if BSP_FEATURE_CPG_HAS_OC0CLK
+    g_clock_freq[FSP_PRIV_CLOCK_OC0CLK] = BSP_CFG_CLOCK_OC0CLK_HZ;
+#endif
+#if BSP_FEATURE_CPG_HAS_OC1CLK
+    g_clock_freq[FSP_PRIV_CLOCK_OC1CLK] = BSP_CFG_CLOCK_OC1CLK_HZ;
+#endif
+#if BSP_FEATURE_CPG_HAS_SD0CLK
+    g_clock_freq[FSP_PRIV_CLOCK_SD0CLK] = BSP_CFG_CLOCK_SD0CLK_HZ;
+#endif
+#if BSP_FEATURE_CPG_HAS_SD1CLK
+    g_clock_freq[FSP_PRIV_CLOCK_SD1CLK] = BSP_CFG_CLOCK_SD1CLK_HZ;
+#endif
+    g_clock_freq[FSP_PRIV_CLOCK_M0CLK] = BSP_CFG_CLOCK_M0CLK_HZ;
+    g_clock_freq[FSP_PRIV_CLOCK_M2CLK] = BSP_CFG_CLOCK_M2CLK_HZ;
+    g_clock_freq[FSP_PRIV_CLOCK_M3CLK] = BSP_CFG_CLOCK_M3CLK_HZ;
+#if BSP_FEATURE_CPG_HAS_HPCLK
+    g_clock_freq[FSP_PRIV_CLOCK_HPCLK] = BSP_CFG_CLOCK_HPCLK_HZ;
+#endif
+    g_clock_freq[FSP_PRIV_CLOCK_TSUCLK] = BSP_CFG_CLOCK_TSUCLK_HZ;
+    g_clock_freq[FSP_PRIV_CLOCK_ZTCLK]  = BSP_CFG_CLOCK_ZTCLK_HZ;
+    g_clock_freq[FSP_PRIV_CLOCK_P0CLK]  = BSP_CFG_CLOCK_P0CLK_HZ;
+    g_clock_freq[FSP_PRIV_CLOCK_P1CLK]  = BSP_CFG_CLOCK_P1CLK_HZ;
+    g_clock_freq[FSP_PRIV_CLOCK_P2CLK]  = BSP_CFG_CLOCK_P2CLK_HZ;
+    g_clock_freq[FSP_PRIV_CLOCK_ATCLK]  = BSP_CFG_CLOCK_ATCLK_HZ;
+    g_clock_freq[FSP_PRIV_CLOCK_OSCCLK] = BSP_CFG_CLOCK_OSCCLK_HZ;
 
     /* The SystemCoreClock needs to be updated before calling R_BSP_SoftwareDelay. */
     SystemCoreClockUpdate();
@@ -232,11 +262,68 @@ void bsp_clock_init (void)
 #endif
 
 #if BSP_FEATURE_CPG_HAS_M3CLK
+ #if BSP_FEATURE_BSP_SUPPORT_PLL5_CONFIG
 
-    /* M3CLK setting  */
-    R_CPG->CPG_PL5_SDIV = (uint32_t) (R_CPG_CPG_PL5_SDIV_DIV_DSI_A_WEN_Msk | \
-                                      (R_CPG_CPG_PL5_SDIV_DIVDSIA_SET_Msk &  \
+    /*
+     * We need to stop the PLL5 before changing the settings.
+     * Also, we need to disable the SSCG mode when enabling the PLL5.
+     *
+     * Refer to the User's Manual at section of "Procedure for Switching Clocks by the Static Switching Frequency
+     * Dividers and Selectors" for more details.
+     */
+    R_CPG->CPG_SIPLL5_STBY = (uint32_t) (R_CPG_CPG_SIPLL5_STBY_SSCG_EN_WEN_Msk | R_CPG_CPG_SIPLL5_STBY_RESETB_WEN_Msk);
+
+    /* Wait for the PLL5 to stop. */
+    FSP_HARDWARE_REGISTER_WAIT(R_CPG->CPG_SIPLL5_MON, 0U);
+
+    /* Configure the CPG_SIPLL5_CLK1 register. */
+    R_CPG->CPG_SIPLL5_CLK1 = (uint32_t) (R_CPG_CPG_SIPLL5_CLK1_REFDIV_Msk &                                     \
+                                         (BSP_CFG_CLOCK_PLL5_REFDIV << R_CPG_CPG_SIPLL5_CLK1_REFDIV_Pos)) |     \
+                             (uint32_t) (R_CPG_CPG_SIPLL5_CLK1_POSTDIV1_Msk &                                   \
+                                         (BSP_CFG_CLOCK_PLL5_POSTDIV1 << R_CPG_CPG_SIPLL5_CLK1_POSTDIV1_Pos)) | \
+                             (uint32_t) (R_CPG_CPG_SIPLL5_CLK1_POSTDIV2_Msk &                                   \
+                                         (BSP_CFG_CLOCK_PLL5_POSTDIV2 << R_CPG_CPG_SIPLL5_CLK1_POSTDIV2_Pos));
+
+    /* Configure the CPG_SIPLL5_CLK3 register. */
+    const uint32_t divval = R_CPG->CPG_SIPLL5_CLK3_b.DIVVAL;
+    R_CPG->CPG_SIPLL5_CLK3 = (uint32_t) (R_CPG_CPG_SIPLL5_CLK3_FRACIN_Msk &                                 \
+                                         (BSP_CFG_CLOCK_PLL5_FRACIN << R_CPG_CPG_SIPLL5_CLK3_FRACIN_Pos)) | \
+                             (uint32_t) (R_CPG_CPG_SIPLL5_CLK3_DIVVAL_Msk & divval);
+
+    /* Configure the CPG_SIPLL5_CLK4 register. */
+    R_CPG->CPG_SIPLL5_CLK4 = (uint32_t) (R_CPG_CPG_SIPLL5_CLK4_INTIN_Msk & \
+                                         (BSP_CFG_CLOCK_PLL5_INTIN << R_CPG_CPG_SIPLL5_CLK4_INTIN_Pos));
+
+    /* Disable power down mode of FOUTPOSTDIV and FOUTVCO clocks. */
+    R_CPG->CPG_SIPLL5_CLK2 =
+        (uint32_t) (R_CPG_CPG_SIPLL5_CLK2_FOUTPOSTDIVPD_WEN_Msk | R_CPG_CPG_SIPLL5_CLK2_FOUTVCOPD_WEN_Msk);
+
+  #if BSP_FEATURE_CPG_HAS_PLL5_SOURCE_FOUTPOSTDIV
+
+    /* Set the clock source of the PLL5. */
+    R_CPG->CPG_OTHERFUNC1_REG = (uint32_t) (R_CPG_CPG_OTHERFUNC1_REG_RES0_ON_WEN_Msk | \
+                                            (R_CPG_CPG_OTHERFUNC1_REG_RES0_SET_Msk &   \
+                                             (BSP_CFG_SEL_PLL5_SET_SOURCE << R_CPG_CPG_OTHERFUNC1_REG_RES0_SET_Pos)));
+  #endif
+ #endif
+
+    /* M3CLK dividers setting */
+    R_CPG->CPG_PL5_SDIV = (uint32_t) (R_CPG_CPG_PL5_SDIV_DIV_DSI_A_WEN_Msk |                              \
+                                      R_CPG_CPG_PL5_SDIV_DIV_DSI_B_WEN_Msk |                              \
+                                      (R_CPG_CPG_PL5_SDIV_DIVDSIB_SET_Msk &                               \
+                                       (BSP_CFG_DIVDSIB_SET_DIV << R_CPG_CPG_PL5_SDIV_DIVDSIB_SET_Pos)) | \
+                                      (R_CPG_CPG_PL5_SDIV_DIVDSIA_SET_Msk &                               \
                                        (BSP_CFG_DIVDSIA_SET_DIV << R_CPG_CPG_PL5_SDIV_DIVDSIA_SET_Pos)));
+
+ #if BSP_FEATURE_BSP_SUPPORT_PLL5_CONFIG
+
+    /* Enable the PLL5. */
+    R_CPG->CPG_SIPLL5_STBY = (uint32_t) (R_CPG_CPG_SIPLL5_STBY_RESETB_WEN_Msk | R_CPG_CPG_SIPLL5_STBY_RESETB_Msk);
+
+    /* Wait for the PLL5 to lock. */
+    FSP_HARDWARE_REGISTER_WAIT(R_CPG->CPG_SIPLL5_MON,
+                               (R_CPG_CPG_SIPLL5_MON_PLL5_LOCK_Msk | R_CPG_CPG_SIPLL5_MON_PLL5_RESETB_Msk));
+ #endif
 #endif
 
 #if BSP_FEATURE_CPG_HAS_HPCLK
@@ -281,6 +368,8 @@ fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel
 
     switch (clock)
     {
+#if BSP_FEATURE_CPG_HAS_SD0CLK
+
         /* Set the value to bit[1:0] of the CPG_PL2SDHI_DSEL register. */
         case FSP_PRIV_CLOCK_SD0CLK:
         {
@@ -327,6 +416,9 @@ fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel
 
             break;
         }
+#endif
+
+#if BSP_FEATURE_CPG_HAS_SD1CLK
 
         /* Set the value to bit[5:4] of the CPG_PL2SDHI_DSEL register. */
         case FSP_PRIV_CLOCK_SD1CLK:
@@ -374,6 +466,7 @@ fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel
 
             break;
         }
+#endif
 
         /* Set the value to bit[8] of the CPG_PL3_SSEL register. */
         case FSP_PRIV_CLOCK_SPI0CLK:
@@ -491,6 +584,8 @@ fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel
             break;
         }
 
+#if BSP_FEATURE_CPG_HAS_OC0CLK
+
         /* Set the value to bit[12] of the CPG_PL3_SSEL register. */
         case FSP_PRIV_CLOCK_OC0CLK:
         {
@@ -548,6 +643,9 @@ fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel
             g_clock_freq[FSP_PRIV_CLOCK_OC1CLK] = clock_freq >> 1;
             break;
         }
+#endif
+
+#if BSP_FEATURE_CPG_HAS_OC1CLK
 
         /* Set the value to bit[12] of the CPG_PL3_SSEL register. */
         case FSP_PRIV_CLOCK_OC1CLK:
@@ -606,6 +704,7 @@ fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel
             g_clock_freq[FSP_PRIV_CLOCK_OC0CLK] = clock_freq << 1;
             break;
         }
+#endif
 
         default:
         {
@@ -733,6 +832,8 @@ fsp_err_t bsp_prv_clock_divider_set (fsp_priv_clock_t clock, uint32_t clock_div)
             break;
         }
 
+#if BSP_FEATURE_CPG_HAS_OC0CLK
+
         /* Set the value to bit[14:12] the CPG_PL3A_DDIV register. */
         case FSP_PRIV_CLOCK_OC0CLK:
         {
@@ -774,6 +875,9 @@ fsp_err_t bsp_prv_clock_divider_set (fsp_priv_clock_t clock, uint32_t clock_div)
             g_clock_freq[FSP_PRIV_CLOCK_OC1CLK] = clock_freq >> 1;
             break;
         }
+#endif
+
+#if BSP_FEATURE_CPG_HAS_OC1CLK
 
         /* Set the value to bit[14:12] the CPG_PL3A_DDIV register. */
         case FSP_PRIV_CLOCK_OC1CLK:
@@ -816,6 +920,7 @@ fsp_err_t bsp_prv_clock_divider_set (fsp_priv_clock_t clock, uint32_t clock_div)
             g_clock_freq[FSP_PRIV_CLOCK_OC0CLK] = clock_freq << 1;
             break;
         }
+#endif
 
         default:
         {
@@ -898,6 +1003,8 @@ static fsp_err_t bsp_prv_clock_check_pll (fsp_priv_clock_t clock)
 
     switch (clock)
     {
+#if BSP_FEATURE_CPG_HAS_ICLK
+
         /* PLL1 */
         case FSP_PRIV_CLOCK_ICLK:
         {
@@ -908,11 +1015,18 @@ static fsp_err_t bsp_prv_clock_check_pll (fsp_priv_clock_t clock)
 
             break;
         }
+#endif
 
         /* PLL2 */
+#if BSP_FEATURE_CPG_HAS_SD0CLK
         case FSP_PRIV_CLOCK_SD0CLK:
+#endif
+#if BSP_FEATURE_CPG_HAS_SD1CLK
         case FSP_PRIV_CLOCK_SD1CLK:
+#endif
+#if BSP_FEATURE_CPG_HAS_P0CLK
         case FSP_PRIV_CLOCK_P0CLK:
+#endif
         case FSP_PRIV_CLOCK_TSUCLK:
         {
             if (0 == (R_CPG->CPG_SIPLL2_MON & R_CPG_CPG_SIPLL2_MON_PLL2_LOCK_Msk))
@@ -925,24 +1039,34 @@ static fsp_err_t bsp_prv_clock_check_pll (fsp_priv_clock_t clock)
 
         /* PLL3 */
         case FSP_PRIV_CLOCK_ATCLK:
+#if BSP_FEATURE_CPG_HAS_I2CLK
         case FSP_PRIV_CLOCK_I2CLK:
+#endif
+#if BSP_FEATURE_CPG_HAS_P1CLK
         case FSP_PRIV_CLOCK_P1CLK:
+#endif
         case FSP_PRIV_CLOCK_M0CLK:
         case FSP_PRIV_CLOCK_ZTCLK:
+#if BSP_FEATURE_CPG_HAS_P2CLK
         case FSP_PRIV_CLOCK_P2CLK:
+#endif
         case FSP_PRIV_CLOCK_SPI0CLK:
         case FSP_PRIV_CLOCK_SPI1CLK:
         case FSP_PRIV_CLOCK_M2CLK:
+#if BSP_FEATURE_CPG_HAS_OC0CLK
         case FSP_PRIV_CLOCK_OC0CLK:
+#endif
+#if BSP_FEATURE_CPG_HAS_OC1CLK
         case FSP_PRIV_CLOCK_OC1CLK:
-        {
-            if (0 == (R_CPG->CPG_SIPLL3_MON & R_CPG_CPG_SIPLL3_MON_PLL3_LOCK_Msk))
+#endif
             {
-                err = FSP_ERR_PLL_SRC_INACTIVE;
-            }
+                if (0 == (R_CPG->CPG_SIPLL3_MON & R_CPG_CPG_SIPLL3_MON_PLL3_LOCK_Msk))
+                {
+                    err = FSP_ERR_PLL_SRC_INACTIVE;
+                }
 
-            break;
-        }
+                break;
+            }
 
         /* PLL4 */
         case FSP_PRIV_CLOCK_S0CLK:
@@ -955,6 +1079,8 @@ static fsp_err_t bsp_prv_clock_check_pll (fsp_priv_clock_t clock)
             break;
         }
 
+#if BSP_FEATURE_CPG_HAS_M3CLK
+
         /* PLL5 */
         case FSP_PRIV_CLOCK_M3CLK:
         {
@@ -965,6 +1091,9 @@ static fsp_err_t bsp_prv_clock_check_pll (fsp_priv_clock_t clock)
 
             break;
         }
+#endif
+
+#if BSP_FEATURE_CPG_HAS_HPCLK
 
         /* PLL5 or PLL6 */
         case FSP_PRIV_CLOCK_HPCLK:
@@ -988,6 +1117,7 @@ static fsp_err_t bsp_prv_clock_check_pll (fsp_priv_clock_t clock)
 
             break;
         }
+#endif
 
         /* Other */
         default:

@@ -45,7 +45,7 @@ typedef struct                              /*!< (@ 0x11010B60) R_MSTP Structure
             __IOM uint32_t MXSRAM_M    : 1; /*!< [ 0.. 0] Module Stop of MXSRAM_M   */
             __IOM uint32_t MHSPI       : 1; /*!< [ 1.. 1] Module Stop of MHSPI       */
             __IOM uint32_t MHMTU3A     : 1; /*!< [ 2.. 2] Module Stop of MHMTU3A     */
-            uint32_t                   : 6; 
+            uint32_t                   : 6;
             __IOM uint32_t MHPOE3      : 1; /*!< [ 9.. 9] Module Stop of MHPOE3      */
             __IOM uint32_t MHSSIF0     : 1; /*!< [10..10] Module Stop of MHSSIF0     */
             __IOM uint32_t MHSSIF1     : 1; /*!< [11..11] Module Stop of MHSSIF1     */
@@ -56,7 +56,7 @@ typedef struct                              /*!< (@ 0x11010B60) R_MSTP Structure
             __IOM uint32_t MXSRAM_M_WE : 1; /*!< [16..16] Write Enable of MXSRAM_M   */
             __IOM uint32_t MHSPI_WE    : 1; /*!< [17..17] Write Enable of MHSPI      */
             __IOM uint32_t MHMTU3A_WE  : 1; /*!< [18..18] Write Enable of MHMTU3A    */
-            uint32_t                   : 6; 
+            uint32_t                   : 6;
             __IOM uint32_t MHPOE3_WE   : 1; /*!< [25..25] Write Enable of MHPOE3     */
             __IOM uint32_t MHSSIF0_WE  : 1; /*!< [26..26] Write Enable of MHSSIF0    */
             __IOM uint32_t MHSSIF1_WE  : 1; /*!< [27..27] Write Enable of MHSSIF1    */
@@ -154,7 +154,7 @@ typedef struct                              /*!< (@ 0x11010B60) R_MSTP Structure
             __IOM uint32_t MPSRAM_A    : 1; /*!< [11..11] Module Stop of MPSRAM_A  */
             __IOM uint32_t MPSRAM_M    : 1; /*!< [12..12] Module Stop of MPSRAM_M  */
             __IOM uint32_t MPIA55      : 1; /*!< [13..13] Module Stop of MPIA55    */
-            uint32_t                   : 1; 
+            uint32_t                   : 1;
             __IOM uint32_t MXREG0      : 1; /*!< [15..15] Module Stop of MXREG0    */
             __IOM uint32_t MXMCPU_WE   : 1; /*!< [16..16] Write Enable of MXMCPU   */
             __IOM uint32_t MXACPU_WE   : 1; /*!< [17..17] Write Enable of MXACPU   */
@@ -167,7 +167,7 @@ typedef struct                              /*!< (@ 0x11010B60) R_MSTP Structure
             __IOM uint32_t MPSRAM_A_WE : 1; /*!< [27..27] Write Enable of MPSRAM_A */
             __IOM uint32_t MPSRAM_M_WE : 1; /*!< [28..28] Write Enable of MPSRAM_M */
             __IOM uint32_t MPIA55_WE   : 1; /*!< [29..29] Write Enable of MPIA55   */
-            uint32_t                   : 1; 
+            uint32_t                   : 1;
             __IOM uint32_t MXREG0_WE   : 1; /*!< [31..31] Write Enable of MXREG0   */
         } PERI_CPU_b;
     };
@@ -189,33 +189,33 @@ typedef struct                              /*!< (@ 0x11010B60) R_MSTP Structure
 
     union
     {
-        __IOM uint32_t PERI_VIDEO;           /*!< (@ 0x11010B78) PERI_VIDEO Register */
+        __IOM uint32_t PERI_VIDEO;     /*!< (@ 0x11010B78) PERI_VIDEO Register */
 
         struct
         {
-            uint32_t                    : 3;
-            __IOM uint32_t MPCRU        : 1; /*!< [ 3.. 3] Module Stop of MPCRU      */
-            __IOM uint32_t MPISU        : 1; /*!< [ 4.. 4] Module Stop of MPISU      */
-            uint32_t                    : 2;
-            __IOM uint32_t MPVSPD       : 1; /*!< [ 7.. 7] Module Stop of MPVSPD     */
-            __IOM uint32_t MPCPVD       : 1; /*!< [ 8.. 8] Module Stop of MPCPVD     */
-            __IOM uint32_t MPDU         : 1; /*!< [ 9.. 9] Module Stop of MPDU       */
-            __IOM uint32_t MXVIDEO      : 1; /*!< [10..10] Module Stop of MXVIDEO    */
-            uint32_t                    : 8;
-            __IOM uint32_t MPCRU_WE     : 1; /*!< [19..19] Write Enable of MPCRU     */
-            __IOM uint32_t MPISU_WE     : 1; /*!< [20..20] Write Enable of MPISU     */
-            uint32_t                    : 2;
-            __IOM uint32_t MPVSPD_WE    : 1; /*!< [23..23] Write Enable of MPVSPD    */
-            __IOM uint32_t MPCPVD_WE    : 1; /*!< [24..24] Write Enable of MPCPVD    */
-            __IOM uint32_t MPDU_WE      : 1; /*!< [25..25] Write Enable of MPDU      */
-            __IOM uint32_t MXVIDEO_WE   : 1; /*!< [26..26] Write Enable of MXVIDEO   */
-            uint32_t                    : 5;
+            uint32_t                  : 3;
+            __IOM uint32_t MPCRU      : 1; /*!< [ 3.. 3] Module Stop of MPCRU      */
+            __IOM uint32_t MPISU      : 1; /*!< [ 4.. 4] Module Stop of MPISU      */
+            uint32_t                  : 2;
+            __IOM uint32_t MPVSPD     : 1; /*!< [ 7.. 7] Module Stop of MPVSPD     */
+            __IOM uint32_t MPCPVD     : 1; /*!< [ 8.. 8] Module Stop of MPCPVD     */
+            __IOM uint32_t MPDU       : 1; /*!< [ 9.. 9] Module Stop of MPDU       */
+            __IOM uint32_t MXVIDEO    : 1; /*!< [10..10] Module Stop of MXVIDEO    */
+            uint32_t                  : 8;
+            __IOM uint32_t MPCRU_WE   : 1; /*!< [19..19] Write Enable of MPCRU     */
+            __IOM uint32_t MPISU_WE   : 1; /*!< [20..20] Write Enable of MPISU     */
+            uint32_t                  : 2;
+            __IOM uint32_t MPVSPD_WE  : 1; /*!< [23..23] Write Enable of MPVSPD    */
+            __IOM uint32_t MPCPVD_WE  : 1; /*!< [24..24] Write Enable of MPCPVD    */
+            __IOM uint32_t MPDU_WE    : 1; /*!< [25..25] Write Enable of MPDU      */
+            __IOM uint32_t MXVIDEO_WE : 1; /*!< [26..26] Write Enable of MXVIDEO   */
+            uint32_t                  : 5;
         } PERI_VIDEO_b;
     };
 
     union
     {
-        __IOM uint32_t REG0;               /*!< (@ 0x11010B7C) REG0 Register */
+        __IOM uint32_t REG0;           /*!< (@ 0x11010B7C) REG0 Register */
 
         struct
         {
@@ -237,42 +237,40 @@ typedef struct                              /*!< (@ 0x11010B60) R_MSTP Structure
 
     union
     {
-        __IOM uint32_t REG1;                   /*!< (@ 0x11010B80) REG1 Register */
+        __IOM uint32_t REG1;                 /*!< (@ 0x11010B80) REG1 Register */
 
         struct
         {
-            __IOM uint32_t MXDMAC_S       : 1; /*!< [ 0.. 0] Module Stop of MXDMAC_S     */
-            __IOM uint32_t MPDMAC_S       : 1; /*!< [ 1.. 1] Module Stop of MPDMAC_S     */
-            __IOM uint32_t MXDMAC_NS      : 1; /*!< [ 2.. 2] Module Stop of MXDMAC_NS    */
-            __IOM uint32_t MPDMAC_NS      : 1; /*!< [ 3.. 3] Module Stop of MPDMAC_NS    */
-            uint32_t                      : 3;
-            __IOM uint32_t MXGIC          : 1; /*!< [ 7.. 7] Module Stop of MXGIC        */
-            uint32_t                      : 8;
-            __IOM uint32_t MXDMAC_S_WE    : 1; /*!< [16..16] Write Enable of MXDMAC_S    */
-            __IOM uint32_t MPDMAC_S_WE    : 1; /*!< [17..17] Write Enable of MPDMAC_S    */
-            __IOM uint32_t MXDMAC_NS_WE   : 1; /*!< [18..18] Write Enable of MXDMAC_NS   */
-            __IOM uint32_t MPDMAC_NS_WE   : 1; /*!< [19..19] Write Enable of MPDMAC_NS   */
-            uint32_t                      : 3;
-            __IOM uint32_t MXGIC_WE       : 1; /*!< [23..23] Write Enable of MXGIC       */
-            uint32_t                      : 8;
+            __IOM uint32_t MXDMAC_S     : 1; /*!< [ 0.. 0] Module Stop of MXDMAC_S     */
+            __IOM uint32_t MPDMAC_S     : 1; /*!< [ 1.. 1] Module Stop of MPDMAC_S     */
+            __IOM uint32_t MXDMAC_NS    : 1; /*!< [ 2.. 2] Module Stop of MXDMAC_NS    */
+            __IOM uint32_t MPDMAC_NS    : 1; /*!< [ 3.. 3] Module Stop of MPDMAC_NS    */
+            uint32_t                    : 3;
+            __IOM uint32_t MXGIC        : 1; /*!< [ 7.. 7] Module Stop of MXGIC        */
+            uint32_t                    : 8;
+            __IOM uint32_t MXDMAC_S_WE  : 1; /*!< [16..16] Write Enable of MXDMAC_S    */
+            __IOM uint32_t MPDMAC_S_WE  : 1; /*!< [17..17] Write Enable of MPDMAC_S    */
+            __IOM uint32_t MXDMAC_NS_WE : 1; /*!< [18..18] Write Enable of MXDMAC_NS   */
+            __IOM uint32_t MPDMAC_NS_WE : 1; /*!< [19..19] Write Enable of MPDMAC_NS   */
+            uint32_t                    : 3;
+            __IOM uint32_t MXGIC_WE     : 1; /*!< [23..23] Write Enable of MXGIC       */
+            uint32_t                    : 8;
         } REG1_b;
     };
 
     union
     {
-        __IOM uint32_t MCPU3;                   /*!< (@ 0x11010B90) MCUP3 Register */
+        __IOM uint32_t MCPU3;              /*!< (@ 0x11010B90) MCUP3 Register */
 
         struct
         {
-            __IOM uint32_t MXOCTA     : 1; /*!< [ 0.. 0] Module Stop of MSTOP0_ON     */
-            uint32_t                  : 15;
-            __IOM uint32_t MXOCTA_WE  : 1;
-            uint32_t                  : 15;/*!< [ 0.. 0] Module Stop of MSTOP0_ON_WEN */
+            __IOM uint32_t MXOCTA    : 1;  /*!< [ 0.. 0] Module Stop of MSTOP0_ON     */
+            uint32_t                 : 15;
+            __IOM uint32_t MXOCTA_WE : 1;
+            uint32_t                 : 15; /*!< [ 0.. 0] Module Stop of MSTOP0_ON_WEN */
         } MCPU3_b;
     };
-
-
-} R_MSTOP_Type;                          /*!< Size = 44 (0x2C)                                                          */
+} R_MSTOP_Type;                            /*!< Size = 44 (0x2C)                                                          */
 
 /* ================================================================================================================= */
 /* ================                          Device Specific Peripheral Address Map                           ====== */

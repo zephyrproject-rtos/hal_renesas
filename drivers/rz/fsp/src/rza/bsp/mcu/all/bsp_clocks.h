@@ -139,6 +139,15 @@ FSP_HEADER
 #define BSP_RSTMON_REG_FSP_IP_DMAC_S(channel)       (R_CPG->CPG_RSTMON_DMAC)
 #define BSP_RSTMON_BIT_FSP_IP_DMAC_S(channel)       (1U << (R_CPG_CPG_RSTMON_DMAC_RST1_MON_Pos))
 
+#define BSP_CLKON_REG_FSP_IP_DRW(channel)           (R_CPG->CPG_CLKON_DRW)
+#define BSP_CLKON_BIT_FSP_IP_DRW(channel)           (1U << (R_CPG_CPG_CLKON_DRW_CLK0_ON_Pos))
+#define BSP_CLKMON_REG_FSP_IP_DRW(channel)          (R_CPG->CPG_CLKMON_DRW)
+#define BSP_CLKMON_BIT_FSP_IP_DRW(channel)          (1U << (R_CPG_CPG_CLKMON_DRW_CLK0_MON_Pos))
+#define BSP_RST_REG_FSP_IP_DRW(channel)             (R_CPG->CPG_RST_DRW)
+#define BSP_RST_BIT_FSP_IP_DRW(channel)             (1U << (R_CPG_CPG_RST_DRW_UNIT0_RSTB_Pos))
+#define BSP_RSTMON_REG_FSP_IP_DRW(channel)          (R_CPG->CPG_RSTMON_DRW)
+#define BSP_RSTMON_BIT_FSP_IP_DRW(channel)          (1U << (R_CPG_CPG_RSTMON_DRW_RST0_MON_Pos))
+
 #define BSP_CLKON_REG_FSP_IP_ETHER(channel)         (R_CPG->CPG_CLKON_ETH)
 #define BSP_CLKON_BIT_FSP_IP_ETHER(channel)         (1U << (R_CPG_CPG_CLKON_ETH_CLK0_ON_Pos + (channel)))
 #define BSP_CLKMON_REG_FSP_IP_ETHER(channel)        (R_CPG->CPG_CLKMON_ETH)
@@ -201,6 +210,15 @@ FSP_HEADER
 #define BSP_RST_BIT_FSP_IP_LCDC(channel)            (1U << (R_CPG_CPG_RST_LCDC_UNIT0_RSTB_Pos))
 #define BSP_RSTMON_REG_FSP_IP_LCDC(channel)         (R_CPG->CPG_RSTMON_LCDC)
 #define BSP_RSTMON_BIT_FSP_IP_LCDC(channel)         (1U << (R_CPG_CPG_RSTMON_LCDC_RST0_MON_Pos))
+
+#define BSP_CLKON_REG_FSP_IP_MIPI_DSI(channel)      (R_CPG->CPG_CLKON_MIPI_DSI)
+#define BSP_CLKON_BIT_FSP_IP_MIPI_DSI(channel)      (0x3FU << (R_CPG_CPG_CLKON_MIPI_DSI_CLK0_ON_Pos))
+#define BSP_CLKMON_REG_FSP_IP_MIPI_DSI(channel)     (R_CPG->CPG_CLKMON_MIPI_DSI)
+#define BSP_CLKMON_BIT_FSP_IP_MIPI_DSI(channel)     (0x3FU << (R_CPG_CPG_CLKMON_MIPI_DSI_CLK0_MON_Pos))
+#define BSP_RST_REG_FSP_IP_MIPI_DSI(channel)        (R_CPG->CPG_RST_MIPI_DSI)
+#define BSP_RST_BIT_FSP_IP_MIPI_DSI(channel)        (0x7U << (R_CPG_CPG_RST_MIPI_DSI_UNIT0_RSTB_Pos))
+#define BSP_RSTMON_REG_FSP_IP_MIPI_DSI(channel)     (R_CPG->CPG_RSTMON_MIPI_DSI)
+#define BSP_RSTMON_BIT_FSP_IP_MIPI_DSI(channel)     (0x7U << (R_CPG_CPG_RSTMON_MIPI_DSI_RST0_MON_Pos))
 
 #define BSP_CLKON_REG_FSP_IP_MTU3(channel)          (R_CPG->CPG_CLKON_MTU)
 #define BSP_CLKON_BIT_FSP_IP_MTU3(channel)          (1U << (R_CPG_CPG_CLKON_MTU_CLK0_ON_Pos))
@@ -283,6 +301,15 @@ FSP_HEADER
 #define BSP_RSTMON_REG_FSP_IP_SPI_MULTI(channel)    (R_CPG->CPG_RSTMON_SPI)
 #define BSP_RSTMON_BIT_FSP_IP_SPI_MULTI(channel)    (1U << (R_CPG_CPG_RSTMON_SPI_RST0_MON_Pos))
 
+#define BSP_CLKON_REG_FSP_IP_SRC(channel)           (R_CPG->CPG_CLKON_SRC)
+#define BSP_CLKON_BIT_FSP_IP_SRC(channel)           (1U << (R_CPG_CPG_CLKON_SRC_CLK0_ON_Pos + (channel)))
+#define BSP_CLKMON_REG_FSP_IP_SRC(channel)          (R_CPG->CPG_CLKMON_SRC)
+#define BSP_CLKMON_BIT_FSP_IP_SRC(channel)          (1U << (R_CPG_CPG_CLKMON_SRC_CLK0_MON_Pos + (channel)))
+#define BSP_RST_REG_FSP_IP_SRC(channel)             (R_CPG->CPG_RST_SRC)
+#define BSP_RST_BIT_FSP_IP_SRC(channel)             (1U << (R_CPG_CPG_RST_SRC_UNIT0_RSTB_Pos + (channel)))
+#define BSP_RSTMON_REG_FSP_IP_SRC(channel)          (R_CPG->CPG_RSTMON_SRC)
+#define BSP_RSTMON_BIT_FSP_IP_SRC(channel)          (1U << (R_CPG_CPG_RSTMON_SRC_RST0_MON_Pos + (channel)))
+
 #define BSP_CLKON_REG_FSP_IP_SSI(channel)           (R_CPG->CPG_CLKON_SSI)
 #define BSP_CLKON_BIT_FSP_IP_SSI(channel)           (3U << (R_CPG_CPG_CLKON_SSI_CLK0_ON_Pos + (channel * 2)))
 #define BSP_CLKMON_REG_FSP_IP_SSI(channel)          (R_CPG->CPG_CLKMON_SSI)
@@ -338,74 +365,97 @@ FSP_HEADER
 #define BSP_RSTMON_BIT_FSP_IP_WDT(channel)          (1U << (R_CPG_CPG_RSTMON_WDT_RST0_MON_Pos))
 
 /* CPG_PL1_DDIV.DIVPL1_SET options. */
-#define BSP_CLOCKS_PL1_DIV_1                 (0) // Divide ICLK source clock by 1
-#define BSP_CLOCKS_PL1_DIV_2                 (1) // Divide ICLK source clock by 2
-#define BSP_CLOCKS_PL1_DIV_4                 (2) // Divide ICLK source clock by 4
-#define BSP_CLOCKS_PL1_DIV_8                 (3) // Divide ICLK source clock by 8
+#define BSP_CLOCKS_PL1_DIV_1                        (0)  // Divide ICLK source clock by 1
+#define BSP_CLOCKS_PL1_DIV_2                        (1)  // Divide ICLK source clock by 2
+#define BSP_CLOCKS_PL1_DIV_4                        (2)  // Divide ICLK source clock by 4
+#define BSP_CLOCKS_PL1_DIV_8                        (3)  // Divide ICLK source clock by 8
 
 /* CPG_PL2_DDIV.DIVPL2A_SET options. */
-#define BSP_CLOCKS_PL2A_DIV_1                (0) // Divide P0CLK source clock by 1
-#define BSP_CLOCKS_PL2A_DIV_2                (1) // Divide P0CLK source clock by 2
-#define BSP_CLOCKS_PL2A_DIV_4                (2) // Divide P0CLK source clock by 4
-#define BSP_CLOCKS_PL2A_DIV_8                (3) // Divide P0CLK source clock by 8
-#define BSP_CLOCKS_PL2A_DIV_32               (4) // Divide P0CLK source clock by 32
+#define BSP_CLOCKS_PL2A_DIV_1                       (0)  // Divide P0CLK source clock by 1
+#define BSP_CLOCKS_PL2A_DIV_2                       (1)  // Divide P0CLK source clock by 2
+#define BSP_CLOCKS_PL2A_DIV_4                       (2)  // Divide P0CLK source clock by 4
+#define BSP_CLOCKS_PL2A_DIV_8                       (3)  // Divide P0CLK source clock by 8
+#define BSP_CLOCKS_PL2A_DIV_32                      (4)  // Divide P0CLK source clock by 32
 
 /* CPG_PL3A_DDIV.DIVPL3F_SET options. */
-#define BSP_CLOCKS_PL3F_DIV_1                (0) // Divide OC0CLK source clock by 1
-#define BSP_CLOCKS_PL3F_DIV_2                (1) // Divide OC0CLK source clock by 2
-#define BSP_CLOCKS_PL3F_DIV_4                (2) // Divide OC0CLK source clock by 4
-#define BSP_CLOCKS_PL3F_DIV_8                (3) // Divide OC0CLK source clock by 8
-#define BSP_CLOCKS_PL3F_DIV_32               (4) // Divide OC0CLK source clock by 32
+#define BSP_CLOCKS_PL3F_DIV_1                       (0)  // Divide OC0CLK source clock by 1
+#define BSP_CLOCKS_PL3F_DIV_2                       (1)  // Divide OC0CLK source clock by 2
+#define BSP_CLOCKS_PL3F_DIV_4                       (2)  // Divide OC0CLK source clock by 4
+#define BSP_CLOCKS_PL3F_DIV_8                       (3)  // Divide OC0CLK source clock by 8
+#define BSP_CLOCKS_PL3F_DIV_32                      (4)  // Divide OC0CLK source clock by 32
 
 /* CPG_PL3A_DDIV.DIVPL3C_SET options. */
-#define BSP_CLOCKS_PL3C_DIV_1                (0) // Divide SPI0CLK source clock by 1
-#define BSP_CLOCKS_PL3C_DIV_2                (1) // Divide SPI0CLK source clock by 2
-#define BSP_CLOCKS_PL3C_DIV_4                (2) // Divide SPI0CLK source clock by 4
-#define BSP_CLOCKS_PL3C_DIV_8                (3) // Divide SPI0CLK source clock by 8
-#define BSP_CLOCKS_PL3C_DIV_32               (4) // Divide SPI0CLK source clock by 32
+#define BSP_CLOCKS_PL3C_DIV_1                       (0)  // Divide SPI0CLK source clock by 1
+#define BSP_CLOCKS_PL3C_DIV_2                       (1)  // Divide SPI0CLK source clock by 2
+#define BSP_CLOCKS_PL3C_DIV_4                       (2)  // Divide SPI0CLK source clock by 4
+#define BSP_CLOCKS_PL3C_DIV_8                       (3)  // Divide SPI0CLK source clock by 8
+#define BSP_CLOCKS_PL3C_DIV_32                      (4)  // Divide SPI0CLK source clock by 32
 
 /* CPG_PL3A_DDIV.DIVPL3B_SET options. */
-#define BSP_CLOCKS_PL3B_DIV_1                (0) // Divide P1CLK source clock by 1
-#define BSP_CLOCKS_PL3B_DIV_2                (1) // Divide P1CLK source clock by 2
-#define BSP_CLOCKS_PL3B_DIV_4                (2) // Divide P1CLK source clock by 4
-#define BSP_CLOCKS_PL3B_DIV_8                (3) // Divide P1CLK source clock by 8
-#define BSP_CLOCKS_PL3B_DIV_32               (4) // Divide P1CLK source clock by 32
+#define BSP_CLOCKS_PL3B_DIV_1                       (0)  // Divide P1CLK source clock by 1
+#define BSP_CLOCKS_PL3B_DIV_2                       (1)  // Divide P1CLK source clock by 2
+#define BSP_CLOCKS_PL3B_DIV_4                       (2)  // Divide P1CLK source clock by 4
+#define BSP_CLOCKS_PL3B_DIV_8                       (3)  // Divide P1CLK source clock by 8
+#define BSP_CLOCKS_PL3B_DIV_32                      (4)  // Divide P1CLK source clock by 32
 
 /* CPG_PL3A_DDIV.DIVPL3A_SET options. */
-#define BSP_CLOCKS_PL3A_DIV_1                (0) // Divide P2CLK source clock by 1
-#define BSP_CLOCKS_PL3A_DIV_2                (1) // Divide P2CLK source clock by 2
-#define BSP_CLOCKS_PL3A_DIV_4                (2) // Divide P2CLK source clock by 4
-#define BSP_CLOCKS_PL3A_DIV_8                (3) // Divide P2CLK source clock by 8
-#define BSP_CLOCKS_PL3A_DIV_32               (4) // Divide P2CLK source clock by 32
+#define BSP_CLOCKS_PL3A_DIV_1                       (0)  // Divide P2CLK source clock by 1
+#define BSP_CLOCKS_PL3A_DIV_2                       (1)  // Divide P2CLK source clock by 2
+#define BSP_CLOCKS_PL3A_DIV_4                       (2)  // Divide P2CLK source clock by 4
+#define BSP_CLOCKS_PL3A_DIV_8                       (3)  // Divide P2CLK source clock by 8
+#define BSP_CLOCKS_PL3A_DIV_32                      (4)  // Divide P2CLK source clock by 32
 
 /* CPG_PL3B_DDIV.DIVPL3CLK200FIX_SET options. */
-#define BSP_CLOCKS_PL3CLK200FIX_DIV_1        (0) // Divide I2CLK source clock by 1
-#define BSP_CLOCKS_PL3CLK200FIX_DIV_2        (1) // Divide I2CLK source clock by 2
-#define BSP_CLOCKS_PL3CLK200FIX_DIV_4        (2) // Divide I2CLK source clock by 4
-#define BSP_CLOCKS_PL3CLK200FIX_DIV_8        (3) // Divide I2CLK source clock by 8
-#define BSP_CLOCKS_PL3CLK200FIX_DIV_32       (4) // Divide I2CLK source clock by 32
+#define BSP_CLOCKS_PL3CLK200FIX_DIV_1               (0)  // Divide I2CLK source clock by 1
+#define BSP_CLOCKS_PL3CLK200FIX_DIV_2               (1)  // Divide I2CLK source clock by 2
+#define BSP_CLOCKS_PL3CLK200FIX_DIV_4               (2)  // Divide I2CLK source clock by 4
+#define BSP_CLOCKS_PL3CLK200FIX_DIV_8               (3)  // Divide I2CLK source clock by 8
+#define BSP_CLOCKS_PL3CLK200FIX_DIV_32              (4)  // Divide I2CLK source clock by 32
 
 /* CPG_PL5_SDIV.DIVDSIA_SET options. */
-#define BSP_CLOCKS_DSIA_DIV_2                (1) // Divide M3CLK source clock by 2
-#define BSP_CLOCKS_DSIA_DIV_4                (2) // Divide M3CLK source clock by 4
-#define BSP_CLOCKS_DSIA_DIV_8                (3) // Divide M3CLK source clock by 8
+#define BSP_CLOCKS_DSIA_DIV_1                       (0)  // Divide PLL5 clock by 1
+#define BSP_CLOCKS_DSIA_DIV_2                       (1)  // Divide PLL5 clock by 2
+#define BSP_CLOCKS_DSIA_DIV_4                       (2)  // Divide PLL5 clock by 4
+#define BSP_CLOCKS_DSIA_DIV_8                       (3)  // Divide PLL5 clock by 8
+
+/* CPG_PL5_SDIV.DIVDSIB_SET options. */
+#define BSP_CLOCKS_DSIB_DIV_1                       (0)  // Divide clock from DSI_A by 1
+#define BSP_CLOCKS_DSIB_DIV_2                       (1)  // Divide clock from DSI_A by 2
+#define BSP_CLOCKS_DSIB_DIV_3                       (2)  // Divide clock from DSI_A by 3
+#define BSP_CLOCKS_DSIB_DIV_4                       (3)  // Divide clock from DSI_A by 4
+#define BSP_CLOCKS_DSIB_DIV_5                       (4)  // Divide clock from DSI_A by 5
+#define BSP_CLOCKS_DSIB_DIV_6                       (5)  // Divide clock from DSI_A by 6
+#define BSP_CLOCKS_DSIB_DIV_7                       (6)  // Divide clock from DSI_A by 7
+#define BSP_CLOCKS_DSIB_DIV_8                       (7)  // Divide clock from DSI_A by 8
+#define BSP_CLOCKS_DSIB_DIV_9                       (8)  // Divide clock from DSI_A by 9
+#define BSP_CLOCKS_DSIB_DIV_10                      (9)  // Divide clock from DSI_A by 10
+#define BSP_CLOCKS_DSIB_DIV_11                      (10) // Divide clock from DSI_A by 11
+#define BSP_CLOCKS_DSIB_DIV_12                      (11) // Divide clock from DSI_A by 12
+#define BSP_CLOCKS_DSIB_DIV_13                      (12) // Divide clock from DSI_A by 13
+#define BSP_CLOCKS_DSIB_DIV_14                      (13) // Divide clock from DSI_A by 14
+#define BSP_CLOCKS_DSIB_DIV_15                      (14) // Divide clock from DSI_A by 15
+#define BSP_CLOCKS_DSIB_DIV_16                      (15) // Divide clock from DSI_A by 16
 
 /* CPG_PL2SDHI_DSEL options. */
-#define BSP_CLOCKS_SOURCE_CLOCK_PLL2_533     (1) // Select 533MHz
-#define BSP_CLOCKS_SOURCE_CLOCK_PLL2_400     (2) // Select 400MHz
-#define BSP_CLOCKS_SOURCE_CLOCK_PLL2_266     (3) // Select 266MHz
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL2_533            (1)  // Select 533MHz
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL2_400            (2)  // Select 400MHz
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL2_266            (3)  // Select 266MHz
 
 /* CPG_PL3_SSEL options. */
-#define BSP_CLOCKS_SOURCE_CLOCK_PLL3_533     (0) // Select 533MHz
-#define BSP_CLOCKS_SOURCE_CLOCK_PLL3_400     (1) // Select 400MHz
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL3_533            (0)  // Select 533MHz
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL3_400            (1)  // Select 400MHz
 
 /* CPG_PL4_DSEL options. */
-#define BSP_CLOCKS_SOURCE_CLOCK_OSC_0024     (0) // Select OSC/1000 clock (0.024MHz)
-#define BSP_CLOCKS_SOURCE_CLOCK_PLL4_1600    (1) // Select PLL4 clock (1600MHz)
+#define BSP_CLOCKS_SOURCE_CLOCK_OSC_0024            (0)  // Select OSC/1000 clock (0.024MHz)
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL4_1600           (1)  // Select PLL4 clock (1600MHz)
+
+/* CPG_PL5_SEL options. */
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL5_FOUTPOSTDIV    (0)  // Select PLL5 clock (0 ~ 3000MHz)
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL5_FOUT1PH0       (1)  // Select PLL5 clock (1/2 FOUTPOSTDIV)
 
 /* CPG_PL6_ETH_SSEL options. */
-#define BSP_CLOCKS_SOURCE_CLOCK_PLL6_250     (0) // Select PLL6 clock (250MHz)
-#define BSP_CLOCKS_SOURCE_CLOCK_PLL5_250     (1) // Select PLL5 clock (250MHz)
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL6_250            (0)  // Select PLL6 clock (250MHz)
+#define BSP_CLOCKS_SOURCE_CLOCK_PLL5_250            (1)  // Select PLL5 clock (250MHz)
 
 /***********************************************************************************************************************
  * Typedef definitions
