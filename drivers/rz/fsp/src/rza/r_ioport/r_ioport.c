@@ -68,32 +68,32 @@
 
 #define IOPORT_PRV_NONMASK_ACCESS         (0xFFFFFFFFUL)
 
-#define IOPORT_PRV_P_REG_BASE_SET(base)            IOPORT_PRV_P_REG_BASE(base)
-#define IOPORT_PRV_P_REG_BASE(base)                (&R_GPIO->P ## base)
-#define IOPORT_PRV_PM_REG_BASE_SET(base)           IOPORT_PRV_PM_REG_BASE(base)
-#define IOPORT_PRV_PM_REG_BASE(base)               (&R_GPIO->PM ## base)
-#define IOPORT_PRV_PMC_REG_BASE_SET(base)          IOPORT_PRV_PMC_REG_BASE(base)
-#define IOPORT_PRV_PMC_REG_BASE(base)              (&R_GPIO->PMC ## base)
-#define IOPORT_PRV_PFC_REG_BASE_SET(base)          IOPORT_PRV_PFC_REG_BASE(base)
-#define IOPORT_PRV_PFC_REG_BASE(base)              (&R_GPIO->PFC ## base)
-#define IOPORT_PRV_PIN_REG_BASE_SET(base)          IOPORT_PRV_PIN_REG_BASE(base)
-#define IOPORT_PRV_PIN_REG_BASE(base)              (&R_GPIO->PIN ## base)
-#define IOPORT_PRV_IEN_REG_BASE_SET(base)          IOPORT_PRV_IEN_REG_BASE(base)
-#define IOPORT_PRV_IEN_REG_BASE(base)              (&R_GPIO->IEN ## base)
-#define IOPORT_PRV_ISEL_REG_BASE_SET(base)         IOPORT_PRV_ISEL_REG_BASE(base)
-#define IOPORT_PRV_ISEL_REG_BASE(base)             (&R_GPIO->ISEL ## base)
-#define IOPORT_PRV_IOLH_REG_BASE_SET(base)         IOPORT_PRV_IOLH_REG_BASE(base)
-#define IOPORT_PRV_IOLH_REG_BASE(base)             (&R_GPIO->IOLH ## base)
-#define IOPORT_PRV_SR_REG_BASE_SET(base)           IOPORT_PRV_SR_REG_BASE(base)
-#define IOPORT_PRV_SR_REG_BASE(base)               (&R_GPIO->SR ## base)
-#define IOPORT_PRV_PUPD_REG_BASE_SET(base)         IOPORT_PRV_PUPD_REG_BASE(base)
-#define IOPORT_PRV_PUPD_REG_BASE(base)             (&R_GPIO->PUPD ## base)
-#define IOPORT_PRV_FILONOFF_REG_BASE_SET(base)     IOPORT_PRV_FILONOFF_REG_BASE(base)
-#define IOPORT_PRV_FILONOFF_REG_BASE(base)         (&R_GPIO->FILONOFF ## base)
-#define IOPORT_PRV_FILNUM_REG_BASE_SET(base)       IOPORT_PRV_FILNUM_REG_BASE(base)
-#define IOPORT_PRV_FILNUM_REG_BASE(base)           (&R_GPIO->FILNUM ## base)
-#define IOPORT_PRV_FILCLKSEL_REG_BASE_SET(base)    IOPORT_PRV_FILCLKSEL_REG_BASE(base)
-#define IOPORT_PRV_FILCLKSEL_REG_BASE(base)        (&R_GPIO->FILCLKSEL ## base)
+#define IOPORT_PRV_P_REG_BASE_SET(base)                     IOPORT_PRV_P_REG_BASE(base)
+#define IOPORT_PRV_P_REG_BASE(base)                         (&R_GPIO->P ## base)
+#define IOPORT_PRV_PM_REG_BASE_SET(base)                    IOPORT_PRV_PM_REG_BASE(base)
+#define IOPORT_PRV_PM_REG_BASE(base)                        (&R_GPIO->PM ## base)
+#define IOPORT_PRV_PMC_REG_BASE_SET(base)                   IOPORT_PRV_PMC_REG_BASE(base)
+#define IOPORT_PRV_PMC_REG_BASE(base)                       (&R_GPIO->PMC ## base)
+#define IOPORT_PRV_PFC_REG_BASE_SET(base)                   IOPORT_PRV_PFC_REG_BASE(base)
+#define IOPORT_PRV_PFC_REG_BASE(base)                       (&R_GPIO->PFC ## base)
+#define IOPORT_PRV_PIN_REG_BASE_SET(base)                   IOPORT_PRV_PIN_REG_BASE(base)
+#define IOPORT_PRV_PIN_REG_BASE(base)                       (&R_GPIO->PIN ## base)
+#define IOPORT_PRV_IEN_REG_BASE_SET(base, postfix)          IOPORT_PRV_IEN_REG_BASE(base, postfix)
+#define IOPORT_PRV_IEN_REG_BASE(base, postfix)              (&R_GPIO->IEN ## base ## postfix)
+#define IOPORT_PRV_ISEL_REG_BASE_SET(base, postfix)         IOPORT_PRV_ISEL_REG_BASE(base, postfix)
+#define IOPORT_PRV_ISEL_REG_BASE(base, postfix)             (&R_GPIO->ISEL ## base ## postfix)
+#define IOPORT_PRV_IOLH_REG_BASE_SET(base, postfix)         IOPORT_PRV_IOLH_REG_BASE(base, postfix)
+#define IOPORT_PRV_IOLH_REG_BASE(base, postfix)             (&R_GPIO->IOLH ## base ## postfix)
+#define IOPORT_PRV_SR_REG_BASE_SET(base, postfix)           IOPORT_PRV_SR_REG_BASE(base, postfix)
+#define IOPORT_PRV_SR_REG_BASE(base, postfix)               (&R_GPIO->SR ## base ## postfix)
+#define IOPORT_PRV_PUPD_REG_BASE_SET(base, postfix)         IOPORT_PRV_PUPD_REG_BASE(base, postfix)
+#define IOPORT_PRV_PUPD_REG_BASE(base, postfix)             (&R_GPIO->PUPD ## base ## postfix)
+#define IOPORT_PRV_FILONOFF_REG_BASE_SET(base, postfix)     IOPORT_PRV_FILONOFF_REG_BASE(base, postfix)
+#define IOPORT_PRV_FILONOFF_REG_BASE(base, postfix)         (&R_GPIO->FILONOFF ## base ## postfix)
+#define IOPORT_PRV_FILNUM_REG_BASE_SET(base, postfix)       IOPORT_PRV_FILNUM_REG_BASE(base, postfix)
+#define IOPORT_PRV_FILNUM_REG_BASE(base, postfix)           (&R_GPIO->FILNUM ## base ## postfix)
+#define IOPORT_PRV_FILCLKSEL_REG_BASE_SET(base, postfix)    IOPORT_PRV_FILCLKSEL_REG_BASE(base, postfix)
+#define IOPORT_PRV_FILCLKSEL_REG_BASE(base, postfix)        (&R_GPIO->FILCLKSEL ## base ## postfix)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -801,17 +801,27 @@ static void r_ioport_dedicated_port_cfg (bsp_io_port_pin_t pin, uint32_t value)
     uint32_t            value_filonoff;
     uint32_t            value_filnum;
     uint32_t            value_filclksel;
+#if BSP_FEATURE_IOPORT_SUPPORT_PUPD_SP
+    uint8_t             adr_offset_pupd;
+    volatile uint32_t * p_pupd;
+    uint32_t            mask_pupd;
+    uint32_t            value_pupd;
+#endif
 
     r_ioport_make_port_pin_num(pin, &u_port, &u_pin);
     bitpos_align = (u_pin & IOPORT_PRV_2BIT_MASK) * IOPORT_PRV_POS_ALIGN_8BIT;
 
     adr_offset = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_SP_REG_BASE_NUM) * 2) + (u_pin >> 2));
 
-    p_ien       = IOPORT_PRV_IEN_REG_BASE_SET(BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM);
-    p_iolh      = IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_IOLH_SP_REG_BASE_NUM);
-    p_filonoff  = IOPORT_PRV_FILONOFF_REG_BASE_SET(BSP_FEATURE_IOPORT_FIL_SP_REG_BASE_NUM);
-    p_filnum    = IOPORT_PRV_FILNUM_REG_BASE_SET(BSP_FEATURE_IOPORT_FIL_SP_REG_BASE_NUM);
-    p_filclksel = IOPORT_PRV_FILCLKSEL_REG_BASE_SET(BSP_FEATURE_IOPORT_FIL_SP_REG_BASE_NUM);
+    p_ien  = IOPORT_PRV_IEN_REG_BASE_SET(BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_iolh =
+        IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_IOLH_SP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filonoff = IOPORT_PRV_FILONOFF_REG_BASE_SET(BSP_FEATURE_IOPORT_FIL_SP_REG_BASE_NUM,
+                                                  BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filnum = IOPORT_PRV_FILNUM_REG_BASE_SET(BSP_FEATURE_IOPORT_FIL_SP_REG_BASE_NUM,
+                                              BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filclksel = IOPORT_PRV_FILCLKSEL_REG_BASE_SET(BSP_FEATURE_IOPORT_FIL_SP_REG_BASE_NUM,
+                                                    BSP_FEATURE_IOPORT_REG_POSTFIX_L);
 
     mask_ien       = IOPORT_PRV_BITFIELD_1BIT << bitpos_align;
     mask_iolh      = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
@@ -824,6 +834,17 @@ static void r_ioport_dedicated_port_cfg (bsp_io_port_pin_t pin, uint32_t value)
     value_filonoff  = (value >> IOPORT_PRV_FILONOFF_OFFSET) & IOPORT_PRV_BITFIELD_1BIT;
     value_filnum    = (value >> IOPORT_PRV_FILNUM_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
     value_filclksel = (value >> IOPORT_PRV_FILCLKSEL_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
+
+#if BSP_FEATURE_IOPORT_SUPPORT_PUPD_SP
+    adr_offset_pupd = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_PUPD_SP_REG_BASE_NUM) * 2) + (u_pin >> 2));
+    p_pupd          =
+        IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_PUPD_SP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    mask_pupd  = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
+    value_pupd = (value >> IOPORT_PRV_PUPD_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
+
+    /* Configure of PUPD Register */
+    r_ioport_regwrite_32(&p_pupd[adr_offset_pupd], value_pupd, bitpos_align, mask_pupd);
+#endif
 
     /* Configure of IEN Register, IOLH Register, SR Register and PUPD Register */
     r_ioport_regwrite_32(&p_ien[adr_offset], value_ien, bitpos_align, mask_ien);
@@ -881,6 +902,12 @@ static void r_ioport_peri_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
     uint32_t value_filnum;
     uint32_t value_filclksel;
     uint32_t value_pfc;
+#if (BSP_FEATURE_IOPORT_SUPPORT_IEN_GP)
+    uint8_t             adr_offset_ien;
+    volatile uint32_t * p_ien;
+    uint32_t            mask_ien;
+    uint32_t            value_ien;
+#endif
 
     r_ioport_make_port_pin_num(pin, &u_port, &u_pin);
     bitpos_align = (u_pin & IOPORT_PRV_2BIT_MASK) * IOPORT_PRV_POS_ALIGN_8BIT;
@@ -888,15 +915,17 @@ static void r_ioport_peri_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
     adr_offset = (uint8_t) ((u_port * 2) + (u_pin >> 2));
 
     p_pmc  = IOPORT_PRV_PMC_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_iolh = IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+    p_iolh = IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
 #if (BSP_FEATURE_IOPORT_SUPPORT_SR_REG)
-    p_sr = IOPORT_PRV_SR_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+    p_sr = IOPORT_PRV_SR_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
 #endif
-    p_pupd      = IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_filonoff  = IOPORT_PRV_FILONOFF_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_filnum    = IOPORT_PRV_FILNUM_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_filclksel = IOPORT_PRV_FILCLKSEL_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_pfc       = IOPORT_PRV_PFC_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+    p_pupd     = IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filonoff =
+        IOPORT_PRV_FILONOFF_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filnum    = IOPORT_PRV_FILNUM_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filclksel =
+        IOPORT_PRV_FILCLKSEL_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_pfc = IOPORT_PRV_PFC_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
 
     mask_pmc  = (uint8_t) (IOPORT_PRV_BITFIELD_1BIT << u_pin);
     mask_iolh = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
@@ -928,6 +957,18 @@ static void r_ioport_peri_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
     r_ioport_regwrite_32(&p_sr[adr_offset], value_sr, bitpos_align, mask_sr);
 #endif
     r_ioport_regwrite_32(&p_pupd[adr_offset], value_pupd, bitpos_align, mask_pupd);
+
+#if (BSP_FEATURE_IOPORT_SUPPORT_IEN_GP)
+    adr_offset_ien =
+        (uint8_t) (((u_port - BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM + BSP_FEATURE_IOPORT_GP_REG_BASE_NUM) * 2) +
+                   (u_pin >> 2));
+    p_ien     = IOPORT_PRV_IEN_REG_BASE_SET(BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    mask_ien  = IOPORT_PRV_BITFIELD_1BIT << bitpos_align;
+    value_ien = (value >> IOPORT_PRV_IEN_OFFSET) & IOPORT_PRV_BITFIELD_1BIT;
+
+    /* Configure of IEN Register */
+    r_ioport_regwrite_32(&p_ien[adr_offset_ien], value_ien, bitpos_align, mask_ien);
+#endif
 
     r_ioport_regwrite_32(&p_filonoff[adr_offset], value_filonoff, bitpos_align, mask_filonoff);
     r_ioport_regwrite_32(&p_filnum[adr_offset], value_filnum, bitpos_align, mask_filnum);
@@ -992,17 +1033,19 @@ static void r_ioport_port_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
     adr_offset = (uint8_t) ((u_port * 2) + (u_pin >> 2));
 
     p_pmc  = IOPORT_PRV_PMC_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_iolh = IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+    p_iolh = IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
 #if (BSP_FEATURE_IOPORT_SUPPORT_SR_REG)
-    p_sr = IOPORT_PRV_SR_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+    p_sr = IOPORT_PRV_SR_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
 #endif
-    p_pupd      = IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_isel      = IOPORT_PRV_ISEL_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_filonoff  = IOPORT_PRV_FILONOFF_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_filnum    = IOPORT_PRV_FILNUM_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_filclksel = IOPORT_PRV_FILCLKSEL_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_pm        = IOPORT_PRV_PM_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
-    p_p         = IOPORT_PRV_P_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+    p_pupd     = IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_isel     = IOPORT_PRV_ISEL_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filonoff =
+        IOPORT_PRV_FILONOFF_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filnum    = IOPORT_PRV_FILNUM_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_filclksel =
+        IOPORT_PRV_FILCLKSEL_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    p_pm = IOPORT_PRV_PM_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
+    p_p  = IOPORT_PRV_P_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
 
     mask_pmc  = (uint8_t) (IOPORT_PRV_BITFIELD_1BIT << u_pin);
     mask_pm   = (uint16_t) (IOPORT_PRV_BITFIELD_2BIT << (u_pin * IOPORT_PRV_POS_ALIGN_2BIT));
