@@ -31,6 +31,7 @@
 #if defined(BSP_MCU_RX130)
 
     #include "r_riic_rx_private.h"
+    #include "r_bsp_locking.h"
 
 /***********************************************************************************************************************
  Exported global variables (to be accessed by other files)
