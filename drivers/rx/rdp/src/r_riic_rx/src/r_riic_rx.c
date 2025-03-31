@@ -1985,7 +1985,6 @@ static riic_return_t riic_after_gen_start_cond(riic_info_t * p_riic_info)
 
     /* Creates the register pointer for the specified RIIC channel. */
     volatile uint8_t * const piccr1_reg = RIIC_ICCR1_ADR(p_riic_info->ch_no);
-    volatile uint8_t * const picsr2_reg = RIIC_ICSR2_ADR(p_riic_info->ch_no);
 
     /* IIC mode? */
     switch (riic_api_info[p_riic_info->ch_no].N_Mode)
@@ -3719,7 +3718,6 @@ static void riic_all_reset(riic_info_t * p_riic_info)
 static void riic_clear_ir_flag(riic_info_t * p_riic_info)
 {
     uint8_t internal_flag = 0x00; /* Determines whether reinitialization is necessary. */
-    volatile uint8_t uctmp = 0x00;
 
     /* Creates the register pointer for the specified RIIC channel. */
     volatile uint8_t * const piccr1_reg = RIIC_ICCR1_ADR(p_riic_info->ch_no);
