@@ -207,6 +207,12 @@ DEFINE YOUR SYSTEM - UNCOMMENT THE INCLUDE PATH FOR THE PLATFORM YOU ARE USING.
 /* GENERIC_RX26T */
 //#include "./board/generic_rx26t/r_bsp.h"
 
+/* GENERIC_RX261 */
+#if defined(CONFIG_SOC_SERIES_RX261)
+#include "./board/generic_rx261/r_bsp.h"
+#endif
+
+
 /* GENERIC_RX111 */
 //#include "./board/generic_rx111/r_bsp.h"
 
