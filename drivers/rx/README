@@ -83,6 +83,18 @@ Patch List:
    Impacted files:
       drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
 
+   * Made the group interrupt handler a global variable.
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_bsp_interrupts.c
+
+   * Added a new function based on R_BSP_InterruptWrite
+   that allows passing a user-defined argument to the registered interrupt handler.
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_bsp_interrupts.c
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_bsp_interrupts.h
+      drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_interrupts.c
+      drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_interrupts.h
+
    * Fix implicit conversion build warnings
    Impacted files:
       drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_clocks.c

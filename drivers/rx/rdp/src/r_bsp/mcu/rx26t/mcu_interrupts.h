@@ -33,7 +33,7 @@ typedef enum
     BSP_INT_ERR_NO_REGISTERED_CALLBACK,     /* There is not a registered callback for this interrupt source */
     BSP_INT_ERR_INVALID_ARG,                /* Illegal argument input */
     BSP_INT_ERR_UNSUPPORTED,                /* Operation is not supported by this API */
-    BSP_INT_ERR_GROUP_STILL_ENABLED,        /* Not all group interrupts were disabled so group interrupt was not 
+    BSP_INT_ERR_GROUP_STILL_ENABLED,        /* Not all group interrupts were disabled so group interrupt was not
                                                disabled */
     BSP_INT_ERR_INVALID_IPL                 /* Illegal IPL value input */
 } bsp_int_err_t;
@@ -158,11 +158,11 @@ typedef enum
 typedef union
 {
     uint32_t ipl;                         /* Used at the following times.
-                                             - When enabling an interrupt to set that interrupt's priority level 
+                                             - When enabling an interrupt to set that interrupt's priority level
                                                by BSP_INT_CMD_GROUP_INTERRUPT_ENABLE command.
-                                             - When disabling an interrupt to save that interrupt's priority level 
+                                             - When disabling an interrupt to save that interrupt's priority level
                                                by BSP_INT_CMD_FIT_INTERRUPT_DISABLE command.
-                                             - When enabling an interrupt to set that interrupt's priority level 
+                                             - When enabling an interrupt to set that interrupt's priority level
                                                by BSP_INT_CMD_FIT_INTERRUPT_ENABLE command. */
 } bsp_int_ctrl_t;
 
@@ -175,6 +175,7 @@ typedef void (*bsp_int_cb_t)(void *);
 typedef struct
 {
     bsp_int_src_t vector;         /* Which vector caused this interrupt */
+    void *p_context;              /* Pointer to context information (if any) */
 } bsp_int_cb_args_t;
 
 /***********************************************************************************************************************

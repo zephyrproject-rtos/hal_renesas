@@ -11,7 +11,7 @@
 * History : DD.MM.YYYY Version   Description
 *         : 28.02.2023 1.00      First Release
 *         : 21.11.2023 1.01      Added timeout detection processing to bus error processing.
-*                                Added processing to control only illegal address access detection to bus error 
+*                                Added processing to control only illegal address access detection to bus error
 *                                processing.
 *                                Added processing to control only timeout detection to bus error processing.
 *         : 26.02.2025 1.02      Changed the disclaimer.
@@ -40,11 +40,6 @@ Exported global variables (to be accessed by other files)
 /***********************************************************************************************************************
 Private global variables and functions
 ***********************************************************************************************************************/
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_bl0_handler_isr, VECT(ICU,GROUPBL0))
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_bl1_handler_isr, VECT(ICU,GROUPBL1))
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_bl2_handler_isr, VECT(ICU,GROUPBL2))
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_al0_handler_isr, VECT(ICU,GROUPAL0))
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_al1_handler_isr, VECT(ICU,GROUPAL1))
 
 /***********************************************************************************************************************
 * Function Name: bsp_interrupt_enable_disable
