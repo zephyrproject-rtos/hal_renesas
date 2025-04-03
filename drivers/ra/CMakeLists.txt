@@ -89,6 +89,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I3C
 	fsp/src/r_i3c/r_i3c.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_IOPORT
 	fsp/src/r_ioport/r_ioport.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CTSU
+	fsp/src/r_ctsu/r_ctsu.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
