@@ -41,6 +41,9 @@ Exported global functions (to be accessed by other files)
 void R_BSP_InterruptRequestEnable(uint32_t vector);
 void R_BSP_InterruptRequestDisable(uint32_t vector);
 bsp_int_err_t R_BSP_InterruptWrite(bsp_int_src_t vector,  bsp_int_cb_t callback);
+#if defined(BSP_MCU_RX26T)    
+bsp_int_err_t R_BSP_InterruptWrite_EX(bsp_int_src_t vector,  bsp_int_cb_t callback, void *context);
+#endif
 bsp_int_err_t R_BSP_InterruptRead(bsp_int_src_t vector, bsp_int_cb_t * callback);
 bsp_int_err_t R_BSP_InterruptControl(bsp_int_src_t vector, bsp_int_cmd_t cmd, void * pdata);
 
