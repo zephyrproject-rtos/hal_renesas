@@ -58,3 +58,12 @@ if(CONFIG_USE_RX_RDP_SCI_UART)
         "-Wno-missing-braces"
     )
 endif()
+
+if(CONFIG_USE_RX_RDP_RSPI)
+	zephyr_library_sources(
+		rdp/src/r_rspi_rx/src/r_rspi_rx.c
+	)
+	zephyr_include_directories(
+		rdp/src/r_rspi_rx/src
+		rdp/src/r_rspi_rx)
+endif()
