@@ -59,3 +59,15 @@ if(CONFIG_USE_RX_RDP_SCI_UART)
         "-Wno-missing-braces"
     )
 endif()
+
+if(CONFIG_USE_RX_RDP_ADC)
+	zephyr_include_directories(
+		rdp/src/r_s12ad_rx
+		rdp/src/r_s12ad_rx/src
+		rdp/src/r_s12ad_rx/src/targets/${CONFIG_SOC_SERIES}
+	)
+	zephyr_library_sources(
+		rdp/src/r_s12ad_rx/src/r_s12ad_rx.c
+		rdp/src/r_s12ad_rx/src/targets/${CONFIG_SOC_SERIES}/r_s12ad_${CONFIG_SOC_SERIES}.c
+	)
+endif()
