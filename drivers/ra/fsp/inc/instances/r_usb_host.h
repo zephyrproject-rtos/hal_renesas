@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef R_USB_HOST_H
 #define R_USB_HOST_H
@@ -41,11 +41,6 @@ typedef struct st_usbh_instance_ctrl
  * Exported global functions
  **********************************************************************************************************************/
 fsp_err_t R_USBH_Open(usb_ctrl_t * const p_api_ctrl, usb_cfg_t const * const p_cfg);
-fsp_err_t R_USBH_XferStart(usb_ctrl_t * const p_api_ctrl,
-                           uint8_t            dev_addr,
-                           uint8_t            ep_addr,
-                           uint8_t          * buffer,
-                           uint16_t           buflen);
 fsp_err_t R_USBH_GetDeviceSpeed(usb_ctrl_t * const p_api_ctrl, usb_speed_t * p_speed);
 fsp_err_t R_USBH_PortOpen(usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr);
 fsp_err_t R_USBH_PortStatusGet(usb_ctrl_t * const p_api_ctrl, usb_status_t * p_status);
