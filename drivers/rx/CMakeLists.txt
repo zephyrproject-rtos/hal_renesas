@@ -58,3 +58,26 @@ if(CONFIG_USE_RX_RDP_SCI_UART)
         "-Wno-missing-braces"
     )
 endif()
+
+if(CONFIG_USE_RX_RDP_FLASH)
+	zephyr_library_sources(
+		rdp/src/r_flash_rx/src/r_flash_fcu.c
+		rdp/src/r_flash_rx/src/r_flash_group.c
+		rdp/src/r_flash_rx/src/r_flash_nofcu.c
+		rdp/src/r_flash_rx/src/r_flash_rx.c
+	)
+	zephyr_include_directories(
+		rdp/src/r_flash_rx
+		rdp/src/r_flash_rx/src
+		rdp/src/r_flash_rx/src/targets/${CONFIG_SOC_SERIES}
+	)
+
+	if(CONFIG_RX_FLASH_TYPE1)
+		zephyr_library_sources(
+			rdp/src/r_flash_rx/src/flash_type_1/r_flash_type1.c
+		)
+		zephyr_include_directories(
+			rdp/src/r_flash_rx/src/flash_type_1
+		)
+	endif()
+endif()
