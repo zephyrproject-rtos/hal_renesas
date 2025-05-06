@@ -35,7 +35,15 @@ License Link:
 
 Patch List:
 
-   * Remove the static definition in Flash
+   * Remove the static definition in Flash driver
    Impacted files:
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.c
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.h
+
+   * Fix build warnings in Flash driver
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_rx_compiler.h
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_group.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.h
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_rx.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_rx.h
