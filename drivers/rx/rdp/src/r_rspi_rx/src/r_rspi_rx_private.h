@@ -73,9 +73,11 @@ Macro definitions
 #endif
 
 /* Definitions of endian */
-#define RSPI_LITTLE_ENDIAN (defined(__LIT) || \
-                            defined(__LITTLE) || \
-                            defined(__RX_LITTLE_ENDIAN__))
+#if defined(__LIT) || defined(__LITTLE) || defined(__RX_LITTLE_ENDIAN__)
+#define RSPI_LITTLE_ENDIAN 1
+#else
+#define RSPI_LITTLE_ENDIAN 0
+#endif
 
 #define    RSPI_BYTE_DATA  (0x01)
 #define    RSPI_WORD_DATA  (0x02)

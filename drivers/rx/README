@@ -47,3 +47,8 @@ Patch List:
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.h
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_rx.c
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_rx.h
+
+   * Fix the build warnings in RSPI driver
+   Impacted files:
+      drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx.c
+      drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx_private.h
