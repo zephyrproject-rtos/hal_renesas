@@ -199,7 +199,7 @@ Macro definitions
 #define R_BSP_SECSIZE(name)       ((size_t)((uint8_t *)R_BSP_SECEND(name) - (uint8_t *)R_BSP_SECTOP(name)))
 
 #define R_BSP_SECTION_OPERATORS_INIT(name)    extern uint8_t name##_start[], name##_end[];
-
+#define R_BSP_SECTION_OPERATORS_INIT_S(name)  extern uint8_t name##_start[];
 #elif defined(__ICCRX__)
 
 #define R_BSP_SECTOP(name)        __section_begin(#name)

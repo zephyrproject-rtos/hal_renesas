@@ -218,7 +218,7 @@ flash_err_t r_flash_open(void)
 #if (FLASH_TYPE == FLASH_TYPE_1)
     if (FLASH_FISR_ROUNDING_FCLK_FREQ > MCU_CFG_FCLK_HZ)
     {
-        if (((uint32_t)MCU_CFG_FCLK_HZ % MHZ) != 0)
+        if (((uint32_t)MCU_CFG_FCLK_HZ % FL_MHZ) != 0)
         {
             return FLASH_ERR_FREQUENCY;
         }
