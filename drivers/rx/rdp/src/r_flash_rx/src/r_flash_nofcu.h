@@ -102,10 +102,10 @@
 #endif
 #define WAIT_TDSTOP                         (6)
 
-#define MHZ                                 (1000000)
-#define KHZ                                 (1000)
-#define FCLK_MHZ                            (((uint32_t)MCU_CFG_FCLK_HZ + 999999) / MHZ)
-#define ICLK_KHZ                            (MCU_CFG_ICLK_HZ / KHZ)
+#define FL_MHZ                              (1000000)
+#define FL_KHZ                              (1000)
+#define FCLK_MHZ                            (((uint32_t)MCU_CFG_FCLK_HZ + 999999) / FL_MHZ)
+#define ICLK_KHZ                            (MCU_CFG_ICLK_HZ / FL_KHZ)
 
 /* Definition for function name compatibility */
 #define R_DF_Enable_DataFlashAccess flash_df_access_enable
