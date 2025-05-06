@@ -13,6 +13,7 @@ set(srcs
 	rdp/src/r_bsp/mcu/all/r_bsp_common.c
 	rdp/src/r_bsp/mcu/all/r_bsp_cpu.c
 	rdp/src/r_bsp/mcu/all/r_bsp_interrupts.c
+	rdp/src/r_bsp/mcu/all/r_bsp_locking.c
 	rdp/src/r_bsp/mcu/all/r_bsp_software_interrupt.c
 	rdp/src/r_bsp/mcu/all/r_rx_intrinsic_functions.c
 	rdp/src/r_bsp/mcu/all/mcu_locks.c
