@@ -131,6 +131,7 @@ flash_err_t flash_pe_mode_exit();
 flash_err_t flash_erase(const uint32_t block_address, const uint32_t num_blocks);
 flash_err_t flash_blankcheck(const uint32_t start_address, const uint32_t num_bytes, flash_res_t *result);
 flash_err_t flash_write(const uint32_t src_address, const uint32_t dest_address, uint32_t num);
+void Excep_FCU_FRDYI(void);
 
 #endif /* #ifndef FLASH_HAS_FCU */
 

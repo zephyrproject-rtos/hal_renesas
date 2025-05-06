@@ -965,9 +965,8 @@ static flash_err_t flash_wait_frdy(void)
  * Arguments    : None
  * Return Value : None
  *********************************************************************************************************************/
-R_BSP_PRAGMA_STATIC_INTERRUPT(Excep_FCU_FRDYI,VECT(FCU,FRDYI))
 FLASH_PE_MODE_SECTION
-R_BSP_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
+void Excep_FCU_FRDYI(void)
 {
     flash_err_t err = FLASH_SUCCESS;
 
