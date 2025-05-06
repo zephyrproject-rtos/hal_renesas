@@ -63,6 +63,7 @@ Includes   <System Includes> , "Project Includes"
 /* Defines for RSPI support */
 #include "platform.h"
 #include "r_rspi_rx_if.h"
+#include "r_bsp_locking.h"
 
 #if RSPI_CFG_LONGQ_ENABLE == 1
 /* Uses LONGQ driver header file. */
