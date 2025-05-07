@@ -132,3 +132,9 @@ Patch List:
    * Reflect OFS setting for WDT from Zephyr Kconfig value
       Impacted files:
          zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+
+   * Correct IO define for R_ELC_ELSEGR_Type on RA8M1, RA8D1, RA8T1
+      Impacted files:
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8M1AH.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8D1BH.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8T1AH.h

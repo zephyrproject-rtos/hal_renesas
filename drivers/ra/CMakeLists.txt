@@ -77,6 +77,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_WDT
 	fsp/src/r_wdt/r_wdt.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ACMPHS
 	fsp/src/r_acmphs/r_acmphs.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ELC
+	fsp/src/r_elc/r_elc.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
