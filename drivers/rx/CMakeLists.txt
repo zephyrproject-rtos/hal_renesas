@@ -59,3 +59,12 @@ if(CONFIG_USE_RX_RDP_SCI_UART)
         "-Wno-missing-braces"
     )
 endif()
+
+if(CONFIG_USE_RX_RDP_IWDT)
+	zephyr_include_directories(rdp/src/r_iwdt_rx
+	rdp/src/r_iwdt_rx/src
+	)
+	zephyr_library_sources(
+		rdp/src/r_iwdt_rx/src/r_iwdt_rx.c
+	)
+endif()
