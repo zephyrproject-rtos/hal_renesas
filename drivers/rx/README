@@ -32,3 +32,9 @@ License:
 
 License Link:
    https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Remove the static definition in RIIC
+   Impacted files:
+      drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
