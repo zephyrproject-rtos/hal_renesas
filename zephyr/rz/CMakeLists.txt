@@ -8,3 +8,8 @@ zephyr_include_directories(rz_cfg/fsp_cfg/bsp/${CONFIG_SOC_SERIES})
 if(CONFIG_SOC_SERIES_RZA3UL)
 	zephyr_library_sources(portable/${SOC_SERIES_PREFIX}/bsp_delay_asm.asm)
 endif()
+
+if(CONFIG_SOC_SERIES_RZV2H)
+	zephyr_include_directories_ifdef(CONFIG_CPU_CORTEX_M
+		rz_cfg/fsp_cfg/bsp/${CONFIG_SOC_SERIES}/cm)
+endif()

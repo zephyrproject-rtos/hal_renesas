@@ -19,7 +19,11 @@
  **********************************************************************************************************************/
 
 /* BSP Common Includes. */
-#include "bsp_common.h"
+#if defined(BSP_SUPPORT_CORE_CM33)
+ #include "cm/bsp_common.h"
+#elif defined(BSP_SUPPORT_CORE_CR8)
+ #include "cr/bsp_common.h"
+#endif
 
 /* BSP MCU Specific Includes. */
 #include "bsp_io.h"
@@ -27,8 +31,15 @@
 #include "bsp_clocks.h"
 #include "bsp_module_stop.h"
 #include "bsp_io_register.h"
-#include "bsp_irq.h"
-#include "bsp_security.h"
+#if defined(BSP_SUPPORT_CORE_CM33)
+ #include "cm/bsp_irq.h"
+ #include "bsp_security.h"
+#elif defined(BSP_SUPPORT_CORE_CR8)
+ #include "bsp_irq_gic.h"
+ #include "cr/bsp_irq.h"
+ #include "bsp_cache.h"
+ #include "bsp_security.h"
+#endif
 
 /* Factory MCU information. */
 #include "fsp_features.h"
