@@ -144,14 +144,13 @@ typedef struct st_ether_instance_ctrl
     ether_link_change_t           link_change;           ///< status of link change
     ether_magic_packet_t          magic_packet;          ///< status of magic packet detection
     ether_link_establish_status_t link_establish_status; ///< Current Link status
-    uint32_t                       link_speed_duplex;    ///< Current Link speed and duplex status
 
     /* Pointer to callback and optional working memory */
     void (* p_callback)(ether_callback_args_t *);
     ether_callback_args_t * p_callback_memory;
 
     /* Pointer to context to be passed into callback function */
-    void const * p_context;
+    void * p_context;
 } ether_instance_ctrl_t;
 
 /*
@@ -239,7 +238,7 @@ fsp_err_t R_ETHER_TxStatusGet(ether_ctrl_t * const p_ctrl, void * const p_buffer
 
 fsp_err_t R_ETHER_CallbackSet(ether_ctrl_t * const          p_api_ctrl,
                               void (                      * p_callback)(ether_callback_args_t *),
-                              void const * const            p_context,
+                              void * const                  p_context,
                               ether_callback_args_t * const p_callback_memory);
 
 /*******************************************************************************************************************//**

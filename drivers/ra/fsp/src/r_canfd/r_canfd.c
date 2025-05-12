@@ -219,6 +219,9 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
                      FSP_ERR_CLOCK_INACTIVE);
    #endif
   #else
+   #if (BSP_FEATURE_CGC_PLL2_NUM_OUTPUT_CLOCKS == 1U)
+
+    /* PLL/PLL2 has 1 possible output that can be used for DLL */
 
     /* Check that PLL/PLL2 is running when it is selected as the DLL source clock */
     FSP_ERROR_RETURN(0U ==
@@ -227,6 +230,17 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
                       FSP_STYPE3_REG8_READ(R_SYSTEM->PLLCR, !R_SYSTEM->CGFSAR_b.NONSEC08) :
                       FSP_STYPE3_REG8_READ(R_SYSTEM->PLL2CR, !R_SYSTEM->CGFSAR_b.NONSEC09)),
                      FSP_ERR_CLOCK_INACTIVE);
+   #else
+
+    /* The PLL is available and it has 1 possible output that can be used for DLL */
+
+    /* Check that PLL is running when it is seclected as the DLL source clock */
+    FSP_ERROR_RETURN(0U ==
+                     (FSP_STYPE3_REG8_READ(R_SYSTEM->CANFDCKCR,
+                                           !R_SYSTEM->CGFSAR_b.NONSEC18) == BSP_CLOCKS_SOURCE_CLOCK_PLL ?
+                      FSP_STYPE3_REG8_READ(R_SYSTEM->PLLCR, !R_SYSTEM->CGFSAR_b.NONSEC08) : 0),
+                     FSP_ERR_CLOCK_INACTIVE);
+   #endif
   #endif
  #endif
 
@@ -303,10 +317,6 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
         /* Configure rule count for both channels */
 #if BSP_FEATURE_CANFD_NUM_INSTANCES > 1
         p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH0_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos);
-        if (channel == 1)
-        {
-            p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH1_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos);
-        }
 #else
         p_reg->CFDGAFLCFG0 = (CANFD_CFG_AFL_CH0_RULE_NUM << R_CANFD_CFDGAFLCFG0_RNC0_Pos) |
                              CANFD_CFG_AFL_CH1_RULE_NUM;
@@ -930,7 +940,7 @@ fsp_err_t R_CANFD_InfoGet (can_ctrl_t * const p_api_ctrl, can_info_t * const p_i
  **********************************************************************************************************************/
 fsp_err_t R_CANFD_CallbackSet (can_ctrl_t * const          p_api_ctrl,
                                void (                    * p_callback)(can_callback_args_t *),
-                               void const * const          p_context,
+                               void * const                p_context,
                                can_callback_args_t * const p_callback_memory)
 {
     canfd_instance_ctrl_t * p_ctrl = (canfd_instance_ctrl_t *) p_api_ctrl;
@@ -996,7 +1006,7 @@ static bool r_canfd_bit_timing_parameter_check (can_bit_timing_cfg_t * const p_b
     else
  #else
 
-    /* Data phase is only avaiable for FD mode. */
+    /* Data phase is only available for FD mode. */
     FSP_PARAMETER_NOT_USED(is_data_phase);
  #endif
     {
@@ -1200,7 +1210,7 @@ void canfd_error_isr (void)
     {
 #if BSP_FEATURE_CANFD_NUM_INSTANCES > 1
 
-        /* If there are seperate instances of CANFD, then loop over each instance to handle the source of the global
+        /* If there are separate instances of CANFD, then loop over each instance to handle the source of the global
          * error IRQ. */
         for (uint32_t i = 0; i < BSP_FEATURE_CANFD_NUM_INSTANCES; i++)
         {
@@ -1314,7 +1324,7 @@ void canfd_rx_fifo_isr (void)
 
 #if BSP_FEATURE_CANFD_NUM_INSTANCES > 1
 
-    /* If there are seperate instances of CANFD, then loop over each instance to handle the source of the global
+    /* If there are separate instances of CANFD, then loop over each instance to handle the source of the global
      * receive IRQ. */
     for (uint32_t i = 0; i < BSP_FEATURE_CANFD_NUM_INSTANCES; i++)
     {
