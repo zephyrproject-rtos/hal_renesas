@@ -208,7 +208,7 @@ typedef BSP_CMSE_NONSECURE_CALL void (*volatile flash_hp_prv_ns_callback)(flash_
  * Private global variables
  **********************************************************************************************************************/
 #if (FLASH_HP_CFG_CODE_FLASH_PROGRAMMING_ENABLE == 1)
-uint16_t g_configuration_area_data[FLASH_HP_CONFIG_SET_ACCESS_WORD_CNT_CF] = {UINT16_MAX};
+static uint16_t g_configuration_area_data[FLASH_HP_CONFIG_SET_ACCESS_WORD_CNT_CF] = {UINT16_MAX};
 #endif
 
 #define FLASH_HP_DF_START_ADDRESS    (BSP_FEATURE_FLASH_DATA_FLASH_START)
@@ -282,11 +282,11 @@ static void r_flash_hp_delay_ns(uint32_t ns, uint32_t mhz) PLACE_IN_RAM_SECTION 
 #endif
 static fsp_err_t flash_hp_enter_pe_df_mode(flash_hp_instance_ctrl_t * const p_ctrl);
 
-fsp_err_t flash_hp_pe_mode_exit() PLACE_IN_RAM_SECTION;
+static fsp_err_t flash_hp_pe_mode_exit() PLACE_IN_RAM_SECTION;
 
 static fsp_err_t flash_hp_reset(flash_hp_instance_ctrl_t * p_ctrl) PLACE_IN_RAM_SECTION;
 
-fsp_err_t flash_hp_stop(void) PLACE_IN_RAM_SECTION;
+static fsp_err_t flash_hp_stop(void) PLACE_IN_RAM_SECTION;
 
 static fsp_err_t flash_hp_status_clear() PLACE_IN_RAM_SECTION;
 
@@ -296,7 +296,7 @@ static fsp_err_t flash_hp_erase_block(flash_hp_instance_ctrl_t * const p_ctrl, u
 static fsp_err_t flash_hp_write_data(flash_hp_instance_ctrl_t * const p_ctrl, uint32_t write_size,
                                      uint32_t timeout) PLACE_IN_RAM_SECTION;
 
-fsp_err_t flash_hp_check_errors(fsp_err_t previous_error, uint32_t error_bits,
+static fsp_err_t flash_hp_check_errors(fsp_err_t previous_error, uint32_t error_bits,
                                        fsp_err_t return_error) PLACE_IN_RAM_SECTION;
 
 static void r_flash_hp_call_callback(flash_hp_instance_ctrl_t * p_ctrl, flash_event_t event);
@@ -316,7 +316,7 @@ static fsp_err_t flash_hp_df_erase(flash_hp_instance_ctrl_t * p_ctrl, uint32_t b
 
 #if (FLASH_HP_CFG_CODE_FLASH_PROGRAMMING_ENABLE == 1) || (((FLASH_HP_CFG_DATA_FLASH_PROGRAMMING_ENABLE == 1) && \
     (BSP_FEATURE_FLASH_USER_LOCKABLE_AREA_SIZE > 0)) == 1)
-fsp_err_t flash_hp_configuration_area_write(flash_hp_instance_ctrl_t * p_ctrl,
+static fsp_err_t flash_hp_configuration_area_write(flash_hp_instance_ctrl_t * p_ctrl,
                                                    uint32_t                   fsaddr,
                                                    uint16_t                 * src_address)
 FLASH_HP_CONFIG_AREA_WRITE_SECTION;
@@ -338,7 +338,7 @@ static uint32_t  flash_hp_banksel_bankswp_addr_get(void);
 static fsp_err_t flash_hp_cf_erase(flash_hp_instance_ctrl_t * p_ctrl, uint32_t block_address,
                                    uint32_t num_blocks) PLACE_IN_RAM_SECTION;
 
-fsp_err_t flash_hp_enter_pe_cf_mode(flash_hp_instance_ctrl_t * const p_ctrl) PLACE_IN_RAM_SECTION;
+static fsp_err_t flash_hp_enter_pe_cf_mode(flash_hp_instance_ctrl_t * const p_ctrl) PLACE_IN_RAM_SECTION;
 
 static fsp_err_t flash_hp_access_window_set(flash_hp_instance_ctrl_t * p_ctrl,
                                             uint32_t const             start_addr,
@@ -751,6 +751,8 @@ fsp_err_t R_FLASH_HP_BlankCheck (flash_ctrl_t * const p_api_ctrl,
     /* Check parameters. If failure return error */
     err = r_flash_hp_write_bc_parameter_checking(p_ctrl, address & ~BSP_FEATURE_TZ_NS_OFFSET, num_bytes, false);
     FSP_ERROR_RETURN((err == FSP_SUCCESS), err);
+
+    FSP_ASSERT(NULL != p_blank_check_result);
 #endif
 
 #if (FLASH_HP_CFG_CODE_FLASH_PROGRAMMING_ENABLE == 1)
@@ -1235,7 +1237,7 @@ fsp_err_t R_FLASH_HP_Close (flash_ctrl_t * const p_api_ctrl)
  **********************************************************************************************************************/
 fsp_err_t R_FLASH_HP_CallbackSet (flash_ctrl_t * const          p_api_ctrl,
                                   void (                      * p_callback)(flash_callback_args_t *),
-                                  void const * const            p_context,
+                                  void * const                  p_context,
                                   flash_callback_args_t * const p_callback_memory)
 {
     flash_hp_instance_ctrl_t * p_ctrl = (flash_hp_instance_ctrl_t *) p_api_ctrl;
@@ -1348,9 +1350,9 @@ fsp_err_t R_FLASH_HP_AntiRollbackCounterIncrement (flash_ctrl_t * const p_api_ct
 
 /*******************************************************************************************************************//**
  * Refreshes the selected anti-rollback counter flash area to ensure the flash is in a valid state even if an error
- * occured during counter increment processing.
+ * occurred during counter increment processing.
  *
- * This function must be called if errors or power failure occured during counter increment.
+ * This function must be called if errors or power failure occurred during counter increment.
  *
  * Power failure can be detected by the application code by management of user-defined non-voltile flags during
  * counter increment.
@@ -1499,7 +1501,7 @@ fsp_err_t R_FLASH_HP_UserLockableAreaWrite (flash_ctrl_t * const p_api_ctrl,
  * @param[in]  write_size          The write size
  * @param[in]  timeout             The timeout
  *
- * @retval     FSP_SUCCESS         Write completed succesfully
+ * @retval     FSP_SUCCESS         Write completed successfully
  * @retval     FSP_ERR_TIMEOUT     Flash timed out during write operation.
  **********************************************************************************************************************/
 static fsp_err_t flash_hp_write_data (flash_hp_instance_ctrl_t * const p_ctrl, uint32_t write_size, uint32_t timeout)
@@ -1597,10 +1599,10 @@ static fsp_err_t flash_hp_write_data (flash_hp_instance_ctrl_t * const p_ctrl, u
  * @param[in]  error_bits          The error bits
  * @param[in]  return_error        The return error
  *
- * @retval     FSP_SUCCESS         Command completed succesfully
+ * @retval     FSP_SUCCESS         Command completed successfully
  * @retval     FSP_ERR_CMD_LOCKED  Flash entered command locked state
  **********************************************************************************************************************/
-fsp_err_t flash_hp_check_errors (fsp_err_t previous_error, uint32_t error_bits, fsp_err_t return_error)
+static fsp_err_t flash_hp_check_errors (fsp_err_t previous_error, uint32_t error_bits, fsp_err_t return_error)
 {
     /* See "Recovery from the Command-Locked State": Section 47.9.3.6 of the RA6M4 manual R01UH0890EJ0100.*/
     fsp_err_t err = FSP_SUCCESS;
@@ -2224,7 +2226,7 @@ static fsp_err_t flash_hp_arc_cmd_execute (flash_hp_instance_ctrl_t * const p_ct
 /*******************************************************************************************************************//**
  * This function will initialize the FCU and set the FCU Clock based on the current FCLK frequency.
  * @param      p_ctrl        Pointer to the instance control block
- * @retval     FSP_SUCCESS   Clock and timeouts configured succesfully.
+ * @retval     FSP_SUCCESS   Clock and timeouts configured successfully.
  * @retval     FSP_ERR_FCLK  FCLK is not within the acceptable range.
  **********************************************************************************************************************/
 static fsp_err_t flash_hp_init (flash_hp_instance_ctrl_t * p_ctrl)
@@ -2257,7 +2259,8 @@ static fsp_err_t flash_hp_init (flash_hp_instance_ctrl_t * p_ctrl)
     {
         R_FACI_LP->DFLCTL = 1U;
 
-        /* Wait for (tDSTOP) before reading from data flash. MREF_INTERNAL_014 */
+        /* Wait for (tDSTOP) before reading from data flash.
+         * Refer to the "Data flash STOP recovery time" in the "Data flash characteristics" table from the relevant hardware manual */
         r_flash_hp_delay_ns(FLASH_HP_WAIT_TDSTOP, system_clock_freq_mhz);
     }
 #endif
@@ -2575,7 +2578,7 @@ static fsp_err_t flash_hp_df_erase (flash_hp_instance_ctrl_t * p_ctrl, uint32_t 
  * @retval     FSP_ERR_PE_FAILURE  Failed to exited P/E mode
  * @retval     FSP_ERR_CMD_LOCKED  Flash entered command locked state.
  **********************************************************************************************************************/
-fsp_err_t flash_hp_pe_mode_exit (void)
+static fsp_err_t flash_hp_pe_mode_exit (void)
 {
     /* See "Transition to Read Mode": Section 47.9.3.5 of the RA6M4 manual R01UH0890EJ0100. */
     /* FRDY and CMDLK are checked after the previous commands complete and do not need to be checked again. */
@@ -2640,13 +2643,6 @@ fsp_err_t flash_hp_pe_mode_exit (void)
         err = temp_err;
     }
 
-#if defined(BSP_CFG_DCACHE_ENABLED)
- #if (1U == BSP_CFG_DCACHE_ENABLED)
-    /* Clean and Invalidates D-Cache */
-    SCB_CleanInvalidateDCache();
- #endif
-#endif
-
     return err;
 }
 
@@ -2708,7 +2704,7 @@ static fsp_err_t flash_hp_reset (flash_hp_instance_ctrl_t * p_ctrl)
  * @retval     FSP_ERR_TIMEOUT     Timeout executing flash_stop.
  * @retval     FSP_ERR_CMD_LOCKED  Peripheral in command locked state.
  **********************************************************************************************************************/
-fsp_err_t flash_hp_stop (void)
+static fsp_err_t flash_hp_stop (void)
 {
     /* See "Forced Stop Command": Section 47.9.3.13 of the RA6M4 manual R01UH0890EJ0100. If the CMDLK bit
      * is still set after issuing the force stop command return an error. */
@@ -3005,7 +3001,7 @@ static fsp_err_t flash_hp_set_id_code (flash_hp_instance_ctrl_t * p_ctrl,
  * @retval     FSP_SUCCESS      Configuration Set successful
  * @retval     FSP_ERR_TIMEOUT  Timed out waiting for the FCU to become ready.
  **********************************************************************************************************************/
-fsp_err_t flash_hp_configuration_area_write (flash_hp_instance_ctrl_t * p_ctrl,
+static fsp_err_t flash_hp_configuration_area_write (flash_hp_instance_ctrl_t * p_ctrl,
                                                     uint32_t                   fsaddr,
                                                     uint16_t                 * src_address)
 {
@@ -3361,7 +3357,7 @@ static fsp_err_t flash_hp_enter_pe_df_mode (flash_hp_instance_ctrl_t * const p_c
  * @retval     FSP_SUCCESS         Successfully entered Code Flash P/E mode.
  * @retval     FSP_ERR_PE_FAILURE  Failed to enter Code Flash P/E mode.
  **********************************************************************************************************************/
-fsp_err_t flash_hp_enter_pe_cf_mode (flash_hp_instance_ctrl_t * const p_ctrl)
+static fsp_err_t flash_hp_enter_pe_cf_mode (flash_hp_instance_ctrl_t * const p_ctrl)
 {
     fsp_err_t err = FSP_SUCCESS;
 

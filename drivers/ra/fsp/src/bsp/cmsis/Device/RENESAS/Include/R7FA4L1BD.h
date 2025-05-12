@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
-*
-* SPDX-License-Identifier: BSD-3-Clause
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
  *
  * @file     ./out/R7FA4L1BD.h
  * @brief    CMSIS HeaderFile
@@ -1874,25 +1874,6 @@ typedef struct
 {
     __IOM R_PFS_PORT_PIN_Type PIN[16]; /*!< (@ 0x00000000) Pin Function Selects                                       */
 } R_PFS_PORT_Type;                     /*!< Size = 64 (0x40)                                                          */
-
-/**
- * @brief R_PFS_VLSEL [VLSEL] (VLSEL)
- */
-typedef struct
-{
-    __IM uint8_t RESERVED[389];
-
-    union
-    {
-        __IOM uint8_t VL1SEL;          /*!< (@ 0x00000185) VL1 Select Control Register                                */
-
-        struct
-        {
-            __IOM uint8_t SELVL : 1;   /*!< [0..0] VL1 Voltage Connection Switching Control                           */
-            uint8_t             : 7;
-        } VL1SEL_b;
-    };
-} R_PFS_VLSEL_Type;                    /*!< Size = 390 (0x186)                                                        */
 
 /**
  * @brief R_PMISC_PMSAR [PMSAR] (Port Security Attribution Register)
@@ -5113,7 +5094,8 @@ typedef struct                         /*!< (@ 0x400D0000) R_CTSU2 Structure    
                 __IOM uint32_t CHAC16 : 1; /*!< [16..16] CTSU Channel Enable Control A                                    */
                 __IOM uint32_t CHAC17 : 1; /*!< [17..17] CTSU Channel Enable Control A                                    */
                 __IOM uint32_t CHAC18 : 1; /*!< [18..18] CTSU Channel Enable Control A                                    */
-                uint32_t              : 2;
+                __IOM uint32_t CHAC19 : 1; /*!< [19..19] CTSU Channel Enable Control A                                    */
+                __IOM uint32_t CHAC20 : 1; /*!< [20..20] CTSU Channel Enable Control A                                    */
                 __IOM uint32_t CHAC21 : 1; /*!< [21..21] CTSU Channel Enable Control A                                    */
                 __IOM uint32_t CHAC22 : 1; /*!< [22..22] CTSU Channel Enable Control A                                    */
                 __IOM uint32_t CHAC23 : 1; /*!< [23..23] CTSU Channel Enable Control A                                    */
@@ -5201,7 +5183,8 @@ typedef struct                         /*!< (@ 0x400D0000) R_CTSU2 Structure    
                 __IOM uint32_t CHTRC16 : 1; /*!< [16..16] CTSU Channel Transmit/Receive Control A                          */
                 __IOM uint32_t CHTRC17 : 1; /*!< [17..17] CTSU Channel Transmit/Receive Control A                          */
                 __IOM uint32_t CHTRC18 : 1; /*!< [18..18] CTSU Channel Transmit/Receive Control A                          */
-                uint32_t               : 2;
+                __IOM uint32_t CHTRC19 : 1; /*!< [19..19] CTSU Channel Transmit/Receive Control A                          */
+                __IOM uint32_t CHTRC20 : 1; /*!< [20..20] CTSU Channel Transmit/Receive Control A                          */
                 __IOM uint32_t CHTRC21 : 1; /*!< [21..21] CTSU Channel Transmit/Receive Control A                          */
                 __IOM uint32_t CHTRC22 : 1; /*!< [22..22] CTSU Channel Transmit/Receive Control A                          */
                 __IOM uint32_t CHTRC23 : 1; /*!< [23..23] CTSU Channel Transmit/Receive Control A                          */
@@ -5489,15 +5472,50 @@ typedef struct                         /*!< (@ 0x400D0000) R_CTSU2 Structure    
 
                 struct
                 {
-                    __IOM uint8_t AC;    /*!< (@ 0x00000040) CTSU Option Setting Register                               */
-                    __IOM uint8_t AJ;    /*!< (@ 0x00000041) CTSU Option Setting Register                               */
+                    union
+                    {
+                        __IOM uint8_t AC;               /*!< (@ 0x00000040) CTSU Option Setting Register                               */
+
+                        struct
+                        {
+                            __IOM uint8_t CCOCFEN  : 1; /*!< [0..0] CCO Characteristics Correction Function Enable                     */
+                            __IOM uint8_t MCACEFN  : 1; /*!< [1..1] Multi-clock Correction Function Enable                             */
+                            __IOM uint8_t MAJIRIMD : 1; /*!< [2..2] Majority Mode                                                      */
+                            uint8_t                : 1;
+                            __IOM uint8_t DTCLESS  : 1; /*!< [4..4] Data Transfer Request Disable                                      */
+                            __IOM uint8_t MTUCFEN  : 1; /*!< [5..5] Mutual Capacitance Calculation Enable                              */
+                            uint8_t                : 2;
+                        } AC_b;
+                    };
+
+                    union
+                    {
+                        __IOM uint8_t AJ;             /*!< (@ 0x00000041) CTSU Option Setting Register                               */
+
+                        struct
+                        {
+                            __IOM uint8_t AJFEN  : 1; /*!< [0..0] Automatic Judgment Function Enable                                 */
+                            __IOM uint8_t AJINTC : 1; /*!< [1..1] Automatic Judgment Interrupt Control                               */
+                            uint8_t              : 6;
+                        } AJ_b;
+                    };
                 };
             };
 
             union
             {
-                __IOM uint16_t CTSUOPTH; /*!< (@ 0x00000042) CTSU Option Setting Register                               */
-                __IOM uint8_t  ACTB;     /*!< (@ 0x00000042) CTSU Option Setting Register                               */
+                __IOM uint16_t CTSUOPTH;          /*!< (@ 0x00000042) CTSU Option Setting Register                               */
+
+                union
+                {
+                    __IOM uint8_t ACTB;           /*!< (@ 0x00000042) CTSU Option Setting Register                               */
+
+                    struct
+                    {
+                        __IOM uint8_t SCACTB : 4; /*!< [3..0] Sensor Counter Automatic Correction Table Number Setting           */
+                        uint8_t              : 4;
+                    } ACTB_b;
+                };
             };
         };
     };
@@ -5617,8 +5635,25 @@ typedef struct                         /*!< (@ 0x400D0000) R_CTSU2 Structure    
 
                 struct
                 {
-                    __IOM uint8_t AJCR0;  /*!< (@ 0x00000058) CTSU Automatic Judgment Control Register                   */
-                    __IOM uint8_t AJCR1;  /*!< (@ 0x00000059) CTSU Automatic Judgment Control Register                   */
+                    union
+                    {
+                        __IOM uint8_t AJCR0;        /*!< (@ 0x00000058) CTSU Automatic Judgment Control Register                   */
+
+                        struct
+                        {
+                            __IOM uint8_t TLOT : 8; /*!< [7..0] Non-Touch Judgment Criterion Setting                               */
+                        } AJCR0_b;
+                    };
+
+                    union
+                    {
+                        __IOM uint8_t AJCR1;        /*!< (@ 0x00000059) CTSU Automatic Judgment Control Register                   */
+
+                        struct
+                        {
+                            __IOM uint8_t THOT : 8; /*!< [7..0] Touch Judgment Criterion Setting                                   */
+                        } AJCR1_b;
+                    };
                 };
             };
 
@@ -5628,8 +5663,29 @@ typedef struct                         /*!< (@ 0x400D0000) R_CTSU2 Structure    
 
                 struct
                 {
-                    __IOM uint8_t AJCR2;  /*!< (@ 0x0000005A) CTSU Automatic Judgment Control Register                   */
-                    __IOM uint8_t AJCR3;  /*!< (@ 0x0000005B) CTSU Automatic Judgment Control Register                   */
+                    union
+                    {
+                        __IOM uint8_t AJCR2;         /*!< (@ 0x0000005A) CTSU Automatic Judgment Control Register                   */
+
+                        struct
+                        {
+                            __IOM uint8_t BLINI : 1; /*!< [0..0] Baseline Initialization                                            */
+                            uint8_t             : 3;
+                            __IOM uint8_t JC    : 2; /*!< [5..4] Judgment Condition Setting                                         */
+                            uint8_t             : 2;
+                        } AJCR2_b;
+                    };
+
+                    union
+                    {
+                        __IOM uint8_t AJCR3;          /*!< (@ 0x0000005B) CTSU Automatic Judgment Control Register                   */
+
+                        struct
+                        {
+                            __IOM uint8_t AJMMAT : 4; /*!< [3..0] Measured Value Moving Average Number Setting                       */
+                            __IOM uint8_t AJBMAT : 4; /*!< [7..4] Baseline Average Number Setting                                    */
+                        } AJCR3_b;
+                    };
                 };
             };
         };
@@ -5928,9 +5984,9 @@ typedef struct                         /*!< (@ 0x4001B000) R_DEBUG Structure    
             uint32_t                     : 12;
             __IOM uint32_t DBGSTOP_TIM   : 1; /*!< [14..14] Mask bit for RTC, TAU reset/interrupt                            */
             __IOM uint32_t DBGSTOP_SIR   : 1; /*!< [15..15] Mask bit for SAU, IICA, PORT_IRQ0-5 reset/interrupt              */
-            __IOM uint32_t DBGSTOP_LVD0  : 1; /*!< [16..16] Mask bit for LVD reset/interupt                                  */
-            __IOM uint32_t DBGSTOP_LVD1  : 1; /*!< [17..17] Mask bit for LVD reset/interupt                                  */
-            __IOM uint32_t DBGSTOP_LVD2  : 1; /*!< [18..18] Mask bit for LVD reset/interupt                                  */
+            __IOM uint32_t DBGSTOP_LVD0  : 1; /*!< [16..16] Mask bit for LVD reset/interrupt                                 */
+            __IOM uint32_t DBGSTOP_LVD1  : 1; /*!< [17..17] Mask bit for LVD reset/interrupt                                 */
+            __IOM uint32_t DBGSTOP_LVD2  : 1; /*!< [18..18] Mask bit for LVD reset/interrupt                                 */
             uint32_t                     : 5;
             __IOM uint32_t DBGSTOP_RPER  : 1; /*!< [24..24] Mask bit for SRAM parity error                                   */
             __IOM uint32_t DBGSTOP_RECCR : 1; /*!< [25..25] Mask bit for SRAM ECC error                                      */
@@ -11936,14 +11992,10 @@ typedef struct                         /*!< (@ 0x4001F000) R_PORT0 Structure    
  * @brief I/O Ports-PFS (R_PFS)
  */
 
-typedef struct                           /*!< (@ 0x4001F800) R_PFS Structure                                            */
+typedef struct                         /*!< (@ 0x4001F800) R_PFS Structure                                            */
 {
-    union
-    {
-        __IOM R_PFS_PORT_Type  PORT[15]; /*!< (@ 0x00000000) Port [0..14]                                               */
-        __IOM R_PFS_VLSEL_Type VLSEL;    /*!< (@ 0x00000000) VLSEL                                                      */
-    };
-} R_PFS_Type;                            /*!< Size = 960 (0x3c0)                                                        */
+    __IOM R_PFS_PORT_Type PORT[15];    /*!< (@ 0x00000000) Port [0..14]                                               */
+} R_PFS_Type;                          /*!< Size = 960 (0x3c0)                                                        */
 
 /* =========================================================================================================================== */
 /* ================                                          R_PMISC                                          ================ */
@@ -12209,7 +12261,7 @@ typedef struct                         /*!< (@ 0x64000000) R_QSPI Structure     
         {
             uint32_t                : 26;
             __IOM uint32_t QSPI_EXT : 6; /*!< [31..26] BANK Switching AddressWhen accessing from 0x6000_0000
-                                          *   to 0x63FF_FFFF, Addres bus is Set QSPI_EXT[5:0] to high-order
+                                          *   to 0x63FF_FFFF, Address bus is Set QSPI_EXT[5:0] to high-order
                                           *   6bits of SHADDR[31:0]NOTE: Setting 6'h3F is prihibited.                   */
         } SFMCNT1_b;
     };
@@ -14421,7 +14473,18 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t             : 7;
         } HOCOCR_b;
     };
-    __IM uint8_t RESERVED10;
+
+    union
+    {
+        __IOM uint8_t HOCOCR2;         /*!< (@ 0x00000037) High-Speed On-Chip Oscillator Control Register
+                                        *                  2                                                          */
+
+        struct
+        {
+            __IOM uint8_t HCFRQ0 : 3;  /*!< [2..0] HOCO Frequency Setting 0                                           */
+            uint8_t              : 5;
+        } HOCOCR2_b;
+    };
 
     union
     {
@@ -14433,8 +14496,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t             : 7;
         } MOCOCR_b;
     };
-    __IM uint8_t  RESERVED11;
-    __IM uint16_t RESERVED12;
+    __IM uint8_t  RESERVED10;
+    __IM uint16_t RESERVED11;
 
     union
     {
@@ -14453,7 +14516,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IM uint8_t PLLRTCSF : 1; /*!< [7..7] PLL_RTC Clock Oscillation Stabilization Flag                       */
         } OSCSF_b;
     };
-    __IM uint8_t RESERVED13;
+    __IM uint8_t RESERVED12;
 
     union
     {
@@ -14467,7 +14530,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IOM uint8_t CKOEN  : 1;  /*!< [7..7] Clock out enable                                                   */
         } CKOCR_b;
     };
-    __IM uint8_t RESERVED14;
+    __IM uint8_t RESERVED13;
 
     union
     {
@@ -14503,11 +14566,11 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IOM uint16_t SOSTDIE  : 1;  /*!< [12..12] Sub-Clock Oscillation Stop Detection Interrupt Enable            */
             __IM uint16_t  SOSTDF   : 1;  /*!< [13..13] Sub-Clock Oscillation Stop Detection Flag                        */
             __IM uint16_t  SOSDCF   : 1;  /*!< [14..14] Status of Sub-Clock Oscillation Stop Detector Operation          */
-            __IM uint16_t  SOSDCE   : 1;  /*!< [15..15] Control of Sub-Clock Oscillation Stop Detector Operation         */
+            __IOM uint16_t SOSDCE   : 1;  /*!< [15..15] Control of Sub-Clock Oscillation Stop Detector Operation         */
         } SOSTDCR_b;
     };
-    __IM uint32_t RESERVED15;
-    __IM uint16_t RESERVED16;
+    __IM uint32_t RESERVED14;
+    __IM uint16_t RESERVED15;
 
     union
     {
@@ -14519,8 +14582,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t               : 7;
         } PLL2CR_b;
     };
-    __IM uint8_t  RESERVED17;
-    __IM uint32_t RESERVED18;
+    __IM uint8_t  RESERVED16;
+    __IM uint32_t RESERVED17;
 
     union
     {
@@ -14533,8 +14596,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IOM uint8_t LCDSCKEN  : 1; /*!< [7..7] LCD Source Clock Out Enable                                        */
         } SLCDSCKCR_b;
     };
-    __IM uint8_t  RESERVED19;
-    __IM uint16_t RESERVED20[2];
+    __IM uint8_t  RESERVED18;
+    __IM uint16_t RESERVED19[2];
 
     union
     {
@@ -14546,9 +14609,9 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t                 : 7;
         } PLLRTCCR_b;
     };
-    __IM uint8_t  RESERVED21;
-    __IM uint32_t RESERVED22[2];
-    __IM uint8_t  RESERVED23;
+    __IM uint8_t  RESERVED20;
+    __IM uint32_t RESERVED21[2];
+    __IM uint8_t  RESERVED22;
 
     union
     {
@@ -14577,9 +14640,9 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
                                          *   trimming bits                                                             */
         } HOCOUTCR_b;
     };
-    __IM uint8_t  RESERVED24;
-    __IM uint32_t RESERVED25[2];
-    __IM uint16_t RESERVED26;
+    __IM uint8_t  RESERVED23;
+    __IM uint32_t RESERVED24[2];
+    __IM uint16_t RESERVED25;
 
     union
     {
@@ -14591,7 +14654,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t                  : 5;
         } CANFDCKDIVCR_b;
     };
-    __IM uint8_t RESERVED27[2];
+    __IM uint8_t RESERVED26[2];
 
     union
     {
@@ -14603,7 +14666,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t                : 5;
         } I3CCKDIVCR_b;
     };
-    __IM uint16_t RESERVED28;
+    __IM uint16_t RESERVED27;
 
     union
     {
@@ -14617,7 +14680,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IM uint8_t  USBCKSRDY : 1; /*!< [7..7] USB Clock (USBCLK) Switching Ready state flag                      */
         } USBCKCR_b;
     };
-    __IM uint8_t RESERVED29;
+    __IM uint8_t RESERVED28;
 
     union
     {
@@ -14631,7 +14694,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IM uint8_t  CANFDCKSRDY : 1; /*!< [7..7] CANFD Clock (CANFDCLK) Switching Ready state flag                  */
         } CANFDCKCR_b;
     };
-    __IM uint8_t RESERVED30[2];
+    __IM uint8_t RESERVED29[2];
 
     union
     {
@@ -14645,9 +14708,9 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IM uint8_t  I3CCKSRDY : 1; /*!< [7..7] I3C clock (I3CCLK) switching ready state flag                      */
         } I3CCKCR_b;
     };
-    __IM uint16_t RESERVED31;
-    __IM uint32_t RESERVED32[5];
-    __IM uint16_t RESERVED33;
+    __IM uint16_t RESERVED30;
+    __IM uint32_t RESERVED31[5];
+    __IM uint16_t RESERVED32;
 
     union
     {
@@ -14662,7 +14725,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IOM uint8_t SNZE     : 1; /*!< [7..7] Snooze Mode Enable                                                 */
         } SNZCR_b;
     };
-    __IM uint8_t RESERVED34;
+    __IM uint8_t RESERVED33;
 
     union
     {
@@ -14692,7 +14755,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t                 : 6;
         } SNZEDCR1_b;
     };
-    __IM uint16_t RESERVED35;
+    __IM uint16_t RESERVED34;
 
     union
     {
@@ -14731,8 +14794,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint32_t : 1;
         } SNZREQCR_b;
     };
-    __IM uint16_t RESERVED36;
-    __IM uint8_t  RESERVED37;
+    __IM uint16_t RESERVED35;
+    __IM uint8_t  RESERVED36;
 
     union
     {
@@ -14762,7 +14825,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t              : 3;
         } OPCCR_b;
     };
-    __IM uint8_t RESERVED38;
+    __IM uint8_t RESERVED37;
 
     union
     {
@@ -14774,9 +14837,9 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t            : 4;
         } MOSCWTCR_b;
     };
-    __IM uint8_t  RESERVED39;
-    __IM uint32_t RESERVED40;
-    __IM uint16_t RESERVED41;
+    __IM uint8_t  RESERVED38;
+    __IM uint32_t RESERVED39;
+    __IM uint16_t RESERVED40;
 
     union
     {
@@ -14790,7 +14853,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t               : 3;
         } SOPCCR_b;
     };
-    __IM uint8_t RESERVED42;
+    __IM uint8_t RESERVED41;
 
     union
     {
@@ -14802,9 +14865,9 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t            : 7;
         } LDOCR_b;
     };
-    __IM uint8_t  RESERVED43;
-    __IM uint16_t RESERVED44;
-    __IM uint32_t RESERVED45[4];
+    __IM uint8_t  RESERVED42;
+    __IM uint16_t RESERVED43;
+    __IM uint32_t RESERVED44[4];
 
     union
     {
@@ -14835,8 +14898,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IOM uint16_t CPERF : 1;  /*!< [15..15] Cache Parity Error Reset Detect Flag                             */
         } RSTSR1_b;
     };
-    __IM uint16_t RESERVED46;
-    __IM uint32_t RESERVED47[3];
+    __IM uint16_t RESERVED45;
+    __IM uint32_t RESERVED46[3];
 
     union
     {
@@ -14849,9 +14912,9 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t : 7;
         } USBCKCR_ALT_b;
     };
-    __IM uint8_t  RESERVED48;
-    __IM uint16_t RESERVED49;
-    __IM uint32_t RESERVED50[3];
+    __IM uint8_t  RESERVED47;
+    __IM uint16_t RESERVED48;
+    __IM uint32_t RESERVED49[3];
 
     union
     {
@@ -14906,7 +14969,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t          : 6;
         } LVD2SR_b;
     };
-    __IM uint32_t RESERVED51[3];
+    __IM uint32_t RESERVED50[3];
 
     union
     {
@@ -14923,9 +14986,9 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t             : 2;
         } SRMPSCR_b;
     };
-    __IM uint8_t  RESERVED52;
-    __IM uint16_t RESERVED53;
-    __IM uint32_t RESERVED54[179];
+    __IM uint8_t  RESERVED51;
+    __IM uint16_t RESERVED52;
+    __IM uint32_t RESERVED53[179];
 
     union
     {
@@ -15001,8 +15064,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint32_t                : 21;
         } LVDSAR_b;
     };
-    __IM uint32_t RESERVED55[11];
-    __IM uint16_t RESERVED56;
+    __IM uint32_t RESERVED54[11];
+    __IM uint16_t RESERVED55;
 
     union
     {
@@ -15022,8 +15085,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __OM uint16_t PRKEY : 8;   /*!< [15..8] PRKEY Key Code                                                    */
         } PRCR_b;
     };
-    __IM uint32_t RESERVED57[3];
-    __IM uint16_t RESERVED58;
+    __IM uint32_t RESERVED56[3];
+    __IM uint16_t RESERVED57;
 
     union
     {
@@ -15035,7 +15098,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IOM uint8_t DBGEN : 1;   /*!< [7..7] Debugger Enable bit                                                */
         } SYOCDCR_b;
     };
-    __IM uint8_t RESERVED59;
+    __IM uint8_t RESERVED58;
 
     union
     {
@@ -15068,7 +15131,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t            : 7;
         } RSTSR2_b;
     };
-    __IM uint8_t RESERVED60;
+    __IM uint8_t RESERVED59;
 
     union
     {
@@ -15084,8 +15147,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t              : 1;
         } MOMCR_b;
     };
-    __IM uint16_t RESERVED61;
-    __IM uint8_t  RESERVED62;
+    __IM uint16_t RESERVED60;
+    __IM uint8_t  RESERVED61;
 
     union
     {
@@ -15130,7 +15193,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IOM uint8_t LVDE : 1;      /*!< [7..7] Voltage Detection 2 Enable                                         */
         } LVD2CMPCR_b;
     };
-    __IM uint8_t RESERVED63;
+    __IM uint8_t RESERVED62;
 
     union
     {
@@ -15161,7 +15224,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             __IOM uint8_t RN   : 1;    /*!< [7..7] Voltage Monitor Reset Negate Select                                */
         } LVD2CR0_b;
     };
-    __IM uint32_t RESERVED64[25];
+    __IM uint32_t RESERVED63[25];
 
     union
     {
@@ -15197,8 +15260,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t               : 6;
         } SOMRG_b;
     };
-    __IM uint8_t  RESERVED65;
-    __IM uint32_t RESERVED66[3];
+    __IM uint8_t  RESERVED64;
+    __IM uint32_t RESERVED65[3];
 
     union
     {
@@ -15210,7 +15273,7 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
             uint8_t             : 7;
         } LOCOCR_b;
     };
-    __IM uint8_t RESERVED67;
+    __IM uint8_t RESERVED66;
 
     union
     {
@@ -15225,8 +15288,8 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
                                          *   trimming bits                                                             */
         } LOCOUTCR_b;
     };
-    __IM uint8_t  RESERVED68;
-    __IM uint32_t RESERVED69[11];
+    __IM uint8_t  RESERVED67;
+    __IM uint32_t RESERVED68[11];
 
     union
     {
@@ -18406,14 +18469,6 @@ typedef struct                          /*!< (@ 0x400E8000) R_AGTX0 Structure   
 /* =========================================================================================================================== */
 
 /* =========================================================================================================================== */
-/* ================                                           VLSEL                                           ================ */
-/* =========================================================================================================================== */
-
-/* ========================================================  VL1SEL  ========================================================= */
- #define R_PFS_VLSEL_VL1SEL_SELVL_Pos    (0UL)   /*!< SELVL (Bit 0)                                         */
- #define R_PFS_VLSEL_VL1SEL_SELVL_Msk    (0x1UL) /*!< SELVL (Bitfield-Mask: 0x01)                           */
-
-/* =========================================================================================================================== */
 /* ================                                           PMSAR                                           ================ */
 /* =========================================================================================================================== */
 
@@ -19868,6 +19923,10 @@ typedef struct                          /*!< (@ 0x400E8000) R_AGTX0 Structure   
  #define R_CTSU2_CTSUCHACA_CHAC17_Msk    (0x20000UL)    /*!< CHAC17 (Bitfield-Mask: 0x01)                          */
  #define R_CTSU2_CTSUCHACA_CHAC18_Pos    (18UL)         /*!< CHAC18 (Bit 18)                                       */
  #define R_CTSU2_CTSUCHACA_CHAC18_Msk    (0x40000UL)    /*!< CHAC18 (Bitfield-Mask: 0x01)                          */
+ #define R_CTSU2_CTSUCHACA_CHAC19_Pos    (19UL)         /*!< CHAC19 (Bit 19)                                       */
+ #define R_CTSU2_CTSUCHACA_CHAC19_Msk    (0x80000UL)    /*!< CHAC19 (Bitfield-Mask: 0x01)                          */
+ #define R_CTSU2_CTSUCHACA_CHAC20_Pos    (20UL)         /*!< CHAC20 (Bit 20)                                       */
+ #define R_CTSU2_CTSUCHACA_CHAC20_Msk    (0x100000UL)   /*!< CHAC20 (Bitfield-Mask: 0x01)                          */
  #define R_CTSU2_CTSUCHACA_CHAC21_Pos    (21UL)         /*!< CHAC21 (Bit 21)                                       */
  #define R_CTSU2_CTSUCHACA_CHAC21_Msk    (0x200000UL)   /*!< CHAC21 (Bitfield-Mask: 0x01)                          */
  #define R_CTSU2_CTSUCHACA_CHAC22_Pos    (22UL)         /*!< CHAC22 (Bit 22)                                       */
@@ -19946,6 +20005,10 @@ typedef struct                          /*!< (@ 0x400E8000) R_AGTX0 Structure   
  #define R_CTSU2_CTSUCHTRCA_CHTRC17_Msk    (0x20000UL)    /*!< CHTRC17 (Bitfield-Mask: 0x01)                         */
  #define R_CTSU2_CTSUCHTRCA_CHTRC18_Pos    (18UL)         /*!< CHTRC18 (Bit 18)                                      */
  #define R_CTSU2_CTSUCHTRCA_CHTRC18_Msk    (0x40000UL)    /*!< CHTRC18 (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUCHTRCA_CHTRC19_Pos    (19UL)         /*!< CHTRC19 (Bit 19)                                      */
+ #define R_CTSU2_CTSUCHTRCA_CHTRC19_Msk    (0x80000UL)    /*!< CHTRC19 (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUCHTRCA_CHTRC20_Pos    (20UL)         /*!< CHTRC20 (Bit 20)                                      */
+ #define R_CTSU2_CTSUCHTRCA_CHTRC20_Msk    (0x100000UL)   /*!< CHTRC20 (Bitfield-Mask: 0x01)                         */
  #define R_CTSU2_CTSUCHTRCA_CHTRC21_Pos    (21UL)         /*!< CHTRC21 (Bit 21)                                      */
  #define R_CTSU2_CTSUCHTRCA_CHTRC21_Msk    (0x200000UL)   /*!< CHTRC21 (Bitfield-Mask: 0x01)                         */
  #define R_CTSU2_CTSUCHTRCA_CHTRC22_Pos    (22UL)         /*!< CHTRC22 (Bit 22)                                      */
@@ -20012,113 +20075,129 @@ typedef struct                          /*!< (@ 0x400E8000) R_AGTX0 Structure   
 /* ========================================================  CTSUSRH  ======================================================== */
 /* ========================================================  CTSUSR2  ======================================================== */
 /* ========================================================  CTSUSO  ========================================================= */
- #define R_CTSU2_CTSUSO_SO_Pos              (0UL)          /*!< SO (Bit 0)                                            */
- #define R_CTSU2_CTSUSO_SO_Msk              (0x3ffUL)      /*!< SO (Bitfield-Mask: 0x3ff)                             */
- #define R_CTSU2_CTSUSO_SNUM_Pos            (10UL)         /*!< SNUM (Bit 10)                                         */
- #define R_CTSU2_CTSUSO_SNUM_Msk            (0x3fc00UL)    /*!< SNUM (Bitfield-Mask: 0xff)                            */
- #define R_CTSU2_CTSUSO_SSDIV_Pos           (20UL)         /*!< SSDIV (Bit 20)                                        */
- #define R_CTSU2_CTSUSO_SSDIV_Msk           (0xf00000UL)   /*!< SSDIV (Bitfield-Mask: 0x0f)                           */
- #define R_CTSU2_CTSUSO_SDPA_Pos            (24UL)         /*!< SDPA (Bit 24)                                         */
- #define R_CTSU2_CTSUSO_SDPA_Msk            (0xff000000UL) /*!< SDPA (Bitfield-Mask: 0xff)                            */
+ #define R_CTSU2_CTSUSO_SO_Pos                  (0UL)          /*!< SO (Bit 0)                                            */
+ #define R_CTSU2_CTSUSO_SO_Msk                  (0x3ffUL)      /*!< SO (Bitfield-Mask: 0x3ff)                             */
+ #define R_CTSU2_CTSUSO_SNUM_Pos                (10UL)         /*!< SNUM (Bit 10)                                         */
+ #define R_CTSU2_CTSUSO_SNUM_Msk                (0x3fc00UL)    /*!< SNUM (Bitfield-Mask: 0xff)                            */
+ #define R_CTSU2_CTSUSO_SSDIV_Pos               (20UL)         /*!< SSDIV (Bit 20)                                        */
+ #define R_CTSU2_CTSUSO_SSDIV_Msk               (0xf00000UL)   /*!< SSDIV (Bitfield-Mask: 0x0f)                           */
+ #define R_CTSU2_CTSUSO_SDPA_Pos                (24UL)         /*!< SDPA (Bit 24)                                         */
+ #define R_CTSU2_CTSUSO_SDPA_Msk                (0xff000000UL) /*!< SDPA (Bitfield-Mask: 0xff)                            */
 /* ========================================================  CTSUSO0  ======================================================== */
 /* ========================================================  CTSUSO1  ======================================================== */
 /* =======================================================  CTSUSCNT  ======================================================== */
- #define R_CTSU2_CTSUSCNT_SENSCNT_Pos       (0UL)          /*!< SENSCNT (Bit 0)                                       */
- #define R_CTSU2_CTSUSCNT_SENSCNT_Msk       (0xffffUL)     /*!< SENSCNT (Bitfield-Mask: 0xffff)                       */
- #define R_CTSU2_CTSUSCNT_SUCKCNT_Pos       (16UL)         /*!< SUCKCNT (Bit 16)                                      */
- #define R_CTSU2_CTSUSCNT_SUCKCNT_Msk       (0xffff0000UL) /*!< SUCKCNT (Bitfield-Mask: 0xffff)                       */
+ #define R_CTSU2_CTSUSCNT_SENSCNT_Pos           (0UL)          /*!< SENSCNT (Bit 0)                                       */
+ #define R_CTSU2_CTSUSCNT_SENSCNT_Msk           (0xffffUL)     /*!< SENSCNT (Bitfield-Mask: 0xffff)                       */
+ #define R_CTSU2_CTSUSCNT_SUCKCNT_Pos           (16UL)         /*!< SUCKCNT (Bit 16)                                      */
+ #define R_CTSU2_CTSUSCNT_SUCKCNT_Msk           (0xffff0000UL) /*!< SUCKCNT (Bitfield-Mask: 0xffff)                       */
 /* ========================================================  CTSUSC  ========================================================= */
 /* =======================================================  CTSUCALIB  ======================================================= */
- #define R_CTSU2_CTSUCALIB_TSOD_Pos         (2UL)          /*!< TSOD (Bit 2)                                          */
- #define R_CTSU2_CTSUCALIB_TSOD_Msk         (0x4UL)        /*!< TSOD (Bitfield-Mask: 0x01)                            */
- #define R_CTSU2_CTSUCALIB_DRV_Pos          (3UL)          /*!< DRV (Bit 3)                                           */
- #define R_CTSU2_CTSUCALIB_DRV_Msk          (0x8UL)        /*!< DRV (Bitfield-Mask: 0x01)                             */
- #define R_CTSU2_CTSUCALIB_CLKSEL_Pos       (4UL)          /*!< CLKSEL (Bit 4)                                        */
- #define R_CTSU2_CTSUCALIB_CLKSEL_Msk       (0x30UL)       /*!< CLKSEL (Bitfield-Mask: 0x03)                          */
- #define R_CTSU2_CTSUCALIB_SUCLKEN_Pos      (6UL)          /*!< SUCLKEN (Bit 6)                                       */
- #define R_CTSU2_CTSUCALIB_SUCLKEN_Msk      (0x40UL)       /*!< SUCLKEN (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUCALIB_TSOC_Pos         (7UL)          /*!< TSOC (Bit 7)                                          */
- #define R_CTSU2_CTSUCALIB_TSOC_Msk         (0x80UL)       /*!< TSOC (Bitfield-Mask: 0x01)                            */
- #define R_CTSU2_CTSUCALIB_CNTRDSEL_Pos     (8UL)          /*!< CNTRDSEL (Bit 8)                                      */
- #define R_CTSU2_CTSUCALIB_CNTRDSEL_Msk     (0x100UL)      /*!< CNTRDSEL (Bitfield-Mask: 0x01)                        */
- #define R_CTSU2_CTSUCALIB_IOC_Pos          (9UL)          /*!< IOC (Bit 9)                                           */
- #define R_CTSU2_CTSUCALIB_IOC_Msk          (0x200UL)      /*!< IOC (Bitfield-Mask: 0x01)                             */
- #define R_CTSU2_CTSUCALIB_CFCRDMD_Pos      (10UL)         /*!< CFCRDMD (Bit 10)                                      */
- #define R_CTSU2_CTSUCALIB_CFCRDMD_Msk      (0x400UL)      /*!< CFCRDMD (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUCALIB_DCOFF_Pos        (11UL)         /*!< DCOFF (Bit 11)                                        */
- #define R_CTSU2_CTSUCALIB_DCOFF_Msk        (0x800UL)      /*!< DCOFF (Bitfield-Mask: 0x01)                           */
- #define R_CTSU2_CTSUCALIB_IOCSEL_Pos       (12UL)         /*!< IOCSEL (Bit 12)                                       */
- #define R_CTSU2_CTSUCALIB_IOCSEL_Msk       (0x1000UL)     /*!< IOCSEL (Bitfield-Mask: 0x01)                          */
- #define R_CTSU2_CTSUCALIB_CFCSEL_Pos       (16UL)         /*!< CFCSEL (Bit 16)                                       */
- #define R_CTSU2_CTSUCALIB_CFCSEL_Msk       (0x3f0000UL)   /*!< CFCSEL (Bitfield-Mask: 0x3f)                          */
- #define R_CTSU2_CTSUCALIB_CFCMODE_Pos      (22UL)         /*!< CFCMODE (Bit 22)                                      */
- #define R_CTSU2_CTSUCALIB_CFCMODE_Msk      (0x400000UL)   /*!< CFCMODE (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUCALIB_DACMSEL_Pos      (24UL)         /*!< DACMSEL (Bit 24)                                      */
- #define R_CTSU2_CTSUCALIB_DACMSEL_Msk      (0x1000000UL)  /*!< DACMSEL (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUCALIB_DACCARRY_Pos     (25UL)         /*!< DACCARRY (Bit 25)                                     */
- #define R_CTSU2_CTSUCALIB_DACCARRY_Msk     (0x2000000UL)  /*!< DACCARRY (Bitfield-Mask: 0x01)                        */
- #define R_CTSU2_CTSUCALIB_SUMSEL_Pos       (26UL)         /*!< SUMSEL (Bit 26)                                       */
- #define R_CTSU2_CTSUCALIB_SUMSEL_Msk       (0x4000000UL)  /*!< SUMSEL (Bitfield-Mask: 0x01)                          */
- #define R_CTSU2_CTSUCALIB_SUCARRY_Pos      (27UL)         /*!< SUCARRY (Bit 27)                                      */
- #define R_CTSU2_CTSUCALIB_SUCARRY_Msk      (0x8000000UL)  /*!< SUCARRY (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUCALIB_DACCLK_Pos       (28UL)         /*!< DACCLK (Bit 28)                                       */
- #define R_CTSU2_CTSUCALIB_DACCLK_Msk       (0x10000000UL) /*!< DACCLK (Bitfield-Mask: 0x01)                          */
- #define R_CTSU2_CTSUCALIB_CCOCLK_Pos       (29UL)         /*!< CCOCLK (Bit 29)                                       */
- #define R_CTSU2_CTSUCALIB_CCOCLK_Msk       (0x20000000UL) /*!< CCOCLK (Bitfield-Mask: 0x01)                          */
- #define R_CTSU2_CTSUCALIB_CCOCALIB_Pos     (30UL)         /*!< CCOCALIB (Bit 30)                                     */
- #define R_CTSU2_CTSUCALIB_CCOCALIB_Msk     (0x40000000UL) /*!< CCOCALIB (Bitfield-Mask: 0x01)                        */
- #define R_CTSU2_CTSUCALIB_TXREV_Pos        (31UL)         /*!< TXREV (Bit 31)                                        */
- #define R_CTSU2_CTSUCALIB_TXREV_Msk        (0x80000000UL) /*!< TXREV (Bitfield-Mask: 0x01)                           */
+ #define R_CTSU2_CTSUCALIB_TSOD_Pos             (2UL)          /*!< TSOD (Bit 2)                                          */
+ #define R_CTSU2_CTSUCALIB_TSOD_Msk             (0x4UL)        /*!< TSOD (Bitfield-Mask: 0x01)                            */
+ #define R_CTSU2_CTSUCALIB_DRV_Pos              (3UL)          /*!< DRV (Bit 3)                                           */
+ #define R_CTSU2_CTSUCALIB_DRV_Msk              (0x8UL)        /*!< DRV (Bitfield-Mask: 0x01)                             */
+ #define R_CTSU2_CTSUCALIB_CLKSEL_Pos           (4UL)          /*!< CLKSEL (Bit 4)                                        */
+ #define R_CTSU2_CTSUCALIB_CLKSEL_Msk           (0x30UL)       /*!< CLKSEL (Bitfield-Mask: 0x03)                          */
+ #define R_CTSU2_CTSUCALIB_SUCLKEN_Pos          (6UL)          /*!< SUCLKEN (Bit 6)                                       */
+ #define R_CTSU2_CTSUCALIB_SUCLKEN_Msk          (0x40UL)       /*!< SUCLKEN (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUCALIB_TSOC_Pos             (7UL)          /*!< TSOC (Bit 7)                                          */
+ #define R_CTSU2_CTSUCALIB_TSOC_Msk             (0x80UL)       /*!< TSOC (Bitfield-Mask: 0x01)                            */
+ #define R_CTSU2_CTSUCALIB_CNTRDSEL_Pos         (8UL)          /*!< CNTRDSEL (Bit 8)                                      */
+ #define R_CTSU2_CTSUCALIB_CNTRDSEL_Msk         (0x100UL)      /*!< CNTRDSEL (Bitfield-Mask: 0x01)                        */
+ #define R_CTSU2_CTSUCALIB_IOC_Pos              (9UL)          /*!< IOC (Bit 9)                                           */
+ #define R_CTSU2_CTSUCALIB_IOC_Msk              (0x200UL)      /*!< IOC (Bitfield-Mask: 0x01)                             */
+ #define R_CTSU2_CTSUCALIB_CFCRDMD_Pos          (10UL)         /*!< CFCRDMD (Bit 10)                                      */
+ #define R_CTSU2_CTSUCALIB_CFCRDMD_Msk          (0x400UL)      /*!< CFCRDMD (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUCALIB_DCOFF_Pos            (11UL)         /*!< DCOFF (Bit 11)                                        */
+ #define R_CTSU2_CTSUCALIB_DCOFF_Msk            (0x800UL)      /*!< DCOFF (Bitfield-Mask: 0x01)                           */
+ #define R_CTSU2_CTSUCALIB_IOCSEL_Pos           (12UL)         /*!< IOCSEL (Bit 12)                                       */
+ #define R_CTSU2_CTSUCALIB_IOCSEL_Msk           (0x1000UL)     /*!< IOCSEL (Bitfield-Mask: 0x01)                          */
+ #define R_CTSU2_CTSUCALIB_CFCSEL_Pos           (16UL)         /*!< CFCSEL (Bit 16)                                       */
+ #define R_CTSU2_CTSUCALIB_CFCSEL_Msk           (0x3f0000UL)   /*!< CFCSEL (Bitfield-Mask: 0x3f)                          */
+ #define R_CTSU2_CTSUCALIB_CFCMODE_Pos          (22UL)         /*!< CFCMODE (Bit 22)                                      */
+ #define R_CTSU2_CTSUCALIB_CFCMODE_Msk          (0x400000UL)   /*!< CFCMODE (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUCALIB_DACMSEL_Pos          (24UL)         /*!< DACMSEL (Bit 24)                                      */
+ #define R_CTSU2_CTSUCALIB_DACMSEL_Msk          (0x1000000UL)  /*!< DACMSEL (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUCALIB_DACCARRY_Pos         (25UL)         /*!< DACCARRY (Bit 25)                                     */
+ #define R_CTSU2_CTSUCALIB_DACCARRY_Msk         (0x2000000UL)  /*!< DACCARRY (Bitfield-Mask: 0x01)                        */
+ #define R_CTSU2_CTSUCALIB_SUMSEL_Pos           (26UL)         /*!< SUMSEL (Bit 26)                                       */
+ #define R_CTSU2_CTSUCALIB_SUMSEL_Msk           (0x4000000UL)  /*!< SUMSEL (Bitfield-Mask: 0x01)                          */
+ #define R_CTSU2_CTSUCALIB_SUCARRY_Pos          (27UL)         /*!< SUCARRY (Bit 27)                                      */
+ #define R_CTSU2_CTSUCALIB_SUCARRY_Msk          (0x8000000UL)  /*!< SUCARRY (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUCALIB_DACCLK_Pos           (28UL)         /*!< DACCLK (Bit 28)                                       */
+ #define R_CTSU2_CTSUCALIB_DACCLK_Msk           (0x10000000UL) /*!< DACCLK (Bitfield-Mask: 0x01)                          */
+ #define R_CTSU2_CTSUCALIB_CCOCLK_Pos           (29UL)         /*!< CCOCLK (Bit 29)                                       */
+ #define R_CTSU2_CTSUCALIB_CCOCLK_Msk           (0x20000000UL) /*!< CCOCLK (Bitfield-Mask: 0x01)                          */
+ #define R_CTSU2_CTSUCALIB_CCOCALIB_Pos         (30UL)         /*!< CCOCALIB (Bit 30)                                     */
+ #define R_CTSU2_CTSUCALIB_CCOCALIB_Msk         (0x40000000UL) /*!< CCOCALIB (Bitfield-Mask: 0x01)                        */
+ #define R_CTSU2_CTSUCALIB_TXREV_Pos            (31UL)         /*!< TXREV (Bit 31)                                        */
+ #define R_CTSU2_CTSUCALIB_TXREV_Msk            (0x80000000UL) /*!< TXREV (Bitfield-Mask: 0x01)                           */
 /* =======================================================  CTSUDBGR0  ======================================================= */
 /* =======================================================  CTSUDBGR1  ======================================================= */
 /* ======================================================  CTSUSUCLKA  ======================================================= */
- #define R_CTSU2_CTSUSUCLKA_SUADJ0_Pos      (0UL)          /*!< SUADJ0 (Bit 0)                                        */
- #define R_CTSU2_CTSUSUCLKA_SUADJ0_Msk      (0xffUL)       /*!< SUADJ0 (Bitfield-Mask: 0xff)                          */
- #define R_CTSU2_CTSUSUCLKA_SUMULTI0_Pos    (8UL)          /*!< SUMULTI0 (Bit 8)                                      */
- #define R_CTSU2_CTSUSUCLKA_SUMULTI0_Msk    (0xff00UL)     /*!< SUMULTI0 (Bitfield-Mask: 0xff)                        */
- #define R_CTSU2_CTSUSUCLKA_SUADJ1_Pos      (16UL)         /*!< SUADJ1 (Bit 16)                                       */
- #define R_CTSU2_CTSUSUCLKA_SUADJ1_Msk      (0xff0000UL)   /*!< SUADJ1 (Bitfield-Mask: 0xff)                          */
- #define R_CTSU2_CTSUSUCLKA_SUMULTI1_Pos    (24UL)         /*!< SUMULTI1 (Bit 24)                                     */
- #define R_CTSU2_CTSUSUCLKA_SUMULTI1_Msk    (0xff000000UL) /*!< SUMULTI1 (Bitfield-Mask: 0xff)                        */
+ #define R_CTSU2_CTSUSUCLKA_SUADJ0_Pos          (0UL)          /*!< SUADJ0 (Bit 0)                                        */
+ #define R_CTSU2_CTSUSUCLKA_SUADJ0_Msk          (0xffUL)       /*!< SUADJ0 (Bitfield-Mask: 0xff)                          */
+ #define R_CTSU2_CTSUSUCLKA_SUMULTI0_Pos        (8UL)          /*!< SUMULTI0 (Bit 8)                                      */
+ #define R_CTSU2_CTSUSUCLKA_SUMULTI0_Msk        (0xff00UL)     /*!< SUMULTI0 (Bitfield-Mask: 0xff)                        */
+ #define R_CTSU2_CTSUSUCLKA_SUADJ1_Pos          (16UL)         /*!< SUADJ1 (Bit 16)                                       */
+ #define R_CTSU2_CTSUSUCLKA_SUADJ1_Msk          (0xff0000UL)   /*!< SUADJ1 (Bitfield-Mask: 0xff)                          */
+ #define R_CTSU2_CTSUSUCLKA_SUMULTI1_Pos        (24UL)         /*!< SUMULTI1 (Bit 24)                                     */
+ #define R_CTSU2_CTSUSUCLKA_SUMULTI1_Msk        (0xff000000UL) /*!< SUMULTI1 (Bitfield-Mask: 0xff)                        */
 /* ======================================================  CTSUSUCLK0  ======================================================= */
 /* ======================================================  CTSUSUCLK1  ======================================================= */
 /* ======================================================  CTSUSUCLKB  ======================================================= */
- #define R_CTSU2_CTSUSUCLKB_SUADJ2_Pos      (0UL)          /*!< SUADJ2 (Bit 0)                                        */
- #define R_CTSU2_CTSUSUCLKB_SUADJ2_Msk      (0xffUL)       /*!< SUADJ2 (Bitfield-Mask: 0xff)                          */
- #define R_CTSU2_CTSUSUCLKB_SUMULTI2_Pos    (8UL)          /*!< SUMULTI2 (Bit 8)                                      */
- #define R_CTSU2_CTSUSUCLKB_SUMULTI2_Msk    (0xff00UL)     /*!< SUMULTI2 (Bitfield-Mask: 0xff)                        */
- #define R_CTSU2_CTSUSUCLKB_SUADJ3_Pos      (16UL)         /*!< SUADJ3 (Bit 16)                                       */
- #define R_CTSU2_CTSUSUCLKB_SUADJ3_Msk      (0xff0000UL)   /*!< SUADJ3 (Bitfield-Mask: 0xff)                          */
- #define R_CTSU2_CTSUSUCLKB_SUMULTI3_Pos    (24UL)         /*!< SUMULTI3 (Bit 24)                                     */
- #define R_CTSU2_CTSUSUCLKB_SUMULTI3_Msk    (0xff000000UL) /*!< SUMULTI3 (Bitfield-Mask: 0xff)                        */
+ #define R_CTSU2_CTSUSUCLKB_SUADJ2_Pos          (0UL)          /*!< SUADJ2 (Bit 0)                                        */
+ #define R_CTSU2_CTSUSUCLKB_SUADJ2_Msk          (0xffUL)       /*!< SUADJ2 (Bitfield-Mask: 0xff)                          */
+ #define R_CTSU2_CTSUSUCLKB_SUMULTI2_Pos        (8UL)          /*!< SUMULTI2 (Bit 8)                                      */
+ #define R_CTSU2_CTSUSUCLKB_SUMULTI2_Msk        (0xff00UL)     /*!< SUMULTI2 (Bitfield-Mask: 0xff)                        */
+ #define R_CTSU2_CTSUSUCLKB_SUADJ3_Pos          (16UL)         /*!< SUADJ3 (Bit 16)                                       */
+ #define R_CTSU2_CTSUSUCLKB_SUADJ3_Msk          (0xff0000UL)   /*!< SUADJ3 (Bitfield-Mask: 0xff)                          */
+ #define R_CTSU2_CTSUSUCLKB_SUMULTI3_Pos        (24UL)         /*!< SUMULTI3 (Bit 24)                                     */
+ #define R_CTSU2_CTSUSUCLKB_SUMULTI3_Msk        (0xff000000UL) /*!< SUMULTI3 (Bitfield-Mask: 0xff)                        */
 /* ======================================================  CTSUSUCLK2  ======================================================= */
 /* ======================================================  CTSUSUCLK3  ======================================================= */
 /* ======================================================  CTSUCFCCNT  ======================================================= */
- #define R_CTSU2_CTSUCFCCNT_CFCCNT_Pos      (0UL)          /*!< CFCCNT (Bit 0)                                        */
- #define R_CTSU2_CTSUCFCCNT_CFCCNT_Msk      (0xffffUL)     /*!< CFCCNT (Bitfield-Mask: 0xffff)                        */
+ #define R_CTSU2_CTSUCFCCNT_CFCCNT_Pos          (0UL)          /*!< CFCCNT (Bit 0)                                        */
+ #define R_CTSU2_CTSUCFCCNT_CFCCNT_Msk          (0xffffUL)     /*!< CFCCNT (Bitfield-Mask: 0xffff)                        */
 /* ======================================================  CTSUCFCCNTL  ====================================================== */
 /* ========================================================  CTSUOPT  ======================================================== */
- #define R_CTSU2_CTSUOPT_CCOCFEN_Pos        (0UL)          /*!< CCOCFEN (Bit 0)                                       */
- #define R_CTSU2_CTSUOPT_CCOCFEN_Msk        (0x1UL)        /*!< CCOCFEN (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUOPT_MCACEFN_Pos        (1UL)          /*!< MCACEFN (Bit 1)                                       */
- #define R_CTSU2_CTSUOPT_MCACEFN_Msk        (0x2UL)        /*!< MCACEFN (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUOPT_MAJIRIMD_Pos       (2UL)          /*!< MAJIRIMD (Bit 2)                                      */
- #define R_CTSU2_CTSUOPT_MAJIRIMD_Msk       (0x4UL)        /*!< MAJIRIMD (Bitfield-Mask: 0x01)                        */
- #define R_CTSU2_CTSUOPT_DTCLESS_Pos        (4UL)          /*!< DTCLESS (Bit 4)                                       */
- #define R_CTSU2_CTSUOPT_DTCLESS_Msk        (0x10UL)       /*!< DTCLESS (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUOPT_MTUCFEN_Pos        (5UL)          /*!< MTUCFEN (Bit 5)                                       */
- #define R_CTSU2_CTSUOPT_MTUCFEN_Msk        (0x20UL)       /*!< MTUCFEN (Bitfield-Mask: 0x01)                         */
- #define R_CTSU2_CTSUOPT_AJFEN_Pos          (8UL)          /*!< AJFEN (Bit 8)                                         */
- #define R_CTSU2_CTSUOPT_AJFEN_Msk          (0x100UL)      /*!< AJFEN (Bitfield-Mask: 0x01)                           */
- #define R_CTSU2_CTSUOPT_AJINTC_Pos         (9UL)          /*!< AJINTC (Bit 9)                                        */
- #define R_CTSU2_CTSUOPT_AJINTC_Msk         (0x200UL)      /*!< AJINTC (Bitfield-Mask: 0x01)                          */
- #define R_CTSU2_CTSUOPT_SCACTB_Pos         (16UL)         /*!< SCACTB (Bit 16)                                       */
- #define R_CTSU2_CTSUOPT_SCACTB_Msk         (0xf0000UL)    /*!< SCACTB (Bitfield-Mask: 0x0f)                          */
+ #define R_CTSU2_CTSUOPT_CCOCFEN_Pos            (0UL)          /*!< CCOCFEN (Bit 0)                                       */
+ #define R_CTSU2_CTSUOPT_CCOCFEN_Msk            (0x1UL)        /*!< CCOCFEN (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUOPT_MCACEFN_Pos            (1UL)          /*!< MCACEFN (Bit 1)                                       */
+ #define R_CTSU2_CTSUOPT_MCACEFN_Msk            (0x2UL)        /*!< MCACEFN (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUOPT_MAJIRIMD_Pos           (2UL)          /*!< MAJIRIMD (Bit 2)                                      */
+ #define R_CTSU2_CTSUOPT_MAJIRIMD_Msk           (0x4UL)        /*!< MAJIRIMD (Bitfield-Mask: 0x01)                        */
+ #define R_CTSU2_CTSUOPT_DTCLESS_Pos            (4UL)          /*!< DTCLESS (Bit 4)                                       */
+ #define R_CTSU2_CTSUOPT_DTCLESS_Msk            (0x10UL)       /*!< DTCLESS (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUOPT_MTUCFEN_Pos            (5UL)          /*!< MTUCFEN (Bit 5)                                       */
+ #define R_CTSU2_CTSUOPT_MTUCFEN_Msk            (0x20UL)       /*!< MTUCFEN (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_CTSUOPT_AJFEN_Pos              (8UL)          /*!< AJFEN (Bit 8)                                         */
+ #define R_CTSU2_CTSUOPT_AJFEN_Msk              (0x100UL)      /*!< AJFEN (Bitfield-Mask: 0x01)                           */
+ #define R_CTSU2_CTSUOPT_AJINTC_Pos             (9UL)          /*!< AJINTC (Bit 9)                                        */
+ #define R_CTSU2_CTSUOPT_AJINTC_Msk             (0x200UL)      /*!< AJINTC (Bitfield-Mask: 0x01)                          */
+ #define R_CTSU2_CTSUOPT_SCACTB_Pos             (16UL)         /*!< SCACTB (Bit 16)                                       */
+ #define R_CTSU2_CTSUOPT_SCACTB_Msk             (0xf0000UL)    /*!< SCACTB (Bitfield-Mask: 0x0f)                          */
 /* =======================================================  CTSUOPTL  ======================================================== */
 /* ==========================================================  AC  =========================================================== */
+ #define R_CTSU2_AC_CCOCFEN_Pos                 (0UL)          /*!< CCOCFEN (Bit 0)                                       */
+ #define R_CTSU2_AC_CCOCFEN_Msk                 (0x1UL)        /*!< CCOCFEN (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_AC_MCACEFN_Pos                 (1UL)          /*!< MCACEFN (Bit 1)                                       */
+ #define R_CTSU2_AC_MCACEFN_Msk                 (0x2UL)        /*!< MCACEFN (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_AC_MAJIRIMD_Pos                (2UL)          /*!< MAJIRIMD (Bit 2)                                      */
+ #define R_CTSU2_AC_MAJIRIMD_Msk                (0x4UL)        /*!< MAJIRIMD (Bitfield-Mask: 0x01)                        */
+ #define R_CTSU2_AC_DTCLESS_Pos                 (4UL)          /*!< DTCLESS (Bit 4)                                       */
+ #define R_CTSU2_AC_DTCLESS_Msk                 (0x10UL)       /*!< DTCLESS (Bitfield-Mask: 0x01)                         */
+ #define R_CTSU2_AC_MTUCFEN_Pos                 (5UL)          /*!< MTUCFEN (Bit 5)                                       */
+ #define R_CTSU2_AC_MTUCFEN_Msk                 (0x20UL)       /*!< MTUCFEN (Bitfield-Mask: 0x01)                         */
 /* ==========================================================  AJ  =========================================================== */
+ #define R_CTSU2_AJ_AJFEN_Pos                   (0UL)          /*!< AJFEN (Bit 0)                                         */
+ #define R_CTSU2_AJ_AJFEN_Msk                   (0x1UL)        /*!< AJFEN (Bitfield-Mask: 0x01)                           */
+ #define R_CTSU2_AJ_AJINTC_Pos                  (1UL)          /*!< AJINTC (Bit 1)                                        */
+ #define R_CTSU2_AJ_AJINTC_Msk                  (0x2UL)        /*!< AJINTC (Bitfield-Mask: 0x01)                          */
 /* =======================================================  CTSUOPTH  ======================================================== */
 /* =========================================================  ACTB  ========================================================== */
+ #define R_CTSU2_ACTB_SCACTB_Pos                (0UL)          /*!< SCACTB (Bit 0)                                        */
+ #define R_CTSU2_ACTB_SCACTB_Msk                (0xfUL)        /*!< SCACTB (Bitfield-Mask: 0x0f)                          */
 /* ======================================================  CTSUSCNTACT  ====================================================== */
  #define R_CTSU2_CTSUSCNTACT_SCNTACCOEFF_Pos    (0UL)          /*!< SCNTACCOEFF (Bit 0)                                   */
  #define R_CTSU2_CTSUSCNTACT_SCNTACCOEFF_Msk    (0xffffUL)     /*!< SCNTACCOEFF (Bitfield-Mask: 0xffff)                   */
@@ -20162,49 +20241,61 @@ typedef struct                          /*!< (@ 0x400E8000) R_AGTX0 Structure   
  #define R_CTSU2_CTSUAJCR_AJBMAT_Msk            (0xf0000000UL) /*!< AJBMAT (Bitfield-Mask: 0x0f)                          */
 /* =======================================================  CTSUAJCRL  ======================================================= */
 /* =========================================================  AJCR0  ========================================================= */
+ #define R_CTSU2_AJCR0_TLOT_Pos                 (0UL)          /*!< TLOT (Bit 0)                                          */
+ #define R_CTSU2_AJCR0_TLOT_Msk                 (0xffUL)       /*!< TLOT (Bitfield-Mask: 0xff)                            */
 /* =========================================================  AJCR1  ========================================================= */
+ #define R_CTSU2_AJCR1_THOT_Pos                 (0UL)          /*!< THOT (Bit 0)                                          */
+ #define R_CTSU2_AJCR1_THOT_Msk                 (0xffUL)       /*!< THOT (Bitfield-Mask: 0xff)                            */
 /* =======================================================  CTSUAJCRH  ======================================================= */
 /* =========================================================  AJCR2  ========================================================= */
+ #define R_CTSU2_AJCR2_BLINI_Pos                (0UL)          /*!< BLINI (Bit 0)                                         */
+ #define R_CTSU2_AJCR2_BLINI_Msk                (0x1UL)        /*!< BLINI (Bitfield-Mask: 0x01)                           */
+ #define R_CTSU2_AJCR2_JC_Pos                   (4UL)          /*!< JC (Bit 4)                                            */
+ #define R_CTSU2_AJCR2_JC_Msk                   (0x30UL)       /*!< JC (Bitfield-Mask: 0x03)                              */
 /* =========================================================  AJCR3  ========================================================= */
+ #define R_CTSU2_AJCR3_AJMMAT_Pos               (0UL)          /*!< AJMMAT (Bit 0)                                        */
+ #define R_CTSU2_AJCR3_AJMMAT_Msk               (0xfUL)        /*!< AJMMAT (Bitfield-Mask: 0x0f)                          */
+ #define R_CTSU2_AJCR3_AJBMAT_Pos               (4UL)          /*!< AJBMAT (Bit 4)                                        */
+ #define R_CTSU2_AJCR3_AJBMAT_Msk               (0xf0UL)       /*!< AJBMAT (Bitfield-Mask: 0x0f)                          */
 /* =======================================================  CTSUAJTHR  ======================================================= */
- #define R_CTSU2_CTSUAJTHR_AJTHL_Pos        (0UL)          /*!< AJTHL (Bit 0)                                         */
- #define R_CTSU2_CTSUAJTHR_AJTHL_Msk        (0xffffUL)     /*!< AJTHL (Bitfield-Mask: 0xffff)                         */
- #define R_CTSU2_CTSUAJTHR_AJTHH_Pos        (16UL)         /*!< AJTHH (Bit 16)                                        */
- #define R_CTSU2_CTSUAJTHR_AJTHH_Msk        (0xffff0000UL) /*!< AJTHH (Bitfield-Mask: 0xffff)                         */
+ #define R_CTSU2_CTSUAJTHR_AJTHL_Pos            (0UL)          /*!< AJTHL (Bit 0)                                         */
+ #define R_CTSU2_CTSUAJTHR_AJTHL_Msk            (0xffffUL)     /*!< AJTHL (Bitfield-Mask: 0xffff)                         */
+ #define R_CTSU2_CTSUAJTHR_AJTHH_Pos            (16UL)         /*!< AJTHH (Bit 16)                                        */
+ #define R_CTSU2_CTSUAJTHR_AJTHH_Msk            (0xffff0000UL) /*!< AJTHH (Bitfield-Mask: 0xffff)                         */
 /* ======================================================  CTSUAJTHRL  ======================================================= */
 /* ======================================================  CTSUAJTHRH  ======================================================= */
 /* ======================================================  CTSUAJMMAR  ======================================================= */
- #define R_CTSU2_CTSUAJMMAR_AJMMATI_Pos     (0UL)          /*!< AJMMATI (Bit 0)                                       */
- #define R_CTSU2_CTSUAJMMAR_AJMMATI_Msk     (0xfUL)        /*!< AJMMATI (Bitfield-Mask: 0x0f)                         */
- #define R_CTSU2_CTSUAJMMAR_AJMMR_Pos       (5UL)          /*!< AJMMR (Bit 5)                                         */
- #define R_CTSU2_CTSUAJMMAR_AJMMR_Msk       (0xffffffe0UL) /*!< AJMMR (Bitfield-Mask: 0x7ffffff)                      */
+ #define R_CTSU2_CTSUAJMMAR_AJMMATI_Pos         (0UL)          /*!< AJMMATI (Bit 0)                                       */
+ #define R_CTSU2_CTSUAJMMAR_AJMMATI_Msk         (0xfUL)        /*!< AJMMATI (Bitfield-Mask: 0x0f)                         */
+ #define R_CTSU2_CTSUAJMMAR_AJMMR_Pos           (5UL)          /*!< AJMMR (Bit 5)                                         */
+ #define R_CTSU2_CTSUAJMMAR_AJMMR_Msk           (0xffffffe0UL) /*!< AJMMR (Bitfield-Mask: 0x7ffffff)                      */
 /* ======================================================  CTSUAJMMARL  ====================================================== */
 /* ======================================================  CTSUAJMMARH  ====================================================== */
 /* ======================================================  CTSUAJBLACT  ====================================================== */
- #define R_CTSU2_CTSUAJBLACT_AJBLACT_Pos    (0UL)          /*!< AJBLACT (Bit 0)                                       */
- #define R_CTSU2_CTSUAJBLACT_AJBLACT_Msk    (0xffffffffUL) /*!< AJBLACT (Bitfield-Mask: 0xffffffff)                   */
+ #define R_CTSU2_CTSUAJBLACT_AJBLACT_Pos        (0UL)          /*!< AJBLACT (Bit 0)                                       */
+ #define R_CTSU2_CTSUAJBLACT_AJBLACT_Msk        (0xffffffffUL) /*!< AJBLACT (Bitfield-Mask: 0xffffffff)                   */
 /* =====================================================  CTSUAJBLACTL  ====================================================== */
 /* =====================================================  CTSUAJBLACTH  ====================================================== */
 /* ======================================================  CTSUAJBLAR  ======================================================= */
- #define R_CTSU2_CTSUAJBLAR_AJBLAC_Pos      (0UL)          /*!< AJBLAC (Bit 0)                                        */
- #define R_CTSU2_CTSUAJBLAR_AJBLAC_Msk      (0xffffUL)     /*!< AJBLAC (Bitfield-Mask: 0xffff)                        */
- #define R_CTSU2_CTSUAJBLAR_AJBLAR_Pos      (16UL)         /*!< AJBLAR (Bit 16)                                       */
- #define R_CTSU2_CTSUAJBLAR_AJBLAR_Msk      (0xffff0000UL) /*!< AJBLAR (Bitfield-Mask: 0xffff)                        */
+ #define R_CTSU2_CTSUAJBLAR_AJBLAC_Pos          (0UL)          /*!< AJBLAC (Bit 0)                                        */
+ #define R_CTSU2_CTSUAJBLAR_AJBLAC_Msk          (0xffffUL)     /*!< AJBLAC (Bitfield-Mask: 0xffff)                        */
+ #define R_CTSU2_CTSUAJBLAR_AJBLAR_Pos          (16UL)         /*!< AJBLAR (Bit 16)                                       */
+ #define R_CTSU2_CTSUAJBLAR_AJBLAR_Msk          (0xffff0000UL) /*!< AJBLAR (Bitfield-Mask: 0xffff)                        */
 /* ======================================================  CTSUAJBLARL  ====================================================== */
 /* ======================================================  CTSUAJBLARH  ====================================================== */
 /* =======================================================  CTSUAJRR  ======================================================== */
- #define R_CTSU2_CTSUAJRR_TJR0_Pos          (0UL)          /*!< TJR0 (Bit 0)                                          */
- #define R_CTSU2_CTSUAJRR_TJR0_Msk          (0x1UL)        /*!< TJR0 (Bitfield-Mask: 0x01)                            */
- #define R_CTSU2_CTSUAJRR_TJR1_Pos          (1UL)          /*!< TJR1 (Bit 1)                                          */
- #define R_CTSU2_CTSUAJRR_TJR1_Msk          (0x2UL)        /*!< TJR1 (Bitfield-Mask: 0x01)                            */
- #define R_CTSU2_CTSUAJRR_TJR2_Pos          (2UL)          /*!< TJR2 (Bit 2)                                          */
- #define R_CTSU2_CTSUAJRR_TJR2_Msk          (0x4UL)        /*!< TJR2 (Bitfield-Mask: 0x01)                            */
- #define R_CTSU2_CTSUAJRR_TJR3_Pos          (3UL)          /*!< TJR3 (Bit 3)                                          */
- #define R_CTSU2_CTSUAJRR_TJR3_Msk          (0x8UL)        /*!< TJR3 (Bitfield-Mask: 0x01)                            */
- #define R_CTSU2_CTSUAJRR_FJR_Pos           (4UL)          /*!< FJR (Bit 4)                                           */
- #define R_CTSU2_CTSUAJRR_FJR_Msk           (0x10UL)       /*!< FJR (Bitfield-Mask: 0x01)                             */
- #define R_CTSU2_CTSUAJRR_SJCCR_Pos         (8UL)          /*!< SJCCR (Bit 8)                                         */
- #define R_CTSU2_CTSUAJRR_SJCCR_Msk         (0xff00UL)     /*!< SJCCR (Bitfield-Mask: 0xff)                           */
+ #define R_CTSU2_CTSUAJRR_TJR0_Pos              (0UL)          /*!< TJR0 (Bit 0)                                          */
+ #define R_CTSU2_CTSUAJRR_TJR0_Msk              (0x1UL)        /*!< TJR0 (Bitfield-Mask: 0x01)                            */
+ #define R_CTSU2_CTSUAJRR_TJR1_Pos              (1UL)          /*!< TJR1 (Bit 1)                                          */
+ #define R_CTSU2_CTSUAJRR_TJR1_Msk              (0x2UL)        /*!< TJR1 (Bitfield-Mask: 0x01)                            */
+ #define R_CTSU2_CTSUAJRR_TJR2_Pos              (2UL)          /*!< TJR2 (Bit 2)                                          */
+ #define R_CTSU2_CTSUAJRR_TJR2_Msk              (0x4UL)        /*!< TJR2 (Bitfield-Mask: 0x01)                            */
+ #define R_CTSU2_CTSUAJRR_TJR3_Pos              (3UL)          /*!< TJR3 (Bit 3)                                          */
+ #define R_CTSU2_CTSUAJRR_TJR3_Msk              (0x8UL)        /*!< TJR3 (Bitfield-Mask: 0x01)                            */
+ #define R_CTSU2_CTSUAJRR_FJR_Pos               (4UL)          /*!< FJR (Bit 4)                                           */
+ #define R_CTSU2_CTSUAJRR_FJR_Msk               (0x10UL)       /*!< FJR (Bitfield-Mask: 0x01)                             */
+ #define R_CTSU2_CTSUAJRR_SJCCR_Pos             (8UL)          /*!< SJCCR (Bit 8)                                         */
+ #define R_CTSU2_CTSUAJRR_SJCCR_Msk             (0xff00UL)     /*!< SJCCR (Bitfield-Mask: 0xff)                           */
 /* =======================================================  CTSUAJRRL  ======================================================= */
 /* =======================================================  CTSUAJRR0  ======================================================= */
 /* =======================================================  CTSUAJRR1  ======================================================= */
@@ -24275,6 +24366,9 @@ typedef struct                          /*!< (@ 0x400E8000) R_AGTX0 Structure   
 /* ========================================================  HOCOCR  ========================================================= */
  #define R_SYSTEM_HOCOCR_HCSTP_Pos               (0UL)          /*!< HCSTP (Bit 0)                                         */
  #define R_SYSTEM_HOCOCR_HCSTP_Msk               (0x1UL)        /*!< HCSTP (Bitfield-Mask: 0x01)                           */
+/* ========================================================  HOCOCR2  ======================================================== */
+ #define R_SYSTEM_HOCOCR2_HCFRQ0_Pos             (0UL)          /*!< HCFRQ0 (Bit 0)                                        */
+ #define R_SYSTEM_HOCOCR2_HCFRQ0_Msk             (0x7UL)        /*!< HCFRQ0 (Bitfield-Mask: 0x07)                          */
 /* ========================================================  MOCOCR  ========================================================= */
  #define R_SYSTEM_MOCOCR_MCSTP_Pos               (0UL)          /*!< MCSTP (Bit 0)                                         */
  #define R_SYSTEM_MOCOCR_MCSTP_Msk               (0x1UL)        /*!< MCSTP (Bitfield-Mask: 0x01)                           */

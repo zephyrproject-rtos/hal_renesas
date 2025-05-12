@@ -29,6 +29,19 @@ FSP_HEADER
  * Typedef definitions
  *********************************************************************************************************************/
 
+/** External IRQ input pin digital filtering clock selection. */
+typedef enum e_external_irq_digital_filter
+{
+    EXTERNAL_IRQ_DIGITAL_FILTER_PCLK_DIV = 0, ///< Digital filter using clock PCLK dividers.
+    EXTERNAL_IRQ_DIGITAL_FILTER_LOCO     = 1, ///< Digital filter using clock LOCO.
+} e_external_irq_digital_filter_t;
+
+/** Extended ICU interface configuration */
+typedef struct st_icu_extended_cfg
+{
+    e_external_irq_digital_filter_t filter_src; ///< Select digital filter clock source when digital filter is enabled.
+} icu_extended_cfg_t;
+
 /** ICU private control block. DO NOT MODIFY.  Initialization occurs when R_ICU_ExternalIrqOpen is called. */
 typedef struct st_icu_instance_ctrl
 {
@@ -42,7 +55,7 @@ typedef struct st_icu_instance_ctrl
     void (* p_callback)(external_irq_callback_args_t * p_args); // Pointer to callback that is called when an edge is detected on the external irq pin.
 
     /** Placeholder for user data.  Passed to the user callback in ::external_irq_callback_args_t. */
-    void const * p_context;
+    void * p_context;
 } icu_instance_ctrl_t;
 
 /**********************************************************************************************************************
@@ -66,7 +79,7 @@ fsp_err_t R_ICU_ExternalIrqDisable(external_irq_ctrl_t * const p_api_ctrl);
 
 fsp_err_t R_ICU_ExternalIrqCallbackSet(external_irq_ctrl_t * const          p_api_ctrl,
                                        void (                             * p_callback)(external_irq_callback_args_t *),
-                                       void const * const                   p_context,
+                                       void * const                         p_context,
                                        external_irq_callback_args_t * const p_callback_memory);
 
 fsp_err_t R_ICU_ExternalIrqClose(external_irq_ctrl_t * const p_api_ctrl);

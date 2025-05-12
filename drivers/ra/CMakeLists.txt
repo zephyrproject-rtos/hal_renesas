@@ -103,12 +103,12 @@ if(CONFIG_USE_RA_FSP_SCE)
 
 	if(CONFIG_HAS_RENESAS_RA_RSIP_E51A)
 		zephyr_include_directories(
-			fsp/src/r_sce/crypto_procedures/src/rsip7/plainkey/public/inc
-			fsp/src/r_sce/crypto_procedures/src/rsip7/plainkey/private/inc)
-		file(GLOB rsip7_srcs
-			"fsp/src/r_sce/crypto_procedures/src/rsip7/plainkey/adaptors/*.c"
-			"fsp/src/r_sce/crypto_procedures/src/rsip7/plainkey/primitive/*.c")
-		zephyr_library_sources(${rsip7_srcs})
+			fsp/src/r_sce/crypto_procedures/src/rsip_e51a/plainkey/public/inc
+			fsp/src/r_sce/crypto_procedures/src/rsip_e51a/plainkey/private/inc)
+		file(GLOB rsip_e51a_srcs
+			"fsp/src/r_sce/crypto_procedures/src/rsip_e51a/plainkey/adaptors/*.c"
+			"fsp/src/r_sce/crypto_procedures/src/rsip_e51a/plainkey/primitive/*.c")
+		zephyr_library_sources(${rsip_e51a_srcs})
 	endif()
 
 	if (CONFIG_HAS_RENESAS_RA_SCE5)

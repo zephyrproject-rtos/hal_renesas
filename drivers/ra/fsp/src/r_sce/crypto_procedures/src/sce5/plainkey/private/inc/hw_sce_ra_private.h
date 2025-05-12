@@ -251,6 +251,11 @@ fsp_err_t HW_SCE_Aes128EncryptDecryptInitSubAdaptor (const uint32_t InData_KeyMo
                                               const uint32_t InData_KeyIndex[],
                                               const uint32_t InData_Key[],
                                               const uint32_t InData_IV[]);
+fsp_err_t HW_SCE_Aes192EncryptDecryptInitSubAdaptor (const uint32_t InData_KeyMode[],
+		                                     const uint32_t InData_Cmd[],
+                                                     const uint32_t InData_KeyIndex[],
+                                                     const uint32_t InData_Key[],
+                                                     const uint32_t InData_IV[]);
 fsp_err_t HW_SCE_Aes256EncryptDecryptInitSubAdaptor (const uint32_t InData_KeyMode[], const uint32_t InData_Cmd[], const uint32_t InData_KeyIndex[], const uint32_t InData_Key[], const uint32_t InData_IV[]);
 void         HW_SCE_Aes128EncryptDecryptUpdateSub(const uint32_t *InData_Text, uint32_t *OutData_Text, const uint32_t MAX_CNT);
 fsp_err_t HW_SCE_Aes128EncryptDecryptFinalSub(void);
@@ -377,4 +382,12 @@ fsp_err_t HW_SCE_Aes256CmacFinal(const uint32_t InData_Cmd[],
                                  const uint32_t InData_DataT[],
                                  const uint32_t InData_DataTLen[],
                                  uint32_t       OutData_DataT[]);
+fsp_err_t HW_SCE_Aes128XtsEncryptInitSubGeneral (uint32_t InData_KeyMode[],
+                                                 uint32_t InData_KeyIndex[],
+                                                 uint32_t InData_Key[],
+                                                 uint32_t InData_IV[]);
+fsp_err_t HW_SCE_Aes128XtsDecryptInitSubGeneral (uint32_t InData_KeyMode[],
+                                                 uint32_t InData_KeyIndex[],
+                                                 uint32_t InData_Key[],
+                                                 uint32_t InData_IV[]);
 #endif /* HW_SCE_RA_PRIVATE_HEADER_FILE */
