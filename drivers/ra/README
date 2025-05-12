@@ -6,7 +6,7 @@ Origin:
    https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp
 
 Status:
-   version v5.8.0
+   version v6.0.0
 
 Purpose:
    Flexible Software Package (FSP) for Renesas RA MCU Family.
@@ -139,13 +139,8 @@ Patch List:
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8D1BH.h
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8T1AH.h
 
-   * Keep a backport for UCK, OCTA, U60CK clock marcro in bsp_clocks.c
+   * Keep OSPI_B at fsp 5.8.0 since it need big change for OSPI driver in zephyr
       Impacted files:
-         drivers/ra/fsp/src/bsp/mcu/all/bsp_clocks.c
-      Note: This will be remove in next FSP version
-
-   * Keep a backport for BSP_FEATURE_LPM_HAS_LDO_CONTROL macro in r_lpm
-      Impacted files:
-         drivers/ra/fsp/inc/api/r_lpm_api.h
-         drivers/ra/fsp/src/r_lpm/r_lpm.c
-      Note: This will be remove in next FSP version.
+         drivers/ra/fsp/src/r_ospi_b/r_ospi_b.c
+         drivers/ra/fsp/inc/api/r_spi_flash_api.h
+         drivers/ra/fsp/inc/instances/r_ospi_b.h

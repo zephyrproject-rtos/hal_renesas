@@ -52,7 +52,6 @@ typedef enum e_comparator_mode
 /** Trigger type: rising edge, falling edge, both edges, low level. */
 typedef enum e_comparator_trigger
 {
-    COMPARATOR_TRIGGER_NO_EDGE   = 0,  ///< None edge trigger
     COMPARATOR_TRIGGER_RISING    = 1,  ///< Rising edge trigger
     COMPARATOR_TRIGGER_FALLING   = 2,  ///< Falling edge trigger
     COMPARATOR_TRIGGER_BOTH_EDGE = 3,  ///< Both edges trigger
@@ -106,8 +105,8 @@ typedef struct st_comparator_status
 typedef struct st_comparator_callback_args
 {
     /** Placeholder for user data. Set in @ref comparator_api_t::open function in @ref comparator_cfg_t. */
-    void const * p_context;
-    uint32_t     channel;              ///< The physical hardware channel that caused the interrupt.
+    void   * p_context;
+    uint32_t channel;                  ///< The physical hardware channel that caused the interrupt.
 } comparator_callback_args_t;
 
 /** User configuration structure, used in open function */
@@ -127,7 +126,7 @@ typedef struct st_comparator_cfg
     void (* p_callback)(comparator_callback_args_t * p_args);
 
     /** Placeholder for user data.  Passed to the user callback in @ref comparator_callback_args_t. */
-    void const * p_context;
+    void       * p_context;
     void const * p_extend;             ///< Comparator hardware dependent configuration.
 } comparator_cfg_t;
 

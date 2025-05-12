@@ -44,6 +44,8 @@ extern "C" {
 
  #if BSP_MCU_GROUP_RA0E1
   #include "R7FA0E107.h"
+ #elif BSP_MCU_GROUP_RA0E2
+  #include "R7FA0E209.h"
  #elif BSP_MCU_GROUP_RA2A1
   #include "R7FA2A1AB.h"
  #elif BSP_MCU_GROUP_RA2A2
@@ -56,6 +58,12 @@ extern "C" {
   #include "R7FA2E307.h"
  #elif BSP_MCU_GROUP_RA2L1
   #include "R7FA2L1AB.h"
+ #elif BSP_MCU_GROUP_RA2L2
+  #include "R7FA2L209.h"
+ #elif BSP_MCU_GROUP_RA2T1
+  #include "R7FA2T107.h"
+ #elif BSP_MCU_GROUP_RA4C1
+  #include "R7FA4C1BD.h"
  #elif BSP_MCU_GROUP_RA4E1
   #include "R7FA4E10D.h"
  #elif BSP_MCU_GROUP_RA4E2
