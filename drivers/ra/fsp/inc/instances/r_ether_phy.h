@@ -42,7 +42,6 @@ typedef enum e_ether_phy_interface_status
 typedef struct st_ether_phy_instance_ctrl
 {
     uint32_t open;                                 ///< Used to determine if the channel is configured
-    uint8_t phy_lsi_address;                       ///< Address of PHY-LSI
 
     /* Configuration of Ethernet PHY-LSI module. */
     ether_phy_cfg_t const * p_ether_phy_cfg;       ///< Pointer to initial configurations.
@@ -60,6 +59,7 @@ typedef struct st_ether_phy_extended_cfg
 {
     void (* p_target_init)(ether_phy_instance_ctrl_t * p_instance_ctrl);                                                 ///< Pointer to callback that is called to initialize the target.
     bool (* p_target_link_partner_ability_get)(ether_phy_instance_ctrl_t * p_instance_ctrl, uint32_t line_speed_duplex); ///< Pointer to callback that is called to get the link partner ability.
+    ether_phy_lsi_cfg_t const * p_phy_lsi_cfg_list[BSP_FEATURE_ETHER_MAX_CHANNELS];                                      ///< Pointer list of PHY LSI configurations.
 } ether_phy_extended_cfg_t;
 
 /**********************************************************************************************************************

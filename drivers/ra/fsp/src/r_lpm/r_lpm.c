@@ -505,7 +505,7 @@ fsp_err_t r_lpm_configure (lpm_cfg_t const * const p_cfg)
     uint32_t dpsbycr = 0;
 #endif
 
-#if BSP_FEATURE_LPM_HAS_LDO_CONTROL || BSP_FEATURE_LPM_HAS_LDO_SKEEP
+#if BSP_FEATURE_LPM_HAS_LDO_SKEEP
     if ((R_SYSTEM->PLL1LDOCR_b.SKEEP != p_cfg->ldo_standby_cfg.pll1_ldo) ||
         (R_SYSTEM->PLL2LDOCR_b.SKEEP != p_cfg->ldo_standby_cfg.pll2_ldo) ||
         (R_SYSTEM->HOCOLDOCR_b.SKEEP != p_cfg->ldo_standby_cfg.hoco_ldo))
@@ -664,7 +664,7 @@ fsp_err_t r_lpm_configure (lpm_cfg_t const * const p_cfg)
             R_SYSTEM->PDRAMSCR0 = p_cfg->ram_retention_cfg.ram_retention;
 #endif
 
-#if BSP_FEATURE_LPM_HAS_LDO_CONTROL || BSP_FEATURE_LPM_HAS_LDO_SKEEP
+#if BSP_FEATURE_LPM_HAS_LDO_SKEEP
 
             /* PLL1LDOCR may only be written in High Speed Mode. If PLL1DOCR setting is not changed, then skip
              * writing to it. */
