@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -13,5 +13,5 @@
 #elif defined(CONFIG_SOC_R7FA4E10D2CNE)
 #define BSP_PACKAGE_PINS (48)
 #endif
-
+#define BSP_NUMBER_OF_CORES (1)
 #endif /* BSP_MCU_DEVICE_PN_CFG_H_ */

@@ -10,6 +10,7 @@
 #include "soc.h"
 #include "bsp_clock_cfg.h"
 #include "bsp_mcu_family_cfg.h"
+#include "bsp_mcu_ofs_cfg.h"
 
 #define SUBCLOCK_STABILIZATION_MAX(x) ((x < 10000) ? x : 10000)
 
