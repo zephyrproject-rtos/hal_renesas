@@ -10,7 +10,6 @@ set(include_dirs
 )
 
 set(srcs
-	fsp/src/bsp/mcu/all/bsp_rom_registers.c
 	fsp/src/bsp/mcu/all/bsp_clocks.c
 	fsp/src/bsp/mcu/all/bsp_delay.c
 	fsp/src/bsp/mcu/all/bsp_register_protection.c
@@ -22,6 +21,7 @@ zephyr_include_directories(${include_dirs})
 zephyr_library_sources(${srcs})
 
 zephyr_include_directories(fsp/src/bsp/mcu/${CONFIG_SOC_SERIES})
+zephyr_library_sources(fsp/src/bsp/mcu/${CONFIG_SOC_SERIES}/bsp_linker.c)
 
 # Optional build base on feature configuration
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_UART

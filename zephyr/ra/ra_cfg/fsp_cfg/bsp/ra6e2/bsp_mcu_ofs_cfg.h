@@ -1,0 +1,46 @@
+/*
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
+
+#ifndef BSP_MCU_OFS_CFG_H_
+#define BSP_MCU_OFS_CFG_H_
+#define OFS_IWDT (0xA001A001 | 1 << 1 | 3 << 2 | 15 << 4 | 3 << 8 | 3 << 10 | 1 << 12 | 1 << 14)
+#define OFS_WDT  (1 << 17 | 3 << 18 | 15 << 20 | 3 << 24 | 3 << 26 | 1 << 28 | 1 << 30)
+#define BSP_CFG_OPTION_SETTING_OFS0  (OFS_IWDT | OFS_WDT)
+/*
+ ID Code
+ Note: To permanently lock and disable the debug interface define the BSP_ID_CODE_PERMANENTLY_LOCKED in the compiler settings.
+ WARNING: This will disable debug access to the part and cannot be reversed by a debug probe.
+ */
+#if defined(BSP_ID_CODE_PERMANENTLY_LOCKED)
+/*
+ID Code
+Note: To lock and disable the debug interface define BSP_ID_CODE_LOCKED in compiler settings.
+WARNING: This will disable debug access to the part. However, ALeRASE command will be accepted, which will clear (reset) the ID code. After clearing ID code, debug access will be enabled.
+Please read the HWM for full details of the clearing process.
+*/
+#define BSP_CFG_ID_CODE_LONG_1 (0x00000000)
+#define BSP_CFG_ID_CODE_LONG_2 (0x00000000)
+#define BSP_CFG_ID_CODE_LONG_3 (0x00000000)
+#define BSP_CFG_ID_CODE_LONG_4 (0x00000000)
+#else
+/* ID Code: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF */
+
+#define BSP_CFG_ID_CODE_LONG_1 (0xFFFFFFFF)
+
+#define BSP_CFG_ID_CODE_LONG_2 (0xFFFFFFFF)
+
+#define BSP_CFG_ID_CODE_LONG_3 (0xFFFFFFFF)
+
+#define BSP_CFG_ID_CODE_LONG_4 (0xffFFFFFF)
+#endif
+#define BSP_CFG_OPTION_SETTING_OSIS   BSP_CFG_ID_CODE_LONG_1, BSP_CFG_ID_CODE_LONG_2, BSP_CFG_ID_CODE_LONG_3, BSP_CFG_ID_CODE_LONG_4
+#define BSP_CFG_OPTION_SETTING_OFS1_SEC_NO_HOCOFRQ (0xFFFFF8F8 | (1 <<2) | (3) | (1 << 8))
+
+#define BSP_CFG_OPTION_SETTING_OFS1_SEC  ((uint32_t) BSP_CFG_OPTION_SETTING_OFS1_SEC_NO_HOCOFRQ | ((uint32_t) BSP_CFG_HOCO_FREQUENCY << BSP_FEATURE_BSP_OFS1_HOCOFRQ_OFFSET))
+
+#define BSP_CFG_OPTION_SETTING_BPS_SEC 0xFFFFFFFF
+#define BSP_CFG_OPTION_SETTING_PBPS_SEC 0xFFFFFFFF
+#endif /* BSP_MCU_OFS_CFG_H_ */
