@@ -154,3 +154,8 @@ Patch List:
    * Add bsp_linker_info.h in portable
       Impacted files:
          zephyr/ra/portable/bsp_linker_info.h
+
+   * Modify to use BSP_ICU_VECTOR_MAX_ENTRIES macro instead BSP_ICU_VECTOR_NUM_ENTRIES
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_irq.c
+         drivers/ra/fsp/src/r_dtc/r_dtc.c
