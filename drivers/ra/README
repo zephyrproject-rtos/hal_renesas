@@ -152,3 +152,6 @@ Patch List:
          zephyr/ra/ra_cfg/fsp_cfg/bsp/ra4m1/bsp_mcu_ofs_cfg.h
          zephyr/ra/ra_cfg/fsp_cfg/bsp/ra4w1/bsp_mcu_ofs_cfg.h
 
+   * Add bsp_linker_info.h in portable
+      Impacted files:
+         zephyr/ra/portable/bsp_linker_info.h
