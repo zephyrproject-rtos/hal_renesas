@@ -6,7 +6,7 @@ Origin:
    https://www.renesas.com/us/en/software-tool/fit
 
 Status:
-   version v1.46
+   version v1.47
 
 Purpose:
    Firmware Integration Technology (FIT) for Renesas RX MCU Family.
@@ -22,7 +22,7 @@ URL:
    https://github.com/renesas/rx-driver-package
 
 Commit:
-   aa05cf00f4caade21cc6697c9f24c70d41f2a3b4
+   2fdeaa013e81e2288de4d92b8ef05a0a89edb964
 
 Maintained-by:
    Renesas Electronics Corporation
@@ -32,3 +32,15 @@ License:
 
 License Link:
    https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Remove the static definition in RIIC
+   Impacted files:
+      drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
+      drivers/rx/rdp/src/r_riic_rx/r_riic_rx_if.h
+
+   * Fix the build warning in I2C source
+   Impacted files:
+      drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
+      drivers/rx/rdp/src/r_riic_rx/src/targets/rx130/r_riic_rx130.c
