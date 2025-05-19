@@ -46,7 +46,7 @@
  * Private global variables and functions
  **********************************************************************************************************************/
 
-#if !BSP_CFG_BOOT_IMAGE
+#if !BSP_CFG_BOOT_IMAGE && !defined(BSP_MCU_GROUP_RA8P1)
 
  #if BSP_FEATURE_FLASH_SUPPORTS_ID_CODE == 1
 
