@@ -32,3 +32,10 @@ License:
 
 License Link:
    https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Fix the build warnings in RSPI
+   Impacted files:
+      drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx.c
+      drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx_private.h
