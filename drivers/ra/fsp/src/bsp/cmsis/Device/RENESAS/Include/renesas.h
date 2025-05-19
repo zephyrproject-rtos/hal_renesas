@@ -96,6 +96,14 @@ extern "C" {
   #include "R7FA8M1AH.h"
  #elif BSP_MCU_GROUP_RA8D1
   #include "R7FA8D1BH.h"
+ #elif BSP_MCU_GROUP_RA8P1
+  #if 0U == BSP_CFG_CPU_CORE
+   #include "R7KA8P1KF_core0.h"
+  #elif 1U == BSP_CFG_CPU_CORE
+   #include "R7KA8P1KF_core1.h"
+  #else
+   #warning "Unsupported CPU number"
+  #endif
  #elif BSP_MCU_GROUP_RA8T1
   #include "R7FA8T1AH.h"
  #elif BSP_MCU_GROUP_RA8E1
