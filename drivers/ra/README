@@ -143,3 +143,9 @@ Patch List:
       Impacted files:
          drivers/ra/fsp/src/bsp/mcu/all/bsp_clocks.c
       Note: This will be remove in next FSP version
+
+   * Keep a backport for BSP_FEATURE_LPM_HAS_LDO_CONTROL macro in r_lpm
+      Impacted files:
+         drivers/ra/fsp/inc/api/r_lpm_api.h
+         drivers/ra/fsp/src/r_lpm/r_lpm.c
+      Note: This will be remove in next FSP version.

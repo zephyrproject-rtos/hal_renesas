@@ -565,7 +565,7 @@ typedef struct st_lpm_cfg
     lpm_ram_retention_t ram_retention_cfg;
 #endif
 
-#if BSP_FEATURE_LPM_HAS_LDO_SKEEP
+#if BSP_FEATURE_LPM_HAS_LDO_CONTROL || BSP_FEATURE_LPM_HAS_LDO_SKEEP
 
     /** Configure LDOs that are disabled in standby mode. */
     lpm_ldo_standby_cfg_t ldo_standby_cfg;
