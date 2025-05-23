@@ -138,3 +138,8 @@ Patch List:
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8M1AH.h
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8D1BH.h
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8T1AH.h
+
+   * Keep a backport for UCK, OCTA, U60CK clock marcro in bsp_clocks.c
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_clocks.c
+      Note: This will be remove in next FSP version
