@@ -159,3 +159,7 @@ Patch List:
       Impacted files:
          drivers/ra/fsp/src/bsp/mcu/all/bsp_irq.c
          drivers/ra/fsp/src/r_dtc/r_dtc.c
+
+   * Modify to use ".noinit" instead of ".ram_noinit" for `BSP_SECTION_NOINIT` and `__NO_INIT`
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_compiler_support.h
