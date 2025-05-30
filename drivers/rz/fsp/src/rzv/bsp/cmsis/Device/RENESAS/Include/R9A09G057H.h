@@ -36,7 +36,7 @@ extern "C" {
 /* ================                           Processor and Core Peripheral Section                           ================ */
 /* =========================================================================================================================== */
 
- #if defined(CONFIG_CPU_CORTEX_M)
+ #if defined(BSP_SUPPORT_CORE_CM33)
 
 /* ==========================  Configuration of the ARM Cortex-M33 Processor and Core Peripherals  =========================== */
   #define __CM33_REV                0x0004U /*!< CM33 Core Revision                                                        */
@@ -44,26 +44,26 @@ extern "C" {
   #define __Vendor_SysTickConfig    0       /*!< Set to 1 if different SysTick Config is used                              */
   #define __VTOR_PRESENT            1       /*!< Set to 1 if CPU supports Vector Table Offset Register                     */
   #define __MPU_PRESENT             1       /*!< MPU present                                                               */
-  #define __FPU_PRESENT             0       /*!< FPU present                                                               */
+  #define __FPU_PRESENT             1       /*!< FPU present                                                               */
   #define __FPU_DP                  0       /*!< Double Precision FPU                                                      */
-  #define __DSP_PRESENT             0       /*!< DSP extension present                                                     */
+  #define __DSP_PRESENT             1       /*!< DSP extension present                                                     */
   #define __SAUREGION_PRESENT       0       /*!< SAU region present                                                        */
- #elif defined(CONFIG_CPU_CORTEX_R)
+ #elif defined(BSP_SUPPORT_CORE_CR8)
 
 /* ==========================  Configuration of the ARM Cortex-R8 Processor and Core Peripherals  =========================== */
   #define __NVIC_PRIO_BITS          4       /*!< Number of Bits used for Priority Levels                                   */
   #define __Vendor_SysTickConfig    1       /*!< Set to 1 if different SysTick Config is used                              */
   #define __MPU_PRESENT             1       /*!< MPU present                                                               */
-  #define __FPU_PRESENT             0       /*!< FPU present                                                               */
+  #define __FPU_PRESENT             1       /*!< FPU present                                                               */
   #define __FPU_DP                  0       /*!< Double Precision FPU                                                      */
  #endif
 
 /** @} */ /* End of group Configuration_of_CMSIS */
 
- #if defined(CONFIG_CPU_CORTEX_M)
+ #if defined(BSP_SUPPORT_CORE_CM33)
   #include "core_cm33.h"               /*!< ARM Cortex-M33 processor and core peripherals                             */
  #endif
- #if defined(CONFIG_CPU_CORTEX_R)
+ #if defined(BSP_SUPPORT_CORE_CR8)
   #include "cr/cr_compiler.h"          /*!< Compiler support for Cortex-R                                             */
   #include "cr/core_cr.h"              /*!< Core setting for Cortex-R                                                 */
  #endif
@@ -113,9 +113,9 @@ extern "C" {
 /** @addtogroup Device_Peripheral_clusters
  * @{
  */
- #if defined(CONFIG_CPU_CORTEX_M)
+ #if defined(BSP_SUPPORT_CORE_CM33)
   #include "R9A09G057H/cm/iodefine.h"
- #elif defined(CONFIG_CPU_CORTEX_R)
+ #elif defined(BSP_SUPPORT_CORE_CR8)
   #include "R9A09G057H/cr/iodefine.h"
  #endif
 
