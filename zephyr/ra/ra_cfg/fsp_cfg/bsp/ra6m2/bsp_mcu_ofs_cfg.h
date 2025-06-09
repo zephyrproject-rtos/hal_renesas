@@ -4,8 +4,11 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+#include <zephyr/devicetree.h>
+
 #ifndef BSP_MCU_OFS_CFG_H_
 #define BSP_MCU_OFS_CFG_H_
+
 #define OFS_IWDT (0xA001A001 | 1 << 1 | 3 << 2 | 15 << 4 | 3 << 8 | 3 << 10 | 1 << 12 | 1 << 14)
 #define OFS_WDT  (1 << 17 | 3 << 18 | 15 << 20 | 3 << 24 | 3 << 26 | 1 << 28 | 1 << 30)
 #define BSP_CFG_OPTION_SETTING_OFS0  (OFS_IWDT | OFS_WDT)
@@ -16,6 +19,8 @@
 #ifndef BSP_CFG_OPTION_SETTING_SECMPU 
 #define BSP_CFG_OPTION_SETTING_SECMPU 0xFFFFFFFC,0xFFFFFFFF,0xFFFFFFFC,0xFFFFFFFF,0x000FFFFC,0x000FFFFF,0x2003FFFC,0x2003FFFF,0x400DFFFC,0x400DFFFF,0x400DFFFC,0x400DFFFF,0xFFFFFFFF
 #endif
+
+#if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(option_setting_osis))
 /*
  ID Code
  Note: To permanently lock and disable the debug interface define the BSP_ID_CODE_PERMANENTLY_LOCKED in the compiler settings.
@@ -34,14 +39,12 @@ Please read the HWM for full details of the clearing process.
 #define BSP_CFG_ID_CODE_LONG_4 (0x00000000)
 #else
 /* ID Code: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF */
-
 #define BSP_CFG_ID_CODE_LONG_1 (0xFFFFFFFF)
-
 #define BSP_CFG_ID_CODE_LONG_2 (0xFFFFFFFF)
-
 #define BSP_CFG_ID_CODE_LONG_3 (0xFFFFFFFF)
-
 #define BSP_CFG_ID_CODE_LONG_4 (0xffFFFFFF)
 #endif
 #define BSP_CFG_OPTION_SETTING_OSIS   BSP_CFG_ID_CODE_LONG_1, BSP_CFG_ID_CODE_LONG_2, BSP_CFG_ID_CODE_LONG_3, BSP_CFG_ID_CODE_LONG_4
+#endif /* option_setting_osis */
+
 #endif /* BSP_MCU_OFS_CFG_H_ */
