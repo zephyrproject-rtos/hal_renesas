@@ -67,3 +67,7 @@ Patch List:
    because Zephyr SDK hasn't support it yet
    Impacted files:
       drivers/rx/rdp/src/r_bsp/mcu/all/r_rx_intrinsic_functions.h
+
+   * Fix the build warnings in IWDT driver
+   Impacted files:
+      drivers/rx/rdp/src/r_iwdt_rx/src/r_iwdt_rx.c
