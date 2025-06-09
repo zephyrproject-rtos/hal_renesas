@@ -1478,7 +1478,7 @@ bool bsp_prv_clock_prepare_pre_sleep (void)
     {
   #if BSP_MCU_GROUP_RA8_GEN2
         g_pre_sleep_sckdivcr2 = R_SYSTEM->SCKDIVCR2;
-        uint32_t iclk_div = R_SYSTEM->SCKDIVCR & (0xF << R_SYSTEM_SCKDIVCR_ICK_Pos);
+        uint32_t iclk_div = ((R_SYSTEM->SCKDIVCR & R_SYSTEM_SCKDIVCR_ICK_Msk) >> R_SYSTEM_SCKDIVCR_ICK_Pos);
 
         /* Drop all dividers which could be higher than ICLK to match ICLK. */
         R_SYSTEM->SCKDIVCR2 =
