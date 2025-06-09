@@ -91,3 +91,13 @@ if(CONFIG_USE_RX_RDP_RSPI)
 		rdp/src/r_rspi_rx/src
 		rdp/src/r_rspi_rx)
 endif()
+
+if(CONFIG_USE_RX_RDP_IWDT)
+	zephyr_include_directories(
+		rdp/src/r_iwdt_rx
+		rdp/src/r_iwdt_rx/src
+	)
+	zephyr_library_sources(
+		rdp/src/r_iwdt_rx/src/r_iwdt_rx.c
+	)
+endif()
