@@ -37,6 +37,7 @@ Includes   <System Includes> , "Project Includes"
 /* Defines for IWDT support */
 #include "r_iwdt_rx_config.h"
 #include "r_iwdt_rx_if.h"
+#include "r_bsp_locking.h"
 
 /***********************************************************************************************************************
 Macro definitions
