@@ -53,7 +53,7 @@ extern "C" {
 /* ==========================  Configuration of the ARM Cortex-R8 Processor and Core Peripherals  =========================== */
   #define __NVIC_PRIO_BITS          4       /*!< Number of Bits used for Priority Levels                                   */
   #define __Vendor_SysTickConfig    1       /*!< Set to 1 if different SysTick Config is used                              */
-  #define __MPU_PRESENT             1       /*!< MPU present                                                               */
+  #define __MPU_PRESENT             1U      /*!< MPU present                                                               */
   #define __FPU_PRESENT             1       /*!< FPU present                                                               */
   #define __FPU_DP                  0       /*!< Double Precision FPU                                                      */
  #endif
@@ -64,8 +64,7 @@ extern "C" {
   #include "core_cm33.h"               /*!< ARM Cortex-M33 processor and core peripherals                             */
  #endif
  #if defined(BSP_SUPPORT_CORE_CR8)
-  #include "cr/cr_compiler.h"          /*!< Compiler support for Cortex-R                                             */
-  #include "cr/core_cr.h"              /*!< Core setting for Cortex-R                                                 */
+  #include "core_cr8.h"                /*!< Core setting for Cortex-R                                                 */
  #endif
  #include "system.h"                   /*!< R9A09G057H System                                                         */
 
