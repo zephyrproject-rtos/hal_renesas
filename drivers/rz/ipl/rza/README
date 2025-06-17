@@ -1,0 +1,38 @@
+Initial Program Loader (IPL) for Renesas RZ/A Series
+####################################################
+
+Origin:
+   Renesas Electronics Corporation
+   https://github.com/renesas/rza-initial-program-loader
+
+Status:
+   v2.1.0
+
+Purpose:
+   Initial Program Loader (IPL) for Renesas RZ/A Series.
+
+Description:
+   IPL is a boot program sample code for RZ/A Series.
+   
+   When the RZ/A MPU is started, the IPL initializes peripheral I/O modules,
+   Flash memory, DDR SDRAM, etc., and starts the application software developed in 
+   Renesas FSP environment with the execution state of AARch64, Exception Level EL3.
+   
+   IPL consists of functions such as PLL and clock control driver, peripheral I/O 
+   module driver, Serial Flash Memory driver, and Octa Memory Control driver, etc.
+
+Dependencies:
+   None.
+
+URL:
+   https://github.com/renesas/rza-initial-program-loader
+   Commit: 606a8ae021d8037e6e1c27366ca6acddfe8a63dc
+
+Maintained-by:
+   Renesas Electronics Corporation
+
+License:
+   BSD-3-Clause
+
+License Link:
+   https://opensource.org/licenses/BSD-3-Clause

@@ -4,6 +4,7 @@
 string(SUBSTRING ${CONFIG_SOC_SERIES} 0 3 SOC_SERIES_PREFIX)
 
 add_subdirectory(fsp/src/${SOC_SERIES_PREFIX})
+add_subdirectory_ifdef(CONFIG_BUILD_WITH_RZA_IPL ipl/${SOC_SERIES_PREFIX})
 
 set(include_dirs
 	fsp/inc
