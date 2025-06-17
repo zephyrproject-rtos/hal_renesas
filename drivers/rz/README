@@ -58,3 +58,7 @@ Patch List:
      Replace the inclusion of cr/cr_compiler.h and cr/core_cr.h with core_cr8.h
    Impacted files:
       drivers/rz/fsp/src/rzv/bsp/cmsis/Device/RENESAS/Include/R9A09G057H.h
+
+   * Use r_timer_api.h of rzv-fsp to support compare match
+   Impacted files:
+      drivers/rz/fsp/inc/api/r_timer_api.h
