@@ -5,7 +5,6 @@ set(srcs
 	bsp/mcu/all/bsp_clocks.c
 	bsp/mcu/all/bsp_delay.c
 	bsp/mcu/all/bsp_io.c
-	bsp/mcu/all/cm/bsp_irq.c
 )
 
 zephyr_library_sources(${srcs})

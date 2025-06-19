@@ -51,3 +51,10 @@ License:
 
 License Link:
    https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Change the value of __MPU_PRESENT of core CR8 of V2H from 1 to 1U to avoid macro redefinition
+     Replace the inclusion of cr/cr_compiler.h and cr/core_cr.h with core_cr8.h
+   Impacted files:
+      drivers/rz/fsp/src/rzv/bsp/cmsis/Device/RENESAS/Include/R9A09G057H.h
