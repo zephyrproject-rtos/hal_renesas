@@ -62,3 +62,8 @@ Patch List:
    Impacted files:
       drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
       drivers/rx/rdp/src/r_riic_rx/src/targets/rx130/r_riic_rx130.c
+
+   * Replace the __builtin_rx_xchg with actual implementation
+   because Zephyr SDK hasn't support it yet
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/all/r_rx_intrinsic_functions.h
