@@ -111,7 +111,23 @@ Macro definitions
 #elif defined(__GNUC__)
 
 /* void __builtin_rx_xchg (int *, int *) */
+#if __has_builtin (__builtin_rx_xchg)
 #define R_BSP_EXCHANGE(x, y)    __builtin_rx_xchg((int *)(x), (int *)(y))
+#else
+static inline void rx_xchg(int *a, int *b)
+{
+    int temp;
+    __asm__ __volatile__ (
+        "mov     %2, %0\n\t"     // temp = *b
+        "xchg    [%1], %0\n\t"   // *a <-> temp
+        "mov     %0, %2\n\t"     // *b = temp
+        : "=&r"(temp)            // temp is output only
+        : "r"(a), "m"(*b)
+        : "memory"
+    );
+}
+#define R_BSP_EXCHANGE(x, y)    rx_xchg((int *)(x), (int *)(y))
+#endif /* __builtin_rx_xchg */
 
 #elif defined(__ICCRX__)
 
@@ -713,7 +729,7 @@ Macro definitions
 
 /* Invalid for ICCRX.
    Because the initilaze function of TFU is called automatically when the TFU function is called. */
-#define R_BSP_INIT_TFU()      
+#define R_BSP_INIT_TFU()
 #endif /* BSP_MCU_TFU_VERSION == 1 */
 #endif
 
@@ -736,7 +752,7 @@ Macro definitions
 
 #endif
 
-/* ---------- Uses the trigonometric function unit to calculate the arc tangent of x and y and the square root of the 
+/* ---------- Uses the trigonometric function unit to calculate the arc tangent of x and y and the square root of the
    sum of squares of these values at the same time. (single precision) ---------- */
 #if defined(__CCRX__)
 
@@ -765,7 +781,7 @@ Macro definitions
 /* void __sincosfx(signed long fx, signed long *sin, signed long *cos) */
 #define R_BSP_SINCOSFX(x, y, z)    __sincosfx((int32_t)(x), (int32_t *)(y), (int32_t *)(z))
 #else
-#define R_BSP_SINCOSFX(x, y, z)    
+#define R_BSP_SINCOSFX(x, y, z)
 #endif
 
 #elif defined(__GNUC__)
@@ -788,7 +804,7 @@ Macro definitions
 /* signed long __sinfx(signed long fx) */
 #define R_BSP_SINFX(x)    __sinfx((int32_t)(x))
 #else
-#define R_BSP_SINFX(x)    
+#define R_BSP_SINFX(x)
 #endif
 
 #elif defined(__GNUC__)
@@ -811,7 +827,7 @@ Macro definitions
 /* signed long __cosfx(signed long fx) */
 #define R_BSP_COSFX(x)    __cosfx((int32_t)(x))
 #else
-#define R_BSP_COSFX(x)    
+#define R_BSP_COSFX(x)
 #endif
 
 #elif defined(__GNUC__)
@@ -826,7 +842,7 @@ Macro definitions
 
 #endif
 
-/* ---------- Uses the trigonometric function unit to calculate the arc tangent of x and y and the square root of the 
+/* ---------- Uses the trigonometric function unit to calculate the arc tangent of x and y and the square root of the
    sum of squares of these values. (fixed-point numbers) ---------- */
 #if defined(__CCRX__)
 
@@ -834,7 +850,7 @@ Macro definitions
 /* __atan2hypotfx(signed long y, signed long x, signed long *atan2, signed long *hypot) */
 #define R_BSP_ATAN2HYPOTFX(w, x, y, z)    __atan2hypotfx((int32_t)(w), (int32_t)(x), (int32_t *)(y), (int32_t *)(z))
 #else
-#define R_BSP_ATAN2HYPOTFX(w, x, y, z)    
+#define R_BSP_ATAN2HYPOTFX(w, x, y, z)
 #endif
 
 #elif defined(__GNUC__)
@@ -859,7 +875,7 @@ Macro definitions
 /* signed long __atan2fx(signed long y, signed long x) */
 #define R_BSP_ATAN2FX(x, y)    __atan2fx((int32_t)(x), (int32_t)(y))
 #else
-#define R_BSP_ATAN2FX(x, y)    
+#define R_BSP_ATAN2FX(x, y)
 #endif
 
 #elif defined(__GNUC__)
@@ -874,7 +890,7 @@ Macro definitions
 
 #endif
 
-/* ---------- Uses the trigonometric function unit to calculate the square root of the 
+/* ---------- Uses the trigonometric function unit to calculate the square root of the
    sum of squares of x and y. (fixed-point numbers) ---------- */
 #if defined(__CCRX__)
 
@@ -882,7 +898,7 @@ Macro definitions
 /* signed long __hypotfx(signed long x, signed long y) */
 #define R_BSP_HYPOTFX(x, y)    __hypotfx((int32_t)(x), (int32_t)(y))
 #else
-#define R_BSP_HYPOTFX(x, y)    
+#define R_BSP_HYPOTFX(x, y)
 #endif
 
 #elif defined(__GNUC__)
