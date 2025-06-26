@@ -99,6 +99,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_IPC
 	fsp/src/r_ipc/r_ipc.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_MRAM
 	fsp/src/r_mram/r_mram.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_RTC
+	fsp/src/r_rtc/r_rtc.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
