@@ -1298,13 +1298,11 @@ void lvd_hw_enable_nmi(lvd_channel_t ch, bool b_enable_flag)
 ***********************************************************************************************************************/
 void lvd_hw_dummy_read_dfilter(lvd_channel_t ch)
 {
-    uint8_t volatile dummy_read;
-
     if (LVD_CHANNEL_1 == ch)
     {
 #if (LVD_ENABLE == LVD_SUPPORT_DFILTER_CH1)
         /* Read dummy */
-        dummy_read = SYSTEM.LVD1CR0.BIT.LVD1DFDIS;
+        uint8_t volatile dummy_read = SYSTEM.LVD1CR0.BIT.LVD1DFDIS;
 #endif
     }
 #ifndef  BSP_MCU_RX23W
@@ -1312,7 +1310,7 @@ void lvd_hw_dummy_read_dfilter(lvd_channel_t ch)
     {
 #if (LVD_ENABLE == LVD_SUPPORT_DFILTER_CH2)
         /* Read dummy */
-        dummy_read = SYSTEM.LVD2CR0.BIT.LVD2DFDIS;
+        uint8_t volatile dummy_read = SYSTEM.LVD2CR0.BIT.LVD2DFDIS;
 #endif
     }
 #endif
