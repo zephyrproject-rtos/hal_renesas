@@ -77,3 +77,7 @@ Patch List:
    Impacted files:
       drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
       drivers/rx/rdp/src/r_lvd_rx/r_lvd_rx_if.h
+
+   * Fix the build warnings in LVD driver
+   Impacted files:
+      drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
