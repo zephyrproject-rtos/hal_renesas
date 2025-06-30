@@ -45,6 +45,7 @@ Patch List:
       drivers/rx/rdp/src/r_bsp/mcu/all/r_rx_compiler.h
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_group.c
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.h
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.c
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_rx.c
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_rx.h
 
