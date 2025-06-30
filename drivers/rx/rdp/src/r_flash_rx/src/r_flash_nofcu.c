@@ -95,7 +95,7 @@ static void flash_df_pe_mode_enter(void)
     flash_write_fpmcr(DATAFLASH_PE_MODE);
 
     FLASH.FISR.BIT.PCKA = (FLASH_FISR_FCLK_FREQ < MCU_CFG_FCLK_HZ) ? 
-        (FCLK_MHZ - (((FCLK_MHZ - (FLASH_FISR_FCLK_FREQ / MHZ)) / 2)) - 1) : FCLK_MHZ - 1;
+        (FCLK_MHZ - (((FCLK_MHZ - (FLASH_FISR_FCLK_FREQ / FL_MHZ)) / 2)) - 1) : FCLK_MHZ - 1;
 #else
     if (OPCCR_HIGH_SPEED_MODE == SYSTEM.OPCCR.BIT.OPCM)
     {
@@ -702,7 +702,7 @@ static void flash_cf_pe_mode_enter(void)
     flash_write_fpmcr(CODEFLASH_PE_MODE);
 
     FLASH.FISR.BIT.PCKA = (FLASH_FISR_FCLK_FREQ < MCU_CFG_FCLK_HZ) ? 
-        (FCLK_MHZ - (((FCLK_MHZ - (FLASH_FISR_FCLK_FREQ / MHZ)) / 2)) - 1) : FCLK_MHZ - 1;
+        (FCLK_MHZ - (((FCLK_MHZ - (FLASH_FISR_FCLK_FREQ / FL_MHZ)) / 2)) - 1) : FCLK_MHZ - 1;
 #else
     flash_write_fpmcr(DISCHARGE_1);
 
