@@ -1508,12 +1508,11 @@ void lvd_hw_wait_delay(uint32_t usec)
     (LVD_GROUP_INT_ICUG == LVD_GROUP_INT))
 R_BSP_PRAGMA_STATIC_INTERRUPT (lvd_ch1_isr, VECT(LVD1, LVD1))
 #elif (LVD_GROUP_INT_ICUb == LVD_GROUP_INT)
-R_BSP_PRAGMA_STATIC_INTERRUPT (lvd_ch1_isr, VECT(LVD, LVD1))
 #else
     #error "Error! Invalid setting for LVD_GROUP_INT in targets file."
 #endif
 
-R_BSP_ATTRIB_STATIC_INTERRUPT void lvd_ch1_isr(void)
+void lvd_ch1_isr(void)
 {
 #if LVD_CFG_EN_NESTED_INT == 1
     /* Set bit PSW.I = 1 to allow nested interrupt */
@@ -1543,7 +1542,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void lvd_ch1_isr(void)
 
 /***********************************************************************************************************************
 * Outline      : Interrupt LVD2 handler.
-* Function Name: lvd_ch2_isr
+* Function Name: lvd_ch2_isrlvd_ch2_isr
 * Description  : This function handle the LVD2 interrupt.
 * Arguments    : none
 * Return Value : none
@@ -1559,11 +1558,10 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void lvd_ch1_isr(void)
     (LVD_GROUP_INT_ICUG == LVD_GROUP_INT))
 R_BSP_PRAGMA_STATIC_INTERRUPT (lvd_ch2_isr, VECT(LVD2, LVD2))
 #elif (LVD_GROUP_INT_ICUb == LVD_GROUP_INT)
-R_BSP_PRAGMA_STATIC_INTERRUPT (lvd_ch2_isr, VECT(LVD, LVD2))
 #else
     #error "Error! Invalid setting for LVD_GROUP_INT in targets file."
 #endif
-R_BSP_ATTRIB_STATIC_INTERRUPT void lvd_ch2_isr(void)
+void lvd_ch2_isr(void)
 {
 #if LVD_CFG_EN_NESTED_INT == 1
     /* Set bit PSW.I = 1 to allow nested interrupt */

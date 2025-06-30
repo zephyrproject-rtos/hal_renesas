@@ -72,3 +72,8 @@ Patch List:
    * Fix the build warnings in IWDT driver
    Impacted files:
       drivers/rx/rdp/src/r_iwdt_rx/src/r_iwdt_rx.c
+
+   * Remove the static definition in LVD isr function
+   Impacted files:
+      drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
+      drivers/rx/rdp/src/r_lvd_rx/r_lvd_rx_if.h
