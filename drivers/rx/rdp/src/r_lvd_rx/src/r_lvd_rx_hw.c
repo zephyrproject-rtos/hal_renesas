@@ -1513,7 +1513,7 @@ R_BSP_PRAGMA_STATIC_INTERRUPT (lvd_ch1_isr, VECT(LVD, LVD1))
     #error "Error! Invalid setting for LVD_GROUP_INT in targets file."
 #endif
 
-R_BSP_ATTRIB_STATIC_INTERRUPT void lvd_ch1_isr(void)
+void lvd_ch1_isr(void)
 {
 #if LVD_CFG_EN_NESTED_INT == 1
     /* Set bit PSW.I = 1 to allow nested interrupt */
@@ -1563,7 +1563,7 @@ R_BSP_PRAGMA_STATIC_INTERRUPT (lvd_ch2_isr, VECT(LVD, LVD2))
 #else
     #error "Error! Invalid setting for LVD_GROUP_INT in targets file."
 #endif
-R_BSP_ATTRIB_STATIC_INTERRUPT void lvd_ch2_isr(void)
+void lvd_ch2_isr(void)
 {
 #if LVD_CFG_EN_NESTED_INT == 1
     /* Set bit PSW.I = 1 to allow nested interrupt */

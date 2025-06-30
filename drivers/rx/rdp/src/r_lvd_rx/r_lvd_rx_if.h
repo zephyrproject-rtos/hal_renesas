@@ -113,6 +113,8 @@ extern lvd_err_t R_LVD_GetStatus   (lvd_channel_t channel,
                                     lvd_status_cross_t * p_status_cross);
 extern lvd_err_t R_LVD_ClearStatus (lvd_channel_t channel);
 extern uint32_t  R_LVD_GetVersion (void);
+extern void lvd_ch1_isr(void);
+extern void lvd_ch2_isr(void);
 
 /***********************************************************************************************************************
 Exported global variables and functions (to be accessed by other files)
