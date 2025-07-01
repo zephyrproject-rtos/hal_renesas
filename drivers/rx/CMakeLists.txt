@@ -136,3 +136,14 @@ if(CONFIG_USE_RX_RDP_LVD)
 		rdp/src/r_lvd_rx/src
 		rdp/src/r_lvd_rx/src/targets/${CONFIG_SOC_SERIES})
 endif()
+
+if(CONFIG_USE_RX_RDP_CTSU)
+	zephyr_library_sources(
+		rdp/src/r_ctsu_qe/src/r_ctsu_qe.c
+		rdp/src/r_ctsu_qe/src/r_ctsu_qe_pinset.c
+	)
+	zephyr_include_directories(
+		rdp/src/r_ctsu_qe
+		rdp/src/r_ctsu_qe/inc
+	)
+endif()
