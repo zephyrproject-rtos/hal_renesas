@@ -64,3 +64,8 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rza/r_adc_c/r_adc_c.c
       drivers/rz/fsp/inc/instances/rza/r_adc_c.h
+
+   * Rename g_adc_on_adc to g_adc_on_adc_c with _c suffix.
+   Impacted files:
+      drivers/rz/fsp/src/rzg/r_adc_c/r_adc_c.c
+      drivers/rz/fsp/inc/instances/rzg/r_adc_c.h

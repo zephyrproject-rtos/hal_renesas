@@ -53,7 +53,7 @@ static int32_t r_adc_c_highest_channel_get(uint32_t adc_mask);
  **********************************************************************************************************************/
 
 /** ADC Implementation of ADC. */
-const adc_api_t g_adc_on_adc =
+const adc_api_t g_adc_on_adc_c =
 {
     .open           = R_ADC_C_Open,
     .scanCfg        = R_ADC_C_ScanCfg,
