@@ -179,7 +179,7 @@ typedef struct
 
 /** @cond INC_HEADER_DEFS_SEC */
 /** Interface Structure for user access */
-extern const adc_api_t g_adc_on_adc;
+extern const adc_api_t g_adc_on_adc_c;
 
 /** @endcond */
 
