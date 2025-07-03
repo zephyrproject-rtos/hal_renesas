@@ -85,6 +85,10 @@ Patch List:
       drivers/ra/fsp/src/r_ether_phy/targets/KSZ8091RNB/r_ether_phy_target_ksz8091rnb.c
       drivers/ra/fsp/inc/instances/r_ether.h
 
+   * Remove const to allow changing the value at runtime for ``p_phy_lsi_cfg_list``
+   Impacted files:
+      drivers/ra/fsp/inc/instances/r_ether_phy.h
+
    * Create new USB device support for Zephyr HAL (do not use current FSP USB stack)
    Impacted files:
       drivers/ra/fsp/inc/api/r_usb_device_api.h
