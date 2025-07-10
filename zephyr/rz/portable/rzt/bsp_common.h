@@ -224,7 +224,7 @@ FSP_HEADER
 #define FSP_PRIV_CORTEX_PROCESSOR_EXCEPTIONS    (32U)
 
 /** Used to signify that the requested IRQ vector is not defined in this system. */
-#define FSP_INVALID_VECTOR                      ((IRQn_Type) - 33)
+#define FSP_INVALID_VECTOR                      ((IRQn_Type) 31)
 
 /* This macro Enable or Disable interrupts. */
 #if defined(BSP_CFG_CORE_CA55)
