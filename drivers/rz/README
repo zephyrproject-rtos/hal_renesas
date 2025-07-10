@@ -62,3 +62,8 @@ Patch List:
    * Use r_timer_api.h of rzv-fsp to support compare match
    Impacted files:
       drivers/rz/fsp/inc/api/r_timer_api.h
+
+   * Rename GPT capture compare ISR from gpt_capture_a_isr, gpt_capture_b_isr to 
+     gpt_capture_compare_a_isr, gpt_capture_compare_b_isr respectively
+   Impacted files:
+      drivers/rz/fsp/src/rzg/r_gpt/r_gpt.c

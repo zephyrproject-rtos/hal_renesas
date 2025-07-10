@@ -113,8 +113,8 @@ static void r_gpt_call_callback(gpt_instance_ctrl_t * p_ctrl, timer_event_t even
  **********************************************************************************************************************/
 void gpt_counter_overflow_isr(void);
 void gpt_counter_underflow_isr(void);
-void gpt_capture_a_isr(void);
-void gpt_capture_b_isr(void);
+void gpt_capture_compare_a_isr(void);
+void gpt_capture_compare_b_isr(void);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -1824,7 +1824,7 @@ void gpt_counter_underflow_isr (void)
  *
  * Clears interrupt, disables captures if one-shot mode, and calls callback if one was provided in the open function.
  **********************************************************************************************************************/
-void gpt_capture_a_isr (void)
+void gpt_capture_compare_a_isr (void)
 {
     r_gpt_capture_common_isr(GPT_PRV_CAPTURE_EVENT_A);
 }
@@ -1834,7 +1834,7 @@ void gpt_capture_a_isr (void)
  *
  * Clears interrupt, disables captures if one-shot mode, and calls callback if one was provided in the open function.
  **********************************************************************************************************************/
-void gpt_capture_b_isr (void)
+void gpt_capture_compare_b_isr (void)
 {
     r_gpt_capture_common_isr(GPT_PRV_CAPTURE_EVENT_B);
 }
