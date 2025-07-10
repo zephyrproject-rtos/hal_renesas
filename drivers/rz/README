@@ -67,3 +67,4 @@ Patch List:
      gpt_capture_compare_a_isr, gpt_capture_compare_b_isr respectively
    Impacted files:
       drivers/rz/fsp/src/rzg/r_gpt/r_gpt.c
+      drivers/rz/fsp/src/rzt/r_gpt/r_gpt.c
