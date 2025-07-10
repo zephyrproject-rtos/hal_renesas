@@ -68,3 +68,4 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rzg/r_gpt/r_gpt.c
       drivers/rz/fsp/src/rzt/r_gpt/r_gpt.c
+      drivers/rz/fsp/src/rzn/r_gpt/r_gpt.c
