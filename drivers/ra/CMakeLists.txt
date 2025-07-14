@@ -87,6 +87,13 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ELC
 	fsp/src/r_elc/r_elc.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I3C
 	fsp/src/r_i3c/r_i3c.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_IOPORT
+	fsp/src/r_ioport/r_ioport.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CTSU
+	fsp/src/r_ctsu/r_ctsu.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_TOUCH
+	fsp/src/rm_touch/rm_touch.c
+)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
@@ -161,3 +168,5 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CRC
 
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CEU
 	fsp/src/r_ceu/r_ceu.c)
+
+zephyr_compile_definitions_ifdef(CONFIG_INPUT_RENESAS_RA_QE_TOUCH_CFG QE_TOUCH_CONFIGURATION)
