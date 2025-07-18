@@ -144,3 +144,11 @@ Patch List:
          drivers/ra/fsp/src/r_ospi_b/r_ospi_b.c
          drivers/ra/fsp/inc/api/r_spi_flash_api.h
          drivers/ra/fsp/inc/instances/r_ospi_b.h
+      
+   * Remove redundant value in OSIS allocation
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra2a1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra2l1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra4m1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra4w1/bsp_mcu_ofs_cfg.h
+
