@@ -44,6 +44,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SPI
 	fsp/src/r_spi/r_spi.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_B_SPI
 	fsp/src/r_sci_b_spi/r_sci_b_spi.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_SPI
+    fsp/src/r_sci_spi/r_sci_spi.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_TIMER_ULPT
 	fsp/src/r_ulpt/r_ulpt.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_LPM
