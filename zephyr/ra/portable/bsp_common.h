@@ -32,6 +32,12 @@
 
 #include "bsp_cfg.h"
 
+#include <zephyr/irq.h>
+
+#define FSP_CRITICAL_SECTION_DEFINE            unsigned int irq_lock_key
+#define FSP_CRITICAL_SECTION_ENTER             irq_lock_key = irq_lock();
+#define FSP_CRITICAL_SECTION_EXIT              irq_unlock(irq_lock_key);
+
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
