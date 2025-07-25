@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /*******************************************************************************************************************//**
  * @addtogroup ELC
@@ -33,8 +33,8 @@ FSP_HEADER
 /** ELC private control block. DO NOT MODIFY. Initialization occurs when R_ELC_Open() is called. */
 typedef struct st_elc_instance_ctrl
 {
-    uint32_t     open;
-    void const * p_context;
+    uint32_t open;
+    void   * p_context;
 } elc_instance_ctrl_t;
 
 /**********************************************************************************************************************
@@ -65,5 +65,5 @@ FSP_FOOTER
 #endif                                 // R_ELC_H
 
 /*******************************************************************************************************************//**
-* @} (end defgroup ELC)
-**********************************************************************************************************************/
+ * @} (end defgroup ELC)
+ **********************************************************************************************************************/

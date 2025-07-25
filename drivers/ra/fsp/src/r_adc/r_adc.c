@@ -71,6 +71,10 @@
 
 #define ADC_MASK_FIRST_SENSOR_BIT                   (29U)
 
+#if 1U == BSP_FEATURE_TSN_CALIBRATION32_AVAILABLE
+ #define R_TSN                                      (R_TSN_CAL)
+#endif
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -286,7 +290,7 @@ fsp_err_t R_ADC_ScanCfg (adc_ctrl_t * p_ctrl, void const * const p_channel_cfg)
  **********************************************************************************************************************/
 fsp_err_t R_ADC_CallbackSet (adc_ctrl_t * const          p_api_ctrl,
                              void (                    * p_callback)(adc_callback_args_t *),
-                             void const * const          p_context,
+                             void * const                p_context,
                              adc_callback_args_t * const p_callback_memory)
 {
     adc_instance_ctrl_t * p_ctrl = (adc_instance_ctrl_t *) p_api_ctrl;
@@ -628,27 +632,36 @@ fsp_err_t R_ADC_InfoGet (adc_ctrl_t * p_ctrl, adc_info_t * p_adc_info)
     p_adc_info->calibration_data = UINT32_MAX;
 
     /* If calibration register is available, retrieve it from the MCU */
-#if 1U == BSP_FEATURE_ADC_TSN_CALIBRATION_AVAILABLE
- #if 1U == BSP_FEATURE_ADC_TSN_CALIBRATION32_AVAILABLE
+#if 1U == BSP_FEATURE_TSN_CALIBRATION_AVAILABLE
 
     /* Read into memory. */
-    uint32_t data = R_TSN_CAL->TSCDR;
+    uint32_t data = R_TSN->TSCDR;
+
+ #if 1U == BSP_FEATURE_TSN_CALIBRATION32_AVAILABLE
 
     /* Read the temperature calibration data from ROM. */
-    p_adc_info->calibration_data = (data & BSP_FEATURE_ADC_TSN_CALIBRATION32_MASK);
+    p_adc_info->calibration_data = (data & BSP_FEATURE_TSN_CALIBRATION32_MASK);
  #else
 
-    /* Read into memory to prevent compiler warning when performing "|" on volatile register data. */
-    uint32_t high = R_TSN->TSCDRH;
-    uint32_t low  = R_TSN->TSCDRL;
+    /* Read the temperature calibration data from ROM. */
+    p_adc_info->calibration_data = data;
 
-    /* Read the calibration data from ROM and shift to fit into result variable. */
-    p_adc_info->calibration_data = ((high << 8) | low);
+  #if 1U == BSP_FEATURE_TSN_HAS_ROOM_TEMP_REG
+
+    /* Read the temperature calibration data from ROM. */
+    p_adc_info->room_calibration_data = R_TSN->TSCDRR;
+  #endif
+
+  #if 1U == BSP_FEATURE_TSN_HAS_LOW_TEMP_REG
+
+    /* Read the temperature calibration data from ROM. */
+    p_adc_info->low_calibration_data = R_TSN->TSCDRL;
+  #endif
  #endif
 #endif
 
     /* Provide the previously retrieved slope information */
-    p_adc_info->slope_microvolts = BSP_FEATURE_ADC_TSN_SLOPE;
+    p_adc_info->slope_microvolts = BSP_FEATURE_TSN_SLOPE;
 
     return err;
 }
@@ -1244,7 +1257,7 @@ static void r_adc_sensor_cfg (adc_instance_ctrl_t * const     p_instance_ctrl,
     uint32_t adexicr            = 0U;
     if (combined_scan_mask & ADC_MASK_TEMPERATURE)
     {
-#if BSP_FEATURE_ADC_TSN_CONTROL_AVAILABLE
+#if BSP_FEATURE_TSN_CONTROL_AVAILABLE
 
         /* Power on the temperature sensor. This is only needed for TSNs that have the control register */
         R_BSP_MODULE_START(FSP_IP_TSN, 0U);
