@@ -125,3 +125,14 @@ if(CONFIG_USE_RX_RDP_IWDT)
 		rdp/src/r_iwdt_rx/src/r_iwdt_rx.c
 	)
 endif()
+
+if(CONFIG_USE_RX_RDP_LVD)
+	zephyr_library_sources(
+		rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
+		rdp/src/r_lvd_rx/src/r_lvd_rx.c
+	)
+	zephyr_include_directories(
+		rdp/src/r_lvd_rx
+		rdp/src/r_lvd_rx/src
+		rdp/src/r_lvd_rx/src/targets/${CONFIG_SOC_SERIES})
+endif()
