@@ -45,8 +45,16 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_ADC
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_MHU
 	fsp/src/${SOC_SERIES_PREFIX}/r_mhu_ns/r_mhu_ns.c)
 
-zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_RIIC_MASTER
-	fsp/src/${SOC_SERIES_PREFIX}/r_riic_master/r_riic_master.c)
+if("${CONFIG_SOC_SERIES}" MATCHES "rz[avg].*")
+	zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_RIIC_MASTER
+		fsp/src/${SOC_SERIES_PREFIX}/r_riic_master/r_riic_master.c)
+elseif("${CONFIG_SOC_SERIES}" MATCHES "rz[tn].*")
+	zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_RIIC_MASTER
+		fsp/src/${SOC_SERIES_PREFIX}/r_iic_master/r_iic_master.c)
+endif()
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_IIC_MASTER
+	fsp/src/${SOC_SERIES_PREFIX}/r_iic_master/r_iic_master.c)
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_GTM
 	fsp/src/${SOC_SERIES_PREFIX}/r_gtm/r_gtm.c)
