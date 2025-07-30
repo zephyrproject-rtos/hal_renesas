@@ -6,7 +6,7 @@ Origin:
    https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp
 
 Status:
-   version v5.8.0
+   version v6.0.0
 
 Purpose:
    Flexible Software Package (FSP) for Renesas RA MCU Family.
@@ -75,7 +75,6 @@ Patch List:
    * Add in ETHER_CFG_USE_CUSTOM_PHY_DRIVER to Ethernet controller driver to skip the phy control and allow the use of Zephyr phy driver.
      Add phy link speed to Ethernet controller driver instance control.
      Remove static definition of some internal function is ethernet driver to allow their usage in Zephyr side
-     Add phy_lsi_address to Ethernet phy instance control to allow the control of phy address as input.
      Remove the phy target settings as they are not used.
    Impacted files:
       drivers/ra/fsp/src/r_ether/r_ether.c
@@ -84,8 +83,11 @@ Patch List:
       drivers/ra/fsp/src/r_ether_phy/targets/ICS1894/r_ether_phy_target_ics1894.c
       drivers/ra/fsp/src/r_ether_phy/targets/KSZ8041/r_ether_phy_target_ksz8041.c
       drivers/ra/fsp/src/r_ether_phy/targets/KSZ8091RNB/r_ether_phy_target_ksz8091rnb.c
-      drivers/ra/fsp/inc/instances/r_ether_phy.h
       drivers/ra/fsp/inc/instances/r_ether.h
+
+   * Remove const to allow changing the value at runtime for ``p_phy_lsi_cfg_list``
+   Impacted files:
+      drivers/ra/fsp/inc/instances/r_ether_phy.h
 
    * Create new USB device support for Zephyr HAL (do not use current FSP USB stack)
    Impacted files:
@@ -132,6 +134,7 @@ Patch List:
    * Reflect OFS setting for WDT from Zephyr Kconfig value
       Impacted files:
          zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_ofs_cfg.h
 
    * Correct IO define for R_ELC_ELSEGR_Type on RA8M1, RA8D1, RA8T1
       Impacted files:
@@ -139,13 +142,28 @@ Patch List:
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8D1BH.h
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8T1AH.h
 
-   * Keep a backport for UCK, OCTA, U60CK clock marcro in bsp_clocks.c
+   * Keep OSPI_B at fsp 5.8.0 since it need big change for OSPI driver in zephyr
       Impacted files:
-         drivers/ra/fsp/src/bsp/mcu/all/bsp_clocks.c
-      Note: This will be remove in next FSP version
+         drivers/ra/fsp/src/r_ospi_b/r_ospi_b.c
+         drivers/ra/fsp/inc/api/r_spi_flash_api.h
+         drivers/ra/fsp/inc/instances/r_ospi_b.h
+      
+   * Remove redundant value in OSIS allocation
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra2a1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra2l1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra4m1/bsp_mcu_ofs_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra4w1/bsp_mcu_ofs_cfg.h
 
-   * Keep a backport for BSP_FEATURE_LPM_HAS_LDO_CONTROL macro in r_lpm
+   * Add bsp_linker_info.h in portable
       Impacted files:
-         drivers/ra/fsp/inc/api/r_lpm_api.h
-         drivers/ra/fsp/src/r_lpm/r_lpm.c
-      Note: This will be remove in next FSP version.
+         zephyr/ra/portable/bsp_linker_info.h
+
+   * Modify to use BSP_ICU_VECTOR_MAX_ENTRIES macro instead BSP_ICU_VECTOR_NUM_ENTRIES
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_irq.c
+         drivers/ra/fsp/src/r_dtc/r_dtc.c
+
+   * Modify to use ".noinit" instead of ".ram_noinit" for `BSP_SECTION_NOINIT` and `__NO_INIT`
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_compiler_support.h

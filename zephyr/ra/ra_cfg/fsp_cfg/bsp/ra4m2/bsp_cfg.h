@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -10,6 +10,7 @@
 #include "soc.h"
 #include "bsp_clock_cfg.h"
 #include "bsp_mcu_family_cfg.h"
+#include "bsp_mcu_ofs_cfg.h"
 
 #define SUBCLOCK_STABILIZATION_MAX(x) ((x < 10000) ? x : 10000)
 
