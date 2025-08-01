@@ -220,6 +220,15 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER_PHY
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER
 	fsp/src/r_ether/r_ether.c)
 
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_RMAC_PHY
+  fsp/src/r_rmac_phy/r_rmac_phy.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_RMAC
+	fsp/src/r_rmac/r_rmac.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_LAYER3_SWITCH
+	fsp/src/r_layer3_switch/r_layer3_switch.c)
+
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CRC
 	fsp/src/r_crc/r_crc.c)
 
