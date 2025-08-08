@@ -80,6 +80,8 @@ extern "C" {
   #include "R7FA4W1AD.h"
  #elif BSP_MCU_GROUP_RA4L1
   #include "R7FA4L1BD.h"
+ #elif BSP_MCU_GROUP_RA4C1
+  #include "R7FA4C1BD.h"
  #elif BSP_MCU_GROUP_RA6E1
   #include "R7FA6E10F.h"
  #elif BSP_MCU_GROUP_RA6E2
