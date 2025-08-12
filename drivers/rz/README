@@ -69,3 +69,9 @@ Patch List:
       drivers/rz/fsp/src/rzg/r_gpt/r_gpt.c
       drivers/rz/fsp/src/rzt/r_gpt/r_gpt.c
       drivers/rz/fsp/src/rzn/r_gpt/r_gpt.c
+
+   * Rename adc_scan_end_isr, g_adc_on_adc to adc_c_scan_end_isr, g_adc_on_adc_c with _c suffix
+     respectively to match with ADC_C FSP driver and make the Zephyr ADC driver generic
+   Impacted files:
+      drivers/rz/fsp/src/rza/r_adc_c/r_adc_c.c
+      drivers/rz/fsp/inc/instances/rza/r_adc_c.h

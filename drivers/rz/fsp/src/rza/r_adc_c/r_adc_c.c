@@ -46,7 +46,7 @@ typedef BSP_CMSE_NONSECURE_CALL void (*volatile adc_prv_ns_callback)(adc_callbac
 static void r_adc_c_open_sub(adc_c_instance_ctrl_t * const p_instance_ctrl, adc_cfg_t const * const p_cfg);
 static void r_adc_c_scan_cfg(adc_c_instance_ctrl_t * const     p_instance_ctrl,
                              adc_c_channel_cfg_t const * const p_channel_cfg);
-void            adc_scan_end_isr(IRQn_Type irq);
+void            adc_c_scan_end_isr(IRQn_Type irq);
 static void     r_adc_c_irq_enable(IRQn_Type irq, uint8_t ipl, void * p_context);
 static void     r_adc_c_irq_disable(IRQn_Type irq);
 static uint32_t r_adc_c_lowest_channel_get(uint32_t adc_mask);
@@ -57,7 +57,7 @@ static uint32_t r_adc_c_highest_channel_get(uint32_t adc_mask);
  **********************************************************************************************************************/
 
 /** ADC Implementation of ADC. */
-const adc_api_t g_adc_on_adc =
+const adc_api_t g_adc_on_adc_c =
 {
     .open           = R_ADC_C_Open,
     .scanCfg        = R_ADC_C_ScanCfg,
@@ -856,7 +856,7 @@ static void r_adc_call_callback (adc_c_instance_ctrl_t * p_ctrl, adc_callback_ar
 /*******************************************************************************************************************//**
  * This function implements interrupt handler for scan complete.
  **********************************************************************************************************************/
-void adc_scan_end_isr (IRQn_Type const irq)
+void adc_c_scan_end_isr (IRQn_Type const irq)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
