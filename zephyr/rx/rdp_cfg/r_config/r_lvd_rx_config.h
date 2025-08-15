@@ -31,6 +31,10 @@ Includes <System Includes> , "Project Includes"
 #define BSP_PROP_HAS_STATUS_OKAY_OR(node_id, prop, default_value) \
     (COND_CODE_1(DT_NODE_HAS_STATUS(node_id, okay), (DT_PROP(node_id, prop)), (default_value)))
 
+#define BSP_PROP_HAS_STATUS_OKAY_ENUM(node_id, prop, default_value)            \
+  (COND_CODE_1(DT_NODE_HAS_STATUS(node_id, okay),                              \
+               (DT_ENUM_IDX(node_id, prop)), (default_value)))
+
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
@@ -50,8 +54,10 @@ Macro definitions
 /* Specifies the target to be monitored for each channel.                           */
 /* 0: VCC (default value)                                                           */
 /* 1: CMPA2 pin                                                                     */
-#define LVD_CFG_VDET_TARGET_CHANNEL_1 BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd0), vdet_target, 0)
-#define LVD_CFG_VDET_TARGET_CHANNEL_2 BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd1), vdet_target, 0)
+#define LVD_CFG_VDET_TARGET_CHANNEL_1                                                              \
+	BSP_PROP_HAS_STATUS_OKAY_ENUM(DT_NODELABEL(lvd0), vdet_target, 0)
+#define LVD_CFG_VDET_TARGET_CHANNEL_2                                                              \
+	BSP_PROP_HAS_STATUS_OKAY_ENUM(DT_NODELABEL(lvd1), vdet_target, 0)
 
 /* Specifies the voltage detection level for each channel. Set an integer value     */
 /* which expresses the number up to two decimal places.                             */
@@ -62,8 +68,10 @@ Macro definitions
 /* To set the voltage detection level to 4.29 V, specify '429'.                     */
 /* To set the voltage detection level to default value, specify '0xFFFF' .          */
 
-#define LVD_CFG_VOLTAGE_LEVEL_CHANNEL_1 BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd0), voltage_level, 0)
-#define LVD_CFG_VOLTAGE_LEVEL_CHANNEL_2 BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd1), voltage_level, 0)
+#define LVD_CFG_VOLTAGE_LEVEL_CHANNEL_1                                                            \
+	BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd0), voltage_level, 0)
+#define LVD_CFG_VOLTAGE_LEVEL_CHANNEL_2                                                            \
+	BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd1), voltage_level, 0)
 
 /* Specifies enable/disable of the digital filter for each channel.                 */
 /* 0: Digital filter is disabled. (default value)                                   */
@@ -93,8 +101,8 @@ Macro definitions
 /* reset is selected with this definition, the operation of the reset is not        */
 /* dependent on the voltage detection condition.                                    */
 
-#define LVD_CFG_ACTION_CHANNEL_1 BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd0), lvd_action, 0)
-#define LVD_CFG_ACTION_CHANNEL_2 BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd1), lvd_action, 0)
+#define LVD_CFG_ACTION_CHANNEL_1 BSP_PROP_HAS_STATUS_OKAY_ENUM(DT_NODELABEL(lvd0), lvd_action, 0)
+#define LVD_CFG_ACTION_CHANNEL_2 BSP_PROP_HAS_STATUS_OKAY_ENUM(DT_NODELABEL(lvd1), lvd_action, 0)
 
 /* Specifies the interrupt priority level for each channel, with maskable interrupt */
 /* selected as processing.                                                          */
@@ -114,8 +122,11 @@ Macro definitions
 /* 1: Negation occurs when a certain period elapses after the LVD reset assertion.  */
 /* Note: "a certain period" here means a wait time after a voltage monitoring       */
 /* reset. Refer to the User's Manual: Hardware for details.                         */
-#define LVD_CFG_STABILIZATION_CHANNEL_1 BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd0), lvd_stabilization, 0)
-#define LVD_CFG_STABILIZATION_CHANNEL_2 BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd1), lvd_stabilization, 0)
+#define LVD_CFG_STABILIZATION_CHANNEL_1                                                            \
+	BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd0), lvd_stabilization, 0)
+#define LVD_CFG_STABILIZATION_CHANNEL_2                                                            \
+	BSP_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lvd1), lvd_stabilization, 0)
+
 /* Enable Nested Interrupt                                                          */
 /* 0 : Disable nested interrupt.                                                    */
 /* 1 : Enable nested interrupt.                                                     */
