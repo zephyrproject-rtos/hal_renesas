@@ -51,7 +51,7 @@ Patch List:
    Impacted files:
       drivers/ra/fsp/src/r_flash_hp/r_flash_hp.c
 
-   * Change the section to place code in ram from `.code_in_ram` to `.ramfunc`
+   * Change the section to place code in ram from `.ram_from_flash` to `.ramfunc`
    Impacted files:
       drivers/ra/fsp/inc/instances/r_flash_hp.h
       drivers/ra/fsp/inc/instances/r_flash_lp.h
