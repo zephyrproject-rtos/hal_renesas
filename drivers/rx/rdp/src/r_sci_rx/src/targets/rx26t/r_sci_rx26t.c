@@ -296,7 +296,7 @@ int32_t sci_init_bit_rate(sci_hdl_t const  hdl,
     error     = (((float)pclk / ((baud * divisor) * tmp)) - 1) * 100;
     abs_error = (error < 0) ? (-error) : error;
 
-    if ((abs_error <= 1.0) || (SCI_MODE_ASYNC != hdl->mode))
+    if ((abs_error <= 1.0f) || (SCI_MODE_ASYNC != hdl->mode))
     {
         hdl->rom->regs->SEMR.BIT.BRME = 0;          // disable MDDR
 
