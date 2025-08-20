@@ -175,3 +175,7 @@ Patch List:
    * Define `BSP_PARTITION_FLASH_CPU1_S_START` in bsp_cfg.h
       Impacted files:
          zephyr/ra/ra_cfg/fsp_cfg/bsp/ra8p1/bsp_cfg.h
+
+   * Disable Cache Lookup While Changing Voltage Scaling
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_clocks.c
