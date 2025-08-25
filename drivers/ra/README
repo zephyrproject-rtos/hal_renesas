@@ -171,3 +171,7 @@ Patch List:
    * Copy `BSP_ASSIGN_EVENT_TO_CURRENT_CORE` from bsp_irq.c to bsp_irq.h to let it can be used in Zephyr driver
       Impacted files:
          zephyr/ra/portable/bsp_irq.h
+
+   * Define `BSP_PARTITION_FLASH_CPU1_S_START` in bsp_cfg.h
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra8p1/bsp_cfg.h
