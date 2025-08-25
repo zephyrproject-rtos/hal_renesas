@@ -167,3 +167,7 @@ Patch List:
    * Modify to use ".noinit" instead of ".ram_noinit" for `BSP_SECTION_NOINIT` and `__NO_INIT`
       Impacted files:
          drivers/ra/fsp/src/bsp/mcu/all/bsp_compiler_support.h
+
+   * Copy `BSP_ASSIGN_EVENT_TO_CURRENT_CORE` from bsp_irq.c to bsp_irq.h to let it can be used in Zephyr driver
+      Impacted files:
+         zephyr/ra/portable/bsp_irq.h
