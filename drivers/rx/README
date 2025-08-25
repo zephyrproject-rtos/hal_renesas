@@ -81,3 +81,8 @@ Patch List:
    * Fix the build warnings in LVD driver
    Impacted files:
       drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
+
+   * Fix implicit conversion build warnings
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_clocks.c
+      drivers/rx/rdp/src/r_sci_rx/src/targets/rx26t/r_sci_rx26t.c
