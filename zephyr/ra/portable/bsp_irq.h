@@ -17,6 +17,18 @@ FSP_HEADER
  **********************************************************************************************************************/
 #define BSP_ICU_VECTOR_MAX_ENTRIES    (BSP_VECTOR_TABLE_MAX_ENTRIES - BSP_CORTEX_VECTOR_TABLE_ENTRIES)
 
+#if (BSP_CFG_CPU_CORE == 1)
+ #define BSP_EVENT_NUM_TO_INTSELR(x)         (x >> 5)        // Convert event number to INTSELR register number
+ #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)    (1 << (x % 32)) // Convert event number to INTSELR bit mask
+ #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event)                               \
+  {                                                                            \
+    R_ICU->INTSELR[BSP_EVENT_NUM_TO_INTSELR(event)] |=                         \
+        BSP_EVENT_NUM_TO_INTSELR_MASK(event);                                  \
+  }
+#else
+ #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event)
+#endif /* BSP_CFG_CPU_CORE == 1 */
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/

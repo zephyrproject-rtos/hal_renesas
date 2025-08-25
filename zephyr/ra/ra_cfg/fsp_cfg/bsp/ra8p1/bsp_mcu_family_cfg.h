@@ -19,7 +19,7 @@
 #define CPU0 (0)
 #define CPU1 (1)
 
-#ifdef CONFIG_CPU_CORTEX_M33
+#ifdef CONFIG_SOC_RA_SECOND_CORE_BUILD
 #define BSP_CFG_CPU_CORE (1)
 #define BSP_CFG_SKIP_INIT (1)
 #define BSP_SECONDARY_CORE_BUILD (1)

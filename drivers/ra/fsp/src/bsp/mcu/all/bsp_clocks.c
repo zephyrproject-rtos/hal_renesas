@@ -2482,12 +2482,27 @@ void bsp_clock_init (void)
         bsp_prv_software_delay_loop(BSP_DELAY_LOOPS_CALCULATE(BSP_PRV_MAX_HOCO_CYCLES_PER_US));
  #endif
 
- #if BSP_MCU_GROUP_RA8_GEN2
+ #if BSP_MCU_GROUP_RA8_GEN2 && (BSP_CFG_CPU_CORE == 0)
+
+        /* Do not access the CM85 ITCM, DTCM, I-Cache, or D-Cache during voltage scaling change. */
+        /* Disable CM85 I-Cache allocations and invalidate for later coherence. */
+        SCB_DisableICache();
+
+        /* Disable CM85 I-Cache and D-Cache lookups and allocations. D-Cache should already be clean and allocations disabled, so no cache maintenance required. */
+        MEMSYSCTL->MSCR &= ~(MEMSYSCTL_MSCR_ICACTIVE_Msk | MEMSYSCTL_MSCR_DCACTIVE_Msk);
+        __DSB();
+        __ISB();
 
         /* Always set not high VSCR_1 (non-default), change before enabling PLL.
-         * - Note this will consume more power than necessary for certain configuraitons. See User Manual for more infomration. */
+         * - Note this will consume more power than necessary for certain configurations. See User Manual for more information. */
         R_SYSTEM->VSCR_b.VSCM = 0x1U;
         FSP_HARDWARE_REGISTER_WAIT(R_SYSTEM->VSCR_b.VSCMTSF, 0U);
+
+        /* Re-enable CM85 I-Cache and D-Cache lookups and allow allocations per CCR.xC (TZ banked) bits . */
+        MEMSYSCTL->MSCR |= (MEMSYSCTL_MSCR_ICACTIVE_Msk | MEMSYSCTL_MSCR_DCACTIVE_Msk);
+        __DSB();
+        __ISB();
+        SCB_EnableICache();
  #endif
 
         R_SYSTEM->PLLCR = 0U;
