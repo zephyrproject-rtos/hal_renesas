@@ -15,3 +15,5 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SSI
     portable/src/rp_ssi/rp_ssi.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I3C
     portable/src/rp_i3c/rp_i3c.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_B_SPI
+    portable/src/rp_sci_b_spi/rp_sci_b_spi.c)
