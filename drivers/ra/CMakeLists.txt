@@ -92,8 +92,9 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_IOPORT
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CTSU
 	fsp/src/r_ctsu/r_ctsu.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_TOUCH
-	fsp/src/rm_touch/rm_touch.c
-)
+	fsp/src/rm_touch/rm_touch.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_RTC
+	fsp/src/r_rtc/r_rtc.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
