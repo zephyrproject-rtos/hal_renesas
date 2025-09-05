@@ -87,6 +87,7 @@ extern "C" {
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 8) /* IIC1 */ |                        \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 9) /* IIC0 */ |                        \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 11) /* USBFS */ |                      \
+   (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 15) /* ETHERC */ |                     \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 18) /* SPI1 */ |                       \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 19) /* SPI0 */ |                       \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 22) /* SCI9 */ |                       \
@@ -315,7 +316,7 @@ extern "C" {
 
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector)    CONCAT(ELC_, vector)
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ELC_, vector)
 
 #ifndef BSP_CLOCK_CFG_MAIN_OSC_WAIT
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)

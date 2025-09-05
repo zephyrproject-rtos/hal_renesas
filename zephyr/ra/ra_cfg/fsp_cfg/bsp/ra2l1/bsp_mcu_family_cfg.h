@@ -14,6 +14,7 @@ extern "C" {
 #include "bsp_mcu_device_cfg.h"
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_info.h"
+#include "bsp_override.h"
 #define BSP_MCU_GROUP_RA2L1 (1)
 #define BSP_LOCO_HZ (DT_PROP_OR(DT_NODELABEL(loco), clock_frequency, 0))
 #define BSP_MOCO_HZ (DT_PROP_OR(DT_NODELABEL(moco), clock_frequency, 0))
@@ -38,8 +39,9 @@ extern "C" {
 #ifndef BSP_CLOCK_CFG_MAIN_OSC_WAIT
 #define BSP_CLOCK_CFG_MAIN_OSC_WAIT (9)
 #endif
-/* Used to create IELS values for the interrupt initialization table g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector)    CONCAT(ICU_, vector)
+/* Used to create IELS values for the interrupt initialization table
+ * g_interrupt_event_link_select. */
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ICU_, vector)
 
 #define BSP_CFG_DCDC_ENABLE (0)
 #define BSP_CFG_DCDC_VOLTAGE_RANGE (BSP_POWER_MODE_DCDC_2V7_TO_3V6)

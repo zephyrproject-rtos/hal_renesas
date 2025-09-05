@@ -1550,7 +1550,6 @@ typedef struct
         } BY_b;
     };
     __IM uint8_t RESERVED;
-    __IM uint16_t RESERVED1;
 } R_ELC_ELSEGR_Type;                   /*!< Size = 2 (0x2)                                                            */
 
 /**
@@ -6186,7 +6185,7 @@ typedef struct                         /*!< (@ 0x40201000) R_ELC Structure      
     __IM uint8_t            RESERVED;
     __IM uint16_t           RESERVED1;
     __IOM R_ELC_ELSEGR_Type ELSEGR[2]; /*!< (@ 0x00000004) Event Link Software Event Generation Register              */
-    __IM uint32_t           RESERVED2[5];
+    __IM uint32_t           RESERVED2[6];
     __IOM R_ELC_ELSR_Type   ELSR[31];  /*!< (@ 0x00000020) Event Link Setting Register [0..30]                        */
     __IM uint32_t           RESERVED3[17];
 
@@ -15005,12 +15004,12 @@ typedef struct                         /*!< (@ 0x4001E000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint8_t GPTCKDIVCR;      /*!< (@ 0x0000005C) GPT clock Division control register                        */
+        __IOM uint8_t GPTCKDIVCR;       /*!< (@ 0x0000005C) GPT clock Division control register                        */
 
         struct
         {
-            __IOM uint8_t CKDIV : 3;   /*!< [2..0] Clock Division Select                                              */
-            uint8_t             : 5;
+            __IOM uint8_t GPTCKDIV : 3; /*!< [2..0] Clock Division Select                                              */
+            uint8_t                : 5;
         } GPTCKDIVCR_b;
     };
 
@@ -28003,8 +28002,8 @@ typedef struct                         /*!< (@ 0x27030000) R_OFS_DATAFLASH Struc
  #define R_SYSTEM_ADCCKCR_CKSRDY_Pos             (7UL)          /*!< CKSRDY (Bit 7)                                        */
  #define R_SYSTEM_ADCCKCR_CKSRDY_Msk             (0x80UL)       /*!< CKSRDY (Bitfield-Mask: 0x01)                          */
 /* ======================================================  GPTCKDIVCR  ======================================================= */
- #define R_SYSTEM_GPTCKDIVCR_CKDIV_Pos           (0UL)          /*!< CKDIV (Bit 0)                                         */
- #define R_SYSTEM_GPTCKDIVCR_CKDIV_Msk           (0x7UL)        /*!< CKDIV (Bitfield-Mask: 0x07)                           */
+ #define R_SYSTEM_GPTCKDIVCR_GPTCKDIV_Pos        (0UL)          /*!< GPTCKDIV (Bit 0)                                      */
+ #define R_SYSTEM_GPTCKDIVCR_GPTCKDIV_Msk        (0x7UL)        /*!< GPTCKDIV (Bitfield-Mask: 0x07)                        */
 /* ========================================================  GPTCKCR  ======================================================== */
  #define R_SYSTEM_GPTCKCR_CKSEL_Pos              (0UL)          /*!< CKSEL (Bit 0)                                         */
  #define R_SYSTEM_GPTCKCR_CKSEL_Msk              (0xfUL)        /*!< CKSEL (Bitfield-Mask: 0x0f)                           */

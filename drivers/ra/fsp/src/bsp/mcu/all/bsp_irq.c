@@ -31,12 +31,12 @@
  **********************************************************************************************************************/
 
 /* This table is used to store the context in the ISR. */
-void * gp_renesas_isr_context[BSP_ICU_VECTOR_MAX_ENTRIES];
+void * gp_renesas_isr_context[BSP_ICU_VECTOR_NUM_ENTRIES];
 
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
-const bsp_interrupt_event_t g_interrupt_event_link_select[BSP_ICU_VECTOR_MAX_ENTRIES] BSP_WEAK_REFERENCE =
+const bsp_interrupt_event_t g_interrupt_event_link_select[BSP_ICU_VECTOR_NUM_ENTRIES] BSP_WEAK_REFERENCE =
 {
     (bsp_interrupt_event_t) 0
 };
@@ -64,7 +64,7 @@ void R_BSP_IrqStatusClear (IRQn_Type irq)
     R_ICU->IELSR_b[irq].IR = 0U;
 
     /* Read back the IELSR register to ensure that the IR bit is cleared.
-     * See section "13.5.1 Operations During an Interrupt" in the RA8M1 manual R01UH0994EJ0100. */
+     * See "Operations During an Interrupt" in the ICU section of the relevant hardware manual. */
     FSP_REGISTER_READ(R_ICU->IELSR[irq]);
 }
 
@@ -227,7 +227,7 @@ void bsp_irq_cfg (void)
     uint32_t interrupt_security_state[BSP_ICU_VECTOR_MAX_ENTRIES / BSP_PRV_BITS_PER_WORD];
     memset(&interrupt_security_state, UINT8_MAX, sizeof(interrupt_security_state));
 
-    for (uint32_t i = 0U; i < BSP_ICU_VECTOR_MAX_ENTRIES; i++)
+    for (uint32_t i = 0U; i < BSP_ICU_VECTOR_NUM_ENTRIES; i++)
     {
         if (0U != g_interrupt_event_link_select[i])
         {
@@ -239,7 +239,7 @@ void bsp_irq_cfg (void)
     }
 
     /* The Secure Attribute managed within the ARM CPU NVIC must match the security attribution of IELSEn
-     * (Reference section 13.2.9 in the RA6M4 manual R01UH0890EJ0050). */
+     * (Refer "ICUSARI : Interrupt Controller Unit Security Attribution Register I" description in the ICU section of the relevant hardware manual). */
     uint32_t volatile * p_icusarg = &R_CPSCU->ICUSARG;
     for (uint32_t i = 0U; i < BSP_ICU_VECTOR_MAX_ENTRIES / BSP_PRV_BITS_PER_WORD; i++)
     {
@@ -256,9 +256,9 @@ void bsp_irq_cfg (void)
 
     /* Calculate the number of IELSR registers that need to be initialized. */
     uint32_t ielsr_count = BSP_ICU_VECTOR_MAX_ENTRIES - BSP_FEATURE_ICU_FIXED_IELSR_COUNT;
-    if (ielsr_count > BSP_ICU_VECTOR_MAX_ENTRIES)
+    if (ielsr_count > BSP_ICU_VECTOR_NUM_ENTRIES)
     {
-        ielsr_count = BSP_ICU_VECTOR_MAX_ENTRIES;
+        ielsr_count = BSP_ICU_VECTOR_NUM_ENTRIES;
     }
 
     for (uint32_t i = 0U; i < ielsr_count; i++)

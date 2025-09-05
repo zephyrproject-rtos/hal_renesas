@@ -36,7 +36,7 @@ FSP_HEADER
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
-extern void * gp_renesas_isr_context[BSP_ICU_VECTOR_MAX_ENTRIES];
+extern void * gp_renesas_isr_context[BSP_ICU_VECTOR_NUM_ENTRIES];
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
@@ -89,7 +89,7 @@ __STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
     R_ICU->IELSR_b[irq].IR = 0U;
 
     /* Read back the IELSR register to ensure that the IR bit is cleared.
-     * See section "13.5.1 Operations During an Interrupt" in the RA8M1 manual R01UH0994EJ0100. */
+     * See "Operations During an Interrupt" in the ICU section of the relevant hardware manual. */
     FSP_REGISTER_READ(R_ICU->IELSR[irq]);
 }
 
@@ -131,8 +131,19 @@ __STATIC_INLINE void R_BSP_IrqClearPending (IRQn_Type irq)
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
 {
-    /* Zephyr interrupt priority will have offset, remove priority config in FSP to prevent override seting on Zephyr */
-    FSP_PARAMETER_NOT_USED(priority);
+    /* The following statement is used in place of NVIC_SetPriority to avoid including a branch for system exceptions
+     * every time a priority is configured in the NVIC. */
+ #if (4U == __CORTEX_M)
+    NVIC->IPR[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
+ #elif (33 == __CORTEX_M)
+    NVIC->IPR[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
+ #elif (23 == __CORTEX_M)
+    NVIC->IPR[_IP_IDX(irq)] = ((uint32_t) (NVIC->IPR[_IP_IDX(irq)] & ~((uint32_t) UINT8_MAX << _BIT_SHIFT(irq))) |
+                               (((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX) << _BIT_SHIFT(irq)));
+ #else
+    NVIC_SetPriority(irq, priority);
+ #endif
+
     /* Store the context. The context is recovered in the ISR. */
     R_FSP_IsrContextSet(irq, p_context);
 }

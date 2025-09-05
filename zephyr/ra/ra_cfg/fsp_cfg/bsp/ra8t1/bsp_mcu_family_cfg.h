@@ -96,7 +96,7 @@
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 9) /* IIC0 */ |                        \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 11) /* USBFS */ |                      \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 12) /* USBHS */ |                      \
-   (1 << 15) /* ETHERC/EDMAC */ |                                              \
+   (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 15) /* ETHERC */ |                     \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 18) /* SPI1 */ |                       \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 19) /* SPI0 */ |                       \
    (((RA_NOT_DEFINED > 0) ? 0U : 1U) << 22) /* SCI9 */ |                       \

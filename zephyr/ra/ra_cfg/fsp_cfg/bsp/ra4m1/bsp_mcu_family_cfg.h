@@ -14,6 +14,7 @@ extern "C" {
 #include "bsp_mcu_device_cfg.h"
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_info.h"
+#include "bsp_override.h"
 #define BSP_MCU_GROUP_RA4M1 (1)
 #define BSP_LOCO_HZ (DT_PROP_OR(DT_NODELABEL(loco), clock_frequency, 0))
 #define BSP_MOCO_HZ (DT_PROP_OR(DT_NODELABEL(moco), clock_frequency, 0))
@@ -40,7 +41,7 @@ extern "C" {
 
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector)    CONCAT(ELC_, vector)
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ELC_, vector)
 
 #ifdef __cplusplus
 }
