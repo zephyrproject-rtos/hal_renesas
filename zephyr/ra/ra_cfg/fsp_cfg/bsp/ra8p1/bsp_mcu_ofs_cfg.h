@@ -22,7 +22,7 @@
 #endif /* option_setting_ofs0 */
 
 #if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(option_setting_ofs2))
-#define BSP_CFG_OPTION_SETTING_OFS2  ((1 << 0) | (0 << 1) | (0 << 2) | (1 << 3) | (0xFFFFFFE0))
+#define BSP_CFG_OPTION_SETTING_OFS2  ((1 << 0) | (1 << 1) | (1 << 2) | (1 << 3) | (0xFFFFFFE0))
 #endif /* option_setting_ofs2 */
 
 /* Startup Area Setting Register */
@@ -49,11 +49,11 @@
 #endif /* option_setting_ofs1_sel */
 
 #if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(option_setting_ofs3))
-#define BSP_CFG_OPTION_SETTING_OFS3  (0xA001FFFFU | (1 << 17) | (3 << 18) | (15 << 20) |  (3 << 24) | (3 << 26) | (1 << 28))
+#define BSP_CFG_OPTION_SETTING_OFS3  (0xA001FFFFU | (1 << 17) | (3 << 18) | (15 << 20) |  (3 << 24) | (3 << 26) | (1 << 28) | (1 << 30))
 #endif /* option_setting_ofs3 */
 
 #if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(option_setting_ofs3_sec))
-#define BSP_CFG_OPTION_SETTING_OFS3_SEC  (0xA001FFFFU | (1 << 17) | (3 << 18) | (15 << 20) |  (3 << 24) | (3 << 26) | (1 << 28))
+#define BSP_CFG_OPTION_SETTING_OFS3_SEC  (0xA001FFFFU | (1 << 17) | (3 << 18) | (15 << 20) |  (3 << 24) | (3 << 26) | (1 << 28) | (1 << 30))
 #endif /* option_setting_ofs3_sec */
 
 /* Option Function Select Register 3 Security Attribution */

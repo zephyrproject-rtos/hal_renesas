@@ -204,7 +204,7 @@ fsp_err_t R_ETHER_PHY_Open (ether_phy_ctrl_t * const p_ctrl, ether_phy_cfg_t con
     FSP_ASSERT(p_instance_ctrl);
     ETHER_PHY_ERROR_RETURN(NULL != p_cfg, FSP_ERR_INVALID_POINTER);
     ETHER_PHY_ERROR_RETURN((ETHER_PHY_OPEN != p_instance_ctrl->open), FSP_ERR_ALREADY_OPEN);
-    ETHER_PHY_ERROR_RETURN((BSP_FEATURE_ETHER_MAX_CHANNELS > p_cfg->channel), FSP_ERR_INVALID_CHANNEL);
+    ETHER_PHY_ERROR_RETURN((BSP_FEATURE_ETHER_NUM_CHANNELS > p_cfg->channel), FSP_ERR_INVALID_CHANNEL);
     p_extend = (ether_phy_extended_cfg_t *) p_cfg->p_extend;
     ETHER_PHY_ERROR_RETURN(NULL != p_extend, FSP_ERR_INVALID_POINTER);
     ETHER_PHY_ERROR_RETURN(NULL != p_extend->p_phy_lsi_cfg_list[0], FSP_ERR_INVALID_ARGUMENT);
@@ -218,7 +218,8 @@ fsp_err_t R_ETHER_PHY_Open (ether_phy_ctrl_t * const p_ctrl, ether_phy_cfg_t con
     /* Initialize configuration of ethernet phy module. */
     p_instance_ctrl->p_ether_phy_cfg = p_cfg;
 
-    R_BSP_MODULE_START(FSP_IP_ETHER, p_instance_ctrl->p_ether_phy_cfg->channel);
+    /* Configure pins for MII or RMII. Set PHYMODE0 if MII is selected. */
+    R_PMISC->PFENET = (uint8_t) ((ETHER_PHY_MII_TYPE_MII == p_cfg->mii_type) << R_PMISC_PFENET_PHYMODE0_Pos);
 
 #if ETHER_PHY_CFG_INIT_PHY_LSI_AUTOMATIC
     uint32_t reg   = 0;
