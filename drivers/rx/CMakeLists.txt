@@ -141,9 +141,14 @@ if(CONFIG_USE_RX_RDP_CTSU)
 	zephyr_library_sources(
 		rdp/src/r_ctsu_qe/src/r_ctsu_qe.c
 		rdp/src/r_ctsu_qe/src/r_ctsu_qe_pinset.c
+		rdp/src/rm_touch_qe/src/rm_touch_qe.c
 	)
 	zephyr_include_directories(
 		rdp/src/r_ctsu_qe
 		rdp/src/r_ctsu_qe/inc
+		rdp/src/rm_touch_qe
+		rdp/src/rm_touch_qe/inc
 	)
 endif()
+
+zephyr_compile_definitions_ifdef(CONFIG_INPUT_RENESAS_RX_QE_TOUCH_CFG QE_TOUCH_CONFIGURATION)
