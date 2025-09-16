@@ -96,10 +96,10 @@ static bool b_lvd_open[LVD_CHANNEL_NUM] = {false};
 #endif
 
 static void lvd_init_lvd (void);
-static void lvd_start_lvd (lvd_channel_t ch, lvd_trigger_t trigger);
-static void lvd_stop_lvd (lvd_channel_t ch);
-static void lvd_start_int (lvd_channel_t ch, void (*p_callback)(void *));
-static void lvd_stop_int (lvd_channel_t ch);
+void lvd_start_lvd (lvd_channel_t ch, lvd_trigger_t trigger);
+void lvd_stop_lvd (lvd_channel_t ch);
+void lvd_start_int (lvd_channel_t ch, void (*p_callback)(void *));
+void lvd_stop_int (lvd_channel_t ch);
 
 
 /***********************************************************************************************************************
@@ -160,7 +160,7 @@ lvd_err_t R_LVD_Open(lvd_channel_t channel, lvd_config_t const *p_cfg, void (*p_
     {
         goto RETURN_R_LVD_OPEN;
     }
-    
+
     /* **** The main body of processing **** */
     lvd_hw_enable_reg_protect(false);
     lvd_stop_lvd(channel);
@@ -169,7 +169,7 @@ lvd_err_t R_LVD_Open(lvd_channel_t channel, lvd_config_t const *p_cfg, void (*p_
     lvd_start_lvd(channel, p_cfg->trigger);
     lvd_hw_enable_reg_protect(true);
     b_lvd_open[channel] = true;
-    
+
 RETURN_R_LVD_OPEN:
 {
     return result_code;
@@ -199,14 +199,14 @@ lvd_err_t R_LVD_Close(lvd_channel_t channel)
     {
         goto RETURN_R_LVD_CLOSE;
     }
-    
+
     /* **** The main body of processing **** */
     lvd_hw_enable_reg_protect(false);
     lvd_stop_lvd(channel);
     lvd_stop_int(channel);
     lvd_hw_enable_reg_protect(true);
     b_lvd_open[channel] = false;
-    
+
 RETURN_R_LVD_CLOSE:
 {
     return result_code;
@@ -273,7 +273,7 @@ lvd_err_t R_LVD_GetStatus  (lvd_channel_t channel,
 
     /* **** The main body of processing **** */
     lvd_hw_get_lvd_status(channel, p_status_position, p_status_cross);
-    
+
 RETURN_R_LVD_GETSTATUS:
 {
     return result_code;
@@ -299,7 +299,7 @@ lvd_err_t R_LVD_ClearStatus(lvd_channel_t channel)
 {
     lvd_err_t result_code   = LVD_SUCCESS;
     bool      b_enable_flag = false;
-    
+
     /* **** Error check **** */
     result_code = lvd_hw_check_clearstatus();
     if (LVD_SUCCESS != result_code)
@@ -324,7 +324,7 @@ lvd_err_t R_LVD_ClearStatus(lvd_channel_t channel)
     lvd_hw_clear_lvd_status(channel);
     lvd_hw_enable_reset_int(channel, b_enable_flag);
     lvd_hw_enable_reg_protect(true);
-    
+
 RETURN_R_LVD_CLEARSTATUS:
 {
     return result_code;
@@ -353,7 +353,7 @@ uint32_t R_LVD_GetVersion(void)
 /***********************************************************************************************************************
 * Outline      : Initializes the voltage detection level and the monitored voltage.
 * Function Name: lvd_init_lvd
-* Description  : This function is executed for each channel, however, the configuration option settings for the voltage 
+* Description  : This function is executed for each channel, however, the configuration option settings for the voltage
 *              : detection level and the monitored voltage become effective only while all LVD circuits are stopped.
 * Arguments    : none
 * Return Value : none
@@ -363,7 +363,7 @@ static void lvd_init_lvd(void)
     uint32_t i;
     bool b_init_flag = true;
     bool b_enable_flag = false;
-    
+
     /* When all LVD circuits are stopping, it is targeted for initialization */
     /* WAIT_LOOP */
     for (i = 0; i < LVD_CHANNEL_NUM; i++)
@@ -375,7 +375,7 @@ static void lvd_init_lvd(void)
             b_init_flag = false;
         }
     }
-    
+
     if (true == b_init_flag)
     {
         /* Initialize voltage detection level and target to monitored */
@@ -389,7 +389,7 @@ static void lvd_init_lvd(void)
             lvd_hw_set_target((lvd_channel_t)i, lvd_cfg_opt[i].lvd_target);
         }
     }
-    
+
     return ;
 } /* End of function lvd_init_lvd() */
 
@@ -402,7 +402,7 @@ static void lvd_init_lvd(void)
 * Return Value : none
 ***********************************************************************************************************************/
 #if (LVD_GROUP_SETUP_LVDA_1 == LVD_GROUP_SETUP)
-static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
+void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
 {
     if (LVD_ENABLE == lvd_cfg_opt[ch].lvd_dfilter)
     {
@@ -412,7 +412,7 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
     {
         lvd_hw_enable_dfilter(ch, false);
     }
-    
+
     if (LVD_ACTION_RESET == lvd_cfg_opt[ch].lvd_action)
     {
         lvd_hw_select_reset(ch);
@@ -422,7 +422,7 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
     {
         lvd_hw_select_int(ch);
     }
-    
+
     lvd_hw_set_trigger(ch, trigger);
     lvd_hw_enable_output(ch, true);
 
@@ -443,12 +443,12 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
     }
 
     lvd_hw_enable_circuit(ch, true);
-    
+
     return ;
 } /* End of function lvd_start_lvd() */
 
 #elif (LVD_GROUP_SETUP_LVDA_2 == LVD_GROUP_SETUP)
-static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
+void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
 {
     lvd_hw_enable_circuit(ch, true);
     lvd_hw_dummy_read_circuit(ch);
@@ -461,7 +461,7 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
         lvd_hw_dummy_read_dfilter(ch);
         lvd_hw_wait_delay_loco(lvd_cfg_opt[ch].lvd_delay_dfilter_enable);
     }
-    
+
     if (LVD_ACTION_RESET == lvd_cfg_opt[ch].lvd_action)
     {
         lvd_hw_select_reset(ch);
@@ -472,7 +472,7 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
     {
         lvd_hw_select_int(ch);
         lvd_hw_set_trigger(ch, trigger);
-        
+
         if (LVD_ACTION_MI == lvd_cfg_opt[ch].lvd_action)
         {
             lvd_hw_select_mi(ch);
@@ -497,7 +497,7 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
 
 #elif ((LVD_GROUP_SETUP_LVDAa_1 == LVD_GROUP_SETUP) \
     || (LVD_GROUP_SETUP_LVDAb_1 == LVD_GROUP_SETUP))
-static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
+void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
 {
     if (LVD_ACTION_RESET == lvd_cfg_opt[ch].lvd_action)
     {
@@ -517,7 +517,7 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
     {
         lvd_hw_select_int(ch);
         lvd_hw_set_trigger(ch, trigger);
-        
+
         if (LVD_ACTION_MI == lvd_cfg_opt[ch].lvd_action)
         {
             lvd_hw_select_mi(ch);
@@ -526,21 +526,21 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
         {
             lvd_hw_select_nmi(ch);
         }
-        
+
         lvd_hw_enable_circuit(ch, true);
         lvd_hw_dummy_read_circuit(ch);
         lvd_hw_wait_delay(LVD_DELAY_CIRCUIT_ENABLE_USEC);
         lvd_hw_enable_output(ch, true);
         lvd_hw_dummy_read_output(ch);
         lvd_hw_wait_delay(LVD_DELAY_CLEAR_STATUS_USEC);
-        lvd_hw_clear_lvd_status(ch);        
+        lvd_hw_clear_lvd_status(ch);
 
         if (LVD_ACTION_NONE != lvd_cfg_opt[ch].lvd_action)
         {
             lvd_hw_enable_reset_int(ch, true);
         }
     }
-    
+
     return ;
 } /* End of function lvd_start_lvd() */
 
@@ -555,7 +555,7 @@ static void lvd_start_lvd(lvd_channel_t ch, lvd_trigger_t trigger)
 * Return Value : none
 ***********************************************************************************************************************/
 #if (LVD_GROUP_SETUP_LVDA_1 == LVD_GROUP_SETUP)
-static void lvd_stop_lvd(lvd_channel_t ch)
+void lvd_stop_lvd(lvd_channel_t ch)
 {
     lvd_hw_enable_circuit(ch, false);
     lvd_hw_dummy_read_circuit(ch);
@@ -568,7 +568,7 @@ static void lvd_stop_lvd(lvd_channel_t ch)
 } /* End of function lvd_stop_lvd() */
 
 #elif (LVD_GROUP_SETUP_LVDA_2 == LVD_GROUP_SETUP)
-static void lvd_stop_lvd(lvd_channel_t ch)
+void lvd_stop_lvd(lvd_channel_t ch)
 {
     uint32_t wait_loco_cycle = 0;
     bool     b_enable_flag   = false;
@@ -592,7 +592,7 @@ static void lvd_stop_lvd(lvd_channel_t ch)
 
 #elif ((LVD_GROUP_SETUP_LVDAa_1 == LVD_GROUP_SETUP) \
     || (LVD_GROUP_SETUP_LVDAb_1 == LVD_GROUP_SETUP))
-static void lvd_stop_lvd(lvd_channel_t ch)
+void lvd_stop_lvd(lvd_channel_t ch)
 {
     if (LVD_ACTION_RESET == lvd_cfg_opt[ch].lvd_action)
     {
@@ -620,7 +620,7 @@ static void lvd_stop_lvd(lvd_channel_t ch)
 *              : void (*p_callback)(void *) ; Address of the callback function.
 * Return Value : none
 ***********************************************************************************************************************/
-static void lvd_start_int(lvd_channel_t ch, void (*p_callback)(void *))
+void lvd_start_int(lvd_channel_t ch, void (*p_callback)(void *))
 {
     if (LVD_ACTION_MI == lvd_cfg_opt[ch].lvd_action)
     {
@@ -648,7 +648,7 @@ static void lvd_start_int(lvd_channel_t ch, void (*p_callback)(void *))
 * Arguments    : lvd_channel_t ch           ; Enumerated channel number to be stopped.
 * Return Value : none
 ***********************************************************************************************************************/
-static void lvd_stop_int(lvd_channel_t ch)
+void lvd_stop_int(lvd_channel_t ch)
 {
     if (LVD_ACTION_MI == lvd_cfg_opt[ch].lvd_action)
     {
