@@ -81,3 +81,10 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rzg/r_adc_c/r_adc_c.c
       drivers/rz/fsp/inc/instances/rzg/r_adc_c.h
+
+   * Modify the ISR prototype from void gtm_int_isr(void) to void gtm_int_isr(IRQn_Type const intid)
+     in the GTM FSP driver to unify with rza-fsp, making the Zephyr Counter driver and System Timer
+     driver generic
+   Impacted files:
+      drivers/rz/fsp/src/rzg/r_gtm/r_gtm.c
+      drivers/rz/fsp/src/rzv/r_gtm/r_gtm.c
