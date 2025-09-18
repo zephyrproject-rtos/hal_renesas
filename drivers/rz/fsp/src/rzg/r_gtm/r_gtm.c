@@ -40,7 +40,7 @@ static fsp_err_t r_gtm_open_param_checking(gtm_instance_ctrl_t * p_instance_ctrl
 #endif
 
 /* ISRs. */
-void gtm_int_isr(void);
+void gtm_int_isr(IRQn_Type const intid);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -522,10 +522,12 @@ static uint32_t r_gtm_clock_frequency_get (R_GTM0_Type * p_gtm_regs)
 /*********************************************************************************************************************
  * GTM counter underflow interrupt.
  **********************************************************************************************************************/
-void gtm_int_isr (void)
+void gtm_int_isr (IRQn_Type const intid)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
+
+    FSP_PARAMETER_NOT_USED(intid);
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
 
