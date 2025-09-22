@@ -94,5 +94,8 @@ endif()
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_MTU
 	fsp/src/${SOC_SERIES_PREFIX}/r_mtu3/r_mtu3.c)
 
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_WDT
+	fsp/src/${SOC_SERIES_PREFIX}/r_wdt/r_wdt.c)
+
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_CMTW
 	fsp/src/${SOC_SERIES_PREFIX}/r_cmtw/r_cmtw.c)
