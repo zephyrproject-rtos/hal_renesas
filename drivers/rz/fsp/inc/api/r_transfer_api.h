@@ -5,7 +5,7 @@
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_TRANSFER_INTERFACES
  * @defgroup TRANSFER_API Transfer Interface
  *
  * @brief Interface for data transfer functions.
@@ -13,8 +13,6 @@
  * @section TRANSFER_API_SUMMARY Summary
  * The transfer interface supports background data transfer (no CPU intervention).
  *
- * Implemented by:
- * - @ref DMAC_B
  *
  * @{
  **********************************************************************************************************************/
@@ -49,8 +47,6 @@ FSP_HEADER
  **********************************************************************************************************************/
 
 /** Transfer control block.  Allocate an instance specific control block to pass into the transfer API calls.
- * @par Implemented as
- * - dmac_b_instance_ctrl_t
  */
 typedef void transfer_ctrl_t;
 
@@ -95,7 +91,8 @@ typedef enum e_transfer_size
 {
     TRANSFER_SIZE_1_BYTE = 0,          ///< Each transfer transfers a 8-bit value
     TRANSFER_SIZE_2_BYTE = 1,          ///< Each transfer transfers a 16-bit value
-    TRANSFER_SIZE_4_BYTE = 2           ///< Each transfer transfers a 32-bit value
+    TRANSFER_SIZE_4_BYTE = 2,          ///< Each transfer transfers a 32-bit value
+    TRANSFER_SIZE_8_BYTE = 3           ///< Each transfer transfers a 64-bit value
 } transfer_size_t;
 
 #endif
@@ -169,6 +166,16 @@ typedef enum e_transfer_irq
      *  @note     Not available in all HAL drivers.  See HAL driver for details. */
     TRANSFER_IRQ_EACH = 1
 } transfer_irq_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_TRANSFER_CALLBACK_ARGS_T
+
+/** Callback function parameter data. */
+typedef struct st_transfer_callback_args_t
+{
+    void const * p_context;            ///< Placeholder for user data.  Set in @ref transfer_api_t::open function in ::transfer_cfg_t.
+} transfer_callback_args_t;
 
 #endif
 
@@ -266,8 +273,6 @@ typedef enum e_transfer_start_mode
 typedef struct st_transfer_api
 {
     /** Initial configuration.
-     * @par Implemented as
-     * - @ref R_DMAC_B_Open()
      *
      * @param[in,out] p_ctrl   Pointer to control block. Must be declared by user. Elements set here.
      * @param[in]     p_cfg    Pointer to configuration structure. All elements of this structure
@@ -277,8 +282,6 @@ typedef struct st_transfer_api
 
     /** Reconfigure the transfer.
      * Enable the transfer if p_info is valid.
-     * @par Implemented as
-     * - @ref R_DMAC_B_Reconfigure()
      *
      * @param[in,out] p_ctrl   Pointer to control block. Must be declared by user. Elements set here.
      * @param[in]     p_info   Pointer to a new transfer info structure.
@@ -287,8 +290,6 @@ typedef struct st_transfer_api
 
     /** Reset source address pointer, destination address pointer, and/or length, keeping all other settings the same.
      * Enable the transfer if p_src, p_dest, and length are valid.
-     * @par Implemented as
-     * - @ref R_DMAC_B_Reset()
      *
      * @param[in]     p_ctrl         Control block set in @ref transfer_api_t::open call for this transfer.
      * @param[in]     p_src          Pointer to source. Set to NULL if source pointer should not change.
@@ -302,8 +303,6 @@ typedef struct st_transfer_api
 
     /** Enable transfer. Transfers occur after the activation source event (or when
      * @ref transfer_api_t::softwareStart is called if no peripheral event is chosen as activation source).
-     * @par Implemented as
-     * - @ref R_DMAC_B_Enable()
      *
      * @param[in]     p_ctrl   Control block set in @ref transfer_api_t::open call for this transfer.
      */
@@ -313,8 +312,6 @@ typedef struct st_transfer_api
      * @ref transfer_api_t::softwareStart is called if no peripheral event is chosen as the DMAC activation source).
      * @note If a transfer is in progress, it will be completed.  Subsequent transfer requests do not cause a
      * transfer.
-     * @par Implemented as
-     * - @ref R_DMAC_B_Disable()
      *
      * @param[in]     p_ctrl   Control block set in @ref transfer_api_t::open call for this transfer.
      */
@@ -323,8 +320,6 @@ typedef struct st_transfer_api
     /** Start transfer in software.
      * @warning Only works if no peripheral event is chosen as the DMAC activation source.
      * @note Not supported for DTC.
-     * @par Implemented as
-     * - @ref R_DMAC_B_SoftwareStart()
      *
      * @param[in]     p_ctrl   Control block set in @ref transfer_api_t::open call for this transfer.
      * @param[in]     mode     Select mode from @ref transfer_start_mode_t.
@@ -335,16 +330,12 @@ typedef struct st_transfer_api
      * @note Not supported for DTC.
      * @note Only applies for transfers started with TRANSFER_START_MODE_REPEAT.
      * @warning Only works if no peripheral event is chosen as the DMAC activation source.
-     * @par Implemented as
-     * - @ref R_DMAC_B_SoftwareStop()
      *
      * @param[in]     p_ctrl   Control block set in @ref transfer_api_t::open call for this transfer.
      */
     fsp_err_t (* softwareStop)(transfer_ctrl_t * const p_ctrl);
 
     /** Provides information about this transfer.
-     * @par Implemented as
-     * - @ref R_DMAC_B_InfoGet()
      *
      * @param[in]     p_ctrl         Control block set in @ref transfer_api_t::open call for this transfer.
      * @param[out]    p_properties   Driver specific information.
@@ -352,8 +343,6 @@ typedef struct st_transfer_api
     fsp_err_t (* infoGet)(transfer_ctrl_t * const p_ctrl, transfer_properties_t * const p_properties);
 
     /** Releases hardware lock.  This allows a transfer to be reconfigured using @ref transfer_api_t::open.
-     * @par Implemented as
-     * - @ref R_DMAC_B_Close()
      *
      * @param[in]     p_ctrl    Control block set in @ref transfer_api_t::open call for this transfer.
      */
@@ -361,8 +350,6 @@ typedef struct st_transfer_api
 
     /** To update next transfer information without interruption during transfer.
      *  Allow further transfer continuation.
-     * @par Implemented as
-     * - @ref R_DMAC_B_Reload()
      *
      * @param[in]     p_ctrl         Control block set in @ref transfer_api_t::open call for this transfer.
      * @param[in]     p_src          Pointer to source. Set to NULL if source pointer should not change.
@@ -372,6 +359,16 @@ typedef struct st_transfer_api
     fsp_err_t (* reload)(transfer_ctrl_t * const p_ctrl, void const * p_src, void * p_dest,
                          uint32_t const num_transfers);
 
+    /** Specify callback function and optional context pointer and working memory pointer.
+     *
+     * @param[in]   p_ctrl                   Control block set in @ref transfer_api_t::open call for this transfer.
+     * @param[in]   p_callback               Callback function to register
+     * @param[in]   p_context                Pointer to send to callback function
+     * @param[in]   p_callback_memory        Pointer to volatile memory where callback structure can be allocated.
+     *                                       Callback arguments allocated here are only valid during the callback.
+     */
+    fsp_err_t (* callbackSet)(transfer_ctrl_t * const p_ctrl, void (* p_callback)(transfer_callback_args_t *),
+                              void const * const p_context, transfer_callback_args_t * const p_callback_memory);
 } transfer_api_t;
 
 /** This structure encompasses everything that is needed to use an instance of this interface. */
