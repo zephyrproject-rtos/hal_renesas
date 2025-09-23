@@ -233,7 +233,9 @@ DEFINE YOUR SYSTEM - UNCOMMENT THE INCLUDE PATH FOR THE PLATFORM YOU ARE USING.
 //#include "./board/generic_rx13t/r_bsp.h"
 
 /* GENERIC_RX140 */
-//#include "./board/generic_rx140/r_bsp.h"
+#if defined(CONFIG_SOC_SERIES_RX140)
+#include "./board/generic_rx140/r_bsp.h"
+#endif
 
 /* User Board - Define your own board here. */
 //#include "./board/user/r_bsp.h"
