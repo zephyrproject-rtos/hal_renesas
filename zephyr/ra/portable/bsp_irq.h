@@ -17,18 +17,6 @@ FSP_HEADER
  **********************************************************************************************************************/
 #define BSP_ICU_VECTOR_MAX_ENTRIES    (BSP_VECTOR_TABLE_MAX_ENTRIES - BSP_CORTEX_VECTOR_TABLE_ENTRIES)
 
-#if (BSP_CFG_CPU_CORE == 1)
- #define BSP_EVENT_NUM_TO_INTSELR(x)         (x >> 5)        // Convert event number to INTSELR register number
- #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)    (1 << (x % 32)) // Convert event number to INTSELR bit mask
- #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event)                               \
-  {                                                                            \
-    R_ICU->INTSELR[BSP_EVENT_NUM_TO_INTSELR(event)] |=                         \
-        BSP_EVENT_NUM_TO_INTSELR_MASK(event);                                  \
-  }
-#else
- #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event)
-#endif /* BSP_CFG_CPU_CORE == 1 */
-
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -36,7 +24,7 @@ FSP_HEADER
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
-extern void * gp_renesas_isr_context[BSP_ICU_VECTOR_MAX_ENTRIES];
+extern void * gp_renesas_isr_context[BSP_ICU_VECTOR_NUM_ENTRIES];
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
@@ -131,8 +119,19 @@ __STATIC_INLINE void R_BSP_IrqClearPending (IRQn_Type irq)
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
 {
-    /* Zephyr interrupt priority will have offset, remove priority config in FSP to prevent override seting on Zephyr */
-    FSP_PARAMETER_NOT_USED(priority);
+    /* The following statement is used in place of NVIC_SetPriority to avoid including a branch for system exceptions
+     * every time a priority is configured in the NVIC. */
+ #if (4U == __CORTEX_M)
+    NVIC->IPR[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
+ #elif (33 == __CORTEX_M)
+    NVIC->IPR[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
+ #elif (23 == __CORTEX_M)
+    NVIC->IPR[_IP_IDX(irq)] = ((uint32_t) (NVIC->IPR[_IP_IDX(irq)] & ~((uint32_t) UINT8_MAX << _BIT_SHIFT(irq))) |
+                               (((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX) << _BIT_SHIFT(irq)));
+ #else
+    NVIC_SetPriority(irq, priority);
+ #endif
+
     /* Store the context. The context is recovered in the ISR. */
     R_FSP_IsrContextSet(irq, p_context);
 }
