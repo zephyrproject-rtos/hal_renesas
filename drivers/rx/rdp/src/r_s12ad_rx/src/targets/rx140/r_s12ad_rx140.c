@@ -1072,7 +1072,6 @@ static void adc_enable_s12gbadi(void)
 *******************************************************************************/
 adc_err_t adc_close(uint8_t const  unit)
 {
-    volatile uint8_t    i;
     uint32_t            adc_wait_microsecs;
 
     /* Get S12AD register address */
