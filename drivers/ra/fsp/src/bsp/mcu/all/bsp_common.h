@@ -27,6 +27,7 @@
 #include "bsp_sdram.h"
 #include "bsp_mmf.h"
 #include "bsp_ipc.h"
+#include "bsp_ospi_b.h"
 
 #include "bsp_linker_info.h"
 

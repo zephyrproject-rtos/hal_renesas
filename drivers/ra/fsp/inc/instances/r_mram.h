@@ -28,12 +28,12 @@ FSP_HEADER
 
 /* If Code Flash programming is enabled, then all API functions must execute out of RAM. */
 #if defined(__ICCARM__)
- #pragma section=".ramfunc"
+ #pragma section=".ram_from_flash"
 #endif
 #if defined(__ARMCC_VERSION) || defined(__GNUC__)
- #define PLACE_IN_RAM_SECTION    __attribute__((noinline)) BSP_PLACE_IN_SECTION(".ramfunc")
+ #define PLACE_IN_RAM_SECTION    __attribute__((noinline)) BSP_PLACE_IN_SECTION(".ram_from_flash")
 #else
- #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".ramfunc")
+ #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".ram_from_flash")
 #endif
 
 /***********************************************************************************************************************
@@ -51,6 +51,10 @@ typedef struct st_mram_instance_ctrl
     uint32_t timeout_arc_read;
     uint32_t timeout_configuration_set;
     uint32_t timeout_maci_command;
+
+    void (* p_callback)(flash_callback_args_t *); // Pointer to callback
+    flash_callback_args_t * p_callback_memory;    // Pointer to optional callback argument memory
+    void * p_context;                             // Pointer to context to be passed into callback function
 } mram_instance_ctrl_t;
 
 /**********************************************************************************************************************

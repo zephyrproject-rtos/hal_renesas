@@ -1319,6 +1319,8 @@ static fsp_err_t r_sci_uart_transfer_open (sci_uart_instance_ctrl_t * const p_ct
     {
         transfer_info_t * p_info = p_cfg->p_transfer_rx->p_cfg->p_info;
 
+        p_info->transfer_settings_word = SCI_UART_DTC_RX_TRANSFER_SETTINGS;
+
         err =
             r_sci_uart_transfer_configure(p_ctrl, p_cfg->p_transfer_rx, (uint32_t *) &p_info->p_src,
                                           (uint32_t) &(p_ctrl->p_reg->RDR));
@@ -1331,6 +1333,8 @@ static fsp_err_t r_sci_uart_transfer_open (sci_uart_instance_ctrl_t * const p_ct
     if (NULL != p_cfg->p_transfer_tx)
     {
         transfer_info_t * p_info = p_cfg->p_transfer_tx->p_cfg->p_info;
+
+        p_info->transfer_settings_word = SCI_UART_DTC_TX_TRANSFER_SETTINGS;
 
         err = r_sci_uart_transfer_configure(p_ctrl,
                                             p_cfg->p_transfer_tx,
