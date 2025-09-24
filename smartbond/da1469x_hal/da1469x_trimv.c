@@ -24,7 +24,9 @@
 #include <da1469x_trimv.h>
 #include <da1469x_otp.h>
 
+#ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
 
 #define GROUP_ID_MAX            (MCU_TRIMV_GROUP_ID_MAX)
 

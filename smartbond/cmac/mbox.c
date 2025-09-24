@@ -23,7 +23,9 @@
 #include <shm.h>
 #include <mbox.h>
 
+#ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
 
 static struct cmac_shm_mbox *
 mbox_src_get(uint16_t *size)
