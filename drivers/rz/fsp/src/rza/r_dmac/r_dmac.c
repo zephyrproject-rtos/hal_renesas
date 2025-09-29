@@ -259,7 +259,7 @@ fsp_err_t R_DMAC_LinkDescriptorSet (transfer_ctrl_t * const p_api_ctrl, dmac_lin
 #else
 
     /* Set address of the link destination */
-    p_ctrl->p_reg->NXLA = (uint32_t) p_descriptor;
+    p_ctrl->p_reg->NXLA = (uintptr_t) p_descriptor;
 #endif
 
     err = r_dmac_prv_enable(p_ctrl);
@@ -504,8 +504,8 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N1DA = (uint32_t) pa;
 #else
-            p_ctrl->p_reg->N1SA = p_src_cast;
-            p_ctrl->p_reg->N1DA = p_dest_cast;
+            p_ctrl->p_reg->N1SA = (uintptr_t) p_src_cast;
+            p_ctrl->p_reg->N1DA = (uintptr_t) p_dest_cast;
 #endif
             p_ctrl->p_reg->N1TB = num_transfers;
         }
@@ -520,8 +520,8 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
             R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
             p_ctrl->p_reg->N0DA = (uint32_t) pa;
 #else
-            p_ctrl->p_reg->N0SA = p_src_cast;
-            p_ctrl->p_reg->N0DA = p_dest_cast;
+            p_ctrl->p_reg->N0SA = (uintptr_t) p_src_cast;
+            p_ctrl->p_reg->N0DA = (uintptr_t) p_dest_cast;
 #endif
             p_ctrl->p_reg->N0TB = num_transfers;
         }
@@ -794,7 +794,7 @@ static void r_dmac_config_transfer_info_link_mode (dmac_instance_ctrl_t * p_ctrl
 #else
 
     /* Set address of the link destination */
-    p_ctrl->p_reg->NXLA = (uint32_t) (p_extend->p_descriptor);
+    p_ctrl->p_reg->NXLA = (uintptr_t) (p_extend->p_descriptor);
 #endif
 
     /* Store current descriptor. */
