@@ -55,6 +55,7 @@ Patch List:
    Impacted files:
       drivers/ra/fsp/inc/instances/r_flash_hp.h
       drivers/ra/fsp/inc/instances/r_flash_lp.h
+      drivers/ra/fsp/inc/instances/r_mram.h
 
    * Add SCB_CleanInvalidateDCache() for flash hp when using DCACHE
    Impacted files:
