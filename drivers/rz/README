@@ -97,3 +97,8 @@ Patch List:
      FSP MMU functions and let Zephyr handle MMU
    Impacted files:
       drivers/rz/fsp/src/rza/bsp/mcu/rza3ul/bsp_feature.h
+
+   * Change the cast type from uint32_t to uintptr_t when assigning an address to a register in the
+     DMAC FSP driver of the RZ/A3UL to avoid build warnings
+   Impacted files:
+      drivers/rz/fsp/src/rza/r_dmac/r_dmac.c
