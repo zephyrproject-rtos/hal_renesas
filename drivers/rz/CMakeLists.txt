@@ -80,7 +80,10 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_CANFD
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_RSPI_SPI
 	fsp/src/${SOC_SERIES_PREFIX}/r_rspi/r_rspi.c)
 
-zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_DMA
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_DMAC
+	fsp/src/${SOC_SERIES_PREFIX}/r_dmac/r_dmac.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_DMAC_B
 	fsp/src/${SOC_SERIES_PREFIX}/r_dmac_b/r_dmac_b.c)
 
 if(CONFIG_DT_HAS_RENESAS_RZ_SCI_B_ENABLED)
