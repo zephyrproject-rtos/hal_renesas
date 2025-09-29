@@ -88,3 +88,7 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rzg/r_gtm/r_gtm.c
       drivers/rz/fsp/src/rzv/r_gtm/r_gtm.c
+
+   * Use r_transfer_api.h of rzv-fsp to support the callbackSet member of the transfer_api_t struct
+   Impacted files:
+      drivers/rz/fsp/inc/api/r_transfer_api.h
