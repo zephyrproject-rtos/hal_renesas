@@ -35,7 +35,7 @@
 /* BSP Capabilities Definitions */
 #define BSP_FEATURE_BSP_SUPPORT_PLL5_CONFIG            (0U)
 #define BSP_FEATURE_BSP_SUPPORT_OCTAL_MEMORY           (1U)
-#define BSP_FEATURE_BSP_HAS_MMU_SUPPORT                (1)
+#define BSP_FEATURE_BSP_HAS_MMU_SUPPORT                (0U)
 #define BSP_FEATURE_BSP_HAS_ELC                        (0U)
 #define BSP_FEATURE_BSP_SUPPORT_SD_VOLT                (1U)
 #define BSP_FEATURE_BSP_SUPPORT_ETHER_VOLT             (1U)

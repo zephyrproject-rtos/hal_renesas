@@ -92,3 +92,8 @@ Patch List:
    * Use r_transfer_api.h of rzv-fsp to support the callbackSet member of the transfer_api_t struct
    Impacted files:
       drivers/rz/fsp/inc/api/r_transfer_api.h
+
+   * Disable the BSP_FEATURE_BSP_HAS_MMU_SUPPORT configuration of the RZ/A3UL to avoid using
+     FSP MMU functions and let Zephyr handle MMU
+   Impacted files:
+      drivers/rz/fsp/src/rza/bsp/mcu/rza3ul/bsp_feature.h
