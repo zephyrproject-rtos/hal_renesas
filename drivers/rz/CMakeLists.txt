@@ -105,3 +105,9 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_WDT
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_CMTW
 	fsp/src/${SOC_SERIES_PREFIX}/r_cmtw/r_cmtw.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_QSPI_SPIBSC
+	fsp/src/${SOC_SERIES_PREFIX}/r_spibsc/r_spibsc.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_QSPI_XSPI
+	fsp/src/${SOC_SERIES_PREFIX}/r_xspi_qspi/r_xspi_qspi.c)
