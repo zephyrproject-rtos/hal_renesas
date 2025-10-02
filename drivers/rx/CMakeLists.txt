@@ -152,3 +152,9 @@ if(CONFIG_USE_RX_RDP_CTSU)
 endif()
 
 zephyr_compile_definitions_ifdef(CONFIG_INPUT_RENESAS_RX_QE_TOUCH_CFG QE_TOUCH_CONFIGURATION)
+
+if(CONFIG_HAS_MAPPED_INTERRUPTS)
+	zephyr_library_sources(
+		rdp/src/r_bsp/mcu/${CONFIG_SOC_SERIES}/mcu_mapped_interrupts.c
+	)
+endif()
