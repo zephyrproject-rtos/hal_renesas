@@ -98,6 +98,14 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_IPC
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_MRAM
 	fsp/src/r_mram/r_mram.c)
 
+if (CONFIG_USE_RA_FSP_DRW)
+	zephyr_include_directories(fsp/src/r_drw)
+	zephyr_link_libraries(${CMAKE_CURRENT_SOURCE_DIR}/../../zephyr/blobs/dave2d/libdave2d.a)
+	zephyr_library_sources(
+		fsp/src/r_drw/r_drw_base.c
+		fsp/src/r_drw/r_drw_memory.c)
+endif()
+
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
 		fsp/src/r_sce

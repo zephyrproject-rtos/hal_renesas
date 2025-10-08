@@ -11,3 +11,12 @@ blobs:
     url: https://github.com/dialog-semiconductor/CMAC-library/raw/main/libcmac.a
     description: "Binary libraries with firmware for CMAC controller"
     doc-url: https://github.com/dialog-semiconductor/CMAC-library
+  # libdave2d
+  - path: dave2d/libdave2d.a
+    sha256: 1bd8bd9aac98d4fa9a3048c1b5f3228dac0ca4aa58b545122c4119c6507e2e02
+    type: lib
+    version: '1.0'
+    license-path: zephyr/blobs/renesas_open_license.txt
+    url: https://github.com/renesas/libdave2d/raw/main/libdave2d.a
+    description: "Binary libraries with firmware for D/AVE 2D graphics accelerator"
+    doc-url: https://github.com/renesas/libdave2d
