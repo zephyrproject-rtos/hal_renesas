@@ -88,3 +88,17 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rzg/r_gtm/r_gtm.c
       drivers/rz/fsp/src/rzv/r_gtm/r_gtm.c
+
+   * Use r_transfer_api.h of rzv-fsp to support the callbackSet member of the transfer_api_t struct
+   Impacted files:
+      drivers/rz/fsp/inc/api/r_transfer_api.h
+
+   * Disable the BSP_FEATURE_BSP_HAS_MMU_SUPPORT configuration of the RZ/A3UL to avoid using
+     FSP MMU functions and let Zephyr handle MMU
+   Impacted files:
+      drivers/rz/fsp/src/rza/bsp/mcu/rza3ul/bsp_feature.h
+
+   * Change the cast type from uint32_t to uintptr_t when assigning an address to a register in the
+     DMAC FSP driver of the RZ/A3UL to avoid build warnings
+   Impacted files:
+      drivers/rz/fsp/src/rza/r_dmac/r_dmac.c
