@@ -99,3 +99,11 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_WDT
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_CMTW
 	fsp/src/${SOC_SERIES_PREFIX}/r_cmtw/r_cmtw.c)
+
+if(CONFIG_DT_HAS_RENESAS_RZ_QSPI_SPIBSC_ENABLED)
+	zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_QSPI
+		fsp/src/${SOC_SERIES_PREFIX}/r_spibsc/r_spibsc.c)
+else()
+	zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_QSPI
+		fsp/src/${SOC_SERIES_PREFIX}/r_xspi_qspi/r_xspi_qspi.c)
+endif()

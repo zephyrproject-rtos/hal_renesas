@@ -11,6 +11,7 @@ set(srcs
 	bsp/mcu/all/bsp_io.c
 	bsp/mcu/all/bsp_irq.c
 	bsp/mcu/all/bsp_register_protection.c
+	bsp/mcu/all/bsp_reset.c
 	bsp/mcu/all/cr/bsp_delay_core.c
 )
 
