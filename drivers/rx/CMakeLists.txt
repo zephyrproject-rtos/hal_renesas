@@ -158,3 +158,14 @@ if(CONFIG_HAS_MAPPED_INTERRUPTS)
 		rdp/src/r_bsp/mcu/${CONFIG_SOC_SERIES}/mcu_mapped_interrupts.c
 	)
 endif()
+
+if(CONFIG_USE_RX_RDP_LPC)
+	zephyr_library_sources(
+		rdp/src/r_lpc_rx/src/r_lpc_rx.c
+		rdp/src/r_lpc_rx/src/targets/${CONFIG_SOC_SERIES}/r_lpc_${CONFIG_SOC_SERIES}.c
+	)
+	zephyr_include_directories(
+		rdp/src/r_lpc_rx
+		rdp/src/r_lpc_rx/src
+	)
+endif()
