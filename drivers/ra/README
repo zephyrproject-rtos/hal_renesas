@@ -187,3 +187,8 @@ Patch List:
       Impacted files:
          zephyr/ra/ra_cfg/fsp_cfg/r_sau_uart_cfg.h
          drivers/ra/fsp/src/r_sau_uart/r_sau_uart.c
+
+   * Remove the static definition in RMAC and RMAC_PHY
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c

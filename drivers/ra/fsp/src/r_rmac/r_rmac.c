@@ -75,12 +75,12 @@ static fsp_err_t rmac_open_param_check(rmac_instance_ctrl_t const * const p_inst
 
 #endif
 
-static void      rmac_init_descriptors(rmac_instance_ctrl_t * const p_instance_ctrl);
+void             rmac_init_descriptors(rmac_instance_ctrl_t * const p_instance_ctrl);
 static fsp_err_t rmac_init_descriptor_queues(rmac_instance_ctrl_t * const p_instance_ctrl);
-static void      rmac_init_buffers(rmac_instance_ctrl_t * const p_instance_ctrl);
+void             rmac_init_buffers(rmac_instance_ctrl_t * const p_instance_ctrl);
 
-static void      rmac_configure_reception_filter(rmac_instance_ctrl_t const * const p_instance_ctrl);
-static fsp_err_t rmac_do_link(rmac_instance_ctrl_t * const                 p_instance_ctrl,
+void             rmac_configure_reception_filter(rmac_instance_ctrl_t const * const p_instance_ctrl);
+fsp_err_t        rmac_do_link(rmac_instance_ctrl_t * const                 p_instance_ctrl,
                               const layer3_switch_magic_packet_detection_t mode);
 static fsp_err_t rmac_link_status_check(rmac_instance_ctrl_t const * const p_instance_ctrl);
 
@@ -94,7 +94,7 @@ static fsp_err_t r_rmac_set_tx_buffer(rmac_instance_ctrl_t * p_instance_ctrl,
                                       uint32_t               frame_length,
                                       uint32_t               queue_index);
 static fsp_err_t            r_rmac_start_tx_queue(rmac_instance_ctrl_t * p_instance_ctrl, uint32_t queue_index);
-static void                 r_rmac_disable_reception(rmac_instance_ctrl_t * p_instance_ctrl);
+void                        r_rmac_disable_reception(rmac_instance_ctrl_t * p_instance_ctrl);
 static rmac_buffer_node_t * r_rmac_buffer_dequeue(rmac_buffer_queue_t * p_queue);
 static void                 r_rmac_buffer_enqueue(rmac_buffer_queue_t * p_queue, rmac_buffer_node_t * p_node);
 static fsp_err_t            r_rmac_get_rx_queue(rmac_instance_ctrl_t * p_instance_ctrl, uint32_t queue_index);
@@ -996,7 +996,7 @@ static fsp_err_t rmac_open_param_check (rmac_instance_ctrl_t const * const p_ins
  *                    RMAC channel number
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_instance_ctrl)
+void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_instance_ctrl)
 {
     uint32_t mrafc = p_instance_ctrl->p_reg_rmac->MRAFC;
 
@@ -1061,8 +1061,8 @@ static void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const 
  *                                      or result of Auto-negotiation is abnormal.
  *
  ***********************************************************************************************************************/
-static fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_ctrl,
-                               const layer3_switch_magic_packet_detection_t mode)
+fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_ctrl,
+                        const layer3_switch_magic_packet_detection_t mode)
 {
     fsp_err_t err = FSP_SUCCESS;
 
@@ -1261,7 +1261,7 @@ static void rmac_call_callback (rmac_instance_ctrl_t * p_instance_ctrl, ether_ca
  *                    RMAC channel number
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
+void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
 {
     layer3_switch_descriptor_t descriptor = {0};
 
@@ -1413,7 +1413,7 @@ static void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
  *                    RMAC control block.
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_init_buffers (rmac_instance_ctrl_t * const p_instance_ctrl)
+void rmac_init_buffers (rmac_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
     uint32_t buffer_num;
@@ -1646,7 +1646,7 @@ static fsp_err_t r_rmac_start_tx_queue (rmac_instance_ctrl_t * p_instance_ctrl, 
 /*******************************************************************************************************************
  * Disable reception on this port.
  **********************************************************************************************************************/
-static void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
+void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
 {
     rmac_extended_cfg_t      * p_extend   = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     layer3_switch_port_cfg_t   port_cfg   = {0};
