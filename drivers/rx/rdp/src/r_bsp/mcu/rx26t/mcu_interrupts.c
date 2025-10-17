@@ -40,11 +40,6 @@ Exported global variables (to be accessed by other files)
 /***********************************************************************************************************************
 Private global variables and functions
 ***********************************************************************************************************************/
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_bl0_handler_isr, VECT(ICU,GROUPBL0))
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_bl1_handler_isr, VECT(ICU,GROUPBL1))
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_bl2_handler_isr, VECT(ICU,GROUPBL2))
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_al0_handler_isr, VECT(ICU,GROUPAL0))
-R_BSP_PRAGMA_STATIC_INTERRUPT(group_al1_handler_isr, VECT(ICU,GROUPAL1))
 
 /***********************************************************************************************************************
 * Function Name: bsp_interrupt_enable_disable
@@ -218,7 +213,7 @@ bsp_int_err_t bsp_interrupt_enable_disable (bsp_int_src_t vector, bool enable)
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-R_BSP_ATTRIB_STATIC_INTERRUPT void group_bl0_handler_isr (void)
+void group_bl0_handler_isr (void)
 {
     /* BL0 IS3 */
     if (1 == ICU.GRPBL0.BIT.IS3)
@@ -343,7 +338,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void group_bl0_handler_isr (void)
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-R_BSP_ATTRIB_STATIC_INTERRUPT void group_bl1_handler_isr (void)
+void group_bl1_handler_isr (void)
 {
     /* BL1 IS0 */
     if (1 == ICU.GRPBL1.BIT.IS0)
@@ -510,7 +505,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void group_bl1_handler_isr (void)
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-R_BSP_ATTRIB_STATIC_INTERRUPT void group_bl2_handler_isr (void)
+void group_bl2_handler_isr (void)
 {
     /* BL2 IS1 */
     if (1 == ICU.GRPBL2.BIT.IS1)
@@ -565,7 +560,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void group_bl2_handler_isr (void)
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-R_BSP_ATTRIB_STATIC_INTERRUPT void group_al0_handler_isr (void)
+void group_al0_handler_isr (void)
 {
     /* AL0 IS13 */
     if (1 == ICU.GRPAL0.BIT.IS13)
@@ -627,7 +622,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void group_al0_handler_isr (void)
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-R_BSP_ATTRIB_STATIC_INTERRUPT void group_al1_handler_isr (void)
+void group_al1_handler_isr (void)
 {
     /* AL1 IS13 */
     if (1 == ICU.GRPAL1.BIT.IS13)

@@ -58,6 +58,9 @@ Private global variables and functions
 ***********************************************************************************************************************/
 /* This array holds callback functions. */
 static void (* g_bsp_vectors[BSP_INT_SRC_TOTAL_ITEMS])(void * pdata);
+#if defined(BSP_MCU_RX26T)
+static void *g_bsp_contexts[BSP_INT_SRC_TOTAL_ITEMS];
+#endif
 
 static bsp_int_err_t bsp_fit_interrupts_control (bool enable, bsp_int_ctrl_t * pdata);
 
@@ -140,6 +143,9 @@ void bsp_interrupt_open(void)
     {
         /* Casting is valid because it matches the type to the right side or argument. */
         g_bsp_vectors[i] = FIT_NO_FUNC;
+#if defined(BSP_MCU_RX26T)
+        g_bsp_contexts[i] = NULL;
+#endif
     }
 
 #ifdef BSP_MCU_SOFTWARE_CONFIGURABLE_INTERRUPT
@@ -201,6 +207,58 @@ bsp_int_err_t R_BSP_InterruptWrite(bsp_int_src_t vector,  bsp_int_cb_t callback)
 
     return err;
 } /* End of function R_BSP_InterruptWrite() */
+
+#if defined(BSP_MCU_RX26T)
+/**********************************************************************************************************************
+ * Function Name: R_BSP_InterruptWrite_EX
+ ******************************************************************************************************************//**
+ * @brief Registers a callback function for an interrupt.
+ * @param[in] vector Which interrupt to register a callback for.
+ * @param[in] callback Pointer to function to call when interrupt occurs.
+ * @param[in] context Pointer to the callback function's argument.
+ * @retval BSP_INT_SUCCESS Successful, callback has been registered.
+ * @retval BSP_INT_ERR_INVALID_ARG An invalid interrupt source was specified for vector.
+ * @details This function registers a callback function for an interrupt. If FIT_NO_FUNC, NULL, or any other invalid
+ * function address is passed for the callback argument then any previously registered callbacks are unregistered.
+ * If one of the interrupts that is handled by this code is triggered then the interrupt handler will query this code
+ * to see if a valid callback function is registered. If one is found then the callback function will be called.
+ * If one is not found then the interrupt handler will clear the appropriate flag(s) and exit. If the user has a
+ * callback function registered and wishes to no longer handle the interrupt then the user should call this function
+ * again with FIT_NO_FUNC as the vector parameter.
+ * @note Use of FIT_NO_FUNC is preferred over NULL since access to the address defined by FIT_NO_FUNC will cause a
+ * bus error which is easy for the user to catch. NULL typically resolves to 0 which is a valid address on RX MCUs.
+ */
+bsp_int_err_t R_BSP_InterruptWrite_EX(bsp_int_src_t vector,  bsp_int_cb_t callback, void *context)
+{
+    bsp_int_err_t err;
+
+    err = BSP_INT_SUCCESS;
+
+    /* Check for valid address. */
+    if (((uint32_t)callback == (uint32_t)NULL) || ((uint32_t)callback == (uint32_t)FIT_NO_FUNC))
+    {
+        /* Casting is valid because it matches the type to the right side or argument. */
+        g_bsp_vectors[vector] = FIT_NO_FUNC;
+        g_bsp_contexts[vector] = NULL;
+    }
+    else
+    {
+        if ((BSP_INT_SRC_BUS_ERROR_ILLEGAL_ACCESS == vector) || (BSP_INT_SRC_BUS_ERROR_TIMEOUT == vector) ||
+            (BSP_INT_SRC_EMPTY <= vector))
+        {
+            /* When registering a bus error callback function, specify BSP_INT_SRC_BUS_ERROR in the vector. */
+            err = BSP_INT_ERR_INVALID_ARG;
+        }
+        else
+        {
+            g_bsp_vectors[vector] = callback;
+            g_bsp_contexts[vector] = context;
+        }
+    }
+
+    return err;
+} /* End of function R_BSP_InterruptWrite_EX() */
+#endif
 
 /**********************************************************************************************************************
  * Function Name: R_BSP_InterruptRead
@@ -297,7 +355,9 @@ bsp_int_err_t R_BSP_InterruptControl(bsp_int_src_t vector, bsp_int_cmd_t cmd, vo
             {
                 /* Fill in callback info. */
                 cb_args.vector = vector;
-
+#if defined(BSP_MCU_RX26T)               
+                cb_args.p_context = g_bsp_contexts[vector];
+#endif
                 g_bsp_vectors[vector](&cb_args);
             }
             else
