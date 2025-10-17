@@ -183,3 +183,8 @@ Patch List:
          drivers/ra/fsp/src/bsp/mcu/ra8m2/bsp_linker.c
          drivers/ra/fsp/src/bsp/mcu/ra8p1/bsp_linker.c
          drivers/ra/fsp/src/bsp/mcu/ra8t2/bsp_linker.c
+
+   * Remove the static definition in RMAC and RMAC_PHY
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
