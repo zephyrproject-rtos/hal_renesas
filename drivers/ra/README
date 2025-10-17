@@ -181,3 +181,8 @@ Patch List:
    * Disable C-CACHE for RA8P1 CM33 core to avoid cache conhenrency issue with MRAM
       Impacted file:
          drivers/ra/fsp/src/bsp/mcu/all/bsp_common.h
+
+   * Remove the static definition in RMAC and RMAC_PHY
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c

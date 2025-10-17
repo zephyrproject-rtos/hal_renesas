@@ -161,9 +161,9 @@ static void rmac_phy_targets_initialize(rmac_phy_instance_ctrl_t * p_instance_ct
 static bool rmac_phy_targets_is_support_link_partner_ability(rmac_phy_instance_ctrl_t * p_instance_ctrl,
                                                              uint32_t                   line_speed_duplex);
 static uint32_t r_rmac_phy_calculate_mpic(rmac_phy_instance_ctrl_t * p_instance_ctrl, uint32_t line_speed_duplex);
-static uint8_t  r_rmac_phy_get_operation_mode(rmac_phy_instance_ctrl_t * p_instance_ctrl);
-static void     r_rmac_phy_set_operation_mode(uint8_t channel, uint8_t mode);
-static void     r_rmac_phy_set_mii_type_configuration(rmac_phy_instance_ctrl_t * p_instance_ctrl, uint8_t port);
+uint8_t         r_rmac_phy_get_operation_mode(rmac_phy_instance_ctrl_t * p_instance_ctrl);
+void            r_rmac_phy_set_operation_mode(uint8_t channel, uint8_t mode);
+void            r_rmac_phy_set_mii_type_configuration(rmac_phy_instance_ctrl_t * p_instance_ctrl, uint8_t port);
 
 /** RMAC_PHY HAL API mapping for Ethernet PHY Controller interface */
 /*LDRA_INSPECTED 27 D This structure must be accessible in user code. It cannot be static. */
@@ -993,7 +993,7 @@ static uint32_t r_rmac_phy_calculate_mpic (rmac_phy_instance_ctrl_t * p_instance
  *                    Ethernet control block
  * Return Value : uint8_t
  ***********************************************************************************************************************/
-static uint8_t r_rmac_phy_get_operation_mode (rmac_phy_instance_ctrl_t * p_instance_ctrl)
+uint8_t r_rmac_phy_get_operation_mode (rmac_phy_instance_ctrl_t * p_instance_ctrl)
 {
     R_ETHA0_Type * p_etha_reg =
         (R_ETHA0_Type *) (R_ETHA0_BASE + (ETHA_REG_SIZE * p_instance_ctrl->p_ether_phy_cfg->channel));
@@ -1007,7 +1007,7 @@ static uint8_t r_rmac_phy_get_operation_mode (rmac_phy_instance_ctrl_t * p_insta
  *
  * @param[in] mode New operation mode
  ***********************************************************************************************************************/
-static void r_rmac_phy_set_operation_mode (uint8_t channel, uint8_t mode)
+void r_rmac_phy_set_operation_mode (uint8_t channel, uint8_t mode)
 {
     R_ETHA0_Type * p_etha_reg =
         (R_ETHA0_Type *) (R_ETHA0_BASE + (ETHA_REG_SIZE * channel));
@@ -1024,7 +1024,7 @@ static void r_rmac_phy_set_operation_mode (uint8_t channel, uint8_t mode)
  *                    Ethernet control block
  * Return Value : uint32_t
  ***********************************************************************************************************************/
-static void r_rmac_phy_set_mii_type_configuration (rmac_phy_instance_ctrl_t * p_instance_ctrl, uint8_t port)
+void r_rmac_phy_set_mii_type_configuration (rmac_phy_instance_ctrl_t * p_instance_ctrl, uint8_t port)
 {
     volatile uint32_t * p_miicr_register;
 
