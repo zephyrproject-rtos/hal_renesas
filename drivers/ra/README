@@ -176,3 +176,7 @@ Patch List:
    * Define `BSP_PARTITION_FLASH_CPU1_S_START` in bsp_cfg.h
       Impacted files:
          zephyr/ra/ra_cfg/fsp_cfg/bsp/ra8p1/bsp_cfg.h
+
+   * Update bsp_linker.c condition to check CONFIG_BOOTLOADER_MCUBOOT and CONFIG_SOC_RA_SECOND_CORE_BUILD
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/ra8d2/bsp_linker.c
