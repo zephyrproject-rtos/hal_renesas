@@ -9,7 +9,7 @@
 /* UNCRUSTIFY-OFF */
 
 /* boot loaded applications cannot set ofs registers (only do so in the boot loader) */
-#ifndef BSP_BOOTLOADED_APPLICATION
+#ifndef CONFIG_BOOTLOADER_MCUBOOT
 /** configuration register output to sections */
 #if defined BSP_CFG_OPTION_SETTING_OFS0 && !BSP_TZ_NONSECURE_BUILD && (BSP_CFG_CPU_CORE == 0)
 BSP_DONT_REMOVE static const uint32_t BSP_PLACE_IN_SECTION(".option_setting_ofs0") g_bsp_cfg_option_setting_ofs0[] = {BSP_CFG_OPTION_SETTING_OFS0};

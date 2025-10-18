@@ -181,3 +181,5 @@ Patch List:
       Impacted files:
          drivers/ra/fsp/src/bsp/mcu/ra8d2/bsp_linker.c
          drivers/ra/fsp/src/bsp/mcu/ra8m2/bsp_linker.c
+         drivers/ra/fsp/src/bsp/mcu/ra8p1/bsp_linker.c
+         drivers/ra/fsp/src/bsp/mcu/ra8t2/bsp_linker.c
