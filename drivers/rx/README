@@ -87,3 +87,7 @@ Patch List:
    Impacted files:
       drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_clocks.c
       drivers/rx/rdp/src/r_sci_rx/src/targets/rx26t/r_sci_rx26t.c
+
+   * Add the header file <stdint.h>
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/rx130/mcu_clocks.h
