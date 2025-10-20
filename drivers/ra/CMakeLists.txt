@@ -110,6 +110,36 @@ if(CONFIG_USE_RA_FSP_SCE)
 		fsp/src/r_sce/common
 	)
 
+	if(CONFIG_HAS_RENESAS_RA_RSIP_E11A)
+		zephyr_include_directories(
+			fsp/src/r_sce/crypto_procedures/src/rsip_e11a/plainkey/public/inc
+			fsp/src/r_sce/crypto_procedures/src/rsip_e11a/plainkey/private/inc)
+		file(GLOB rsip_e11a_srcs
+			"fsp/src/r_sce/crypto_procedures/src/rsip_e11a/plainkey/adaptors/*.c"
+			"fsp/src/r_sce/crypto_procedures/src/rsip_e11a/plainkey/primitive/*.c")
+		zephyr_library_sources(${rsip_e11a_srcs})
+	endif()
+
+	if(CONFIG_HAS_RENESAS_RA_RSIP_E31A)
+		zephyr_include_directories(
+			fsp/src/r_sce/crypto_procedures/src/rsip_e31a/plainkey/public/inc
+			fsp/src/r_sce/crypto_procedures/src/rsip_e31a/plainkey/private/inc)
+		file(GLOB rsip_e31a_srcs
+			"fsp/src/r_sce/crypto_procedures/src/rsip_e31a/plainkey/adaptors/*.c"
+			"fsp/src/r_sce/crypto_procedures/src/rsip_e31a/plainkey/primitive/*.c")
+		zephyr_library_sources(${rsip_e31a_srcs})
+	endif()
+
+	if(CONFIG_HAS_RENESAS_RA_RSIP_E50D)
+		zephyr_include_directories(
+			fsp/src/r_sce/crypto_procedures/src/rsip_e50d/plainkey/public/inc
+			fsp/src/r_sce/crypto_procedures/src/rsip_e50d/plainkey/private/inc)
+		file(GLOB rsip_e50d_srcs
+			"fsp/src/r_sce/crypto_procedures/src/rsip_e50d/plainkey/adaptors/*.c"
+			"fsp/src/r_sce/crypto_procedures/src/rsip_e50d/plainkey/primitive/*.c")
+		zephyr_library_sources(${rsip_e50d_srcs})
+	endif()
+
 	if(CONFIG_HAS_RENESAS_RA_RSIP_E51A)
 		zephyr_include_directories(
 			fsp/src/r_sce/crypto_procedures/src/rsip_e51a/plainkey/public/inc
