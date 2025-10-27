@@ -49,7 +49,7 @@ Please read the HWM for full details of the clearing process.
 #define BSP_CFG_OPTION_SETTING_OSIS   BSP_CFG_ID_CODE_LONG_1, BSP_CFG_ID_CODE_LONG_2, BSP_CFG_ID_CODE_LONG_3, BSP_CFG_ID_CODE_LONG_4
 #endif /* option_setting_osis */
 
-#if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(option_setting_ofs1))
+#if DT_NODE_HAS_STATUS_OKAY(DT_NODELABEL(option_setting_ofs1_sec))
 #define BSP_CFG_OPTION_SETTING_OFS1_SEC_NO_HOCOFRQ (0xFFFFF8F8 | (1 <<2) | (3) | (1 << 8))
 #define BSP_CFG_OPTION_SETTING_OFS1_SEC  ((uint32_t) BSP_CFG_OPTION_SETTING_OFS1_SEC_NO_HOCOFRQ | ((uint32_t) BSP_CFG_HOCO_FREQUENCY << BSP_FEATURE_BSP_OFS1_HOCOFRQ_OFFSET))
 #endif /* option_setting_ofs1 */
