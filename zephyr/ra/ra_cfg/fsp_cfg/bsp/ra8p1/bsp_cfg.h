@@ -55,4 +55,8 @@
 /* Enable early init due to some global resource will be use for device init before z_cstart */
 #define BSP_CFG_EARLY_INIT	(1)
 
+#define BSP_CFG_VBATT_MANUAL_CONFIGURATION (DT_ANY_COMPAT_HAS_PROP_STATUS_OKAY(renesas_ra_battery_backup, manual_configure))
+
+#define BSP_CFG_VBATT_ENABLE (DT_ANY_COMPAT_HAS_PROP_STATUS_OKAY(renesas_ra_battery_backup, switch_threshold))
+
 #endif /* BSP_CFG_H_ */
