@@ -33,16 +33,15 @@ typedef enum e_bsp_init_mem
     INIT_MEM_OSPI1_CS1,
     INIT_MEM_QSPI_FLASH,
     INIT_MEM_SDRAM,
+    INIT_MEM_SIP_FLASH,
 } bsp_init_mem_t;
 
 typedef struct st_bsp_init_type
 {
-    uint32_t destination_type :8;
+    uint32_t copy_64 :8; /* if 1, must use 64 bit copy operation (to keep ecc happy) */
+    uint32_t external :8; /* =1 if either source or destination is external, else 0  */
     uint32_t source_type :8;
-    uint32_t destination_external :1; /* =1 if destination type is external, else internal  */
-    uint32_t source_external :1; /* =1 if source type is external, else internal  */
-    uint32_t external :1; /* =1 if either source or destination is external, else 0  */
-    uint32_t copy_64 :1; /* if 1, must use 64 bit copy operation (to keep ecc happy) */
+    uint32_t destination_type :8;
 } bsp_init_type_t;
 
 typedef struct st_bsp_init_zero_info
