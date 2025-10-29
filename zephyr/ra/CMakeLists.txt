@@ -7,7 +7,10 @@ zephyr_include_directories(
     ra_gen)
 
 zephyr_library_sources(
+    ra_gen/hal_warmstart.c
+    portable/src/bsp/bsp_reset.c
     portable/src/bsp/mcu/all/bsp_irq.c
+
 )
 
 # Optional build base on feature configuration
