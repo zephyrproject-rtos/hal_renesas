@@ -192,3 +192,7 @@ Patch List:
       Impacted files:
          drivers/ra/fsp/src/r_rmac/r_rmac.c
          drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
+
+   * Add RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK to skip checking PHY link state in do-link process.
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
