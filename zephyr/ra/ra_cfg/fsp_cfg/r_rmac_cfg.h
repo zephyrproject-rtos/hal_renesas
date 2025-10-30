@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 #define RMAC_CFG_PARAM_CHECKING_ENABLE (BSP_CFG_PARAM_CHECKING_ENABLE)
+#define RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
 
 #ifdef __cplusplus
 }

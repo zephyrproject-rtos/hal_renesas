@@ -1083,6 +1083,7 @@ fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_
 
     p_rmac_extended_cfg   = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     p_switch_extended_cfg = (layer3_switch_extended_cfg_t *) p_rmac_extended_cfg->p_ether_switch->p_cfg->p_extend;
+#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
     p_phy_instance        =
         (ether_phy_instance_t *) p_switch_extended_cfg->p_ether_phy_instances[p_instance_ctrl->p_cfg->channel];
 
@@ -1092,6 +1093,14 @@ fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_
                                                                &link_speed_duplex,
                                                                &local_pause_bits,
                                                                &partner_pause_bits);
+#else
+	FSP_PARAMETER_NOT_USED(p_phy_instance);
+	FSP_PARAMETER_NOT_USED(link_speed_duplex);
+	FSP_PARAMETER_NOT_USED(local_pause_bits);
+	FSP_PARAMETER_NOT_USED(partner_pause_bits);
+
+	link_result = FSP_SUCCESS;
+#endif
 
     if (FSP_SUCCESS == link_result)
     {
