@@ -1133,9 +1133,11 @@ static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
     bool                hs_module = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
     volatile uint16_t * cfifosel  = hs_module ? &R_USB_HS0->CFIFOSEL : &R_USB_FS0->CFIFOSEL;
     volatile uint16_t * dcpctr    = hs_module ? &R_USB_HS0->DCPCTR : &R_USB_FS0->DCPCTR;
+    volatile uint16_t * cfifoctr  = hs_module ? &R_USB_HS0->CFIFOCTR : &R_USB_FS0->CFIFOCTR;
 #else
     volatile uint16_t * cfifosel = &R_USB_FS0->CFIFOSEL;
     volatile uint16_t * dcpctr   = &R_USB_FS0->DCPCTR;
+    volatile uint16_t * cfifoctr = &R_USB_FS0->CFIFOCTR;
 #endif
 
     const uint8_t dir = USB_GET_EP_DIR(ep_addr);
@@ -1174,7 +1176,12 @@ static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
     {
         /* ZLP */
         pipe->buf = NULL;
-        *dcpctr   = R_USB_DCPCTR_CCPL_Msk | R_USB_PIPE_CTR_PID_BUF;
+        if (USB_EP_CONTROL_IN == ep_addr)
+        {
+            *cfifoctr = R_USB_CFIFOCTR_BVAL_Msk;
+        }
+
+        *dcpctr = R_USB_DCPCTR_CCPL_Msk | R_USB_PIPE_CTR_PID_BUF;
     }
 
     return FSP_SUCCESS;
