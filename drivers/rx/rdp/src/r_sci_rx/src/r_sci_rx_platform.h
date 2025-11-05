@@ -48,6 +48,8 @@ Includes   <System Includes> , "Project Includes"
 #include "./targets/rx13t/r_sci_rx13t_private.h"  /* RX13T */
 #elif defined(BSP_MCU_RX140)
 #include "./targets/rx140/r_sci_rx140_private.h"  /* RX140 */
+#elif defined(BSP_MCU_RX14T)
+#include "./targets/rx14t/r_sci_rx14t_private.h"  /* RX140 */
 #elif defined(BSP_MCU_RX230)
 #include "./targets/rx230/r_sci_rx230_private.h"  /* RX230 */
 #elif defined(BSP_MCU_RX231)
