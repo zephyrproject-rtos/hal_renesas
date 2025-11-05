@@ -104,6 +104,8 @@ Includes   <System Includes> , "Project Includes"
     #include "./src/targets/rx130/r_gpio_rx130.h"
 #elif   defined(BSP_MCU_RX13T)
     #include "./src/targets/rx13t/r_gpio_rx13t.h"
+#elif   defined(BSP_MCU_RX14T)
+    #include "./src/targets/rx14t/r_gpio_rx14t.h"
 #elif   defined(BSP_MCU_RX140)
     #include "./src/targets/rx140/r_gpio_rx140.h"
 #elif defined(BSP_MCU_RX230)
