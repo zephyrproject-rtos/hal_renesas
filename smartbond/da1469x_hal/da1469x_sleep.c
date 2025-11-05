@@ -73,12 +73,13 @@ int da1469x_sleep(void)
         sys_clock_selection = CRG_TOP->CLK_CTRL_REG & CRG_TOP_CLK_CTRL_REG_SYS_CLK_SEL_Msk;
         slept = da1469x_enter_sleep();
         if (slept) {
+#if !defined(CONFIG_WATCHDOG)
             /* Watchdog is always resumed when PD_SYS is turned off, need to
              * freeze it again if there's no one to feed it.
              */
             GPREG->SET_FREEZE_REG = GPREG_SET_FREEZE_REG_FRZ_SYS_WDOG_Msk;
             SYS_WDOG->WATCHDOG_REG = SYS_WDOG_WATCHDOG_REG_WDOG_VAL_Msk;
-
+#endif
             da1469x_pd_acquire(MCU_PD_DOMAIN_SYS);
             if (da1469x_is_wakeup_by_jtag()) {
                 wait_for_jtag = 1;
