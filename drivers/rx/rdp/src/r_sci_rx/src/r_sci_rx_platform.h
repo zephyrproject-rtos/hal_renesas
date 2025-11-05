@@ -36,7 +36,7 @@ Includes   <System Includes> , "Project Includes"
 ***********************************************************************************************************************/
 #include "r_sci_rx_if.h"
 
-#if defined(BSP_MCU_RX110) 
+#if defined(BSP_MCU_RX110)
 #include "./targets/rx110/r_sci_rx110_private.h"  /* RX110 */
 #elif defined(BSP_MCU_RX111)
 #include "./targets/rx111/r_sci_rx111_private.h"  /* RX111 */
@@ -48,6 +48,8 @@ Includes   <System Includes> , "Project Includes"
 #include "./targets/rx13t/r_sci_rx13t_private.h"  /* RX13T */
 #elif defined(BSP_MCU_RX140)
 #include "./targets/rx140/r_sci_rx140_private.h"  /* RX140 */
+#elif defined(BSP_MCU_RX14T)
+#include "./targets/rx14t/r_sci_rx14t_private.h"  /* RX14T */
 #elif defined(BSP_MCU_RX230)
 #include "./targets/rx230/r_sci_rx230_private.h"  /* RX230 */
 #elif defined(BSP_MCU_RX231)
