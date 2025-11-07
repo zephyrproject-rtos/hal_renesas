@@ -14,6 +14,11 @@
 #else
 #define USE_FPU 0
 #endif
+#if defined(CONFIG_ARM_MPU)
+#define USE_MPU 1
+#else
+#define USE_MPU 0
+#endif
 /* No MTB support for Zephyr */
 #define USE_MTB 0
 
@@ -50,6 +55,16 @@ da1469x_sleep_context:
 .saved_fpu:
     .space 8    /* FPCCR, FPDSCR */
 #endif
+#if USE_MPU
+saved_mpu_regions:
+    .space  64
+.saved_mpu_mair0:
+    .space  4
+.saved_mpu_mair1:
+    .space  4
+.saved_mpu_ctrl:
+    .space  4
+#endif
 
     .equ CLK_AMBA_REG,              0x50000000
     .equ RESET_STAT_REG,            0x500000BC
@@ -62,6 +77,12 @@ da1469x_sleep_context:
     .equ FPU_BASE,                  0xE000EF30
     .equ FPU_FPCCR_OFFSET,          0x004
     .equ FPU_FPDSCR_OFFSET,         0x00C
+    .equ MPU_BASE,                  0xE000ED90
+    .equ MPU_CTRL_OFFSET,           0x004
+    .equ MPU_RNR_OFFSET,            0x008
+    .equ MPU_RBAR_OFFSET,           0x00C
+    .equ MPU_MAIR0_OFFSET,          0x030
+    .equ MPU_MAIR1_OFFSET,          0x034
     .equ QSPIC_BASE,                0x38000000
     .equ QSPIC_CTRLBUS_OFFSET,      0x000
     .equ QSPIC_CTRLMOD_OFFSET,      0x004
@@ -114,6 +135,31 @@ da1469x_enter_sleep:
     and     r4, r4, #(FPU_FPCCR_MASK)
     ldr     r5, [r0, #(FPU_FPDSCR_OFFSET)]
     stmia   r3!, {r4-r5}
+#endif
+#if USE_MPU
+    ldr     r1, =MPU_BASE
+    /* Select registers 0-3 MPU_RNR=0 */
+    mov     r0, #0
+    str     r0, [r1, #MPU_RNR_OFFSET]
+    /* R2 now points to MPU_RBAR */
+    add     r2, r1, #MPU_RBAR_OFFSET
+    /* Store first set of 8 registers */
+    ldm     r2, {r5-r12}
+    stmia   r3!, {r5-r12}
+    /* Change to second set MPU_RNR=4 */
+    mov     r0, #4
+    str     r0, [r1, #MPU_RNR_OFFSET]
+    /* Read second set */
+    ldm     r2, {r5-r12}
+    stmia   r3!, {r5-r12}
+
+    /* Read MPU_MAIR0 and MPU_MAIR1 */
+    ldr     r5, [r1, #MPU_MAIR0_OFFSET]
+    ldr     r6, [r1, #MPU_MAIR1_OFFSET]
+    /* Add MPU_CTRL to the register set */
+    ldr     r7, [r1, #MPU_CTRL_OFFSET]
+    /* Save MPU_MAIR0, MPU_MAIR1 and MPU_CTRL */
+    stmia   r3!, {r5-r7}
 #endif
 
 /* Clear RESET_STAT_REG so wakeup handler can detect wakeup from deep sleep */
@@ -221,6 +267,39 @@ da1469x_wakeup:
     orr     r4, r4, r1
     str     r4, [r0, #(FPU_FPCCR_OFFSET)]
     str     r5, [r0, #(FPU_FPDSCR_OFFSET)]
+#endif
+
+#if USE_MPU
+    /* Restore MPU
+     * R1 - MPU_BASE
+     * R2 - address of RNR and MAIR0
+     */
+    ldr     r1, =MPU_BASE
+    add     r2, r1, #MPU_RBAR_OFFSET
+    mov     r0, #0
+    /* Disable MPU first */
+    dmb     0xF
+    str     r0, [r1, #MPU_CTRL_OFFSET]
+    isb     0xF
+    /* Select first set of registers MPU_RNR=0 */
+    str     r0, [r1, #MPU_RNR_OFFSET]
+    /* Read first set of registers */
+    ldmia   r3!, {r5-r12}
+    stm     r2, {r5-r12}
+    /* Select second set of registers MPU_RNR=4 */
+    mov     r0, #4
+    str     r0, [r1, #MPU_RNR_OFFSET]
+    /* Read second set of registers */
+    ldmia   r3!, {r5-r12}
+    stm     r2, {r5-r12}
+    /* Read MAIR0, MAIR1, and CTRL */
+    ldmia   r3!, {r5-r7}
+    /* Store MPU_MAIR0, MPU_MAIR1 */
+    str     r5, [r1, #MPU_MAIR0_OFFSET]
+    str     r6, [r1, #MPU_MAIR1_OFFSET]
+    str     r7, [r1, #MPU_CTRL_OFFSET]
+    dsb     0xF
+    isb     0XF
 #endif
 
 /* Restore MSP, PSP and CONTROL */
