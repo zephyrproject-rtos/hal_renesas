@@ -43,7 +43,7 @@ extern "C" {
   #define BSP_FORCE_INLINE                  _Pragma("inline=forced")
  #endif
 
- #define BSP_SECTION_NOINIT                 BSP_UNINIT_SECTION_PREFIX ".noinit"
+ #define BSP_SECTION_NOINIT                 BSP_UNINIT_SECTION_PREFIX ".ram_noinit"
  #define BSP_SECTION_FIXED_VECTORS          ".fixed_vectors"
  #define BSP_SECTION_APPLICATION_VECTORS    ".application_vectors"
 
