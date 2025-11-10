@@ -19,15 +19,15 @@
 #include <string.h>
 
 /* Different compiler support. */
-#include "fsp_common_api.h"
+#include "../../inc/api/fsp_common_api.h"
 #include "bsp_compiler_support.h"
 
 /* BSP module includes */
-#include "bsp_tfu.h"
-#include "bsp_sdram.h"
-#include "bsp_mmf.h"
-#include "bsp_ipc.h"
-#include "bsp_ospi_b.h"
+#include "../../src/bsp/mcu/all/bsp_tfu.h"
+#include "../../src/bsp/mcu/all/bsp_sdram.h"
+#include "../../src/bsp/mcu/all/bsp_mmf.h"
+#include "../../src/bsp/mcu/all/bsp_ipc.h"
+#include "../../src/bsp/mcu/all/bsp_ospi_b.h"
 
 #include "bsp_linker_info.h"
 

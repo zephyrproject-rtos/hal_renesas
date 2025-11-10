@@ -4,54 +4,62 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-/***********************************************************************************************************************
- * Includes   <System Includes> , "Project Includes"
- **********************************************************************************************************************/
-#include "bsp_api.h"
+/** @} (end addtogroup BSP_MCU) */
 
-/** ELC event definitions. */
+#ifndef BSP_IRQ_H
+#define BSP_IRQ_H
+
+/** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+FSP_HEADER
 
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#define BSP_IRQ_UINT32_MAX       (0xFFFFFFFFU)
-#define BSP_PRV_BITS_PER_WORD    (32)
-
-#if (BSP_CFG_CPU_CORE == 1)
- #define BSP_EVENT_NUM_TO_INTSELR(x)         (x >> 5)        // Convert event number to INTSELR register number
- #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)    (1 << (x % 32)) // Convert event number to INTSELR bit mask
-#endif
+#define BSP_ICU_VECTOR_MAX_ENTRIES    (BSP_VECTOR_TABLE_MAX_ENTRIES - BSP_CORTEX_VECTOR_TABLE_ENTRIES)
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Exported global variables (to be accessed by other files)
+ * Exported global variables
  **********************************************************************************************************************/
-
-/* This table is used to store the context in the ISR. */
-void * gp_renesas_isr_context[BSP_ICU_VECTOR_NUM_ENTRIES];
+extern void * gp_renesas_isr_context[BSP_ICU_VECTOR_NUM_ENTRIES];
 
 /***********************************************************************************************************************
- * Private global variables and functions
+ * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
-#if (BSP_CFG_CPU_CORE == 1)
-BSP_CMSE_NONSECURE_ENTRY void bsp_prv_intselr_set(bsp_interrupt_event_t interrupt_event_link_select);
-
-#endif
-
-const bsp_interrupt_event_t g_interrupt_event_link_select[BSP_ICU_VECTOR_NUM_ENTRIES] BSP_WEAK_REFERENCE =
-{
-    (bsp_interrupt_event_t) 0
-};
 
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @brief      Sets the ISR context associated with the requested IRQ.
  *
- * @{
+ * @param[in]  irq            IRQ number (parameter checking must ensure the IRQ number is valid before calling this
+ *                            function.
+ * @param[in]  p_context      ISR context for IRQ.
  **********************************************************************************************************************/
-#if 0 == BSP_CFG_INLINE_IRQ_FUNCTIONS
+__STATIC_INLINE void R_FSP_IsrContextSet (IRQn_Type const irq, void * p_context)
+{
+    /* This provides access to the ISR context array defined in bsp_irq.c. This is an inline function instead of
+     * being part of bsp_irq.c for performance considerations because it is used in interrupt service routines. */
+    gp_renesas_isr_context[irq] = p_context;
+}
+
+/*******************************************************************************************************************//**
+ * @brief      Finds the ISR context associated with the requested IRQ.
+ *
+ * @param[in]  irq            IRQ number (parameter checking must ensure the IRQ number is valid before calling this
+ *                            function.
+ * @return  ISR context for IRQ.
+ **********************************************************************************************************************/
+__STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
+{
+    /* This provides access to the ISR context array defined in bsp_irq.c. This is an inline function instead of
+     * being part of bsp_irq.c for performance considerations because it is used in interrupt service routines. */
+    return gp_renesas_isr_context[irq];
+}
+
+#if BSP_CFG_INLINE_IRQ_FUNCTIONS
+
  #if BSP_FEATURE_ICU_HAS_IELSR
 
 /*******************************************************************************************************************//**
@@ -63,7 +71,7 @@ const bsp_interrupt_event_t g_interrupt_event_link_select[BSP_ICU_VECTOR_NUM_ENT
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
-void R_BSP_IrqStatusClear (IRQn_Type irq)
+__STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
 {
     /* Clear the IR bit in the selected IELSR register. */
     R_ICU->IELSR_b[irq].IR = 0U;
@@ -83,7 +91,7 @@ void R_BSP_IrqStatusClear (IRQn_Type irq)
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
-void R_BSP_IrqClearPending (IRQn_Type irq)
+__STATIC_INLINE void R_BSP_IrqClearPending (IRQn_Type irq)
 {
  #if BSP_FEATURE_ICU_HAS_IELSR
 
@@ -109,7 +117,7 @@ void R_BSP_IrqClearPending (IRQn_Type irq)
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
-void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
+__STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
 {
     /* The following statement is used in place of NVIC_SetPriority to avoid including a branch for system exceptions
      * every time a priority is configured in the NVIC. */
@@ -136,7 +144,7 @@ void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
-void R_BSP_IrqEnableNoClear (IRQn_Type const irq)
+__STATIC_INLINE void R_BSP_IrqEnableNoClear (IRQn_Type const irq)
 {
     /* The following statement is used in place of NVIC_EnableIRQ to avoid including a branch for system exceptions
      * every time an interrupt is enabled in the NVIC. */
@@ -155,7 +163,7 @@ void R_BSP_IrqEnableNoClear (IRQn_Type const irq)
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
-void R_BSP_IrqEnable (IRQn_Type const irq)
+__STATIC_INLINE void R_BSP_IrqEnable (IRQn_Type const irq)
 {
     /* Clear pending interrupts in the ICU and NVIC. */
     R_BSP_IrqClearPending(irq);
@@ -172,7 +180,7 @@ void R_BSP_IrqEnable (IRQn_Type const irq)
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
-void R_BSP_IrqDisable (IRQn_Type const irq)
+__STATIC_INLINE void R_BSP_IrqDisable (IRQn_Type const irq)
 {
     /* The following statements is used in place of NVIC_DisableIRQ to avoid including a branch for system
      * exceptions every time an interrupt is cleared in the NVIC. */
@@ -192,119 +200,39 @@ void R_BSP_IrqDisable (IRQn_Type const irq)
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
-void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority, void * p_context)
+__STATIC_INLINE void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority, void * p_context)
 {
     R_BSP_IrqCfg(irq, priority, p_context);
     R_BSP_IrqEnable(irq);
 }
 
-#endif                                 // 0 == BSP_CFG_INLINE_IRQ_FUNCTIONS
+#else
+ #if BSP_FEATURE_ICU_HAS_IELSR
+void R_BSP_IrqStatusClear(IRQn_Type irq);
 
-/** @} (end addtogroup BSP_MCU) */
-
-#if (BSP_CFG_CPU_CORE == 1) && !BSP_TZ_NONSECURE_BUILD
-
-/*******************************************************************************************************************//**
- * INTSELR is a S-TYPE-6 register but it needs to be set based on interrupts that are used in each project.
- * By making this into a NSC, INTSELR can be set from NS.
- **********************************************************************************************************************/
-BSP_CMSE_NONSECURE_ENTRY void bsp_prv_intselr_set (bsp_interrupt_event_t interrupt_event_link_select)
-{
-    uint32_t inteslr_num_max = sizeof(R_ICU->INTSELR) / sizeof(R_ICU->INTSELR[0]);
-
-    /* Calculate which INTSELRn to use */
-    uint32_t intselr_num = BSP_EVENT_NUM_TO_INTSELR((uint32_t) interrupt_event_link_select);
-
-    /* Only set if a valid INTSELRn */
-    if (intselr_num < inteslr_num_max)
-    {
-        /* Set INTSELR for selected events. */
-        uint32_t intselr = R_ICU->INTSELR[intselr_num];
-
-        intselr |= BSP_EVENT_NUM_TO_INTSELR_MASK((uint32_t) interrupt_event_link_select);
-        R_ICU->INTSELR[intselr_num] = intselr;
-    }
-}
+ #endif
+void R_BSP_IrqClearPending(IRQn_Type irq);
+void R_BSP_IrqCfg(IRQn_Type const irq, uint32_t priority, void * p_context);
+void R_BSP_IrqEnableNoClear(IRQn_Type const irq);
+void R_BSP_IrqEnable(IRQn_Type const irq);
+void R_BSP_IrqDisable(IRQn_Type const irq);
+void R_BSP_IrqCfgEnable(IRQn_Type const irq, uint32_t priority, void * p_context);
 
 #endif
 
 /*******************************************************************************************************************//**
- *        Using the vector table information section that has been built by the linker and placed into ROM in the
- * .vector_info. section, this function will initialize the ICU so that configured ELC events will trigger interrupts
- * in the NVIC.
- *
+ * @internal
+ * @addtogroup BSP_MCU_PRV Internal BSP Documentation
+ * @ingroup RENESAS_INTERNAL
+ * @{
  **********************************************************************************************************************/
-void bsp_irq_cfg (void)
-{
-#if FSP_PRIV_TZ_USE_SECURE_REGS
- #if (BSP_FEATURE_TZ_VERSION == 2 && BSP_TZ_SECURE_BUILD == 0)
 
-    /* On MCUs with this implementation of TrustZone, IRQ security attribution is set to secure by default.
-     * This means that flat projects do not need to set security attribution to secure. */
- #else
+/* Public functions defined in bsp.h */
+void bsp_irq_cfg(void);                // Used internally by BSP
 
-    /* Unprotect security registers. */
-    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_SAR);
+/** @} (end addtogroup BSP_MCU_PRV) */
 
-  #if !BSP_TZ_SECURE_BUILD
+/** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
+FSP_FOOTER
 
-    /* Set the DMAC channels to secure access. */
-   #ifdef BSP_TZ_CFG_ICUSARC
-    R_CPSCU->ICUSARC = ~R_CPSCU_ICUSARC_SADMACn_Msk;
-   #endif
-  #endif
-
-    /* Place all vectors in non-secure state unless they are used in the secure project. */
-    uint32_t interrupt_security_state[BSP_ICU_VECTOR_MAX_ENTRIES / BSP_PRV_BITS_PER_WORD];
-    memset(&interrupt_security_state, UINT8_MAX, sizeof(interrupt_security_state));
-
-    for (uint32_t i = 0U; i < BSP_ICU_VECTOR_NUM_ENTRIES; i++)
-    {
-        if (0U != g_interrupt_event_link_select[i])
-        {
-            /* This is a secure vector. Clear the associated bit. */
-            uint32_t index = i / BSP_PRV_BITS_PER_WORD;
-            uint32_t bit   = i % BSP_PRV_BITS_PER_WORD;
-            interrupt_security_state[index] &= ~(1U << bit);
-        }
-    }
-
-    /* The Secure Attribute managed within the ARM CPU NVIC must match the security attribution of IELSEn
-     * (Refer "ICUSARI : Interrupt Controller Unit Security Attribution Register I" description in the ICU section of the relevant hardware manual). */
-  #if (BSP_CFG_CPU_CORE == 1)
-    uint32_t volatile * p_icusarg = &R_CPSCU->ICUSARJ;
-  #else
-    uint32_t volatile * p_icusarg = &R_CPSCU->ICUSARG;
-  #endif
-    for (uint32_t i = 0U; i < BSP_ICU_VECTOR_MAX_ENTRIES / BSP_PRV_BITS_PER_WORD; i++)
-    {
-        p_icusarg[i]  = interrupt_security_state[i];
-        NVIC->ITNS[i] = interrupt_security_state[i];
-    }
-
-    /* Protect security registers. */
-    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_SAR);
- #endif
 #endif
-#if BSP_FEATURE_ICU_HAS_IELSR
-
-    /* Calculate the number of IELSR registers that need to be initialized. */
-    uint32_t ielsr_count = BSP_ICU_VECTOR_MAX_ENTRIES - BSP_FEATURE_ICU_FIXED_IELSR_COUNT;
-    if (ielsr_count > BSP_ICU_VECTOR_NUM_ENTRIES)
-    {
-        ielsr_count = BSP_ICU_VECTOR_NUM_ENTRIES;
-    }
-
-    for (uint32_t i = 0U; i < ielsr_count; i++)
-    {
-        if (0U != g_interrupt_event_link_select[i])
-        {
-            R_ICU->IELSR[i] = (uint32_t) g_interrupt_event_link_select[i];
-
- #if (BSP_CFG_CPU_CORE == 1)
-            bsp_prv_intselr_set(g_interrupt_event_link_select[i]);
- #endif
-        }
-    }
-#endif
-}
