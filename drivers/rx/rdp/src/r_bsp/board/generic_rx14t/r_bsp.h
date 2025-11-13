@@ -31,9 +31,6 @@ INCLUDE APPROPRIATE MCU AND BOARD FILES
 #include    "mcu/all/r_bsp_common.h"
 #include    "mcu/all/r_rx_compiler.h"
 
-#include    "mcu/all/lowlvl.h"
-#include    "mcu/all/r_bsp_mcu_startup.h"
-
 #if defined(__CCRX__)
 #include    "mcu/rx14t/register_access/ccrx/iodefine.h"
 #elif defined(__GNUC__)
@@ -50,15 +47,9 @@ INCLUDE APPROPRIATE MCU AND BOARD FILES
 #include    "mcu/rx14t/mcu_locks.h"
 #include    "mcu/rx14t/vecttbl.h"
 
-#include    "board/generic_rx14t/hwsetup.h"
-
 #include    "mcu/all/r_bsp_interrupts.h"
 #include    "mcu/all/r_bsp_software_interrupt.h"
 #include    "mcu/all/r_rx_intrinsic_functions.h"
-#include    "mcu/all/r_rtos.h"
-
-#include    "mcu/all/fsp_common_api.h"
-#include    "mcu/all/r_fsp_error.h"
 
 #ifdef __cplusplus
 }
