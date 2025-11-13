@@ -115,3 +115,7 @@ Patch List:
    * Remove unnecessary include header files
    Impacted files:
       drivers/rx/rdp/src/r_bsp/board/generic_rx140/r_bsp.h
+
+   * Fix implicit conversion build warnings
+   Impacted files:
+      drivers/rx/rdp/src/r_sci_rx/src/targets/rx140/r_sci_rx14t.c
