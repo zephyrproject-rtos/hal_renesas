@@ -114,3 +114,7 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_QSPI_SPIBSC
 
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_QSPI_XSPI
 	fsp/src/${SOC_SERIES_PREFIX}/r_xspi_qspi/r_xspi_qspi.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_MIPI_DSI
+	fsp/src/${SOC_SERIES_PREFIX}/r_mipi_dsi_b/r_mipi_dsi_b.c
+	fsp/src/${SOC_SERIES_PREFIX}/r_mipi_phy_b/r_mipi_phy_b.c)
