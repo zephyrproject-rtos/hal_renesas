@@ -45,6 +45,8 @@
 *                              Fixed to comply with GSCE Coding Standards Rev.6.5.0
 *           28.06.2024 4.50    Added support for RX260, RX261.
 *           15.03.2025 4.51    Updated disclaimer
+*           23.06.2025 4.52    Removed doc folder and updated .rcpc file in FITDemos.
+*           30.10.2025 4.60    Added support for RX14T.
 ***********************************************************************************************************************/
 
 #ifndef IWDT_RX_IF_H
@@ -65,7 +67,7 @@ Macro definitions
 #endif
 /* Version Number of API. */
 #define IWDT_RX_VERSION_MAJOR   (4)
-#define IWDT_RX_VERSION_MINOR   (51)
+#define IWDT_RX_VERSION_MINOR   (60)
 
 #define OFS0_IWDT_DISABLED      (0x00000002)
 
@@ -96,8 +98,9 @@ typedef enum e_iwdt_err       // IWDT API error codes
 typedef enum e_iwdt_timeout           // IWDT Time-Out Period
 {
 #if defined(BSP_MCU_RX11_ALL) || defined(BSP_MCU_RX130) || defined(BSP_MCU_RX13T) || defined(BSP_MCU_RX23_ALL) \
-    || defined(BSP_MCU_RX24U)|| defined(BSP_MCU_RX140) || defined(BSP_MCU_RX260) || defined(BSP_MCU_RX261)
-    IWDT_TIMEOUT_128 =0x0000u,        // 128  (cycles) 
+    || defined(BSP_MCU_RX24U) || defined(BSP_MCU_RX140) || defined(BSP_MCU_RX14T) || defined(BSP_MCU_RX260) \
+    || defined(BSP_MCU_RX261)
+    IWDT_TIMEOUT_128 =0x0000u,        // 128  (cycles)
     IWDT_TIMEOUT_512 =0x0001u,        // 512  (cycles)
     IWDT_TIMEOUT_1024=0x0002u,        // 1024 (cycles)
     IWDT_TIMEOUT_2048=0x0003u,        // 2048 (cycles)
