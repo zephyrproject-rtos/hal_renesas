@@ -57,7 +57,6 @@ Patch List:
 
    * Fix the build warnings in RSPI driver
    Impacted files:
-      drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx.c
       drivers/rx/rdp/src/r_rspi_rx/src/r_rspi_rx_private.h
 
    * Remove the static definition in RIIC driver
@@ -68,16 +67,11 @@ Patch List:
    * Fix the build warnings in RIIC driver
    Impacted files:
       drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
-      drivers/rx/rdp/src/r_riic_rx/src/targets/rx130/r_riic_rx130.c
 
    * Replace the __builtin_rx_xchg with actual implementation
    because Zephyr SDK hasn't support it yet
    Impacted files:
       drivers/rx/rdp/src/r_bsp/mcu/all/r_rx_intrinsic_functions.h
-
-   * Fix the build warnings in IWDT driver
-   Impacted files:
-      drivers/rx/rdp/src/r_iwdt_rx/src/r_iwdt_rx.c
 
    * Remove the static definition in LVD isr function
    Impacted files:

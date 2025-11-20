@@ -57,6 +57,7 @@ INCLUDE APPROPRIATE MCU AND BOARD FILES
 #include    "mcu/rx130/register_access/iccrx/iodefine.h"
 #endif /* defined(__CCRX__), defined(__GNUC__), defined(__ICCRX__) */
 #include    "mcu/rx130/r_bsp_cpu.h"
+#include    "mcu/rx130/r_bsp_locking.h"
 #include    "mcu/rx130/mcu_clocks.h"
 #include    "mcu/rx130/mcu_info.h"
 #include    "mcu/rx130/mcu_init.h"
