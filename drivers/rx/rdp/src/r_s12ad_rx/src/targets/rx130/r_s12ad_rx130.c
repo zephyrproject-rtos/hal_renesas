@@ -35,7 +35,6 @@ Includes   <System Includes> , "Project Includes"
 /* Includes board and MCU related header files. */
 #include <stdio.h>
 #include "platform.h"
-#include "r_bsp_locking.h"
 
 #if defined (BSP_MCU_RX130)
 #include "r_s12ad_rx_config.h"
@@ -217,9 +216,9 @@ adc_err_t adc_open(uint8_t     const   unit,
 
     p_regs->ADADS0.WORD = 0;
     p_regs->ADADS1.WORD = 0;
-    
+
     p_regs->ADADC.BYTE = 0;
-    
+
     p_regs->ADCER.WORD = 0;
     p_regs->ADSTRGR.WORD = 0;
 
@@ -266,7 +265,7 @@ adc_err_t adc_open(uint8_t     const   unit,
     p_regs->ADCMPBSR.BYTE = 0;          /* target bit clear by read-modify-write */
     p_regs->ADBUFEN.BYTE = 0;
     p_regs->ADBUFPTR.BYTE = 0;
-    
+
     /* SET MODE RELATED REGISTER FIELDS */
     g_dcb.mode = mode;
 

@@ -5,7 +5,7 @@
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_riic_rx130.c
- * Description  : Functions for using RIIC on RX devices. 
+ * Description  : Functions for using RIIC on RX devices.
  **********************************************************************************************************************/
 /**********************************************************************************************************************
  * History : DD.MM.YYYY Version  Description
@@ -13,7 +13,7 @@
  *         : 04.03.2016 1.90     Changed about the pin definisions.
  *         : 01.10.2016 2.00     Fixed a program according to the Renesas coding rules.
  *         : 02.06.2017 2.10     Changed include path becuase changed file structure.
- *                               Changed about the calculation processing for address of PFS, PCR, 
+ *                               Changed about the calculation processing for address of PFS, PCR,
  *                               PDR and PMR register.
  *         : 20.05.2019 2.41     Added support for GNUC and ICCRX.
  *                               Fixed coding style.
@@ -31,7 +31,6 @@
 #if defined(BSP_MCU_RX130)
 
     #include "r_riic_rx_private.h"
-    #include "r_bsp_locking.h"
 
 /***********************************************************************************************************************
  Exported global variables (to be accessed by other files)
@@ -382,14 +381,14 @@ void riic_mcu_power_on (uint8_t channel)
     {
     #if (1U == RIIC_CFG_CH0_INCLUDED)
         case 0x00 :
-        
+
         #if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
             R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
         #endif
-        
+
             /* Bring module out of stop state. */
             MSTP(RIIC0) = 0U;
-        
+
         #if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
             R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
         #endif
@@ -427,14 +426,14 @@ void riic_mcu_power_off (uint8_t channel)
     {
     #if (1U == RIIC_CFG_CH0_INCLUDED)
         case 0x00 :
-        
+
         #if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
             R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
         #endif
-        
+
             /* Put module in stop state. */
             MSTP(RIIC0) = 1U;
-        
+
         #if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
             R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
         #endif
@@ -696,7 +695,7 @@ double riic_mcu_check_freq (void)
  * Function Name: riic0_eei_isr
  * Description  : Interrupt EEI handler for channel 0.
  *                Types of interrupt requests transfer error or event generation.
- *                The event generations are arbitration-lost, NACK detection, timeout detection, 
+ *                The event generations are arbitration-lost, NACK detection, timeout detection,
  *                start condition detection, and stop condition detection.
  * Arguments    : None
  * Return Value : None

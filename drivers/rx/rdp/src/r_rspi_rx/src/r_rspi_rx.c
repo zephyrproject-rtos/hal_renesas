@@ -7,7 +7,7 @@
 * File Name    : r_rspi_rx.c
 * Description  : Functions for using RSPI on RX devices.
 ************************************************************************************************************************
-* History : DD.MM.YYYY Version Description           
+* History : DD.MM.YYYY Version Description
 *           25.10.2013 1.00     First Release
 *           01.05.2014 1.20     Added support for RX62N. Minor bug fixes.
 *           19.01.2014 1.30     Added support for RX113, RX64M, and RX71M
@@ -22,7 +22,7 @@
 *           20.12.2018 2.00     Added double buffer and dmadtc transfer mode.
 *                               Supported RX72T.
 *           20.05.2019 2.01     Added support for GNUC and ICCRX.
-*                               Fixed coding style. 
+*                               Fixed coding style.
 *           20.06.2019 2.02     Supported RX23W.
 *           30.07.2019 2.03     Supported RX72M.
 *           22.11.2019 2.04     Supported RX72N and RX66N.
@@ -35,7 +35,7 @@
 *                               Fixed bug. Set the RSPCK auto-stop function enable bit(SPCR2.SCKASE) and update
 *                               functions rspi_sptiX_isr (X = 0, 1, 2) to ensure RSPI can communication normally when it
 *                               is in high speed reception.
-*                               Fixed two warning when the MCU is RX111 etc., the unused function(rspi_spei_grp_isr) 
+*                               Fixed two warning when the MCU is RX111 etc., the unused function(rspi_spei_grp_isr)
 *                               and variable(int_ctrl) will be valid.
 *                               Added communication completion interrupt for rx671.
 *           31.07.2021 3.02     Supported RX140.
@@ -46,10 +46,10 @@
 *                               Added idle interrupt for RX671.
 *           29.05.2023 3.20     Supported RX23E-B.
 *                               Fixed to comply with GSCE Coding Standards Rev.6.5.0.
-*           18.08.2023 3.30     Modified comments of the following API functions: R_RSPI_IntSptiIerClear, 
+*           18.08.2023 3.30     Modified comments of the following API functions: R_RSPI_IntSptiIerClear,
 *                               R_RSPI_IntSpriIerClear, R_RSPI_DisableSpti, R_RSPI_DisableRSPI.
 *           05.10.2023 3.40     Implemented code to clear the SPRF flag at the start of SPI communication.
-*                               Modified the order of disabling the error interrupt and canceling the error 
+*                               Modified the order of disabling the error interrupt and canceling the error
 *                               handler registration when disabling interrupts.
 *                               Modified the order of disabling interrupts between SPTI and SPRI
 *                               when disabling interrupts.
@@ -63,7 +63,6 @@ Includes   <System Includes> , "Project Includes"
 /* Defines for RSPI support */
 #include "platform.h"
 #include "r_rspi_rx_if.h"
-#include "r_bsp_locking.h"
 
 #if RSPI_CFG_LONGQ_ENABLE == 1
 /* Uses LONGQ driver header file. */
@@ -492,7 +491,7 @@ rspi_err_t  R_RSPI_Open(uint8_t                 channel, // @suppress("6.6a Sour
     {
         R_BSP_NOP();
     }
-    
+
     /* Peripheral Initialized */
     g_rspi_handles[channel].rspi_chnl_opened = true;
     g_rspi_handles[channel].pcallback        = pcallback;
@@ -1131,7 +1130,7 @@ static rspi_err_t rspi_write_read_common(rspi_handle_t handle,
  * @retval    RSPI_ERR_NULL_PTR
  *             A required pointer argument is NULL
  * @details   Use this function when disabling interrupt from within the callback function generated at DMAC
- *            transfer-end or an intentional cancellation of transmission.\n 
+ *            transfer-end or an intentional cancellation of transmission.\n
  *            Please call this function after calling R_RSPI_DisableSpti().
  * @note      Do not use this function during transmission other than an intentional cancellation of transmission.\n
  *            Doing so could disrupt the transfer.
@@ -1204,7 +1203,7 @@ rspi_err_t R_RSPI_IntSptiIerClear(rspi_handle_t handle)
  * @retval    RSPI_ERR_NULL_PTR
  *             A required pointer argument is NULL
  * @details   Use this function when disabling interrupt from within the callback function generated at DMAC
- *            transfer-end or an intentional cancellation of transmission.\n 
+ *            transfer-end or an intentional cancellation of transmission.\n
  *            Please call this function before calling R_RSPI_DisableRSPI().
  * @note      Do not use this function during transmission other than an intentional cancellation of transmission.\n
  *            Doing so could disrupt the transfer.
@@ -1277,7 +1276,7 @@ rspi_err_t R_RSPI_IntSpriIerClear(rspi_handle_t handle)
  * @retval    RSPI_ERR_NULL_PTR
  *             A required pointer argument is NULL
  * @details   Use this function when disabling interrupt from within the callback function generated at DMAC
- *            transfer-end or an intentional cancellation of transmission.\n 
+ *            transfer-end or an intentional cancellation of transmission.\n
  *            Please call this function before calling R_RSPI_IntSptiIerClear().
  * @note      Do not use this function during transmission other than an intentional cancellation of transmission.\n
  *            Doing so could disrupt the transfer.
@@ -1311,7 +1310,7 @@ rspi_err_t R_RSPI_DisableSpti(rspi_handle_t handle)
  * @retval    RSPI_ERR_NULL_PTR
  *             A required pointer argument is NULL
  * @details   Use this function when disabling the RSPI function from within the callback function generated at DMAC
- *            transfer-end or an intentional cancellation of transmission.\n 
+ *            transfer-end or an intentional cancellation of transmission.\n
  *            Please call this function after calling R_RSPI_IntSpriIerClear().
  * @note      Do not use this function during transmission other than an intentional cancellation of transmission.\n
  *            Doing so could disrupt the transfer.
@@ -1865,7 +1864,7 @@ static void rspi_interrupts_clear(uint8_t channel)
             #if defined BSP_MCU_RX671 || defined BSP_MCU_RX26T
             /* Clear any pending communication end interrupts */
             IR(RSPI0, SPCI0) = 0;
-            #endif 
+            #endif
             #if !(defined(BSP_MCU_RX64M)  || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N)\
                 || defined(BSP_MCU_RX66T) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M)\
                 || defined(BSP_MCU_RX72N) || defined(BSP_MCU_RX66N) || defined(BSP_MCU_RX671)\
@@ -1895,7 +1894,7 @@ static void rspi_interrupts_clear(uint8_t channel)
                 || defined(BSP_MCU_RX671))
             /* Clear any pending error interrupt */
             IR(RSPI1, SPEI1) = 0;
-            #endif 
+            #endif
             if (0 == IR(RSPI1, SPTI1))
             {
                 R_BSP_NOP();
@@ -2003,7 +2002,7 @@ static void rspi_interrupts_enable(uint8_t channel, bool enabled)
             {
                 R_BSP_NOP();
             }
-            
+
             #if defined BSP_MCU_RX64M || defined BSP_MCU_RX71M || defined BSP_MCU_RX65N || defined BSP_MCU_RX66T\
             ||  defined BSP_MCU_RX72T || defined BSP_MCU_RX72M || defined BSP_MCU_RX72N || defined BSP_MCU_RX66N\
             ||  defined BSP_MCU_RX671 || defined BSP_MCU_RX660 || defined BSP_MCU_RX26T
@@ -2097,7 +2096,7 @@ static void rspi_interrupts_enable(uint8_t channel, bool enabled)
             {
                 R_BSP_InterruptRequestEnable(VECT(RSPI1,SPRI1));
                 R_BSP_InterruptRequestEnable(VECT(RSPI1,SPTI1));
-                #ifdef BSP_MCU_RX671   
+                #ifdef BSP_MCU_RX671
                 R_BSP_InterruptRequestEnable(VECT(RSPI1,SPCI1));
                 #endif
             }
@@ -2875,7 +2874,7 @@ static void rspi_spei_isr_common(uint8_t channel)
         /* Clear error source: OVRF flag. */
         (*g_rspi_channels[channel]).SPSR.BIT.OVRF = 0;
     }
-    
+
     if (status_flags & RSPI_SPSR_MODF)
     {
         if (status_flags & RSPI_SPSR_UDRF)
@@ -2899,7 +2898,7 @@ static void rspi_spei_isr_common(uint8_t channel)
             (*g_rspi_channels[channel]).SPSR.BIT.MODF = 0;
         }
     }
-    
+
     if (status_flags & RSPI_SPSR_PERF)
     {
         if (RSPI_EVT_ERR_UNDEF == event)
@@ -3014,7 +3013,7 @@ static void rspi_spei_grp_isr(void *pdata)
         }
         #endif
     #endif
-    
+
     #if defined BSP_MCU_RX65N || defined BSP_MCU_RX72M || defined BSP_MCU_RX72N || defined BSP_MCU_RX66N \
     ||  defined BSP_MCU_RX671
         #if RSPI_CFG_USE_CHAN2 == 1
@@ -3219,7 +3218,7 @@ static void rspi_spii_grp_isr(void *pdata)
         }
         #endif
     #endif
-    
+
     #if defined BSP_MCU_RX65N || defined BSP_MCU_RX72M || defined BSP_MCU_RX72N || defined BSP_MCU_RX66N \
     || defined BSP_MCU_RX671
         #if RSPI_CFG_USE_CHAN2 == 1
