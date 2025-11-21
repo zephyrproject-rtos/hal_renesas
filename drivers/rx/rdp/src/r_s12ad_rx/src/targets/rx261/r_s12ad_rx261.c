@@ -202,9 +202,9 @@ adc_err_t adc_open(uint8_t     const   unit,
 
     p_regs->ADADS0.WORD = 0;
     p_regs->ADADS1.WORD = 0;
-    
+
     p_regs->ADADC.BYTE = 0;
-    
+
     p_regs->ADCER.WORD = 0;
     p_regs->ADSTRGR.WORD = 0;
 
@@ -252,7 +252,7 @@ adc_err_t adc_open(uint8_t     const   unit,
     p_regs->ADCMPBSR.BYTE = 0;          /* target bit clear by read-modify-write */
     p_regs->ADBUFEN.BYTE = 0;
     p_regs->ADBUFPTR.BYTE = 0;
-    
+
     /* SET MODE RELATED REGISTER FIELDS */
     g_dcb.mode = mode;
 
@@ -1099,7 +1099,6 @@ static void adc_enable_s12gbadi(void)
 *******************************************************************************/
 adc_err_t adc_close(uint8_t const  unit)
 {
-    volatile uint8_t    i;
     uint32_t            adc_wait_microsecs;
 
     /* Get S12AD register address */
@@ -1151,7 +1150,7 @@ adc_err_t adc_close(uint8_t const  unit)
         adc_wait_microsecs =  (uint32_t)((3000000 + (BSP_PCLKD_HZ - 1)) / BSP_PCLKD_HZ);
     }
     R_BSP_SoftwareDelay (adc_wait_microsecs, BSP_DELAY_MICROSECS);
-    
+
     /* Power down peripheral */
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
 
