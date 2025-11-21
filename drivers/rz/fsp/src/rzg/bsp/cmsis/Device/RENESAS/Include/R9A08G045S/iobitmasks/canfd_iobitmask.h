@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -463,11 +463,11 @@
 #define R_CANFD_CFDGAFLECTR_AFLPN_Msk           (0x3fUL)       /*!< AFLPN (Bitfield-Mask: 0x03f)                          */
 #define R_CANFD_CFDGAFLECTR_AFLDAE_Pos          (8UL)          /*!< AFLDAE (Bit 8)                                        */
 #define R_CANFD_CFDGAFLECTR_AFLDAE_Msk          (0x100UL)      /*!< AFLDAE (Bitfield-Mask: 0x01)                          */
-/* ======================================================  CFDGAFLCFG0  ====================================================== */
-#define R_CANFD_CFDGAFLCFG0_RNC1_Pos            (0UL)          /*!< RNC1 (Bit 0)                                          */
-#define R_CANFD_CFDGAFLCFG0_RNC1_Msk            (0x1ffUL)      /*!< RNC1 (Bitfield-Mask: 0x1ff)                           */
-#define R_CANFD_CFDGAFLCFG0_RNC0_Pos            (16UL)         /*!< RNC0 (Bit 16)                                         */
-#define R_CANFD_CFDGAFLCFG0_RNC0_Msk            (0x1ff0000UL)  /*!< RNC0 (Bitfield-Mask: 0x1ff)                           */
+/* ======================================================  CFDGAFLCFG  ====================================================== */
+#define R_CANFD_CFDGAFLCFG_RNC1_Pos             (0UL)          /*!< RNC1 (Bit 0)                                          */
+#define R_CANFD_CFDGAFLCFG_RNC1_Msk             (0x1ffUL)      /*!< RNC1 (Bitfield-Mask: 0x1ff)                           */
+#define R_CANFD_CFDGAFLCFG_RNC0_Pos             (16UL)         /*!< RNC0 (Bit 16)                                         */
+#define R_CANFD_CFDGAFLCFG_RNC0_Msk             (0x1ff0000UL)  /*!< RNC0 (Bitfield-Mask: 0x1ff)                           */
 /* ========================================================  CFDRMNB  ======================================================== */
 #define R_CANFD_CFDRMNB_NRXMB_Pos               (0UL)          /*!< NRXMB (Bit 0)                                         */
 #define R_CANFD_CFDRMNB_NRXMB_Msk               (0xffUL)       /*!< NRXMB (Bitfield-Mask: 0xff)                           */

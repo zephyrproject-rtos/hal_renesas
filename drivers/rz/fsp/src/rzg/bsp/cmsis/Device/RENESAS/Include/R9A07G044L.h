@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -37,7 +37,7 @@ extern "C" {
 /* =========================================================================================================================== */
 
 /* ==========================  Configuration of the ARM Cortex-M33 Processor and Core Peripherals  =========================== */
- #define __CM33_REV                0x0004U /*!< CM33 Core Revision                                                        */
+ #define __CM33_REV                0x0004U /*!< Cortex-M33 Core Revision                                                        */
  #define __NVIC_PRIO_BITS          7       /*!< Number of Bits used for Priority Levels                                   */
  #define __Vendor_SysTickConfig    0       /*!< Set to 1 if different SysTick Config is used                          */
  #define __VTOR_PRESENT            1       /*!< Set to 1 if CPU supports Vector Table Offset Register                     */

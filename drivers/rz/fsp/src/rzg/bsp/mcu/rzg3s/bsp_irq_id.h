@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -82,251 +82,306 @@ typedef enum IRQn
     PendSV_IRQn           = -2,
     SysTick_IRQn          = -1,
 
-    NMI_IRQn                   = 0,     /* IRQ No:0,   NMI */
-    GPIO_IRQ0_IRQn             = 1,     /* IRQ No:1,   IRQ0 */
-    GPIO_IRQ1_IRQn             = 2,     /* IRQ No:2,   IRQ1 */
-    GPIO_IRQ2_IRQn             = 3,     /* IRQ No:3,   IRQ2 */
-    GPIO_IRQ3_IRQn             = 4,     /* IRQ No:4,   IRQ3 */
-    GPIO_IRQ4_IRQn             = 5,     /* IRQ No:5,   IRQ4 */
-    GPIO_IRQ5_IRQn             = 6,     /* IRQ No:6,   IRQ5 */
-    GPIO_IRQ6_IRQn             = 7,     /* IRQ No:7,   IRQ6 */
-    GPIO_IRQ7_IRQn             = 8,     /* IRQ No:8,   IRQ7 */
-    CA55_ERRIRQ1_IRQn          = 9,     /* IRQ No:9,  nERRIRQ[1] */
-    CA55_ERRIRQ0_IRQn          = 10,    /* IRQ No:10,  nERRIRQ[0] */
-    CA55_FAULTIRQ1_IRQn        = 11,    /* IRQ No:11,  nFAULTIRQ[1] */
-    CA55_FAULTIRQ0_IRQn        = 12,    /* IRQ No:12,  nFAULTIRQ[0] */
-    CA55_COMMIRQ0_IRQn         = 13,    /* IRQ No:13,  nCOMMIRQ[0] */
-    CA55_PMUIRQ0_IRQn          = 14,    /* IRQ No:14,  nPMUIRQ[0] */
-    CA55_CLUSTERPMUIRQ_IRQn    = 15,    /* IRQ No:15,  nCLUSTERPMUIRQ */
-    CM33_CTIIRQ1_IRQn          = 16,    /* IRQ No:16,  CTIIRQ[1] */
-    CM33_CTIIRQ0_IRQn          = 17,    /* IRQ No:17,  CTIIRQ[0] */
-    CM33FPU_CTIIRQ1_IRQn       = 18,    /* IRQ No:18,  CTIIRQ[1] */
-    CM33FPU_CTIIRQ0_IRQn       = 19,    /* IRQ No:19,  CTIIRQ[0] */
-    CM33FPU_FPIXC_IRQn         = 20,    /* IRQ No:20,  FPIXC */
-    CM33FPU_FPIDC_IRQn         = 21,    /* IRQ No:21,  FPIDC */
-    CM33FPU_FPOFC_IRQn         = 22,    /* IRQ No:22,  FPOFC */
-    CM33FPU_FPUFC_IRQn         = 23,    /* IRQ No:23,  FPUFC */
-    CM33FPU_FPDZC_IRQn         = 24,    /* IRQ No:24,  FPDZC */
-    CM33FPU_FPIOC_IRQn         = 25,    /* IRQ No:25,  FPIOC */
-    GIC_FAULT_INT_IRQn         = 26,    /* IRQ No:26,  fault_int */
-    GIC_ERR_INT_IRQn           = 27,    /* IRQ No:27,  err_int */
-    GIC_PMU_INT_IRQn           = 28,    /* IRQ No:28,  pmu_int */
-    SYSTEMBUS_BUS_ERR_INT_IRQn = 29,    /* IRQ No:29,  BUS_ERR_INT */
-                                        /* IRQ No:30,  Reserved */
-    ECCRAM_EC7TIE1_IRQn         = 31,   /* IRQ No:31,  EC7TIE1_0 */
-    ECCRAM_EC7TIE2_IRQn         = 32,   /* IRQ No:32,  EC7TIE2_0 */
-    ECCRAM_EC7TIOVF_IRQn        = 33,   /* IRQ No:33,  EC7TIOVF_0 */
-    DDR_CONTROLL_INT_IRQn       = 34,   /* IRQ No:34,  controller_int */
-    DDR_DWC_DDRPHY_INT_IRQn     = 35,   /* IRQ No:35,  dwc_ddrphy_int_n */
-    DDR_SREF_ERROR_INT_IRQn     = 36,   /* IRQ No:36,  sref_error */
-    XSPI_SPI_LEVEL_INT_IRQn     = 37,   /* IRQ No:37,  int_spi_level */
-    XSPI_SPI_ERR_LEVEL_INT_IRQn = 38,   /* IRQ No:38,  int_spi_err_level */
-    SYSC_LPM_INT_IRQn           = 39,   /* IRQ No:39,  SYS_LPM_INT */
-    SYSC_CA55STBYDONE_INT_IRQn  = 40,   /* IRQ No:40,  SYS_CA55STBYDONE_INT */
-    SYSC_CM33STBYR_INT_IRQn     = 41,   /* IRQ No:41,  SYS_CM33STBYR_INT */
-    SYSC_CA55_DENY_IRQn         = 42,   /* IRQ No:42,  SYS_CA55_DENY */
-    VBATTB_TAMPDI_IRQn          = 43,   /* IRQ No:43,  TAMPDI */
-    GTM0_OSTM0INT_IRQn          = 44,   /* IRQ No:44,  OSTM0TINT */
-    GTM1_OSTM1INT_IRQn          = 45,   /* IRQ No:45,  OSTM1TINT */
-    GTM2_OSTM2INT_IRQn          = 46,   /* IRQ No:46,  OSTM2TINT */
-    GTM3_OSTM3INT_IRQn          = 47,   /* IRQ No:47,  OSTM3TINT */
-    GTM4_OSTM4INT_IRQn          = 48,   /* IRQ No:48,  OSTM4TINT */
-    GTM5_OSTM5INT_IRQn          = 49,   /* IRQ No:49,  OSTM5TINT */
-    GTM6_OSTM6INT_IRQn          = 50,   /* IRQ No:50,  OSTM6TINT */
-    GTM7_OSTM7INT_IRQn          = 51,   /* IRQ No:51,  OSTM7TINT */
-                                        /* IRQ No:52,  PERROUT_A0 */
-                                        /* IRQ No:53,  WDTINT_A0 */
-    WDT1_PERROUT_IRQn = 54,             /* IRQ No:54,  PERROUT_M0 */
-    WDT1_WDTINT_IRQn  = 55,             /* IRQ No:55,  WDTINT_M0 */
-    WDT2_PERROUT_IRQn = 56,             /* IRQ No:56,  PERROUT_M1 */
-    WDT2_WDTINT_IRQn  = 57,             /* IRQ No:57,  WDTINT_M1 */
+    NMI_IRQn                   = 0,    /* IRQ No:0,   NMI */
+    GPIO_IRQ0_IRQn             = 1,    /* IRQ No:1,   IRQ0 */
+    GPIO_IRQ1_IRQn             = 2,    /* IRQ No:2,   IRQ1 */
+    GPIO_IRQ2_IRQn             = 3,    /* IRQ No:3,   IRQ2 */
+    GPIO_IRQ3_IRQn             = 4,    /* IRQ No:4,   IRQ3 */
+    GPIO_IRQ4_IRQn             = 5,    /* IRQ No:5,   IRQ4 */
+    GPIO_IRQ5_IRQn             = 6,    /* IRQ No:6,   IRQ5 */
+    GPIO_IRQ6_IRQn             = 7,    /* IRQ No:7,   IRQ6 */
+    GPIO_IRQ7_IRQn             = 8,    /* IRQ No:8,   IRQ7 */
+    CA55_ERRIRQ1_IRQn          = 9,    /* IRQ No:9,  nERRIRQ[1] */
+    CA55_ERRIRQ0_IRQn          = 10,   /* IRQ No:10,  nERRIRQ[0] */
+    CA55_FAULTIRQ1_IRQn        = 11,   /* IRQ No:11,  nFAULTIRQ[1] */
+    CA55_FAULTIRQ0_IRQn        = 12,   /* IRQ No:12,  nFAULTIRQ[0] */
+    CA55_COMMIRQ0_IRQn         = 13,   /* IRQ No:13,  nCOMMIRQ[0] */
+    CA55_PMUIRQ0_IRQn          = 14,   /* IRQ No:14,  nPMUIRQ[0] */
+    CA55_CLUSTERPMUIRQ_IRQn    = 15,   /* IRQ No:15,  nCLUSTERPMUIRQ */
+    CM33_CTIIRQ1_IRQn          = 16,   /* IRQ No:16,  CTIIRQ[1] */
+    CM33_CTIIRQ0_IRQn          = 17,   /* IRQ No:17,  CTIIRQ[0] */
+    CM33FPU_CTIIRQ1_IRQn       = 18,   /* IRQ No:18,  CTIIRQ[1] */
+    CM33FPU_CTIIRQ0_IRQn       = 19,   /* IRQ No:19,  CTIIRQ[0] */
+    CM33FPU_FPIXC_IRQn         = 20,   /* IRQ No:20,  FPIXC */
+    CM33FPU_FPIDC_IRQn         = 21,   /* IRQ No:21,  FPIDC */
+    CM33FPU_FPOFC_IRQn         = 22,   /* IRQ No:22,  FPOFC */
+    CM33FPU_FPUFC_IRQn         = 23,   /* IRQ No:23,  FPUFC */
+    CM33FPU_FPDZC_IRQn         = 24,   /* IRQ No:24,  FPDZC */
+    CM33FPU_FPIOC_IRQn         = 25,   /* IRQ No:25,  FPIOC */
+    GIC_FAULT_INT_IRQn         = 26,   /* IRQ No:26,  fault_int */
+    GIC_ERR_INT_IRQn           = 27,   /* IRQ No:27,  err_int */
+    GIC_PMU_INT_IRQn           = 28,   /* IRQ No:28,  pmu_int */
+    SYSTEMBUS_BUS_ERR_INT_IRQn = 29,   /* IRQ No:29,  BUS_ERR_INT */
+                                       /* IRQ No:30,  Reserved */
+    ECCRAM_EC7TIE1_IRQn         = 31,  /* IRQ No:31,  EC7TIE1_0 */
+    ECCRAM_EC7TIE2_IRQn         = 32,  /* IRQ No:32,  EC7TIE2_0 */
+    ECCRAM_EC7TIOVF_IRQn        = 33,  /* IRQ No:33,  EC7TIOVF_0 */
+    DDR_CONTROLL_INT_IRQn       = 34,  /* IRQ No:34,  controller_int */
+    DDR_DWC_DDRPHY_INT_IRQn     = 35,  /* IRQ No:35,  dwc_ddrphy_int_n */
+    DDR_SREF_ERROR_INT_IRQn     = 36,  /* IRQ No:36,  sref_error */
+    XSPI_SPI_LEVEL_INT_IRQn     = 37,  /* IRQ No:37,  int_spi_level */
+    XSPI_SPI_ERR_LEVEL_INT_IRQn = 38,  /* IRQ No:38,  int_spi_err_level */
+    SYSC_LPM_INT_IRQn           = 39,  /* IRQ No:39,  SYS_LPM_INT */
+    SYSC_CA55STBYDONE_INT_IRQn  = 40,  /* IRQ No:40,  SYS_CA55STBYDONE_INT */
+    SYSC_CM33STBYR_INT_IRQn     = 41,  /* IRQ No:41,  SYS_CM33STBYR_INT */
+    SYSC_CA55_DENY_IRQn         = 42,  /* IRQ No:42,  SYS_CA55_DENY */
+    VBATTB_TAMPDI_IRQn          = 43,  /* IRQ No:43,  TAMPDI */
+    GTM0_OSTM0INT_IRQn          = 44,  /* IRQ No:44,  OSTM0TINT */
+    GTM1_OSTM1INT_IRQn          = 45,  /* IRQ No:45,  OSTM1TINT */
+    GTM2_OSTM2INT_IRQn          = 46,  /* IRQ No:46,  OSTM2TINT */
+    GTM3_OSTM3INT_IRQn          = 47,  /* IRQ No:47,  OSTM3TINT */
+    GTM4_OSTM4INT_IRQn          = 48,  /* IRQ No:48,  OSTM4TINT */
+    GTM5_OSTM5INT_IRQn          = 49,  /* IRQ No:49,  OSTM5TINT */
+    GTM6_OSTM6INT_IRQn          = 50,  /* IRQ No:50,  OSTM6TINT */
+    GTM7_OSTM7INT_IRQn          = 51,  /* IRQ No:51,  OSTM7TINT */
+                                       /* IRQ No:52,  PERROUT_A0 */
+                                       /* IRQ No:53,  WDTINT_A0 */
+    WDT1_PERROUT_IRQn = 54,            /* IRQ No:54,  PERROUT_M0 */
+    WDT1_WDTINT_IRQn  = 55,            /* IRQ No:55,  WDTINT_M0 */
+    WDT2_PERROUT_IRQn = 56,            /* IRQ No:56,  PERROUT_M1 */
+    WDT2_WDTINT_IRQn  = 57,            /* IRQ No:57,  WDTINT_M1 */
 #if BSP_CURRENT_CORE == RZG3S_CORE_CM33
-    MHU1_NS_IRQn         = 58,          /* IRQ No:58,  msg_ch1_ns */
-    MHU3_NS_IRQn         = 59,          /* IRQ No:59,  msg_ch3_ns */
-    MHU4_NS_IRQn         = 60,          /* IRQ No:60,  rsp_ch4_ns */
-    MHU5_NS_IRQn         = 61,          /* IRQ No:61,  rsp_ch5_ns */
-    MHU1_S_IRQn          = 62,          /* IRQ No:62,  msg_ch1_s */
-    MHU3_S_IRQn          = 63,          /* IRQ No:63,  msg_ch3_s */
-    MHU4_S_IRQn          = 64,          /* IRQ No:64,  rsp_ch4_s */
-    MHU5_S_IRQn          = 65,          /* IRQ No:65,  rsp_ch5_s */
-    MHU_SW_MHU_INT0_IRQn = 66,          /* IRQ No:66,  swint_ch0_ns */
-    MHU_SW_MHU_INT1_IRQn = 67,          /* IRQ No:67,  swint_ch1_ns */
+    MHU1_NS_IRQn         = 58,         /* IRQ No:58,  msg_ch1_ns */
+    MHU3_NS_IRQn         = 59,         /* IRQ No:59,  msg_ch3_ns */
+    MHU4_NS_IRQn         = 60,         /* IRQ No:60,  rsp_ch4_ns */
+    MHU5_NS_IRQn         = 61,         /* IRQ No:61,  rsp_ch5_ns */
+    MHU1_S_IRQn          = 62,         /* IRQ No:62,  msg_ch1_s */
+    MHU3_S_IRQn          = 63,         /* IRQ No:63,  msg_ch3_s */
+    MHU4_S_IRQn          = 64,         /* IRQ No:64,  rsp_ch4_s */
+    MHU5_S_IRQn          = 65,         /* IRQ No:65,  rsp_ch5_s */
+    MHU_SW_MHU_INT0_IRQn = 66,         /* IRQ No:66,  swint_ch0_ns */
+    MHU_SW_MHU_INT1_IRQn = 67,         /* IRQ No:67,  swint_ch1_ns */
 #elif BSP_CURRENT_CORE == RZG3S_CORE_CM33_FPU
-    MHU0_NS_IRQn         = 58,          /* IRQ No:58,  msg_ch0_ns */
-    MHU2_NS_IRQn         = 59,          /* IRQ No:59,  rsp_ch2_ns */
-    MHU3_NS_IRQn         = 60,          /* IRQ No:60,  rsp_ch3_ns */
-    MHU5_NS_IRQn         = 61,          /* IRQ No:61,  msg_ch5_ns */
-    MHU0_S_IRQn          = 62,          /* IRQ No:62,  msg_ch0_s */
-    MHU2_S_IRQn          = 63,          /* IRQ No:63,  rsp_ch2_s */
-    MHU3_S_IRQn          = 64,          /* IRQ No:64,  rsp_ch3_s */
-    MHU5_S_IRQn          = 65,          /* IRQ No:65,  msg_ch5_s */
-    MHU_SW_MHU_INT3_IRQn = 66,          /* IRQ No:66,  swint_ch3_ns */
-    MHU_SW_MHU_INT5_IRQn = 67,          /* IRQ No:67,  swint_ch5_ns */
+    MHU0_NS_IRQn         = 58,         /* IRQ No:58,  msg_ch0_ns */
+    MHU2_NS_IRQn         = 59,         /* IRQ No:59,  rsp_ch2_ns */
+    MHU3_NS_IRQn         = 60,         /* IRQ No:60,  rsp_ch3_ns */
+    MHU5_NS_IRQn         = 61,         /* IRQ No:61,  msg_ch5_ns */
+    MHU0_S_IRQn          = 62,         /* IRQ No:62,  msg_ch0_s */
+    MHU2_S_IRQn          = 63,         /* IRQ No:63,  rsp_ch2_s */
+    MHU3_S_IRQn          = 64,         /* IRQ No:64,  rsp_ch3_s */
+    MHU5_S_IRQn          = 65,         /* IRQ No:65,  msg_ch5_s */
+    MHU_SW_MHU_INT3_IRQn = 66,         /* IRQ No:66,  swint_ch3_ns */
+    MHU_SW_MHU_INT5_IRQn = 67,         /* IRQ No:67,  swint_ch5_ns */
 #endif /* BSP_CURRENT_CORE */
-    ETH0_PIF_INT_N_IRQn      = 68,      /* IRQ No:68,  pif_int_n_ch0 */
-    ETH0_FIL_INT_N_IRQn      = 69,      /* IRQ No:69,  int_fil_n_ch0 */
-    ETH0_ARP_NS_N_IRQn       = 70,      /* IRQ No:70,  int_arp_ns_n_ch0 */
-    ETH1_PIF_INT_N_IRQn      = 71,      /* IRQ No:71,  pif_int_n_ch1 */
-    ETH1_FIL_INT_N_IRQn      = 72,      /* IRQ No:72,  int_fil_n_ch1 */
-    ETH1_ARP_NS_N_IRQn       = 73,      /* IRQ No:73,  int_arp_ns_n_ch1 */
-    USB_U2H0_INT_IRQn        = 74,      /* IRQ No:74,  U2H0_INT */
-    USB_U2H0_OHCI_INT_IRQn   = 75,      /* IRQ No:75,  U2H0_OHCI_INT */
-    USB_U2H0_EHCI_INT_IRQn   = 76,      /* IRQ No:76,  U2H0_EHCI_INT */
-    USB_U2H0_WAKEON_INT_IRQn = 77,      /* IRQ No:77,  U2H0_WAKEON_INT */
-    USB_U2H0_OBINT_IRQn      = 78,      /* IRQ No:78,  U2H0_OBINT */
-    USB_U2H1_INT_IRQn        = 79,      /* IRQ No:79,  U2H1_INT */
-    USB_U2H1_OHCI_INT_IRQn   = 80,      /* IRQ No:80,  U2H1_OHCI_INT */
-    USB_U2H1_EHCI_INT_IRQn   = 81,      /* IRQ No:81,  U2H1_EHCI_INT */
-    USB_U2H1_WAKEON_INT_IRQn = 82,      /* IRQ No:82,  U2H1_WAKEON_INT */
-    USB_U2H1_OBINT_IRQn      = 83,      /* IRQ No:83,  U2H1_OBINT */
-    USB_U2P_INT_DMAERR_IRQn  = 84,      /* IRQ No:84,  U2P_INT_DMAERR */
-    USB_U2P_IXL_INT_IRQn     = 85,      /* IRQ No:85,  U2P_IXL_INT */
-    USB_U2P_INT_DMA0_IRQn    = 86,      /* IRQ No:86,  U2P_INT_DMA[0] */
-    USB_U2P_INT_DMA1_IRQn    = 87,      /* IRQ No:87,  U2P_INT_DMA[1] */
-    SDHI_eMMC0_OXMN_IRQn     = 88,      /* IRQ No:88,  OXMNIRQ0 */
-    SDHI_eMMC0_OXASIO_IRQn   = 89,      /* IRQ No:89,  OXASIOIRQ0 */
-    SDHI_eMMC1_OXMN_IRQn     = 90,      /* IRQ No:90,  OXMNIRQ1 */
-    SDHI_eMMC1_OXASIO_IRQn   = 91,      /* IRQ No:91,  OXASIOIRQ1 */
-    SDHI_eMMC2_OXMN_IRQn     = 92,      /* IRQ No:92,  OXMNIRQ1 */
-    SDHI_eMMC2_OXASIO_IRQn   = 93,      /* IRQ No:93,  OXASIOIRQ1 */
-    DMAC_DMAERR_S_IRQn       = 94,      /* IRQ No:94,  DMAERR_S */
-    DMAC_DMAINT0_S_IRQn      = 95,      /* IRQ No:95,  DMAINT0_S */
-    DMAC_DMAINT1_S_IRQn      = 96,      /* IRQ No:96,  DMAINT1_S */
-    DMAC_DMAINT2_S_IRQn      = 97,      /* IRQ No:97,  DMAINT2_S */
-    DMAC_DMAINT3_S_IRQn      = 98,      /* IRQ No:98,  DMAINT3_S */
-    DMAC_DMAINT4_S_IRQn      = 99,      /* IRQ No:99,  DMAINT4_S */
-    DMAC_DMAINT5_S_IRQn      = 100,     /* IRQ No:100, DMAINT5_S */
-    DMAC_DMAINT6_S_IRQn      = 101,     /* IRQ No:101, DMAINT6_S */
-    DMAC_DMAINT7_S_IRQn      = 102,     /* IRQ No:102, DMAINT7_S */
-    DMAC_DMAINT8_S_IRQn      = 103,     /* IRQ No:103, DMAINT8_S */
-    DMAC_DMAINT9_S_IRQn      = 104,     /* IRQ No:104, DMAINT9_S */
-    DMAC_DMAINT10_S_IRQn     = 105,     /* IRQ No:105, DMAINT10_S */
-    DMAC_DMAINT11_S_IRQn     = 106,     /* IRQ No:106, DMAINT11_S */
-    DMAC_DMAINT12_S_IRQn     = 107,     /* IRQ No:107, DMAINT12_S */
-    DMAC_DMAINT13_S_IRQn     = 108,     /* IRQ No:108, DMAINT13_S */
-    DMAC_DMAINT14_S_IRQn     = 109,     /* IRQ No:109, DMAINT14_S */
-    DMAC_DMAINT15_S_IRQn     = 110,     /* IRQ No:110, DMAINT15_S */
-    DMAC_DMAERR_NS_IRQn      = 111,     /* IRQ No:111, DMAERR_NS */
-    DMAC_DMAINT0_NS_IRQn     = 112,     /* IRQ No:112, DMAINT0_NS */
-    DMAC_DMAINT1_NS_IRQn     = 113,     /* IRQ No:113, DMAINT1_NS */
-    DMAC_DMAINT2_NS_IRQn     = 114,     /* IRQ No:114, DMAINT2_NS */
-    DMAC_DMAINT3_NS_IRQn     = 115,     /* IRQ No:115, DMAINT3_NS */
-    DMAC_DMAINT4_NS_IRQn     = 116,     /* IRQ No:116, DMAINT4_NS */
-    DMAC_DMAINT5_NS_IRQn     = 117,     /* IRQ No:117, DMAINT5_NS */
-    DMAC_DMAINT6_NS_IRQn     = 118,     /* IRQ No:118, DMAINT6_NS */
-    DMAC_DMAINT7_NS_IRQn     = 119,     /* IRQ No:119, DMAINT7_NS */
-    DMAC_DMAINT8_NS_IRQn     = 120,     /* IRQ No:120, DMAINT8_NS */
-    DMAC_DMAINT9_NS_IRQn     = 121,     /* IRQ No:121, DMAINT9_NS */
-    DMAC_DMAINT10_NS_IRQn    = 122,     /* IRQ No:122, DMAINT10_NS */
-    DMAC_DMAINT11_NS_IRQn    = 123,     /* IRQ No:123, DMAINT11_NS */
-    DMAC_DMAINT12_NS_IRQn    = 124,     /* IRQ No:124, DMAINT12_NS */
-    DMAC_DMAINT13_NS_IRQn    = 125,     /* IRQ No:125, DMAINT13_NS */
-    DMAC_DMAINT14_NS_IRQn    = 126,     /* IRQ No:126, DMAINT14_NS */
-    DMAC_DMAINT15_NS_IRQn    = 127,     /* IRQ No:127, DMAINT15_NS */
-    GPT0_CCMPA_IRQn          = 128,     /* IRQ No:128, CCMPA0 */
-    GPT0_CCMPB_IRQn          = 129,     /* IRQ No:129, CCMPB0 */
-    GPT0_CMPC_IRQn           = 130,     /* IRQ No:130, CMPC0 */
-    GPT0_CMPD_IRQn           = 131,     /* IRQ No:131, CMPD0 */
-    GPT0_CMPE_IRQn           = 132,     /* IRQ No:132, CMPE0 */
-    GPT0_CMPF_IRQn           = 133,     /* IRQ No:133, CMPF0 */
-    GPT0_ADTRGA_IRQn         = 134,     /* IRQ No:134, ADTRGA0 */
-    GPT0_ADTRGB_IRQn         = 135,     /* IRQ No:135, ADTRGB0 */
-    GPT0_OVF_IRQn            = 136,     /* IRQ No:136, OVF0 */
-    GPT0_UNF_IRQn            = 137,     /* IRQ No:137, UNF0 */
-                                        /* IRQ No:138, Reserved */
-                                        /* IRQ No:139, Reserved */
-                                        /* IRQ No:140, Reserved */
-    GPT1_CCMPA_IRQn  = 141,             /* IRQ No:141, CCMPA1 */
-    GPT1_CCMPB_IRQn  = 142,             /* IRQ No:142, CCMPB1 */
-    GPT1_CMPC_IRQn   = 143,             /* IRQ No:143, CMPC1 */
-    GPT1_CMPD_IRQn   = 144,             /* IRQ No:144, CMPD1 */
-    GPT1_CMPE_IRQn   = 145,             /* IRQ No:145, CMPE1 */
-    GPT1_CMPF_IRQn   = 146,             /* IRQ No:146, CMPF1 */
-    GPT1_ADTRGA_IRQn = 147,             /* IRQ No:147, ADTRGA1 */
-    GPT1_ADTRGB_IRQn = 148,             /* IRQ No:148, ADTRGB1 */
-    GPT1_OVF_IRQn    = 149,             /* IRQ No:149, OVF1 */
-    GPT1_UNF_IRQn    = 150,             /* IRQ No:150, UNF1 */
-                                        /* IRQ No:151, Reserved */
-                                        /* IRQ No:152, Reserved */
-                                        /* IRQ No:153, Reserved */
-    GPT2_CCMPA_IRQn  = 154,             /* IRQ No:154, CCMPA2 */
-    GPT2_CCMPB_IRQn  = 155,             /* IRQ No:155, CCMPB2 */
-    GPT2_CMPC_IRQn   = 156,             /* IRQ No:156, CMPC2 */
-    GPT2_CMPD_IRQn   = 157,             /* IRQ No:157, CMPD2 */
-    GPT2_CMPE_IRQn   = 158,             /* IRQ No:158, CMPE2 */
-    GPT2_CMPF_IRQn   = 159,             /* IRQ No:159, CMPF2 */
-    GPT2_ADTRGA_IRQn = 160,             /* IRQ No:160, ADTRGA2 */
-    GPT2_ADTRGB_IRQn = 161,             /* IRQ No:161, ADTRGB2 */
-    GPT2_OVF_IRQn    = 162,             /* IRQ No:162, OVF2 */
-    GPT2_UNF_IRQn    = 163,             /* IRQ No:163, UNF2 */
-                                        /* IRQ No:164, Reserved */
-                                        /* IRQ No:165, Reserved */
-                                        /* IRQ No:166, Reserved */
-    GPT3_CCMPA_IRQn  = 167,             /* IRQ No:167, CCMPA3 */
-    GPT3_CCMPB_IRQn  = 168,             /* IRQ No:168, CCMPB3 */
-    GPT3_CMPC_IRQn   = 169,             /* IRQ No:169, CMPC3 */
-    GPT3_CMPD_IRQn   = 170,             /* IRQ No:170, CMPD3 */
-    GPT3_CMPE_IRQn   = 171,             /* IRQ No:171, CMPE3 */
-    GPT3_CMPF_IRQn   = 172,             /* IRQ No:172, CMPF3 */
-    GPT3_ADTRGA_IRQn = 173,             /* IRQ No:173, ADTRGA3 */
-    GPT3_ADTRGB_IRQn = 174,             /* IRQ No:174, ADTRGB3 */
-    GPT3_OVF_IRQn    = 175,             /* IRQ No:175, OVF3 */
-    GPT3_UNF_IRQn    = 176,             /* IRQ No:176, UNF3 */
-                                        /* IRQ No:177, Reserved */
-                                        /* IRQ No:178, Reserved */
-                                        /* IRQ No:179, Reserved */
-    GPT4_CCMPA_IRQn  = 180,             /* IRQ No:180, CCMPA4 */
-    GPT4_CCMPB_IRQn  = 181,             /* IRQ No:181, CCMPB4 */
-    GPT4_CMPC_IRQn   = 182,             /* IRQ No:182, CMPC4 */
-    GPT4_CMPD_IRQn   = 183,             /* IRQ No:183, CMPD4 */
-    GPT4_CMPE_IRQn   = 184,             /* IRQ No:184, CMPE4 */
-    GPT4_CMPF_IRQn   = 185,             /* IRQ No:185, CMPF4 */
-    GPT4_ADTRGA_IRQn = 186,             /* IRQ No:186, ADTRGA4 */
-    GPT4_ADTRGB_IRQn = 187,             /* IRQ No:187, ADTRGB4 */
-    GPT4_OVF_IRQn    = 188,             /* IRQ No:188, OVF4 */
-    GPT4_UNF_IRQn    = 189,             /* IRQ No:189, UNF4 */
-                                        /* IRQ No:190, Reserved */
-                                        /* IRQ No:191, Reserved */
-                                        /* IRQ No:192, Reserved */
-    GPT5_CCMPA_IRQn  = 193,             /* IRQ No:193, CCMPA5 */
-    GPT5_CCMPB_IRQn  = 194,             /* IRQ No:194, CCMPB5 */
-    GPT5_CMPC_IRQn   = 195,             /* IRQ No:195, CMPC5 */
-    GPT5_CMPD_IRQn   = 196,             /* IRQ No:196, CMPD5 */
-    GPT5_CMPE_IRQn   = 197,             /* IRQ No:197, CMPE5 */
-    GPT5_CMPF_IRQn   = 198,             /* IRQ No:198, CMPF5 */
-    GPT5_ADTRGA_IRQn = 199,             /* IRQ No:199, ADTRGA5 */
-    GPT5_ADTRGB_IRQn = 200,             /* IRQ No:200, ADTRGB5 */
-    GPT5_OVF_IRQn    = 201,             /* IRQ No:201, OVF5 */
-    GPT5_UNF_IRQn    = 202,             /* IRQ No:202, UNF5 */
-                                        /* IRQ No:203, Reserved */
-                                        /* IRQ No:204, Reserved */
-                                        /* IRQ No:205, Reserved */
-    GPT6_CCMPA_IRQn  = 206,             /* IRQ No:206, CCMPA6 */
-    GPT6_CCMPB_IRQn  = 207,             /* IRQ No:207, CCMPB6 */
-    GPT6_CMPC_IRQn   = 208,             /* IRQ No:208, CMPC6 */
-    GPT6_CMPD_IRQn   = 209,             /* IRQ No:209, CMPD6 */
-    GPT6_CMPE_IRQn   = 210,             /* IRQ No:210, CMPE6 */
-    GPT6_CMPF_IRQn   = 211,             /* IRQ No:211, CMPF6 */
-    GPT6_ADTRGA_IRQn = 212,             /* IRQ No:212, ADTRGA6 */
-    GPT6_ADTRGB_IRQn = 213,             /* IRQ No:213, ADTRGB6 */
-    GPT6_OVF_IRQn    = 214,             /* IRQ No:214, OVF6 */
-    GPT6_UNF_IRQn    = 215,             /* IRQ No:215, UNF6 */
-                                        /* IRQ No:216, Reserved */
-                                        /* IRQ No:217, Reserved */
-                                        /* IRQ No:218, Reserved */
-    GPT7_CCMPA_IRQn  = 219,             /* IRQ No:219, CCMPA7 */
-    GPT7_CCMPB_IRQn  = 220,             /* IRQ No:220, CCMPB7 */
-    GPT7_CMPC_IRQn   = 221,             /* IRQ No:221, CMPC7 */
-    GPT7_CMPD_IRQn   = 222,             /* IRQ No:222, CMPD7 */
-    GPT7_CMPE_IRQn   = 223,             /* IRQ No:223, CMPE7 */
-    GPT7_CMPF_IRQn   = 226,             /* IRQ No:226, CMPF7 */
-    GPT7_ADTRGA_IRQn = 225,             /* IRQ No:225, ADTRGA7 */
-    GPT7_ADTRGB_IRQn = 226,             /* IRQ No:226, ADTRGB7 */
-    GPT7_OVF_IRQn    = 227,             /* IRQ No:227, OVF7 */
-    GPT7_UNF_IRQn    = 228,             /* IRQ No:228, UNF7 */
-                                        /* IRQ No:229, Reserved */
-                                        /* IRQ No:230, Reserved */
-                                        /* IRQ No:231, Reserved */
+    ETH0_PIF_INT_N_IRQn      = 68,     /* IRQ No:68,  pif_int_n_ch0 */
+    ETH0_FIL_INT_N_IRQn      = 69,     /* IRQ No:69,  int_fil_n_ch0 */
+    ETH0_ARP_NS_N_IRQn       = 70,     /* IRQ No:70,  int_arp_ns_n_ch0 */
+    ETH1_PIF_INT_N_IRQn      = 71,     /* IRQ No:71,  pif_int_n_ch1 */
+    ETH1_FIL_INT_N_IRQn      = 72,     /* IRQ No:72,  int_fil_n_ch1 */
+    ETH1_ARP_NS_N_IRQn       = 73,     /* IRQ No:73,  int_arp_ns_n_ch1 */
+    USB_U2H0_INT_IRQn        = 74,     /* IRQ No:74,  U2H0_INT */
+    USB_U2H0_OHCI_INT_IRQn   = 75,     /* IRQ No:75,  U2H0_OHCI_INT */
+    USB_U2H0_EHCI_INT_IRQn   = 76,     /* IRQ No:76,  U2H0_EHCI_INT */
+    USB_U2H0_WAKEON_INT_IRQn = 77,     /* IRQ No:77,  U2H0_WAKEON_INT */
+    USB_U2H0_OBINT_IRQn      = 78,     /* IRQ No:78,  U2H0_OBINT */
+    USB_U2H1_INT_IRQn        = 79,     /* IRQ No:79,  U2H1_INT */
+    USB_U2H1_OHCI_INT_IRQn   = 80,     /* IRQ No:80,  U2H1_OHCI_INT */
+    USB_U2H1_EHCI_INT_IRQn   = 81,     /* IRQ No:81,  U2H1_EHCI_INT */
+    USB_U2H1_WAKEON_INT_IRQn = 82,     /* IRQ No:82,  U2H1_WAKEON_INT */
+    USB_U2H1_OBINT_IRQn      = 83,     /* IRQ No:83,  U2H1_OBINT */
+    USB_U2P_INT_DMAERR_IRQn  = 84,     /* IRQ No:84,  U2P_INT_DMAERR */
+    USB_U2P_IXL_INT_IRQn     = 85,     /* IRQ No:85,  U2P_IXL_INT */
+    USB_U2P_INT_DMA0_IRQn    = 86,     /* IRQ No:86,  U2P_INT_DMA[0] */
+    USB_U2P_INT_DMA1_IRQn    = 87,     /* IRQ No:87,  U2P_INT_DMA[1] */
+    SDHI_eMMC0_OXMN_IRQn     = 88,     /* IRQ No:88,  OXMNIRQ0 */
+    SDHI_eMMC0_OXASIO_IRQn   = 89,     /* IRQ No:89,  OXASIOIRQ0 */
+    SDHI_eMMC1_OXMN_IRQn     = 90,     /* IRQ No:90,  OXMNIRQ1 */
+    SDHI_eMMC1_OXASIO_IRQn   = 91,     /* IRQ No:91,  OXASIOIRQ1 */
+    SDHI_eMMC2_OXMN_IRQn     = 92,     /* IRQ No:92,  OXMNIRQ1 */
+    SDHI_eMMC2_OXASIO_IRQn   = 93,     /* IRQ No:93,  OXASIOIRQ1 */
+    DMAC_DMAERR_S_IRQn       = 94,     /* IRQ No:94,  DMAERR_S */
+    DMAC_DMAINT0_S_IRQn      = 95,     /* IRQ No:95,  DMAINT0_S */
+    DMAC_DMAINT1_S_IRQn      = 96,     /* IRQ No:96,  DMAINT1_S */
+    DMAC_DMAINT2_S_IRQn      = 97,     /* IRQ No:97,  DMAINT2_S */
+    DMAC_DMAINT3_S_IRQn      = 98,     /* IRQ No:98,  DMAINT3_S */
+    DMAC_DMAINT4_S_IRQn      = 99,     /* IRQ No:99,  DMAINT4_S */
+    DMAC_DMAINT5_S_IRQn      = 100,    /* IRQ No:100, DMAINT5_S */
+    DMAC_DMAINT6_S_IRQn      = 101,    /* IRQ No:101, DMAINT6_S */
+    DMAC_DMAINT7_S_IRQn      = 102,    /* IRQ No:102, DMAINT7_S */
+    DMAC_DMAINT8_S_IRQn      = 103,    /* IRQ No:103, DMAINT8_S */
+    DMAC_DMAINT9_S_IRQn      = 104,    /* IRQ No:104, DMAINT9_S */
+    DMAC_DMAINT10_S_IRQn     = 105,    /* IRQ No:105, DMAINT10_S */
+    DMAC_DMAINT11_S_IRQn     = 106,    /* IRQ No:106, DMAINT11_S */
+    DMAC_DMAINT12_S_IRQn     = 107,    /* IRQ No:107, DMAINT12_S */
+    DMAC_DMAINT13_S_IRQn     = 108,    /* IRQ No:108, DMAINT13_S */
+    DMAC_DMAINT14_S_IRQn     = 109,    /* IRQ No:109, DMAINT14_S */
+    DMAC_DMAINT15_S_IRQn     = 110,    /* IRQ No:110, DMAINT15_S */
+    DMAC_DMAERR_NS_IRQn      = 111,    /* IRQ No:111, DMAERR_NS */
+    DMAC_DMAINT0_NS_IRQn     = 112,    /* IRQ No:112, DMAINT0_NS */
+    DMAC_DMAINT1_NS_IRQn     = 113,    /* IRQ No:113, DMAINT1_NS */
+    DMAC_DMAINT2_NS_IRQn     = 114,    /* IRQ No:114, DMAINT2_NS */
+    DMAC_DMAINT3_NS_IRQn     = 115,    /* IRQ No:115, DMAINT3_NS */
+    DMAC_DMAINT4_NS_IRQn     = 116,    /* IRQ No:116, DMAINT4_NS */
+    DMAC_DMAINT5_NS_IRQn     = 117,    /* IRQ No:117, DMAINT5_NS */
+    DMAC_DMAINT6_NS_IRQn     = 118,    /* IRQ No:118, DMAINT6_NS */
+    DMAC_DMAINT7_NS_IRQn     = 119,    /* IRQ No:119, DMAINT7_NS */
+    DMAC_DMAINT8_NS_IRQn     = 120,    /* IRQ No:120, DMAINT8_NS */
+    DMAC_DMAINT9_NS_IRQn     = 121,    /* IRQ No:121, DMAINT9_NS */
+    DMAC_DMAINT10_NS_IRQn    = 122,    /* IRQ No:122, DMAINT10_NS */
+    DMAC_DMAINT11_NS_IRQn    = 123,    /* IRQ No:123, DMAINT11_NS */
+    DMAC_DMAINT12_NS_IRQn    = 124,    /* IRQ No:124, DMAINT12_NS */
+    DMAC_DMAINT13_NS_IRQn    = 125,    /* IRQ No:125, DMAINT13_NS */
+    DMAC_DMAINT14_NS_IRQn    = 126,    /* IRQ No:126, DMAINT14_NS */
+    DMAC_DMAINT15_NS_IRQn    = 127,    /* IRQ No:127, DMAINT15_NS */
+
+    /*
+     * The interrupt factors for GPT and MTU3 are bundled.
+     * This block defines the interrupt factor for GPT.
+     */
+    GPT0_CCMPA_IRQn  = 128,            /* IRQ No:128, CCMPA0 */
+    GPT0_CCMPB_IRQn  = 129,            /* IRQ No:129, CCMPB0 */
+    GPT0_CMPC_IRQn   = 130,            /* IRQ No:130, CMPC0 */
+    GPT0_CMPD_IRQn   = 131,            /* IRQ No:131, CMPD0 */
+    GPT0_CMPE_IRQn   = 132,            /* IRQ No:132, CMPE0 */
+    GPT0_CMPF_IRQn   = 133,            /* IRQ No:133, CMPF0 */
+    GPT0_ADTRGA_IRQn = 134,            /* IRQ No:134, ADTRGA0 */
+    GPT0_ADTRGB_IRQn = 135,            /* IRQ No:135, ADTRGB0 */
+    GPT0_OVF_IRQn    = 136,            /* IRQ No:136, OVF0 */
+    GPT0_UNF_IRQn    = 137,            /* IRQ No:137, UNF0 */
+                                       /* IRQ No:138, Reserved */
+                                       /* IRQ No:139, Reserved */
+                                       /* IRQ No:140, Reserved */
+    GPT1_CCMPA_IRQn  = 141,            /* IRQ No:141, CCMPA1 */
+    GPT1_CCMPB_IRQn  = 142,            /* IRQ No:142, CCMPB1 */
+    GPT1_CMPC_IRQn   = 143,            /* IRQ No:143, CMPC1 */
+    GPT1_CMPD_IRQn   = 144,            /* IRQ No:144, CMPD1 */
+    GPT1_CMPE_IRQn   = 145,            /* IRQ No:145, CMPE1 */
+    GPT1_CMPF_IRQn   = 146,            /* IRQ No:146, CMPF1 */
+    GPT1_ADTRGA_IRQn = 147,            /* IRQ No:147, ADTRGA1 */
+    GPT1_ADTRGB_IRQn = 148,            /* IRQ No:148, ADTRGB1 */
+    GPT1_OVF_IRQn    = 149,            /* IRQ No:149, OVF1 */
+    GPT1_UNF_IRQn    = 150,            /* IRQ No:150, UNF1 */
+                                       /* IRQ No:151, Reserved */
+                                       /* IRQ No:152, Reserved */
+                                       /* IRQ No:153, Reserved */
+    GPT2_CCMPA_IRQn  = 154,            /* IRQ No:154, CCMPA2 */
+    GPT2_CCMPB_IRQn  = 155,            /* IRQ No:155, CCMPB2 */
+    GPT2_CMPC_IRQn   = 156,            /* IRQ No:156, CMPC2 */
+    GPT2_CMPD_IRQn   = 157,            /* IRQ No:157, CMPD2 */
+    GPT2_CMPE_IRQn   = 158,            /* IRQ No:158, CMPE2 */
+    GPT2_CMPF_IRQn   = 159,            /* IRQ No:159, CMPF2 */
+    GPT2_ADTRGA_IRQn = 160,            /* IRQ No:160, ADTRGA2 */
+    GPT2_ADTRGB_IRQn = 161,            /* IRQ No:161, ADTRGB2 */
+    GPT2_OVF_IRQn    = 162,            /* IRQ No:162, OVF2 */
+    GPT2_UNF_IRQn    = 163,            /* IRQ No:163, UNF2 */
+                                       /* IRQ No:164, Reserved */
+                                       /* IRQ No:165, Reserved */
+                                       /* IRQ No:166, Reserved */
+    GPT3_CCMPA_IRQn  = 167,            /* IRQ No:167, CCMPA3 */
+    GPT3_CCMPB_IRQn  = 168,            /* IRQ No:168, CCMPB3 */
+    GPT3_CMPC_IRQn   = 169,            /* IRQ No:169, CMPC3 */
+    GPT3_CMPD_IRQn   = 170,            /* IRQ No:170, CMPD3 */
+    GPT3_CMPE_IRQn   = 171,            /* IRQ No:171, CMPE3 */
+    GPT3_CMPF_IRQn   = 172,            /* IRQ No:172, CMPF3 */
+    GPT3_ADTRGA_IRQn = 173,            /* IRQ No:173, ADTRGA3 */
+    GPT3_ADTRGB_IRQn = 174,            /* IRQ No:174, ADTRGB3 */
+    GPT3_OVF_IRQn    = 175,            /* IRQ No:175, OVF3 */
+    GPT3_UNF_IRQn    = 176,            /* IRQ No:176, UNF3 */
+                                       /* IRQ No:177, Reserved */
+                                       /* IRQ No:178, Reserved */
+                                       /* IRQ No:179, Reserved */
+    GPT4_CCMPA_IRQn  = 180,            /* IRQ No:180, CCMPA4 */
+    GPT4_CCMPB_IRQn  = 181,            /* IRQ No:181, CCMPB4 */
+    GPT4_CMPC_IRQn   = 182,            /* IRQ No:182, CMPC4 */
+    GPT4_CMPD_IRQn   = 183,            /* IRQ No:183, CMPD4 */
+    GPT4_CMPE_IRQn   = 184,            /* IRQ No:184, CMPE4 */
+    GPT4_CMPF_IRQn   = 185,            /* IRQ No:185, CMPF4 */
+    GPT4_ADTRGA_IRQn = 186,            /* IRQ No:186, ADTRGA4 */
+    GPT4_ADTRGB_IRQn = 187,            /* IRQ No:187, ADTRGB4 */
+    GPT4_OVF_IRQn    = 188,            /* IRQ No:188, OVF4 */
+    GPT4_UNF_IRQn    = 189,            /* IRQ No:189, UNF4 */
+                                       /* IRQ No:190, Reserved */
+                                       /* IRQ No:191, Reserved */
+                                       /* IRQ No:192, Reserved */
+    GPT5_CCMPA_IRQn  = 193,            /* IRQ No:193, CCMPA5 */
+    GPT5_CCMPB_IRQn  = 194,            /* IRQ No:194, CCMPB5 */
+    GPT5_CMPC_IRQn   = 195,            /* IRQ No:195, CMPC5 */
+    GPT5_CMPD_IRQn   = 196,            /* IRQ No:196, CMPD5 */
+    GPT5_CMPE_IRQn   = 197,            /* IRQ No:197, CMPE5 */
+    GPT5_CMPF_IRQn   = 198,            /* IRQ No:198, CMPF5 */
+    GPT5_ADTRGA_IRQn = 199,            /* IRQ No:199, ADTRGA5 */
+    GPT5_ADTRGB_IRQn = 200,            /* IRQ No:200, ADTRGB5 */
+    GPT5_OVF_IRQn    = 201,            /* IRQ No:201, OVF5 */
+    GPT5_UNF_IRQn    = 202,            /* IRQ No:202, UNF5 */
+                                       /* IRQ No:203, Reserved */
+                                       /* IRQ No:204, Reserved */
+                                       /* IRQ No:205, Reserved */
+    GPT6_CCMPA_IRQn  = 206,            /* IRQ No:206, CCMPA6 */
+    GPT6_CCMPB_IRQn  = 207,            /* IRQ No:207, CCMPB6 */
+    GPT6_CMPC_IRQn   = 208,            /* IRQ No:208, CMPC6 */
+    GPT6_CMPD_IRQn   = 209,            /* IRQ No:209, CMPD6 */
+    GPT6_CMPE_IRQn   = 210,            /* IRQ No:210, CMPE6 */
+    GPT6_CMPF_IRQn   = 211,            /* IRQ No:211, CMPF6 */
+    GPT6_ADTRGA_IRQn = 212,            /* IRQ No:212, ADTRGA6 */
+    GPT6_ADTRGB_IRQn = 213,            /* IRQ No:213, ADTRGB6 */
+    GPT6_OVF_IRQn    = 214,            /* IRQ No:214, OVF6 */
+    GPT6_UNF_IRQn    = 215,            /* IRQ No:215, UNF6 */
+                                       /* IRQ No:216, Reserved */
+                                       /* IRQ No:217, Reserved */
+                                       /* IRQ No:218, Reserved */
+    GPT7_CCMPA_IRQn  = 219,            /* IRQ No:219, CCMPA7 */
+    GPT7_CCMPB_IRQn  = 220,            /* IRQ No:220, CCMPB7 */
+    GPT7_CMPC_IRQn   = 221,            /* IRQ No:221, CMPC7 */
+    GPT7_CMPD_IRQn   = 222,            /* IRQ No:222, CMPD7 */
+    GPT7_CMPE_IRQn   = 223,            /* IRQ No:223, CMPE7 */
+    GPT7_CMPF_IRQn   = 226,            /* IRQ No:226, CMPF7 */
+    GPT7_ADTRGA_IRQn = 225,            /* IRQ No:225, ADTRGA7 */
+    GPT7_ADTRGB_IRQn = 226,            /* IRQ No:226, ADTRGB7 */
+    GPT7_OVF_IRQn    = 227,            /* IRQ No:227, OVF7 */
+    GPT7_UNF_IRQn    = 228,            /* IRQ No:228, UNF7 */
+
+    /*
+     * The interrupt factors for GPT and MTU3 are bundled.
+     * This block defines the interrupt factor for MTU3.
+     */
+    MTU0_TGIA_PLS_IRQn = 132,          /* IRQ No:132, TGIA0 */
+    MTU0_TGIB_PLS_IRQn = 133,          /* IRQ No:133, TGIB0 */
+    MTU0_TGIC_PLS_IRQn = 134,          /* IRQ No:134, TGIC0 */
+    MTU0_TGID_PLS_IRQn = 135,          /* IRQ No:135, TGID0 */
+    MTU0_TCIV_PLS_IRQn = 136,          /* IRQ No:136, TCIV0 */
+    MTU0_TGIE_PLS_IRQn = 137,          /* IRQ No:137, TGIE0 */
+    MTU0_TGIF_PLS_IRQn = 145,          /* IRQ No:145, TGIF0 */
+    MTU1_TGIA_PLS_IRQn = 146,          /* IRQ No:146, TGIA1 */
+    MTU1_TGIB_PLS_IRQn = 147,          /* IRQ No:147, TGIB1 */
+    MTU1_TCIV_PLS_IRQn = 148,          /* IRQ No:148, TCIV1 */
+    MTU1_TCIU_PLS_IRQn = 149,          /* IRQ No:149, TCIU1 */
+    MTU2_TGIA_PLS_IRQn = 150,          /* IRQ No:150, TGIA2 */
+    MTU2_TGIB_PLS_IRQn = 158,          /* IRQ No:158, TGIB2 */
+    MTU2_TCIV_PLS_IRQn = 159,          /* IRQ No:159, TCIV2 */
+    MTU2_TCIU_PLS_IRQn = 160,          /* IRQ No:160, TCIU2 */
+    MTU3_TGIA_PLS_IRQn = 161,          /* IRQ No:161, TGIA3 */
+    MTU3_TGIB_PLS_IRQn = 162,          /* IRQ No:162, TGIB3 */
+    MTU3_TGIC_PLS_IRQn = 163,          /* IRQ No:163, TGIC3 */
+    MTU3_TGID_PLS_IRQn = 171,          /* IRQ No:171, TGID3 */
+    MTU3_TCIV_PLS_IRQn = 172,          /* IRQ No:172, TCIV3 */
+    MTU4_TGIA_PLS_IRQn = 173,          /* IRQ No:173, TGIA4 */
+    MTU4_TGIB_PLS_IRQn = 174,          /* IRQ No:174, TGIB4 */
+    MTU4_TGIC_PLS_IRQn = 175,          /* IRQ No:175, TGIC4 */
+    MTU4_TGID_PLS_IRQn = 176,          /* IRQ No:176, TGID4 */
+    MTU4_TCIV_PLS_IRQn = 184,          /* IRQ No:184, TCIV4 */
+    MTU5_TGIU_PLS_IRQn = 185,          /* IRQ No:185, TGIU5 */
+    MTU5_TGIV_PLS_IRQn = 186,          /* IRQ No:186, TGIV5 */
+    MTU5_TGIW_PLS_IRQn = 187,          /* IRQ No:187, TGIW5 */
+    MTU6_TGIA_PLS_IRQn = 188,          /* IRQ No:188, TGIA6 */
+    MTU6_TGIB_PLS_IRQn = 189,          /* IRQ No:189, TGIB6 */
+    MTU6_TGIC_PLS_IRQn = 197,          /* IRQ No:197, TGIC6 */
+    MTU6_TGID_PLS_IRQn = 198,          /* IRQ No:198, TGID6 */
+    MTU6_TCIV_PLS_IRQn = 199,          /* IRQ No:199, TCIV6 */
+    MTU7_TGIA_PLS_IRQn = 200,          /* IRQ No:200, TGIA7 */
+    MTU7_TGIB_PLS_IRQn = 201,          /* IRQ No:201, TGIB7 */
+    MTU7_TGIC_PLS_IRQn = 202,          /* IRQ No:202, TGIC7 */
+    MTU7_TGID_PLS_IRQn = 210,          /* IRQ No:210, TGID7 */
+    MTU7_TCIV_PLS_IRQn = 211,          /* IRQ No:211, TCIV7 */
+    MTU8_TGIA_PLS_IRQn = 212,          /* IRQ No:212, TGIA8 */
+    MTU8_TGIB_PLS_IRQn = 213,          /* IRQ No:213, TGIB8 */
+    MTU8_TGIC_PLS_IRQn = 214,          /* IRQ No:214, TGIC8 */
+    MTU8_TGID_PLS_IRQn = 215,          /* IRQ No:215, TGID8 */
+    MTU8_TCIV_PLS_IRQn = 223,          /* IRQ No:223, TCIV8 */
+    MTU8_TCIU_PLS_IRQn = 224,          /* IRQ No:224, TCIU8 */
+
+    /* IRQ No:229, Reserved */
+    /* IRQ No:230, Reserved */
+    /* IRQ No:231, Reserved */
     POE3_OEI1_IRQn    = 232,            /* IRQ No:232, OEI1 */
     POE3_OEI2_IRQn    = 233,            /* IRQ No:233, OEI2 */
     POE3_OEI3_IRQn    = 234,            /* IRQ No:234, OEI3 */

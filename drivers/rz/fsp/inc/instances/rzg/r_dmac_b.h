@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -35,34 +35,22 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
-/** Events that can trigger a callback function. */
-typedef enum e_dmac_b_event
-{
-    DMAC_B_EVENT_TRANSFER_END   = 0,     ///< DMA transfer has completed.
-    DMAC_B_EVENT_TRANSFER_ERROR = 1,     ///< A bus error occurred during DMA transfer.
-} dmac_b_event_t;
-
-/** Callback function parameter data. */
-typedef struct st_dmac_b_callback_args_t
-{
-    dmac_b_event_t event;                ///< Event code
-    void const * p_context;            ///< Placeholder for user data.  Set in r_transfer_t::open function in ::transfer_cfg_t.
-} dmac_b_callback_args_t;
+typedef transfer_callback_args_t dmac_b_callback_args_t;
 
 /** Transfer size specifies the size of each individual transfer. */
 typedef enum e_dmac_b_transfer_size
 {
-    DMAC_B_TRANSFER_SIZE_1_BYTE   = 0,   ///< Each transfer transfers a 8-bit value.
-    DMAC_B_TRANSFER_SIZE_2_BYTE   = 1,   ///< Each transfer transfers a 16-bit value.
-    DMAC_B_TRANSFER_SIZE_4_BYTE   = 2,   ///< Each transfer transfers a 32-bit value.
-    DMAC_B_TRANSFER_SIZE_8_BYTE   = 3,   ///< Each transfer transfers a 64-bit value.
-    DMAC_B_TRANSFER_SIZE_16_BYTE  = 4,   ///< Each transfer transfers a 128-bit value.
-    DMAC_B_TRANSFER_SIZE_32_BYTE  = 5,   ///< Each transfer transfers a 256-bit value.
-    DMAC_B_TRANSFER_SIZE_64_BYTE  = 6,   ///< Each transfer transfers a 512-bit value.
-    DMAC_B_TRANSFER_SIZE_128_BYTE = 7,   ///< Each transfer transfers a 1024-bit value.
+    DMAC_B_TRANSFER_SIZE_1_BYTE   = 0, ///< Each transfer transfers a 8-bit value.
+    DMAC_B_TRANSFER_SIZE_2_BYTE   = 1, ///< Each transfer transfers a 16-bit value.
+    DMAC_B_TRANSFER_SIZE_4_BYTE   = 2, ///< Each transfer transfers a 32-bit value.
+    DMAC_B_TRANSFER_SIZE_8_BYTE   = 3, ///< Each transfer transfers a 64-bit value.
+    DMAC_B_TRANSFER_SIZE_16_BYTE  = 4, ///< Each transfer transfers a 128-bit value.
+    DMAC_B_TRANSFER_SIZE_32_BYTE  = 5, ///< Each transfer transfers a 256-bit value.
+    DMAC_B_TRANSFER_SIZE_64_BYTE  = 6, ///< Each transfer transfers a 512-bit value.
+    DMAC_B_TRANSFER_SIZE_128_BYTE = 7, ///< Each transfer transfers a 1024-bit value.
 } dmac_b_transfer_size_t;
 
-/** DACK output mode. See RZ/T2M hardware manual Table 14.19 DMA Transfer Request Detection Operation Setting Table. */
+/** DACK output mode. */
 typedef enum e_dmac_b_ack_mode
 {
     DMAC_B_ACK_MODE_LEVEL_MODE       = 1, ///< Level mode.
@@ -72,28 +60,28 @@ typedef enum e_dmac_b_ack_mode
 
 #ifndef BSP_OVERRIDE_DMAC_B_EXTERNAL_DETECTION_T
 
-/** Detection method of the external DMA request signal. See RZ/T2M hardware manual Table 14.19 DMA Transfer Request Detection Operation Setting Table. */
+/** Detection method of the external DMA request signal. */
 typedef enum e_dmac_b_external_detection
 {
-    DMAC_B_EXTERNAL_DETECTION_LOW_LEVEL           = 0,   ///< Low level detection.
-    DMAC_B_EXTERNAL_DETECTION_FALLING_EDGE        = 1,   ///< Falling edge detection.
-    DMAC_B_EXTERNAL_DETECTION_RISING_EDGE         = 2,   ///< Rising edge detection.
-    DMAC_B_EXTERNAL_DETECTION_FALLING_RISING_EDGE = 3,   ///< Falling/Rising edge detection.
+    DMAC_B_EXTERNAL_DETECTION_LOW_LEVEL           = 0, ///< Low level detection.
+    DMAC_B_EXTERNAL_DETECTION_FALLING_EDGE        = 1, ///< Falling edge detection.
+    DMAC_B_EXTERNAL_DETECTION_RISING_EDGE         = 2, ///< Rising edge detection.
+    DMAC_B_EXTERNAL_DETECTION_FALLING_RISING_EDGE = 3, ///< Falling/Rising edge detection.
 } dmac_b_external_detection_t;
 
 #endif
 
-/** Detection method of the internal DMA request signal. See RZ/T2M hardware manual Table 14.19 DMA Transfer Request Detection Operation Setting Table. */
+/** Detection method of the internal DMA request signal. */
 typedef enum e_dmac_b_internal_detection
 {
-    DMAC_B_INTERNAL_DETECTION_NO_DETECTION = 0,   ///< Not using hardware detection.
-    DMAC_B_INTERNAL_DETECTION_FALLING_EDGE = 1,   ///< Falling edge detection.
-    DMAC_B_INTERNAL_DETECTION_RISING_EDGE  = 2,   ///< Rising edge detection.
-    DMAC_B_INTERNAL_DETECTION_LOW_LEVEL    = 5,   ///< Low level detection.
-    DMAC_B_INTERNAL_DETECTION_HIGH_LEVEL   = 6,   ///< High level detection.
+    DMAC_B_INTERNAL_DETECTION_NO_DETECTION = 0, ///< Not using hardware detection.
+    DMAC_B_INTERNAL_DETECTION_FALLING_EDGE = 1, ///< Falling edge detection.
+    DMAC_B_INTERNAL_DETECTION_RISING_EDGE  = 2, ///< Rising edge detection.
+    DMAC_B_INTERNAL_DETECTION_LOW_LEVEL    = 5, ///< Low level detection.
+    DMAC_B_INTERNAL_DETECTION_HIGH_LEVEL   = 6, ///< High level detection.
 } dmac_b_internal_detection_t;
 
-/** DMA activation request source select. See RZ/T2M hardware manual Table 14.19 DMA Transfer Request Detection Operation Setting Table. */
+/** DMA activation request source select. */
 typedef enum e_dmac_b_request_direction
 {
     DMAC_B_REQUEST_DIRECTION_SOURCE_MODULE      = 0, ///< Requested by a transfer source module.
@@ -125,9 +113,86 @@ typedef enum e_dmac_b_channel_scheduling
 /** DMAC mode setting. */
 typedef enum e_dmac_b_mode_select
 {
-    DMAC_B_MODE_SELECT_REGISTER = 0,     ///< Register mode.
-    DMAC_B_MODE_SELECT_LINK     = 1,     ///< Link mode.
+    DMAC_B_MODE_SELECT_REGISTER = 0,   ///< Register mode.
+    DMAC_B_MODE_SELECT_LINK     = 1,   ///< Link mode.
 } dmac_b_mode_select_t;
+
+/** Indicates the descriptor is enabled or disabled. */
+typedef enum e_dmac_b_link_valid
+{
+    DMAC_B_LINK_VALID_DESCRIPTOR_DISABLE = 0, ///< The Descriptor is disabled.
+    DMAC_B_LINK_VALID_DESCRIPTOR_ENABLE  = 1, ///< The Descriptor is enabled.
+} dmac_b_link_valid_t;
+
+/** Indicates that the link ends during DMA transfer of this descriptor. */
+typedef enum e_dmac_b_link_end
+{
+    DMAC_B_LINK_END_DISABLE = 0,       ///< The link continues.
+    DMAC_B_LINK_END_ENABLE  = 1,       ///< The link ends.
+} dmac_b_link_end_t;
+
+/** Masks write back execution of the dmac_b_link_cfg_t::link_valid. When disable, DMAC does not perform write-back operation. */
+typedef enum e_dmac_b_link_write_back
+{
+    DMAC_B_LINK_WRITE_BACK_ENABLE  = 0, ///< Set dmac_b_link_cfg_t::link_valid to disable after the DMA transfer ends.
+    DMAC_B_LINK_WRITE_BACK_DISABLE = 1, ///< Remain dmac_b_link_cfg_t::link_valid after DMA transfer ends.
+} dmac_b_link_write_back_t;
+
+/** When dmac_b_link_cfg_t::link_valid is DMAC_B_LINK_VALID_DESCRIPTOR_DISABLE at loading of header, specifies whether DMA transfer completion interrupt mask or not. */
+typedef enum e_dmac_b_link_interrupt_mask
+{
+    DMAC_B_LINK_INTERRUPT_MASK_DISABLE = 0, ///< DMA transfer completion interrupt is asserted.
+    DMAC_B_LINK_INTERRUPT_MASK_ENABLE  = 1, ///< DMA transfer completion interrupt is masked.
+} dmac_b_link_interrupt_mask_t;
+
+/** Descriptor structure used in DMAC link mode, and variables of dmac_b_link_cfg_t must be allocated in the memory area. */
+#if (BSP_FEATURE_DMAC_B_64BIT_SYSTEM == 1)
+typedef struct st_dmac_b_link_cfg
+{
+    union
+    {
+        uint32_t header_u32;                                     ///< Descriptor header
+        struct
+        {
+            dmac_b_link_valid_t          link_valid         : 1; ///< The descriptor is valid or not.
+            dmac_b_link_end_t            link_end           : 1; ///< The descriptor is end or not.
+            dmac_b_link_write_back_t     write_back_disable : 1; ///< Write back enable or not.
+            dmac_b_link_interrupt_mask_t interrupt_mask     : 1; ///< Interrupt mask is enable or not.
+            uint32_t                                        : 28;
+        } header;
+    };
+    volatile uint32_t src_addr;                                  ///< Source address.
+    volatile uint32_t dest_addr;                                 ///< Destination address.
+    volatile uint32_t transaction_byte;                          ///< Transaction byte.
+    volatile uint32_t channel_cfg;                               ///< Channel configuration (Set value for CHCFG_n register).
+    volatile uint32_t channel_interval;                          ///< Channel interval (Set value for CHITVL register).
+    volatile uint32_t channel_extension_cfg;                     ///< Channel extension configuration (Set value for CHEXT_n register).
+    volatile uint32_t next_link_addr;                            ///< Next link address.
+} dmac_b_link_cfg_t;
+#else
+typedef struct st_dmac_b_link_cfg
+{
+    union
+    {
+        uint32_t header_u32;                                     ///< Descriptor header
+        struct
+        {
+            dmac_b_link_valid_t          link_valid         : 1; ///< The descriptor is valid or not.
+            dmac_b_link_end_t            link_end           : 1; ///< The descriptor is end or not.
+            dmac_b_link_write_back_t     write_back_disable : 1; ///< Write back enable or not.
+            dmac_b_link_interrupt_mask_t interrupt_mask     : 1; ///< Interrupt mask is enable or not.
+            uint32_t                                        : 28;
+        } header;
+    };
+    void const * volatile p_src;                                 ///< Source address.
+    void * volatile       p_dest;                                ///< Destination address.
+    volatile uint32_t     transaction_byte;                      ///< Transaction byte.
+    volatile uint32_t     channel_cfg;                           ///< Channel configuration (Set value for CHCFG_n register).
+    volatile uint32_t     channel_interval;                      ///< Channel interval (Set value for CHITVL register).
+    volatile uint32_t     channel_extension_cfg;                 ///< Channel extension configuration (Set value for CHEXT_n register).
+    void * volatile       p_next_link_addr;                      ///< Next link address.
+} dmac_b_link_cfg_t;
+#endif
 
 /** Control block used by driver. DO NOT INITIALIZE - this structure will be initialized in @ref transfer_api_t::open. */
 typedef struct st_dmac_b_instance_ctrl
@@ -136,36 +201,47 @@ typedef struct st_dmac_b_instance_ctrl
 
     transfer_cfg_t const * p_cfg;
 
+    dmac_b_link_cfg_t const * p_descriptor;
+
     /* Pointer to base register. */
     R_DMAC_B0_Type * p_reg;
+
+    void (* p_callback)(dmac_b_callback_args_t *); // Pointer to callback
+    dmac_b_callback_args_t * p_callback_memory;    // Pointer to optional callback argument memory
+    void const             * p_context;            // Pointer to context to be passed into callback function
 } dmac_b_instance_ctrl_t;
 
 /** DMAC transfer configuration extension. This extension is required. */
 typedef struct st_dmac_b_extended_cfg
 {
-    uint8_t   unit;                     ///< Unit number
-    uint8_t   channel;                  ///< Channel number
-    IRQn_Type dmac_int_irq;             ///< DMAC interrupt number
-    uint8_t   dmac_int_ipl;             ///< DMAC interrupt priority
+    uint8_t   unit;                                                ///< Unit number
+    uint8_t   channel;                                             ///< Channel number
+    IRQn_Type dmac_int_irq;                                        ///< DMAC interrupt number
+    uint8_t   dmac_int_ipl;                                        ///< DMAC interrupt priority
 
     /** Select which event will trigger the transfer. */
-    dmac_trigger_event_t activation_source;
+    dmac_trigger_event_t         activation_source;
+    dmac_b_ack_mode_t            ack_mode;                         ///< DACK output mode
+    dmac_b_external_input_pin_t  dreq_input_pin;                   ///< DREQ input pin name
+    dmac_b_external_output_pin_t ack_output_pin;                   ///< DACK output pin name
+    dmac_b_external_output_pin_t tend_output_pin;                  ///< TEND output pin name
+    dmac_b_external_detection_t  external_detection_mode;          ///< DMAC request detection method for external pin
+    dmac_b_internal_detection_t  internal_detection_mode;          ///< DMAC request detection method for internal pin
+    dmac_b_request_direction_t   activation_request_source_select; ///< DMAC activation request source
 
-    dmac_b_ack_mode_t           ack_mode;                         ///< DACK output mode
-	dmac_b_external_detection_t external_detection_mode;          ///< DMAC request detection method for external pin
-    dmac_b_internal_detection_t internal_detection_mode;          ///< DMAC request detection method for internal pin
-    dmac_b_request_direction_t  activation_request_source_select; ///< DMAC activation request source
-
-    dmac_b_mode_select_t dmac_mode;                      ///< DMAC Mode
-    dmac_b_continuous_setting_t continuous_setting;      ///< Next register operation settings
-    uint16_t transfer_interval;                        ///< DMA transfer interval
-    dmac_b_channel_scheduling_t channel_scheduling;      ///< DMA channel scheduling
+    dmac_b_mode_select_t        dmac_mode;                         ///< DMAC Mode
+    dmac_b_link_cfg_t const   * p_descriptor;                      ///< The address of the descriptor (DMA Link Mode only)
+    dmac_b_continuous_setting_t continuous_setting;                ///< Next register operation settings
+    uint16_t transfer_interval;                                    ///< DMA transfer interval
+    dmac_b_channel_scheduling_t channel_scheduling;                ///< DMA channel scheduling
 
     /** Callback for transfer end interrupt. */
     void (* p_callback)(dmac_b_callback_args_t * cb_data);
 
-    /** Placeholder for user data.  Passed to the user p_callback in ::dmac_b_callback_args_t. */
+    /** Placeholder for user data.  Passed to the user p_callback in ::transfer_callback_args_t. */
     void const * p_context;
+
+    void * p_reg;                      ///< Register base address for specified unit
 } dmac_b_extended_cfg_t;
 
 /** DMAC transfer information configuration extension. This extension is required. */
@@ -210,6 +286,11 @@ fsp_err_t R_DMAC_B_Reload(transfer_ctrl_t * const p_api_ctrl,
                           void const            * p_src,
                           void                  * p_dest,
                           uint32_t const          num_transfers);
+fsp_err_t R_DMAC_B_CallbackSet(transfer_ctrl_t * const        p_api_ctrl,
+                               void (                       * p_callback)(dmac_b_callback_args_t *),
+                               void const * const             p_context,
+                               dmac_b_callback_args_t * const p_callback_memory);
+fsp_err_t R_DMAC_B_LinkDescriptorSet(transfer_ctrl_t * const p_api_ctrl, dmac_b_link_cfg_t * p_descriptor);
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
@@ -217,5 +298,5 @@ FSP_FOOTER
 #endif
 
 /*******************************************************************************************************************//**
- * @} (end defgroup DMAC)
+ * @} (end defgroup DMAC_B)
  **********************************************************************************************************************/

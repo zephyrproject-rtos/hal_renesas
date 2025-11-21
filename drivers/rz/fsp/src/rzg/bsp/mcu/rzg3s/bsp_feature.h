@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -48,7 +48,16 @@
 #define BSP_FEATURE_ADC_C_TSU_START_STABILIZATION_TIME_MS       (1U)
 
 /* BSP Capabilities Definitions */
-#define BSP_FEATURE_BSP_CLOCK_FREQ_INIT_CFG_SUPPORT             (1U)
+#define BSP_FEATURE_BSP_ACCESS_CONTROL_SET_SUPPORT              (1U)
+#define BSP_FEATURE_BSP_BOOTCPU_MASK                            (R_SYSC_SYS_LSI_MODE_STAT_BOOTCPUSEL_Msk)
+#define BSP_FEATURE_BSP_SYSTEM_CORE_CLOCK                       (FSP_PRIV_CLOCK_I2CLK)
+#if BSP_CURRENT_CORE == RZG3S_CORE_CM33_FPU
+ #define BSP_FEATURE_BSP_DELAY_LOOP_CYCLES                      (75U)
+#else
+ #define BSP_FEATURE_BSP_DELAY_LOOP_CYCLES                      (49U)
+#endif
+#define BSP_FEATURE_BSP_INT_SIGNAL_VIA_DMAC                     (1U)
+#define BSP_FEATURE_BSP_CLOCK_FREQ_INIT_CFG_SUPPORT             (BSP_CFG_MCU_CLOCK_INIT)
 #define BSP_FEATURE_BSP_HAS_ELC                                 (0U)
 #define BSP_FEATURE_BSP_HAS_GPT_CLOCK                           (0U)
 #define BSP_FEATURE_BSP_SLAVE_ADDRESS_CONVERSION_SUPPORT        (1U)
@@ -62,6 +71,7 @@
 #define BSP_FEATURE_BSP_SUPPORT_BYPASS                          (0U)
 #define BSP_FEATURE_BSP_SUPPORT_PFCWE_PROTECT                   (1U)
 #define BSP_FEATURE_BSP_SUPPORT_OEN_PROTECT                     (0U)
+#define BSP_FEATURE_BSP_SYSTEM_CLOCK_HZ_SET_SUPPORT             (1U)
 #define BSP_FEATURE_BSP_HAS_PFC_OEN_REG                         (0U)
 #define BSP_FEATURE_BSP_HAS_ETHER_MODE_REG                      (1U)
 #define BSP_FEATURE_BSP_HAS_SD_CH_POC_REG                       (1U)
@@ -76,6 +86,8 @@
 #define BSP_FEATURE_CANFD_TXMB_OFFSET                           (32U)
 #define BSP_FEATURE_CANFD_TXMB_CHANNEL_OFFSET                   (64U)
 #define BSP_FEATURE_CANFD_RXMB_MAX                              (32U)
+#define BSP_FEATURE_CANFD_ERROR_GLOBAL_CH0_ECC_REG_POS          (28U)
+#define BSP_FEATURE_CANFD_NUM_COMMON_FIFOS                      (6U)
 
 /* Cortex-M33 Feature Definitions */
 #define BSP_FEATURE_MCORE_HAS_DSP                               (0U)
@@ -118,34 +130,78 @@
 #define BSP_FEATURE_CPG_HAS_OSCCLK                              (1U)
 #define BSP_FEATURE_CPG_HAS_OSCCLK2                             (1U)
 
+/* WDT-Related Definitions */
+#define BSP_FEATURE_WDT_TYPE                                    (0U)
+#define BSP_FEATURE_WDT_MAX_CHANNEL                             (3U)
+
 /* DMAC-Related Definitions */
 #define BSP_FEATURE_DMAC_MAX_CHANNEL                            (16U)
 #define BSP_FEATURE_DMAC_MAX_UNIT                               (2U)
+#define BSP_FEATURE_DMAC_B_64BIT_SYSTEM                         (0U)
 
 /* GPT-Related Definitions */
-#define BSP_FEATURE_GPT_EVENT_COUNT_CHANNEL_MASK                (BSP_FEATURE_GPT_VALID_CHANNEL_MASK)
 #define BSP_FEATURE_GPT_VALID_CHANNEL_MASK                      (0xFFU)
+#define BSP_FEATURE_GPT_MAX_CHANNEL                             (8U)
+#define BSP_FEATURE_GPT_EVENT_COUNT_CHANNEL_MASK                (BSP_FEATURE_GPT_VALID_CHANNEL_MASK)
 #define BSP_FEATURE_GPT_TPCS_SHIFT                              (1U)
 #define BSP_FEATURE_GPT_CLOCK_DIVIDER_STEP_SIZE                 (4U)
 #define BSP_FEATURE_GPT_CLOCK_DIVIDER_VALUE_7_9_VALID           (0U)
+#define BSP_FEATURE_GPT_ODC_VALID_CHANNEL_MASK                  (0U)
+#define BSP_FEATURE_GPT_32BIT_CHANNEL_MASK                      (0xFFU)
+#define BSP_FEATURE_GPT_CLOCK_SOURCE                            (FSP_PRIV_CLOCK_P0CLK)
+#define BSP_FEATURE_GPT_STATUS_REGISTER                         GTST
+#define BSP_FEATURE_GPT_OUTPUT_DISABLE_REQUEST_STATUS_MASK      (R_GPT0_GTST_OABLF_Msk | R_GPT0_GTST_OABHF_Msk | \
+                                                                 R_GPT0_GTST_DTEF_Msk)
+#define BSP_FEATURE_GPT_SUPPORT_EXTENDED_INTERRUPT_SKIP         (0U)
 
 /* GTM-Related Definitions */
+#define BSP_FEATURE_GTM_MAX_CHANNEL                             (8U)
 #define BSP_FEATURE_GTM_VALID_CHANNEL_MASK                      (0xFFU)
+#define BSP_FEATURE_GTM_SOURCE_CLOCK                            (FSP_PRIV_CLOCK_P0CLK)
+
+/* ICU-Related Definitions */
+#define BSP_FEATURE_ICU_HAS_INTPMSEL_REG                        (1)
 
 /* IIC-Related Definitions */
+#define BSP_FEATURE_IIC_SOURCE_CLOCK                            (FSP_PRIV_CLOCK_P0CLK)
+#define BSP_FEATURE_IIC_MAX_CHANNEL                             (4U)
 #define BSP_FEATURE_IIC_VALID_CHANNEL_MASK                      (0x0F)
 
 /* INTC-Related Definitions */
 #define BSP_FEATURE_INTC_IRQ_VALID_CHANNEL_MASK                 (0xFFU)
+#define BSP_FEATURE_INTC_BASE_ADDR                              (R_INTC_IM33)
 
 /* IOPORT-Related Definitions */
+#define BSP_FEATURE_IOPORT_PORT_GROUP_NUM                       (0U)
+#define BSP_FEATURE_IOPORT_SINGLE_PORT_NUM                      (0U)
+#define BSP_FEATURE_IOPORT_SUPPORT_PERIPHERAL_FIL               (0U)
+#define BSP_FEATURE_IOPORT_SUPPORT_PERIPHERAL_FIL_NMI           (0U)
 #define BSP_FEATURE_IOPORT_SUPPORT_SR_REG                       (0U)
+#define BSP_FEATURE_IOPORT_SUPPORT_NOD_REG                      (0U)
+#define BSP_FEATURE_IOPORT_SUPPORT_SMT_REG                      (0U)
+#define BSP_FEATURE_IOPORT_SUPPORT_PUPD_SP                      (0U)
+#define BSP_FEATURE_IOPORT_SUPPORT_IEN_GP                       (0U)
+#define BSP_FEATURE_IOPORT_PFC_REG_BITFIELD                     (7U)
 #define BSP_FEATURE_IOPORT_GP_REG_BASE_NUM                      _20
+#define BSP_FEATURE_IOPORT_REG_POSTFIX_L
 #define BSP_FEATURE_IOPORT_SP_REG_BASE_NUM                      1
 #define BSP_FEATURE_IOPORT_FIL_SP_REG_BASE_NUM                  _00
-#define BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM                  _01
+#define BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM                  1
+#define BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM_SYM              _01
+#define BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM                  (0U)
+#define BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM_SYM              0
 #define BSP_FEATURE_IOPORT_IOLH_SP_REG_BASE_NUM                 _01
 #define BSP_FEATURE_IOPORT_SR_SP_REG_BASE_NUM                   0
+#define BSP_FEATURE_IOPORT_NOD_SP_REG_BASE_NUM                  (0U)
+#define BSP_FEATURE_IOPORT_PUPD_SP_REG_BASE_NUM                 (0U)
+#define BSP_FEATURE_IOPORT_GROUP1_PORT                          (0U)
+#define BSP_FEATURE_IOPORT_GROUP2_PORT                          (0U)
+#define BSP_FEATURE_IOPORT_FIL_IRQ_FUNC                         (0U)
+#define BSP_FEATURE_IOPORT_FIL_DMAC_FUNC                        (0U)
+#define BSP_FEATURE_IOPORT_NMI_FUNC                             (0U)
+#define BSP_FEATURE_IOPORT_NMI_PIN                              (0U)
+#define BSP_FEATURE_IOPORT_PWPR_PFCWE_OFFSET                    (6U)
+#define BSP_FEATURE_IOPORT_PWPR_B0WI_OFFSET                     (7U)
 
 /* MHU-Related Definitions */
 #if BSP_CURRENT_CORE == RZG3S_CORE_CM33
@@ -164,6 +220,12 @@
  #define BSP_FEATURE_MHU_S_SEND_TYPE_RSP_VALID_CHANNEL_MASK     (0x21U)
 #endif
 
+/* MTU-Related Definitions */
+#define BSP_FEATURE_MTU3_VALID_CHANNEL_MASK                     (0x01FF)
+#define BSP_FEATURE_MTU3_MAX_CHANNELS                           (9U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_STEP_SIZE                (2U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_VALUE_7_9_VALID          (0U)
+
 /* POEG-Related Definitions */
 #define BSP_FEATURE_POEG_CHANNEL_MASK                           (0xFU)
 
@@ -174,9 +236,17 @@
 #define BSP_FEATURE_RSPI_CLK_MIN_DIV                            (4U)
 
 /* SCIF-Related Definitions */
-#define BSP_FEATURE_SCIF_CHANNELS                               (0x3FU)
-#define BSP_FEATURE_SCIF_CHANNELS_HAS_RTSCTS                    (0x07U)
+#define BSP_FEATURE_SCIF_MAX_CHANNEL                            (6U)
+#define BSP_FEATURE_SCIF_CHANNEL_MASK                           (0x3FU)
+#define BSP_FEATURE_SCIF_RTSCTS_SUPPORT                         (1)
+#define BSP_FEATURE_SCIF_CKS2_LIMITATION                        (1)
 #define BSP_FEATURE_SCIF_CLOCK                                  (FSP_PRIV_CLOCK_P0CLK)
+
+/* SCI-Related Definitions */
+#define BSP_FEATURE_SCI_CHANNELS                                (0x03U)
+#define BSP_FEATURE_SCI_UART_CSTPEN_CHANNELS                    (0U)
+#define BSP_FEATURE_SCI_CLOCK                                   (FSP_PRIV_CLOCK_P0CLK)
+#define BSP_FEATURE_SCI_MAX_CHANNELS                            (2U)
 
 /* SSI-Related Definitions */
 #define BSP_FEATURE_SSI_FIFO_NUM_STAGES                         (32U)

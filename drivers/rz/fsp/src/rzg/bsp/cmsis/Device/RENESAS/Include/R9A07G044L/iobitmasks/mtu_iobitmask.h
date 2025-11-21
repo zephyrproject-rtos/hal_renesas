@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -433,8 +433,8 @@
 #define R_MTU_NFCR5_NFWEN_Pos            (2UL)
 #define R_MTU_NFCR5_NFCS_Msk             (0x30UL)
 #define R_MTU_NFCR5_NFCS_Pos             (4UL)
-#define R_MTU_TCNTU_TCNT_Msk             (0xFFFFUL)
-#define R_MTU_TCNTU_TCNT_Pos             (0UL)
+#define R_MTU_TCNTU_TCNTU_Msk            (0xFFFFUL)
+#define R_MTU_TCNTU_TCNTU_Pos            (0UL)
 #define R_MTU_TGRU_TGRU_Msk              (0xFFFFUL)
 #define R_MTU_TGRU_TGRU_Pos              (0UL)
 #define R_MTU_TCRU_TPSC_Msk              (0x03UL)
@@ -445,8 +445,8 @@
 #define R_MTU_TCR2U_CKEG_Pos             (3UL)
 #define R_MTU_TIORU_IOC_Msk              (0x1FUL)
 #define R_MTU_TIORU_IOC_Pos              (0UL)
-#define R_MTU_TCNTV_TCNT_Msk             (0xFFFFUL)
-#define R_MTU_TCNTV_TCNT_Pos             (0UL)
+#define R_MTU_TCNTV_TCNTV_Msk            (0xFFFFUL)
+#define R_MTU_TCNTV_TCNTV_Pos            (0UL)
 #define R_MTU_TGRV_TGRV_Msk              (0xFFFFUL)
 #define R_MTU_TGRV_TGRV_Pos              (0UL)
 #define R_MTU_TCRV_TPSC_Msk              (0x03UL)
@@ -457,8 +457,8 @@
 #define R_MTU_TCR2V_CKEG_Pos             (3UL)
 #define R_MTU_TIORV_IOC_Msk              (0x1FUL)
 #define R_MTU_TIORV_IOC_Pos              (0UL)
-#define R_MTU_TCNTW_TCNT_Msk             (0xFFFFUL)
-#define R_MTU_TCNTW_TCNT_Pos             (0UL)
+#define R_MTU_TCNTW_TCNTW_Msk            (0xFFFFUL)
+#define R_MTU_TCNTW_TCNTW_Pos            (0UL)
 #define R_MTU_TGRW_TGRW_Msk              (0xFFFFUL)
 #define R_MTU_TGRW_TGRW_Pos              (0UL)
 #define R_MTU_TCRW_TPSC_Msk              (0x03UL)

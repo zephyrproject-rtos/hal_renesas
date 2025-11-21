@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -64,42 +64,42 @@ typedef enum e_scif_uart_noise_cancellation
 } scif_uart_noise_cancellation_t;
 
 /** RS-485 Enable/Disable. */
-typedef enum e_sci_uart_rs485_enable
+typedef enum e_scif_uart_rs485_enable
 {
-    SCI_UART_RS485_DISABLE = 0,        ///< RS-485 disabled.
-    SCI_UART_RS485_ENABLE  = 1,        ///< RS-485 enabled.
-} sci_uart_rs485_enable_t;
+    SCIF_UART_RS485_DISABLE = 0,       ///< RS-485 disabled.
+    SCIF_UART_RS485_ENABLE  = 1,       ///< RS-485 enabled.
+} scif_uart_rs485_enable_t;
 
 /** The polarity of the RS-485 DE signal. */
-typedef enum e_sci_uart_rs485_de_polarity
+typedef enum e_scif_uart_rs485_de_polarity
 {
-    SCI_UART_RS485_DE_POLARITY_HIGH = 0, ///< The DE signal is high when a write transfer is in progress.
-    SCI_UART_RS485_DE_POLARITY_LOW  = 1, ///< The DE signal is low when a write transfer is in progress.
-} sci_uart_rs485_de_polarity_t;
+    SCIF_UART_RS485_DE_POLARITY_HIGH = 0, ///< The DE signal is high when a write transfer is in progress.
+    SCIF_UART_RS485_DE_POLARITY_LOW  = 1, ///< The DE signal is low when a write transfer is in progress.
+} scif_uart_rs485_de_polarity_t;
 
 /** Receive FIFO trigger configuration. */
-typedef enum e_scif_uart_receive_trigger
+typedef enum e_scif_uart_rx_fifo_trigger
 {
-    SCIF_UART_RECEIVE_TRIGGER_ONE,     ///< Interrupt at least one byte is in FIFO
-    SCIF_UART_RECEIVE_TRIGGER_QUARTER, ///< Interrupt at least quarter of FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_HALF,    ///< Interrupt at least half of FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_MAX,     ///< Interrupt at almost full in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_1,       ///< Interrupt at least 1 byte is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_2,       ///< Interrupt at least 2 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_3,       ///< Interrupt at least 3 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_4,       ///< Interrupt at least 4 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_5,       ///< Interrupt at least 5 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_6,       ///< Interrupt at least 6 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_7,       ///< Interrupt at least 7 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_8,       ///< Interrupt at least 8 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_9,       ///< Interrupt at least 9 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_10,      ///< Interrupt at least 10 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_11,      ///< Interrupt at least 11 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_12,      ///< Interrupt at least 12 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_13,      ///< Interrupt at least 13 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_14,      ///< Interrupt at least 14 bytes is in FIFO or 15ETU past from last receive
-    SCIF_UART_RECEIVE_TRIGGER_15,      ///< Interrupt at least 15 bytes is in FIFO or 15ETU past from last receive
-} scif_uart_receive_trigger_t;
+    SCIF_UART_RX_FIFO_TRIGGER_ONE,     ///< Interrupt at least one byte is in FIFO
+    SCIF_UART_RX_FIFO_TRIGGER_QUARTER, ///< Interrupt at least quarter of FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_HALF,    ///< Interrupt at least half of FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_MAX,     ///< Interrupt at almost full in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_1,       ///< Interrupt at least 1 byte is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_2,       ///< Interrupt at least 2 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_3,       ///< Interrupt at least 3 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_4,       ///< Interrupt at least 4 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_5,       ///< Interrupt at least 5 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_6,       ///< Interrupt at least 6 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_7,       ///< Interrupt at least 7 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_8,       ///< Interrupt at least 8 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_9,       ///< Interrupt at least 9 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_10,      ///< Interrupt at least 10 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_11,      ///< Interrupt at least 11 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_12,      ///< Interrupt at least 12 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_13,      ///< Interrupt at least 13 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_14,      ///< Interrupt at least 14 bytes is in FIFO or 15ETU past from last receive
+    SCIF_UART_RX_FIFO_TRIGGER_15,      ///< Interrupt at least 15 bytes is in FIFO or 15ETU past from last receive
+} scif_uart_rx_fifo_trigger_t;
 
 /** RTS trigger level. */
 typedef enum e_scif_uart_rts_trigger
@@ -112,6 +112,7 @@ typedef enum e_scif_uart_rts_trigger
     SCIF_UART_RTS_TRIGGER_12,          ///< RTS trigger level = 12
     SCIF_UART_RTS_TRIGGER_14,          ///< RTS trigger level = 14
     SCIF_UART_RTS_TRIGGER_15,          ///< RTS trigger level = 15
+    SCIF_UART_RTS_TRIGGER_DISABLE,     ///< Disable RTS trigger
 } scif_uart_rts_trigger_t;
 
 /** UART instance control block. */
@@ -165,29 +166,27 @@ typedef struct st_scif_baud_setting
 } scif_baud_setting_t;
 
 /** Configuration settings for controlling the DE signal for RS-485. */
-typedef struct st_sci_uart_rs485_setting
+typedef struct st_scif_uart_rs485_setting
 {
-    sci_uart_rs485_enable_t      enable;         ///< Enable the DE signal.
-    sci_uart_rs485_de_polarity_t polarity;       ///< DE signal polarity.
-    bsp_io_port_pin_t            de_control_pin; ///< UART Driver Enable pin.
-} sci_uart_rs485_setting_t;
+    scif_uart_rs485_enable_t      enable;         ///< Enable the DE signal.
+    scif_uart_rs485_de_polarity_t polarity;       ///< DE signal polarity.
+    bsp_io_port_pin_t             de_control_pin; ///< UART Driver Enable pin.
+} scif_uart_rs485_setting_t;
 
 /** UART on SCIF device Configuration */
 typedef struct st_scif_uart_extended_cfg
 {
-    uint8_t                        bri_ipl;       ///< Break interrupt priority
-    IRQn_Type                      bri_irq;       ///< Break interrupt IRQ number
-    scif_clk_src_t                 clock;         ///< The source clock for the baud-rate generator.
-    scif_uart_noise_cancellation_t noise_cancel;  ///< Noise cancellation setting
-
-    scif_baud_setting_t * p_baud_setting;         ///< Register settings for a desired baud rate.
-
-    scif_uart_receive_trigger_t rx_fifo_trigger;  ///< Receive FIFO trigger level.
-    scif_uart_rts_trigger_t     rts_fifo_trigger; ///< RTS trigger level.
-
-    scif_uart_mode_t         uart_mode;           ///< UART communication mode selection
-    scif_uart_flow_control_t flow_control;        ///< CTS/RTS function
-    sci_uart_rs485_setting_t rs485_setting;       ///< RS-485 settings.
+    uint8_t                        bri_ipl;          ///< Break interrupt priority
+    IRQn_Type                      bri_irq;          ///< Break interrupt IRQ number
+    scif_clk_src_t                 clock;            ///< The source clock for the baud-rate generator.
+    scif_uart_noise_cancellation_t noise_cancel;     ///< Noise cancellation setting
+    scif_baud_setting_t          * p_baud_setting;   ///< Register settings for a desired baud rate.
+    scif_uart_rx_fifo_trigger_t    rx_fifo_trigger;  ///< Receive FIFO trigger level.
+    scif_uart_rts_trigger_t        rts_fifo_trigger; ///< RTS trigger level.
+    scif_uart_mode_t               uart_mode;        ///< UART communication mode selection
+    scif_uart_flow_control_t       flow_control;     ///< CTS/RTS function
+    scif_uart_rs485_setting_t      rs485_setting;    ///< RS-485 settings.
+    void                         * p_reg;            ///< Register base address for specified channel
 } scif_uart_extended_cfg_t;
 
 /**********************************************************************************************************************

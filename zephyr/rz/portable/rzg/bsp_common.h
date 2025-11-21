@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -36,16 +36,27 @@ FSP_HEADER
  **********************************************************************************************************************/
 
 /** Used to signify that an interrupt factor is not available. */
-#define BSP_IRQ_DISABLED          (0xFFU)
+#define BSP_IRQ_DISABLED    (0xFFU)
 
-/* Version of this module's code and API. */
-#define BSP_CODE_VERSION_MAJOR    (1U)
-#define BSP_CODE_VERSION_MINOR    (0U)
-#define BSP_API_VERSION_MAJOR     (1U)
-#define BSP_API_VERSION_MINOR     (0U)
+#if 1 == BSP_CFG_RTOS                  /* ThreadX */
+ #include "tx_user.h"
+ #if defined(TX_ENABLE_EVENT_TRACE) || defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY)
+  #include "tx_port.h"
+  #define FSP_CONTEXT_SAVE       tx_isr_start((uint32_t) R_FSP_CurrentIrqGet());
+  #define FSP_CONTEXT_RESTORE    tx_isr_end((uint32_t) R_FSP_CurrentIrqGet());
+ #else
+  #define FSP_CONTEXT_SAVE
+  #define FSP_CONTEXT_RESTORE
+ #endif
+#else
+ #define FSP_CONTEXT_SAVE
+ #define FSP_CONTEXT_RESTORE
+#endif
 
-#define FSP_CONTEXT_SAVE
-#define FSP_CONTEXT_RESTORE
+/** Macro that can be defined in order to enable logging in FSP modules. */
+#ifndef FSP_LOG_PRINT
+ #define FSP_LOG_PRINT(X)
+#endif
 
 /** Macro to log and return error without an assertion. */
 #ifndef FSP_RETURN
@@ -56,7 +67,7 @@ FSP_HEADER
 
 /** This function is called before returning an error code. To stop on a runtime error, define fsp_error_log in
  * user code and do required debugging (breakpoints, stack dump, etc) in this function.*/
-#if (1 == BSP_CFG_ERROR_LOG)
+#if (1 == BSP_CFG_ASSERT)
 
  #ifndef FSP_ERROR_LOG
   #define FSP_ERROR_LOG(err) \
@@ -105,9 +116,6 @@ FSP_HEADER
  #define FSP_REGISTER_READ(A)    __ASM volatile ("" : : "r" (A));
 #endif
 
-/** Version data structure used by error logger macro. */
-extern const fsp_version_t g_bsp_version;
-
 /****************************************************************
  *
  * This check is performed to select suitable ASM API with respect to core
@@ -116,12 +124,11 @@ extern const fsp_version_t g_bsp_version;
  * but defined(__IAR_SYSTEMS_ICC__) is false for GCC,
  * so the left half of the || expression evaluates to false for GCC regardless of the values of these macros. */
 
-#if (defined(__IAR_SYSTEMS_ICC__) && ((__CORE__ == __ARM7EM__) || (__CORE__ == __ARM_ARCH_8M_BASE__))) || \
-    defined(__ARM_ARCH_7EM__)          // CM4
+#if (defined(__IICARM__) && defined(RENESAS_CORTEX_M23)) || defined(RENESAS_CORTEX_M4)
  #ifndef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
   #define BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION    (0U)
  #endif
-#else // CM23
+#else
  #ifdef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
   #undef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
  #endif
@@ -171,6 +178,13 @@ extern const fsp_version_t g_bsp_version;
  #define FSP_PRIV_TZ_USE_SECURE_REGS            (0)
 #endif
 
+/* Put certain BSP variables in uninitialized RAM when initializing BSP early. */
+#if BSP_CFG_EARLY_INIT
+ #define BSP_SECTION_EARLY_INIT                 BSP_PLACE_IN_SECTION(BSP_SECTION_NOINIT)
+#else
+ #define BSP_SECTION_EARLY_INIT
+#endif
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -211,6 +225,43 @@ typedef enum e_fsp_priv_clock
     FSP_PRIV_CLOCK_OSCCLK,             /* OSC Clock */
     FSP_PRIV_CLOCK_NUM,
 } fsp_priv_clock_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_FSP_PRIV_CLOCK_DIVIDER_T
+
+/* Private enum used in R_BSP_ClockDividerSet. */
+typedef enum e_fsp_priv_clock_divider
+{
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL1 = 0,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_LPCLK,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_B,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_C,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_CLK200FIX,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_B,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_GPU,
+    FSP_PRIV_CLOCK_DIVIDER_NUM,
+} fsp_priv_clock_divider_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_FSP_PRIV_CLOCK_SELECTOR_T
+
+/* Private enum used in R_BSP_ClockSelectorSet. */
+typedef enum e_fsp_priv_clock_selector
+{
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI0 = 0,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI1,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL3_3,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL4,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL5_4,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL6_2,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL_GPU2,
+    FSP_PRIV_CLOCK_SELECTOR_NUM,
+} fsp_priv_clock_selector_t;
 
 #endif
 
@@ -262,9 +313,13 @@ __STATIC_INLINE bsp_unique_id_t const * R_BSP_UniqueIdGet ()
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
 uint32_t R_FSP_SystemClockHzGet(fsp_priv_clock_t clock);
-void     R_FSP_SystemClockHzSet(fsp_priv_clock_t clock, uint32_t clock_sel, uint32_t clock_div);
 
-#if ((1 == BSP_CFG_ERROR_LOG) || (1 == BSP_CFG_ASSERT))
+#if defined(BSP_FEATURE_BSP_SYSTEM_CLOCK_HZ_SET_SUPPORT)
+void R_FSP_SystemClockHzSet(fsp_priv_clock_t clock, uint32_t clock_sel, uint32_t clock_div);
+
+#endif
+
+#if (1 == BSP_CFG_ASSERT)
 
 /** Prototype of default function called before errors are returned in FSP code if BSP_CFG_LOG_ERRORS is set to 1. */
 void fsp_error_log(fsp_err_t err, const char * file, int32_t line);

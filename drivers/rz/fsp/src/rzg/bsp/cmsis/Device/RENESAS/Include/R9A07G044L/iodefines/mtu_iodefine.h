@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -1325,7 +1325,7 @@ typedef struct
         __IOM uint16_t TCNTU;
         struct
         {
-            __IOM uint16_t TCNT : 16;
+            __IOM uint16_t TCNTU : 16;
         } TCNTU_b;
     };
     union
@@ -1370,7 +1370,7 @@ typedef struct
         __IOM uint16_t TCNTV;
         struct
         {
-            __IOM uint16_t TCNT : 16;
+            __IOM uint16_t TCNTV : 16;
         } TCNTV_b;
     };
     union
@@ -1415,7 +1415,7 @@ typedef struct
         __IOM uint16_t TCNTW;
         struct
         {
-            __IOM uint16_t TCNT : 16;
+            __IOM uint16_t TCNTW : 16;
         } TCNTW_b;
     };
     union

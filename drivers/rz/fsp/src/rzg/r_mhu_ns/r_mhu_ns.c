@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -14,11 +14,11 @@
  **********************************************************************************************************************/
 
 /** "MHU" in ASCII, used to determine if channel is open. */
-#define MHU_NS_OPEN                (0x00774855ULL)
+#define MHU_NS_OPEN              (0x00774855ULL)
 
-#define MHU_NS_SHMEM_CH_SIZE       (0x8)
-#define MHU_NS_RSP_TXD_OFFSET      (0x0)
-#define MHU_NS_MSG_TXD_OFFSET      (0x4)
+#define MHU_NS_SHMEM_CH_SIZE     (0x8)
+#define MHU_NS_RSP_TXD_OFFSET    (0x0)
+#define MHU_NS_MSG_TXD_OFFSET    (0x4)
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -94,11 +94,13 @@ fsp_err_t R_MHU_NS_Open (mhu_ctrl_t * const p_ctrl, mhu_cfg_t const * const p_cf
 #if MHU_NS_CFG_PARAM_CHECKING_ENABLE
     fsp_err_t err = r_mhu_ns_open_param_checking(p_instance_ctrl, p_cfg);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    FSP_ASSERT(NULL != ((mhu_ns_extended_cfg_t *) p_cfg->p_extend)->p_reg);
 #endif
 
-    p_instance_ctrl->p_regs = (R_MHU0_Type *) (R_MHU_NS0_BASE +
-                                               (p_cfg->channel *
-                                                ((intptr_t) R_MHU_NS1_BASE - (intptr_t) R_MHU_NS0_BASE)));
+    /* Get extended configuration structure pointer. */
+    mhu_ns_extended_cfg_t * p_extend = (mhu_ns_extended_cfg_t *) p_cfg->p_extend;
+
+    p_instance_ctrl->p_regs  = (R_MHU0_Type *) p_extend->p_reg;
     p_instance_ctrl->p_cfg   = p_cfg;
     p_instance_ctrl->channel = p_cfg->channel;
 

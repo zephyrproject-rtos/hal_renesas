@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -22,10 +22,12 @@
 #include "iodefines/gtm_iodefine.h"
 #include "iodefines/intc_im33_iodefine.h"
 #include "iodefines/mhu_iodefine.h"
+#include "iodefines/mtu_iodefine.h"
 #include "iodefines/poeg_iodefine.h"
 #include "iodefines/riic_iodefine.h"
 #include "iodefines/rspi_iodefine.h"
 #include "iodefines/scifa_iodefine.h"
+#include "iodefines/scig_iodefine.h"
 #include "iodefines/ssi_iodefine.h"
 #include "iodefines/sysc_iodefine.h"
 #include "iodefines/tsu_iodefine.h"

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -24,6 +24,28 @@ FSP_HEADER
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+
+/* Values to assign to GTUPSR, GTDNSR registers to determine phase counting mode. */
+#define GPT_PHASE_COUNTING_MODE_1_UP      (0x00006900U)
+#define GPT_PHASE_COUNTING_MODE_1_DN      (0x00009600U)
+#define GPT_PHASE_COUNTING_MODE_200_UP    (0x00000800U)
+#define GPT_PHASE_COUNTING_MODE_200_DN    (0x00000400U)
+#define GPT_PHASE_COUNTING_MODE_201_UP    (0x00000200U)
+#define GPT_PHASE_COUNTING_MODE_201_DN    (0x00000100U)
+#define GPT_PHASE_COUNTING_MODE_210_UP    (0x00000A00U)
+#define GPT_PHASE_COUNTING_MODE_210_DN    (0x00000500U)
+#define GPT_PHASE_COUNTING_MODE_300_UP    (0x00000800U)
+#define GPT_PHASE_COUNTING_MODE_300_DN    (0x00008000U)
+#define GPT_PHASE_COUNTING_MODE_301_UP    (0x00000200U)
+#define GPT_PHASE_COUNTING_MODE_301_DN    (0x00002000U)
+#define GPT_PHASE_COUNTING_MODE_310_UP    (0x00000A00U)
+#define GPT_PHASE_COUNTING_MODE_310_DN    (0x0000A000U)
+#define GPT_PHASE_COUNTING_MODE_4_UP      (0x00006000U)
+#define GPT_PHASE_COUNTING_MODE_4_DN      (0x00009000U)
+#define GPT_PHASE_COUNTING_MODE_50_UP     (0x00000C00U)
+#define GPT_PHASE_COUNTING_MODE_50_DN     (0x00000000U)
+#define GPT_PHASE_COUNTING_MODE_51_UP     (0x0000C000U)
+#define GPT_PHASE_COUNTING_MODE_51_DN     (0x00000000U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -54,6 +76,8 @@ typedef enum e_gpt_pin_level
     GPT_PIN_LEVEL_HIGH = 1,            ///< Pin level high
 } gpt_pin_level_t;
 
+#ifndef BSP_OVERRIDE_GPT_SOURCE_T
+
 /** Sources can be used to start the timer, stop the timer, count up, or count down. These enumerations represent
  * a bitmask. Multiple sources can be ORed together. */
 typedef enum e_gpt_source
@@ -79,10 +103,10 @@ typedef enum e_gpt_source
     /** Action performed on GTETRGC falling edge. **/
     GPT_SOURCE_GTETRGC_FALLING = (1U << 5),
 
-    /** Action performed on GTETRGB rising edge. **/
+    /** Action performed on GTETRGD rising edge. **/
     GPT_SOURCE_GTETRGD_RISING = (1U << 6),
 
-    /** Action performed on GTETRGB falling edge. **/
+    /** Action performed on GTETRGD falling edge. **/
     GPT_SOURCE_GTETRGD_FALLING = (1U << 7),
 
     /** Action performed when GTIOCA input rises while GTIOCB is low. **/
@@ -108,7 +132,33 @@ typedef enum e_gpt_source
 
     /** Action performed when GTIOCB input falls while GTIOCA is high. **/
     GPT_SOURCE_GTIOCB_FALLING_WHILE_GTIOCA_HIGH = (1U << 15),
+
+    /** Action performed on ELC GPTA event. **/
+    GPT_SOURCE_GPT_A = (1U << 16),
+
+    /** Action performed on ELC GPTB event. **/
+    GPT_SOURCE_GPT_B = (1U << 17),
+
+    /** Action performed on ELC GPTC event. **/
+    GPT_SOURCE_GPT_C = (1U << 18),
+
+    /** Action performed on ELC GPTD event. **/
+    GPT_SOURCE_GPT_D = (1U << 19),
+
+    /** Action performed on ELC GPTE event. **/
+    GPT_SOURCE_GPT_E = (1U << 20),
+
+    /** Action performed on ELC GPTF event. **/
+    GPT_SOURCE_GPT_F = (1U << 21),
+
+    /** Action performed on ELC GPTG event. **/
+    GPT_SOURCE_GPT_G = (1U << 22),
+
+    /** Action performed on ELC GPTH event. **/
+    GPT_SOURCE_GPT_H = (1U << 23),
 } gpt_source_t;
+
+#endif
 
 /** Configurations for output pins. */
 typedef struct s_gpt_output_pin
@@ -153,11 +203,11 @@ typedef struct s_gpt_gtior_setting
 /** Input capture signal noise filter (debounce) setting. Only available for input signals GTIOCxA and GTIOCxB.
  *   The noise filter samples the external signal at intervals of the P0CLK divided by one of the values.
  *   When 3 consecutive samples are at the same level (high or low), then that level is passed on as
- *   the observed state of the signal. See "Noise Filter Function" in the hardware manual, GPT section.
+ *   the observed state of the signal. See "Noise Filter Function" in the user's manual, GPT section.
  */
 typedef enum e_gpt_capture_filter
 {
-    GPT_CAPTURE_FILTER_NONE         = 0U, ///< None - no filtering
+    GPT_CAPTURE_FILTER_NONE                = 0U, ///< None - no filtering
     GPT_CAPTURE_FILTER_CLOCK_SOURCE_DIV_1  = 1U, ///< CLK/1 - fast sampling
     GPT_CAPTURE_FILTER_CLOCK_SOURCE_DIV_4  = 3U, ///< CLK/4
     GPT_CAPTURE_FILTER_CLOCK_SOURCE_DIV_16 = 5U, ///< CLK/16
@@ -181,6 +231,10 @@ typedef enum e_gpt_poeg_link
     GPT_POEG_LINK_POEG1 = 1U,          ///< Link this GPT channel to POEG channel 1 (GTETRGB)
     GPT_POEG_LINK_POEG2 = 2U,          ///< Link this GPT channel to POEG channel 2 (GTETRGC)
     GPT_POEG_LINK_POEG3 = 3U,          ///< Link this GPT channel to POEG channel 3 (GTETRGD)
+    GPT_POEG_LINK_POEG4 = 4U,          ///< Link this GPT channel to POEG channel 4 (GTETRGE)
+    GPT_POEG_LINK_POEG5 = 5U,          ///< Link this GPT channel to POEG channel 5 (GTETRGF)
+    GPT_POEG_LINK_POEG6 = 6U,          ///< Link this GPT channel to POEG channel 6 (GTETRGG)
+    GPT_POEG_LINK_POEG7 = 7U,          ///< Link this GPT channel to POEG channel 7 (GTETRGH)
 } gpt_poeg_link_t;
 
 /** Select trigger to send output disable request to POEG. */
@@ -236,6 +290,16 @@ typedef enum e_gpt_interrupt_skip_count
     GPT_INTERRUPT_SKIP_COUNT_5,        ///< Skip five interrupts
     GPT_INTERRUPT_SKIP_COUNT_6,        ///< Skip six interrupts
     GPT_INTERRUPT_SKIP_COUNT_7,        ///< Skip seven interrupts
+
+    /** When setting GTIEITC */
+    GPT_INTERRUPT_SKIP_COUNT_8,        ///< Skip eight interrupts
+    GPT_INTERRUPT_SKIP_COUNT_9,        ///< Skip nine interrupts
+    GPT_INTERRUPT_SKIP_COUNT_10,       ///< Skip ten interrupts
+    GPT_INTERRUPT_SKIP_COUNT_11,       ///< Skip eleven interrupts
+    GPT_INTERRUPT_SKIP_COUNT_12,       ///< Skip twelve interrupts
+    GPT_INTERRUPT_SKIP_COUNT_13,       ///< Skip thiertenn interrupts
+    GPT_INTERRUPT_SKIP_COUNT_14,       ///< Skip fourteen interrupts
+    GPT_INTERRUPT_SKIP_COUNT_15,       ///< Skip fifteen interrupts
 } gpt_interrupt_skip_count_t;
 
 /** ADC events to skip during interrupt skipping */
@@ -247,12 +311,18 @@ typedef enum e_gpt_interrupt_skip_adc
     GPT_INTERRUPT_SKIP_ADC_A_AND_B = 5U, ///< Skip ADC A and B events
 } gpt_interrupt_skip_adc_t;
 
-/** Buffering mode */
-typedef enum e_gpt_buffer_mode
+/** extended interrupt skipping */
+typedef enum e_gpt_interrupt_skip_select
 {
-    GPT_BUFFER_MODE_SINGLE = 1,        ///< Single-buffer mode
-    GPT_BUFFER_MODE_DOUBLE = 2         ///< Double-buffer mode
-} gpt_buffer_mode_t;
+    GPT_INTERRUPT_SKIP_SELECT_NONE      = 0U, ///< Do not perform an extended interrupt skipping
+    GPT_INTERRUPT_SKIP_SELECT_EITCNT1   = 1U, ///< An interrupt is output in the period of EITCNT1[3:0] bits = 0000b.
+    GPT_INTERRUPT_SKIP_SELECT_EITCNT2   = 2U, ///< An interrupt is output in the period of EITCNT2[3:0] bits = 0000b.
+    GPT_INTERRUPT_SKIP_SELECT_EITCNT1_2 = 3U, ///< An interrupt is output in the period of EITCNT1[3:0] bits = 0000b and EITCNT2[3:0] bits = 0000b.
+
+    GPT_INTERRUPT_SKIP_SELECT_EITVTT1   = 5U, ///< An interrupt is output in the period of EITCNT1[3:0] bits = EIVTT1[3:0] bits.
+    GPT_INTERRUPT_SKIP_SELECT_EITVTT2   = 6U, ///< An interrupt is output in the period of EITCNT2[3:0] bits = EIVTT2[3:0] bits.
+    GPT_INTERRUPT_SKIP_SELECT_EITVTT1_2 = 7U, ///< An interrupt is output in the period of EITCNT1[3:0] bits = EIVTT1[3:0] bits and EITCNT2[3:0] bits = EIVTT2[3:0] bits.
+} gpt_interrupt_skip_select_t;
 
 /** Delay setting for the PWM Delay Generation Circuit (PDG). */
 typedef enum e_gpt_pwm_output_delay_setting
@@ -316,20 +386,28 @@ typedef struct st_gpt_instance_ctrl
 /** GPT extension for advanced PWM features. */
 typedef struct st_gpt_extended_pwm_cfg
 {
-    uint8_t                     trough_ipl;             ///< Trough interrupt priority
-    IRQn_Type                   trough_irq;             ///< Trough interrupt
-    gpt_poeg_link_t             poeg_link;              ///< Select which POEG channel controls output disable for this GPT channel
-    gpt_output_disable_t        output_disable;         ///< Select which trigger sources request output disable from POEG
-    gpt_adc_trigger_t           adc_trigger;            ///< Select trigger sources to start A/D conversion
-    uint32_t                    dead_time_count_up;     ///< Set a dead time value for counting up
-    uint32_t                    dead_time_count_down;   ///< Set a dead time value for counting down
-    uint32_t                    adc_a_compare_match;    ///< Select the compare match value
-    uint32_t                    adc_b_compare_match;    ///< Select the compare match value
-    gpt_interrupt_skip_source_t interrupt_skip_source;  ///< Interrupt source to count for interrupt skipping
-    gpt_interrupt_skip_count_t  interrupt_skip_count;   ///< Number of interrupts to skip between events
-    gpt_interrupt_skip_adc_t    interrupt_skip_adc;     ///< ADC events to skip when interrupt skipping is enabled
-    gpt_gtioc_disable_t         gtioca_disable_setting; ///< Select how to configure GTIOCA when output is disabled
-    gpt_gtioc_disable_t         gtiocb_disable_setting; ///< Select how to configure GTIOCB when output is disabled
+    uint8_t                     trough_ipl;                 ///< Trough interrupt priority
+    IRQn_Type                   trough_irq;                 ///< Trough interrupt
+    gpt_poeg_link_t             poeg_link;                  ///< Select which POEG channel controls output disable for this GPT channel
+    gpt_output_disable_t        output_disable;             ///< Select which trigger sources request output disable from POEG
+    gpt_adc_trigger_t           adc_trigger;                ///< Select trigger sources to start A/D conversion
+    uint32_t                    dead_time_count_up;         ///< Set a dead time value for counting up
+    uint32_t                    dead_time_count_down;       ///< Set a dead time value for counting down
+    uint32_t                    adc_a_compare_match;        ///< Select the compare match value
+    uint32_t                    adc_b_compare_match;        ///< Select the compare match value
+    gpt_interrupt_skip_source_t interrupt_skip_source;      ///< Interrupt source to count for interrupt skipping
+    gpt_interrupt_skip_count_t  interrupt_skip_count;       ///< Number of interrupts to skip between events
+    gpt_interrupt_skip_adc_t    interrupt_skip_adc;         ///< ADC events to skip when interrupt skipping is enabled
+    gpt_interrupt_skip_source_t interrupt_skip_source_ext1; ///< Interrupt source to count for interrupt skipping(GTEITC.EIVTC1)
+    gpt_interrupt_skip_count_t  interrupt_skip_count_ext1;  ///< Number of interrupts to skip between events(GTEITC.EIVTT1)
+    gpt_interrupt_skip_source_t interrupt_skip_source_ext2; ///< Interrupt source to count for interrupt skipping(GTEITC.EIVTC2)
+    gpt_interrupt_skip_count_t  interrupt_skip_count_ext2;  ///< Number of interrupts to skip between events(GTEITC.EIVTT2)
+    gpt_interrupt_skip_select_t interrupt_skip_func_ovf;    ///< Extended Skipping Function Select(GTEITL1.EITVL)
+    gpt_interrupt_skip_select_t interrupt_skip_func_unf;    ///< Extended Skipping Function Select(GTEITL1.EITUL)
+    gpt_interrupt_skip_select_t interrupt_skip_func_adc_a;  ///< Extended Skipping Function Select(GTEITL2.EADTAL)
+    gpt_interrupt_skip_select_t interrupt_skip_func_adc_b;  ///< Extended Skipping Function Select(GTEITL2.EADTBL)
+    gpt_gtioc_disable_t         gtioca_disable_setting;     ///< Select how to configure GTIOCA when output is disabled
+    gpt_gtioc_disable_t         gtiocb_disable_setting;     ///< Select how to configure GTIOCB when output is disabled
 } gpt_extended_pwm_cfg_t;
 
 /** GPT extension configures the output pins for GPT. */
@@ -359,10 +437,18 @@ typedef struct st_gpt_extended_cfg
 
     uint8_t   capture_a_ipl;                      ///< Capture A interrupt priority
     uint8_t   capture_b_ipl;                      ///< Capture B interrupt priority
+    uint8_t   dead_time_ipl;                      ///< Dead time error interrupt priority
     IRQn_Type capture_a_irq;                      ///< Capture A interrupt
     IRQn_Type capture_b_irq;                      ///< Capture B interrupt
+    IRQn_Type dead_time_irq;                      ///< Dead time error interrupt
+
+    uint32_t compare_match_value[2];              ///< Storing compare match value for channels
+    uint8_t  compare_match_status;                ///< Storing the compare match register status
+
     gpt_extended_pwm_cfg_t const * p_pwm_cfg;     ///< Advanced PWM features, optional
     gpt_gtior_setting_t            gtior_setting; ///< Custom GTIOR settings used for configuring GTIOCxA and GTIOCxB pins.
+
+    void * p_reg;                                 ///< Register base address for specified channel
 } gpt_extended_cfg_t;
 
 /**********************************************************************************************************************
@@ -403,7 +489,10 @@ fsp_err_t R_GPT_CallbackSet(timer_ctrl_t * const          p_api_ctrl,
                             void const * const            p_context,
                             timer_callback_args_t * const p_callback_memory);
 fsp_err_t R_GPT_Close(timer_ctrl_t * const p_ctrl);
-fsp_err_t R_GPT_PwmOutputDelayInitialize();
+fsp_err_t R_GPT_PwmOutputDelayInitialize(void);
+fsp_err_t R_GPT_CompareMatchSet(timer_ctrl_t * const        p_ctrl,
+                                uint32_t const              compare_match_value,
+                                timer_compare_match_t const match_channel);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup GPT)

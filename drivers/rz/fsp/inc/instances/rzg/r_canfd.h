@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -26,6 +26,12 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
+#if BSP_FEATURE_CANFD_LITE
+ #define R_CANFD_NUM_COMMON_FIFOS    (1U)
+#else
+ #define R_CANFD_NUM_COMMON_FIFOS    (6U)
+#endif
+
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -43,6 +49,8 @@ typedef enum e_canfd_status
     CANFD_STATUS_READY         = 0x080, ///< Channel is ready for communication
     CANFD_STATUS_ESI           = 0x100, ///< At least one CAN-FD message was received with the ESI flag set
 } canfd_status_t;
+
+#ifndef BSP_OVERRIDE_CANFD_ERROR_T
 
 /** CANFD Error Code */
 typedef enum e_canfd_error
@@ -73,6 +81,42 @@ typedef enum e_canfd_error
     CANFD_ERROR_GLOBAL_CH1_ECC           = 0x20000000, ///< Channel 1 ECC Error
 } canfd_error_t;
 
+#endif
+
+#ifndef BSP_OVERRIDE_CANFD_TX_BUFFER_T
+
+/** CANFD Transmit Buffer (MB + CFIFO) */
+typedef enum e_canfd_tx_buffer
+{
+    CANFD_TX_BUFFER_0 = 0,
+    CANFD_TX_BUFFER_1 = 1,
+    CANFD_TX_BUFFER_2 = 2,
+    CANFD_TX_BUFFER_3 = 3,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_TX_BUFFER_4  = 4,
+    CANFD_TX_BUFFER_5  = 5,
+    CANFD_TX_BUFFER_6  = 6,
+    CANFD_TX_BUFFER_7  = 7,
+    CANFD_TX_BUFFER_32 = 32,
+    CANFD_TX_BUFFER_33 = 33,
+    CANFD_TX_BUFFER_34 = 34,
+    CANFD_TX_BUFFER_35 = 35,
+    CANFD_TX_BUFFER_36 = 36,
+    CANFD_TX_BUFFER_37 = 37,
+    CANFD_TX_BUFFER_38 = 38,
+    CANFD_TX_BUFFER_39 = 39,
+#endif
+    CANFD_TX_BUFFER_FIFO_COMMON_0 = 40,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_TX_BUFFER_FIFO_COMMON_1 = 41,
+    CANFD_TX_BUFFER_FIFO_COMMON_2 = 42,
+#endif
+} canfd_tx_buffer_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_CANFD_TX_MB_T
+
 /** CANFD Transmit Message Buffer (TX MB) */
 typedef enum e_canfd_tx_mb
 {
@@ -85,14 +129,6 @@ typedef enum e_canfd_tx_mb
     CANFD_TX_MB_5  = 5,
     CANFD_TX_MB_6  = 6,
     CANFD_TX_MB_7  = 7,
-    CANFD_TX_MB_8  = 8,
-    CANFD_TX_MB_9  = 9,
-    CANFD_TX_MB_10 = 10,
-    CANFD_TX_MB_11 = 11,
-    CANFD_TX_MB_12 = 12,
-    CANFD_TX_MB_13 = 13,
-    CANFD_TX_MB_14 = 14,
-    CANFD_TX_MB_15 = 15,
     CANFD_TX_MB_32 = 32,
     CANFD_TX_MB_33 = 33,
     CANFD_TX_MB_34 = 34,
@@ -101,18 +137,14 @@ typedef enum e_canfd_tx_mb
     CANFD_TX_MB_37 = 37,
     CANFD_TX_MB_38 = 38,
     CANFD_TX_MB_39 = 39,
-    CANFD_TX_MB_40 = 40,
-    CANFD_TX_MB_41 = 41,
-    CANFD_TX_MB_42 = 42,
-    CANFD_TX_MB_43 = 43,
-    CANFD_TX_MB_44 = 44,
-    CANFD_TX_MB_45 = 45,
-    CANFD_TX_MB_46 = 46,
-    CANFD_TX_MB_47 = 47,
 #endif
 } canfd_tx_mb_t;
 
-/** CANFD Receive Buffer (MB + FIFO) */
+#endif
+
+#ifndef BSP_OVERRIDE_CANFD_RX_BUFFER_T
+
+/** CANFD Receive Buffer (MB + FIFO + CFIFO) */
 typedef enum e_canfd_rx_buffer
 {
     CANFD_RX_BUFFER_MB_0   = 0,
@@ -157,7 +189,16 @@ typedef enum e_canfd_rx_buffer
     CANFD_RX_BUFFER_FIFO_6 = 38,
     CANFD_RX_BUFFER_FIFO_7 = 39,
 #endif
+    CANFD_RX_BUFFER_FIFO_COMMON_0 = 40,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_RX_BUFFER_FIFO_COMMON_1 = 41,
+    CANFD_RX_BUFFER_FIFO_COMMON_2 = 42,
+#endif
 } canfd_rx_buffer_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_CANFD_RX_MB_T
 
 /** CANFD Receive Message Buffer (RX MB) */
 typedef enum e_canfd_rx_mb
@@ -197,6 +238,10 @@ typedef enum e_canfd_rx_mb
     CANFD_RX_MB_31   = 0x80 + 31,
 } canfd_rx_mb_t;
 
+#endif
+
+#ifndef BSP_OVERRIDE_CANFD_RX_FIFO_T
+
 /** CANFD Receive FIFO (RX FIFO) */
 typedef enum e_canfd_rx_fifo
 {
@@ -210,7 +255,17 @@ typedef enum e_canfd_rx_fifo
     CANFD_RX_FIFO_6 = (1U << 6),
     CANFD_RX_FIFO_7 = (1U << 7),
 #endif
+    CANFD_RX_FIFO_COMMON_0  = (1U << 8),
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_RX_FIFO_COMMON_1  = (1U << 9),
+    CANFD_RX_FIFO_COMMON_2  = (1U << 10),
+    CANFD_RX_FIFO_COMMON_3  = (1U << 11),
+    CANFD_RX_FIFO_COMMON_4  = (1U << 12),
+    CANFD_RX_FIFO_COMMON_5  = (1U << 13),
+#endif
 } canfd_rx_fifo_t;
+
+#endif
 
 /** CANFD AFL Minimum DLC settings */
 typedef enum e_canfd_minimum_dlc
@@ -252,7 +307,7 @@ typedef enum e_canfd_txmb_merge_mode
 /* CAN Instance Control Block   */
 typedef struct st_canfd_instance_ctrl
 {
-    R_CANFD_Type       * p_reg;                 // Pointer to register base address
+    R_CANFD_Type * p_reg;                       // Pointer to register base address
 
     /* Parameters to control CAN peripheral device */
     can_cfg_t const    * p_cfg;                 // Pointer to the configuration structure
@@ -314,28 +369,30 @@ typedef struct st_canfd_afl_entry
 /** CANFD Global Configuration */
 typedef struct st_canfd_global_cfg
 {
-    uint32_t global_interrupts;        ///< Global control options (CFDGCTR register setting)
-    uint32_t global_config;            ///< Global configuration options (CFDGCFG register setting)
+    uint32_t global_interrupts;                                      ///< Global control options (CFDGCTR register setting)
+    uint32_t global_config;                                          ///< Global configuration options (CFDGCFG register setting)
 #if !BSP_FEATURE_CANFD_LITE
-    uint32_t rx_fifo_config[8];        ///< RX FIFO configuration (CFDRFCCn register settings)
+    uint32_t rx_fifo_config[8];                                      ///< RX FIFO configuration (CFDRFCCn register settings)
 #else
-    uint32_t rx_fifo_config[2];        ///< RX FIFO configuration (CFDRFCCn register settings)
+    uint32_t rx_fifo_config[2];                                      ///< RX FIFO configuration (CFDRFCCn register settings)
 #endif
-    uint32_t rx_mb_config;             ///< Number and size of RX Message Buffers (CFDRMNB register setting)
-    uint8_t  global_err_ipl;           ///< Global Error interrupt priority
-    uint8_t  rx_fifo_ipl;              ///< RX FIFO interrupt priority
+    uint32_t rx_mb_config;                                           ///< Number and size of RX Message Buffers (CFDRMNB register setting)
+    uint8_t  global_err_ipl;                                         ///< Global Error interrupt priority
+    uint8_t  rx_fifo_ipl;                                            ///< RX FIFO interrupt priority
+    uint32_t common_fifo_config[BSP_FEATURE_CANFD_NUM_COMMON_FIFOS]; ///< Common FIFO configurations
 } canfd_global_cfg_t;
 
 /** CANFD Extended Configuration */
 typedef struct st_canfd_extended_cfg
 {
-    canfd_afl_entry_t const * p_afl;           ///< AFL rules list
-    uint64_t               txmb_txi_enable;    ///< Array of TX Message Buffer enable bits
-    uint32_t               error_interrupts;   ///< Error interrupt enable bits
-    can_bit_timing_cfg_t * p_data_timing;      ///< FD Data Rate (when bitrate switching is used)
-    uint8_t                delay_compensation; ///< FD Transceiver Delay Compensation (enable or disable)
-    canfd_global_cfg_t   * p_global_cfg;       ///< Global configuration (global error callback channel only)
-    canfd_txmb_merge_mode_t txmb_merge_mode_enable;  ///< TXMB buffer marge mode configuration
+    canfd_afl_entry_t const * p_afl;                   ///< AFL rules list
+    uint64_t                  txmb_txi_enable;         ///< Array of TX Message Buffer enable bits
+    uint32_t                  error_interrupts;        ///< Error interrupt enable bits
+    can_bit_timing_cfg_t    * p_data_timing;           ///< FD Data Rate (when bitrate switching is used)
+    uint8_t                   delay_compensation;      ///< FD Transceiver Delay Compensation (enable or disable)
+    canfd_global_cfg_t      * p_global_cfg;            ///< Global configuration (global error callback channel only)
+    canfd_txmb_merge_mode_t   txmb_merge_mode_enable;  ///< TXMB buffer marge mode configuration
+    void                    * p_reg;                   ///< Register base address for specified channel
 } canfd_extended_cfg_t;
 
 /**********************************************************************************************************************

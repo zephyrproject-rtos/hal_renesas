@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -29,9 +29,15 @@
 #define BSP_OVERRIDE_BSP_ACCESS_CONTROL
 #define BSP_OVERRIDE_BSP_PIN_T
 #define BSP_OVERRIDE_BSP_PORT_T
+#define BSP_OVERRIDE_BSP_SYSTEM_RESET_SIGNAL_T
+#define BSP_OVERRIDE_CANFD_TX_BUFFER_T
+#define BSP_OVERRIDE_CANFD_TX_MB_T
 #define BSP_OVERRIDE_DMAC_B_EXTERNAL_DETECTION_T
 #define BSP_OVERRIDE_FSP_PRIV_CLOCK_T
+#define BSP_OVERRIDE_FSP_PRIV_CLOCK_DIVIDER_T
+#define BSP_OVERRIDE_FSP_PRIV_CLOCK_SELECTOR_T
 #define BSP_OVERRIDE_TRANSFER_ADDR_MODE_T
+#define BSP_OVERRIDE_TRANSFER_CALLBACK_ARGS_T
 #define BSP_OVERRIDE_TRANSFER_INFO_T
 #define BSP_OVERRIDE_TRANSFER_MODE_T
 #define BSP_OVERRIDE_TRANSFER_SIZE_T
@@ -164,6 +170,57 @@
 #define BSP_ACCESS_CONTROL_POS_ACCCNT_IPCONT       (R_SYSC_SYS_SLVACCCTL16_IPCONT_SL_Pos)
 
 /***********************************************************************************************************************
+ * Definition of macros to clear state flag of INTC IRQ
+ **********************************************************************************************************************/
+#define BSP_INTC_IRQ_CLR_STATE_FLAG(channel)                                    \
+    do                                                                          \
+    {                                                                           \
+        /* Dummy read the ISCR before clearing the ISTAT bit. */                \
+        volatile uint32_t iscr = BSP_FEATURE_INTC_BASE_ADDR->ISCR;              \
+        FSP_PARAMETER_NOT_USED(iscr);                                           \
+        /* Clear the ISTAT bit. */                                              \
+        BSP_FEATURE_INTC_BASE_ADDR->ISCR = ~(INTC_IRQ_CLR_REG_MASK << channel); \
+        /* Dummy read the ISCR to prevent the interrupt cause that have been cleared from being accidentally accepted. \
+         * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
+        iscr = BSP_FEATURE_INTC_BASE_ADDR->ISCR;                                        \
+        FSP_PARAMETER_NOT_USED(iscr);                                                   \
+    } while (0);
+
+/***********************************************************************************************************************
+ * Definition of macros to clear state flag of INTC NMI
+ **********************************************************************************************************************/
+#define BSP_INTC_NMI_CLR_STATE_FLAG()                              \
+    do                                                             \
+    {                                                              \
+        /* Dummy read the NSCR before clearing the NSTAT bit. */   \
+        volatile uint32_t nscr = BSP_FEATURE_INTC_BASE_ADDR->NSCR; \
+        FSP_PARAMETER_NOT_USED(nscr);                              \
+        /* Clear the NSTAT bit. */                                 \
+        BSP_FEATURE_INTC_BASE_ADDR->NSCR_b.NSTAT = 0;              \
+        /* Dummy read the NSCR to prevent the interrupt cause that have been cleared from being accidentally accepted. \
+         * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
+        nscr = BSP_FEATURE_INTC_BASE_ADDR->NSCR;                                        \
+        FSP_PARAMETER_NOT_USED(nscr);                                                   \
+    } while (0);
+
+/***********************************************************************************************************************
+ * Definition of macros to clear state flag of INTC TINT
+ **********************************************************************************************************************/
+#define BSP_INTC_TINT_CLR_STATE_FLAG(channel)                                    \
+    do                                                                           \
+    {                                                                            \
+        /* Dummy read the TSCR before clearing the TSTAT bit. */                 \
+        volatile uint32_t tscr = BSP_FEATURE_INTC_BASE_ADDR->TSCR;               \
+        FSP_PARAMETER_NOT_USED(tscr);                                            \
+        /* Clear the TSTAT bit. */                                               \
+        BSP_FEATURE_INTC_BASE_ADDR->TSCR = ~(INTC_TINT_CLR_REG_MASK << channel); \
+        /* Dummy read the TSCR to prevent the interrupt cause that should have been cleared from being accidentally \
+         * accepted again. Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
+        tscr = BSP_FEATURE_INTC_BASE_ADDR->TSCR;                                                        \
+        FSP_PARAMETER_NOT_USED(tscr);                                                                   \
+    } while (0);
+
+/***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
@@ -198,164 +255,172 @@ typedef enum e_bsp_io_port
 /** Superset list of all possible IO port pins. */
 typedef enum e_bsp_io_port_pin_t
 {
-    BSP_IO_PORT_00_PIN_00 = 0x0000,     /* IO port 0 pin 0 */
-    BSP_IO_PORT_00_PIN_01 = 0x0001,     /* IO port 0 pin 1 */
-    BSP_IO_PORT_00_PIN_02 = 0x0002,     /* IO port 0 pin 2 */
-    BSP_IO_PORT_00_PIN_03 = 0x0003,     /* IO port 0 pin 3 */
+    BSP_IO_PORT_00_PIN_00 = 0x0000,       /* IO port 0 pin 0 */
+    BSP_IO_PORT_00_PIN_01 = 0x0001,       /* IO port 0 pin 1 */
+    BSP_IO_PORT_00_PIN_02 = 0x0002,       /* IO port 0 pin 2 */
+    BSP_IO_PORT_00_PIN_03 = 0x0003,       /* IO port 0 pin 3 */
 
-    BSP_IO_PORT_01_PIN_00 = 0x0100,     /* IO port 1 pin 0 */
-    BSP_IO_PORT_01_PIN_01 = 0x0101,     /* IO port 1 pin 1 */
-    BSP_IO_PORT_01_PIN_02 = 0x0102,     /* IO port 1 pin 2 */
-    BSP_IO_PORT_01_PIN_03 = 0x0103,     /* IO port 1 pin 3 */
-    BSP_IO_PORT_01_PIN_04 = 0x0104,     /* IO port 1 pin 4 */
+    BSP_IO_PORT_01_PIN_00 = 0x0100,       /* IO port 1 pin 0 */
+    BSP_IO_PORT_01_PIN_01 = 0x0101,       /* IO port 1 pin 1 */
+    BSP_IO_PORT_01_PIN_02 = 0x0102,       /* IO port 1 pin 2 */
+    BSP_IO_PORT_01_PIN_03 = 0x0103,       /* IO port 1 pin 3 */
+    BSP_IO_PORT_01_PIN_04 = 0x0104,       /* IO port 1 pin 4 */
 
-    BSP_IO_PORT_02_PIN_00 = 0x0200,     /* IO port 2 pin 0 */
-    BSP_IO_PORT_02_PIN_01 = 0x0201,     /* IO port 2 pin 1 */
-    BSP_IO_PORT_02_PIN_02 = 0x0202,     /* IO port 2 pin 2 */
-    BSP_IO_PORT_02_PIN_03 = 0x0203,     /* IO port 2 pin 3 */
+    BSP_IO_PORT_02_PIN_00 = 0x0200,       /* IO port 2 pin 0 */
+    BSP_IO_PORT_02_PIN_01 = 0x0201,       /* IO port 2 pin 1 */
+    BSP_IO_PORT_02_PIN_02 = 0x0202,       /* IO port 2 pin 2 */
+    BSP_IO_PORT_02_PIN_03 = 0x0203,       /* IO port 2 pin 3 */
 
-    BSP_IO_PORT_03_PIN_00 = 0x0300,     /* IO port 3 pin 0 */
-    BSP_IO_PORT_03_PIN_01 = 0x0301,     /* IO port 3 pin 1 */
-    BSP_IO_PORT_03_PIN_02 = 0x0302,     /* IO port 3 pin 2 */
-    BSP_IO_PORT_03_PIN_03 = 0x0303,     /* IO port 3 pin 3 */
+    BSP_IO_PORT_03_PIN_00 = 0x0300,       /* IO port 3 pin 0 */
+    BSP_IO_PORT_03_PIN_01 = 0x0301,       /* IO port 3 pin 1 */
+    BSP_IO_PORT_03_PIN_02 = 0x0302,       /* IO port 3 pin 2 */
+    BSP_IO_PORT_03_PIN_03 = 0x0303,       /* IO port 3 pin 3 */
 
-    BSP_IO_PORT_04_PIN_00 = 0x0400,     /* IO port 4 pin 0 */
-    BSP_IO_PORT_04_PIN_01 = 0x0401,     /* IO port 4 pin 1 */
-    BSP_IO_PORT_04_PIN_02 = 0x0402,     /* IO port 4 pin 2 */
-    BSP_IO_PORT_04_PIN_03 = 0x0403,     /* IO port 4 pin 3 */
-    BSP_IO_PORT_04_PIN_04 = 0x0404,     /* IO port 4 pin 4 */
-    BSP_IO_PORT_04_PIN_05 = 0x0405,     /* IO port 4 pin 5 */
+    BSP_IO_PORT_04_PIN_00 = 0x0400,       /* IO port 4 pin 0 */
+    BSP_IO_PORT_04_PIN_01 = 0x0401,       /* IO port 4 pin 1 */
+    BSP_IO_PORT_04_PIN_02 = 0x0402,       /* IO port 4 pin 2 */
+    BSP_IO_PORT_04_PIN_03 = 0x0403,       /* IO port 4 pin 3 */
+    BSP_IO_PORT_04_PIN_04 = 0x0404,       /* IO port 4 pin 4 */
+    BSP_IO_PORT_04_PIN_05 = 0x0405,       /* IO port 4 pin 5 */
 
-    BSP_IO_PORT_05_PIN_00 = 0x0500,     /* IO port 5 pin 0 */
-    BSP_IO_PORT_05_PIN_01 = 0x0501,     /* IO port 5 pin 1 */
-    BSP_IO_PORT_05_PIN_02 = 0x0502,     /* IO port 5 pin 2 */
-    BSP_IO_PORT_05_PIN_03 = 0x0503,     /* IO port 5 pin 3 */
-    BSP_IO_PORT_05_PIN_04 = 0x0504,     /* IO port 5 pin 4 */
+    BSP_IO_PORT_05_PIN_00 = 0x0500,       /* IO port 5 pin 0 */
+    BSP_IO_PORT_05_PIN_01 = 0x0501,       /* IO port 5 pin 1 */
+    BSP_IO_PORT_05_PIN_02 = 0x0502,       /* IO port 5 pin 2 */
+    BSP_IO_PORT_05_PIN_03 = 0x0503,       /* IO port 5 pin 3 */
+    BSP_IO_PORT_05_PIN_04 = 0x0504,       /* IO port 5 pin 4 */
 
-    BSP_IO_PORT_06_PIN_00 = 0x0600,     /* IO port 6 pin 0 */
-    BSP_IO_PORT_06_PIN_01 = 0x0601,     /* IO port 6 pin 1 */
-    BSP_IO_PORT_06_PIN_02 = 0x0602,     /* IO port 6 pin 2 */
-    BSP_IO_PORT_06_PIN_03 = 0x0603,     /* IO port 6 pin 3 */
-    BSP_IO_PORT_06_PIN_04 = 0x0604,     /* IO port 6 pin 4 */
+    BSP_IO_PORT_06_PIN_00 = 0x0600,       /* IO port 6 pin 0 */
+    BSP_IO_PORT_06_PIN_01 = 0x0601,       /* IO port 6 pin 1 */
+    BSP_IO_PORT_06_PIN_02 = 0x0602,       /* IO port 6 pin 2 */
+    BSP_IO_PORT_06_PIN_03 = 0x0603,       /* IO port 6 pin 3 */
+    BSP_IO_PORT_06_PIN_04 = 0x0604,       /* IO port 6 pin 4 */
 
-    BSP_IO_PORT_07_PIN_00 = 0x0700,     /* IO port 7 pin 0 */
-    BSP_IO_PORT_07_PIN_01 = 0x0701,     /* IO port 7 pin 1 */
-    BSP_IO_PORT_07_PIN_02 = 0x0702,     /* IO port 7 pin 2 */
-    BSP_IO_PORT_07_PIN_03 = 0x0703,     /* IO port 7 pin 3 */
-    BSP_IO_PORT_07_PIN_04 = 0x0704,     /* IO port 7 pin 4 */
+    BSP_IO_PORT_07_PIN_00 = 0x0700,       /* IO port 7 pin 0 */
+    BSP_IO_PORT_07_PIN_01 = 0x0701,       /* IO port 7 pin 1 */
+    BSP_IO_PORT_07_PIN_02 = 0x0702,       /* IO port 7 pin 2 */
+    BSP_IO_PORT_07_PIN_03 = 0x0703,       /* IO port 7 pin 3 */
+    BSP_IO_PORT_07_PIN_04 = 0x0704,       /* IO port 7 pin 4 */
 
-    BSP_IO_PORT_08_PIN_00 = 0x0800,     /* IO port 8 pin 0 */
-    BSP_IO_PORT_08_PIN_01 = 0x0801,     /* IO port 8 pin 1 */
-    BSP_IO_PORT_08_PIN_02 = 0x0802,     /* IO port 8 pin 2 */
-    BSP_IO_PORT_08_PIN_03 = 0x0803,     /* IO port 8 pin 3 */
-    BSP_IO_PORT_08_PIN_04 = 0x0804,     /* IO port 8 pin 4 */
+    BSP_IO_PORT_08_PIN_00 = 0x0800,       /* IO port 8 pin 0 */
+    BSP_IO_PORT_08_PIN_01 = 0x0801,       /* IO port 8 pin 1 */
+    BSP_IO_PORT_08_PIN_02 = 0x0802,       /* IO port 8 pin 2 */
+    BSP_IO_PORT_08_PIN_03 = 0x0803,       /* IO port 8 pin 3 */
+    BSP_IO_PORT_08_PIN_04 = 0x0804,       /* IO port 8 pin 4 */
 
-    BSP_IO_PORT_09_PIN_00 = 0x0900,     /* IO port 9 pin 0 */
-    BSP_IO_PORT_09_PIN_01 = 0x0901,     /* IO port 9 pin 1 */
-    BSP_IO_PORT_09_PIN_02 = 0x0902,     /* IO port 9 pin 2 */
-    BSP_IO_PORT_09_PIN_03 = 0x0903,     /* IO port 9 pin 3 */
+    BSP_IO_PORT_09_PIN_00 = 0x0900,       /* IO port 9 pin 0 */
+    BSP_IO_PORT_09_PIN_01 = 0x0901,       /* IO port 9 pin 1 */
+    BSP_IO_PORT_09_PIN_02 = 0x0902,       /* IO port 9 pin 2 */
+    BSP_IO_PORT_09_PIN_03 = 0x0903,       /* IO port 9 pin 3 */
 
-    BSP_IO_PORT_10_PIN_00 = 0x0A00,     /* IO port 10 pin 0 */
-    BSP_IO_PORT_10_PIN_01 = 0x0A01,     /* IO port 10 pin 1 */
-    BSP_IO_PORT_10_PIN_02 = 0x0A02,     /* IO port 10 pin 2 */
-    BSP_IO_PORT_10_PIN_03 = 0x0A03,     /* IO port 10 pin 3 */
-    BSP_IO_PORT_10_PIN_04 = 0x0A04,     /* IO port 10 pin 4 */
+    BSP_IO_PORT_10_PIN_00 = 0x0A00,       /* IO port 10 pin 0 */
+    BSP_IO_PORT_10_PIN_01 = 0x0A01,       /* IO port 10 pin 1 */
+    BSP_IO_PORT_10_PIN_02 = 0x0A02,       /* IO port 10 pin 2 */
+    BSP_IO_PORT_10_PIN_03 = 0x0A03,       /* IO port 10 pin 3 */
+    BSP_IO_PORT_10_PIN_04 = 0x0A04,       /* IO port 10 pin 4 */
 
-    BSP_IO_PORT_11_PIN_00 = 0x0B00,     /* IO port 11 pin 0 */
-    BSP_IO_PORT_11_PIN_01 = 0x0B01,     /* IO port 11 pin 1 */
-    BSP_IO_PORT_11_PIN_02 = 0x0B02,     /* IO port 11 pin 2 */
-    BSP_IO_PORT_11_PIN_03 = 0x0B03,     /* IO port 11 pin 3 */
+    BSP_IO_PORT_11_PIN_00 = 0x0B00,       /* IO port 11 pin 0 */
+    BSP_IO_PORT_11_PIN_01 = 0x0B01,       /* IO port 11 pin 1 */
+    BSP_IO_PORT_11_PIN_02 = 0x0B02,       /* IO port 11 pin 2 */
+    BSP_IO_PORT_11_PIN_03 = 0x0B03,       /* IO port 11 pin 3 */
 
-    BSP_IO_PORT_12_PIN_00 = 0x0C00,     /* IO port 12 pin 0 */
-    BSP_IO_PORT_12_PIN_01 = 0x0C01,     /* IO port 12 pin 1 */
+    BSP_IO_PORT_12_PIN_00 = 0x0C00,       /* IO port 12 pin 0 */
+    BSP_IO_PORT_12_PIN_01 = 0x0C01,       /* IO port 12 pin 1 */
 
-    BSP_IO_PORT_13_PIN_00 = 0x0D00,     /* IO port 13 pin 0 */
-    BSP_IO_PORT_13_PIN_01 = 0x0D01,     /* IO port 13 pin 1 */
-    BSP_IO_PORT_13_PIN_02 = 0x0D02,     /* IO port 13 pin 2 */
-    BSP_IO_PORT_13_PIN_03 = 0x0D03,     /* IO port 13 pin 3 */
-    BSP_IO_PORT_13_PIN_04 = 0x0D04,     /* IO port 13 pin 4 */
+    BSP_IO_PORT_13_PIN_00 = 0x0D00,       /* IO port 13 pin 0 */
+    BSP_IO_PORT_13_PIN_01 = 0x0D01,       /* IO port 13 pin 1 */
+    BSP_IO_PORT_13_PIN_02 = 0x0D02,       /* IO port 13 pin 2 */
+    BSP_IO_PORT_13_PIN_03 = 0x0D03,       /* IO port 13 pin 3 */
+    BSP_IO_PORT_13_PIN_04 = 0x0D04,       /* IO port 13 pin 4 */
 
-    BSP_IO_PORT_14_PIN_00 = 0x0E00,     /* IO port 14 pin 0 */
-    BSP_IO_PORT_14_PIN_01 = 0x0E01,     /* IO port 14 pin 1 */
-    BSP_IO_PORT_14_PIN_02 = 0x0E02,     /* IO port 14 pin 2 */
+    BSP_IO_PORT_14_PIN_00 = 0x0E00,       /* IO port 14 pin 0 */
+    BSP_IO_PORT_14_PIN_01 = 0x0E01,       /* IO port 14 pin 1 */
+    BSP_IO_PORT_14_PIN_02 = 0x0E02,       /* IO port 14 pin 2 */
 
-    BSP_IO_PORT_15_PIN_00 = 0x0F00,     /* IO port 15 pin 0 */
-    BSP_IO_PORT_15_PIN_01 = 0x0F01,     /* IO port 15 pin 1 */
-    BSP_IO_PORT_15_PIN_02 = 0x0F02,     /* IO port 15 pin 2 */
-    BSP_IO_PORT_15_PIN_03 = 0x0F03,     /* IO port 15 pin 3 */
+    BSP_IO_PORT_15_PIN_00 = 0x0F00,       /* IO port 15 pin 0 */
+    BSP_IO_PORT_15_PIN_01 = 0x0F01,       /* IO port 15 pin 1 */
+    BSP_IO_PORT_15_PIN_02 = 0x0F02,       /* IO port 15 pin 2 */
+    BSP_IO_PORT_15_PIN_03 = 0x0F03,       /* IO port 15 pin 3 */
 
-    BSP_IO_PORT_16_PIN_00 = 0x1000,     /* IO port 16 pin 0 */
-    BSP_IO_PORT_16_PIN_01 = 0x1001,     /* IO port 16 pin 1 */
+    BSP_IO_PORT_16_PIN_00 = 0x1000,       /* IO port 16 pin 0 */
+    BSP_IO_PORT_16_PIN_01 = 0x1001,       /* IO port 16 pin 1 */
 
-    BSP_IO_PORT_17_PIN_00 = 0x1100,     /* IO port 17 pin 0 */
-    BSP_IO_PORT_17_PIN_01 = 0x1101,     /* IO port 17 pin 1 */
-    BSP_IO_PORT_17_PIN_02 = 0x1102,     /* IO port 17 pin 2 */
-    BSP_IO_PORT_17_PIN_03 = 0x1103,     /* IO port 17 pin 3 */
+    BSP_IO_PORT_17_PIN_00 = 0x1100,       /* IO port 17 pin 0 */
+    BSP_IO_PORT_17_PIN_01 = 0x1101,       /* IO port 17 pin 1 */
+    BSP_IO_PORT_17_PIN_02 = 0x1102,       /* IO port 17 pin 2 */
+    BSP_IO_PORT_17_PIN_03 = 0x1103,       /* IO port 17 pin 3 */
 
-    BSP_IO_PORT_18_PIN_00 = 0x1200,     /* IO port 18 pin 0 */
-    BSP_IO_PORT_18_PIN_01 = 0x1201,     /* IO port 18 pin 1 */
-    BSP_IO_PORT_18_PIN_02 = 0x1202,     /* IO port 18 pin 2 */
-    BSP_IO_PORT_18_PIN_03 = 0x1203,     /* IO port 18 pin 3 */
-    BSP_IO_PORT_18_PIN_04 = 0x1204,     /* IO port 18 pin 4 */
-    BSP_IO_PORT_18_PIN_05 = 0x1205,     /* IO port 18 pin 5 */
+    BSP_IO_PORT_18_PIN_00 = 0x1200,       /* IO port 18 pin 0 */
+    BSP_IO_PORT_18_PIN_01 = 0x1201,       /* IO port 18 pin 1 */
+    BSP_IO_PORT_18_PIN_02 = 0x1202,       /* IO port 18 pin 2 */
+    BSP_IO_PORT_18_PIN_03 = 0x1203,       /* IO port 18 pin 3 */
+    BSP_IO_PORT_18_PIN_04 = 0x1204,       /* IO port 18 pin 4 */
+    BSP_IO_PORT_18_PIN_05 = 0x1205,       /* IO port 18 pin 5 */
 
     /* Special purpose port */
-    BSP_IO_NMI = 0xFFFF0100,            /* NMI */
+    BSP_IO_NMI = 0xFFFF0100,              /* NMI */
 
-    BSP_IO_TMS_SWDIO = 0xFFFF0200,      /* TMS_SWDIO */
+    BSP_IO_TMS_SWDIO = 0xFFFF0200,        /* TMS_SWDIO */
 
-    BSP_IO_TDO_SWO = 0xFFFF0300,        /* TDO_SWO */
+    BSP_IO_TDO_SWO = 0xFFFF0300,          /* TDO_SWO */
 
-    BSP_IO_AUDIO_CLK1 = 0xFFFF0400,     /* AUDIO_CLK1 */
-    BSP_IO_AUDIO_CLK2 = 0xFFFF0401,     /* AUDIO_CLK2 */
+    BSP_IO_AUDIO_CLK1 = 0xFFFF0400,       /* AUDIO_CLK1 */
+    BSP_IO_AUDIO_CLK2 = 0xFFFF0401,       /* AUDIO_CLK2 */
 
-    BSP_IO_SD0_CLK   = 0xFFFF0600,      /* CD0_CLK */
-    BSP_IO_SD0_CMD   = 0xFFFF0601,      /* CD0_CMD */
-    BSP_IO_SD0_RST_N = 0xFFFF0602,      /* CD0_RST_N */
+    BSP_IO_SD0_CLK   = 0xFFFF0600,        /* CD0_CLK */
+    BSP_IO_SD0_CMD   = 0xFFFF0601,        /* CD0_CMD */
+    BSP_IO_SD0_RST_N = 0xFFFF0602,        /* CD0_RST_N */
 
-    BSP_IO_SD0_DATA0 = 0xFFFF0700,      /* SD0_DATA0 */
-    BSP_IO_SD0_DATA1 = 0xFFFF0701,      /* SD0_DATA1 */
-    BSP_IO_SD0_DATA2 = 0xFFFF0702,      /* SD0_DATA2 */
-    BSP_IO_SD0_DATA3 = 0xFFFF0703,      /* SD0_DATA3 */
-    BSP_IO_SD0_DATA4 = 0xFFFF0704,      /* SD0_DATA4 */
-    BSP_IO_SD0_DATA5 = 0xFFFF0705,      /* SD0_DATA5 */
-    BSP_IO_SD0_DATA6 = 0xFFFF0706,      /* SD0_DATA6 */
-    BSP_IO_SD0_DATA7 = 0xFFFF0707,      /* SD0_DATA7 */
+    BSP_IO_SD0_DATA0 = 0xFFFF0700,        /* SD0_DATA0 */
+    BSP_IO_SD0_DATA1 = 0xFFFF0701,        /* SD0_DATA1 */
+    BSP_IO_SD0_DATA2 = 0xFFFF0702,        /* SD0_DATA2 */
+    BSP_IO_SD0_DATA3 = 0xFFFF0703,        /* SD0_DATA3 */
+    BSP_IO_SD0_DATA4 = 0xFFFF0704,        /* SD0_DATA4 */
+    BSP_IO_SD0_DATA5 = 0xFFFF0705,        /* SD0_DATA5 */
+    BSP_IO_SD0_DATA6 = 0xFFFF0706,        /* SD0_DATA6 */
+    BSP_IO_SD0_DATA7 = 0xFFFF0707,        /* SD0_DATA7 */
 
-    BSP_IO_SD1_CLK = 0xFFFF0800,        /* SD1_CLK */
-    BSP_IO_SD1_CMD = 0xFFFF0801,        /* SD1_CMD */
+    BSP_IO_SD1_CLK = 0xFFFF0800,          /* SD1_CLK */
+    BSP_IO_SD1_CMD = 0xFFFF0801,          /* SD1_CMD */
 
-    BSP_IO_SD1_DATA0 = 0xFFFF0900,      /* SD1_DATA0 */
-    BSP_IO_SD1_DATA1 = 0xFFFF0901,      /* SD1_DATA1 */
-    BSP_IO_SD1_DATA2 = 0xFFFF0902,      /* SD1_DATA2 */
-    BSP_IO_SD1_DATA3 = 0xFFFF0903,      /* SD1_DATA3 */
+    BSP_IO_SD1_DATA0 = 0xFFFF0900,        /* SD1_DATA0 */
+    BSP_IO_SD1_DATA1 = 0xFFFF0901,        /* SD1_DATA1 */
+    BSP_IO_SD1_DATA2 = 0xFFFF0902,        /* SD1_DATA2 */
+    BSP_IO_SD1_DATA3 = 0xFFFF0903,        /* SD1_DATA3 */
 
-    BSP_IO_QSPI0_SPCLK = 0xFFFF0A00,    /* QSPI0_SPCLK */
-    BSP_IO_QSPI0_IO0   = 0xFFFF0A01,    /* QSPI0_IO0 */
-    BSP_IO_QSPI0_IO1   = 0xFFFF0A02,    /* QSPI0_IO1 */
-    BSP_IO_QSPI0_IO2   = 0xFFFF0A03,    /* QSPI0_IO2 */
-    BSP_IO_QSPI0_IO3   = 0xFFFF0A04,    /* QSPI0_IO3 */
-    BSP_IO_QSPI0_SSL   = 0xFFFF0A05,    /* QSPI0_SSL */
+    BSP_IO_QSPI0_SPCLK = 0xFFFF0A00,      /* QSPI0_SPCLK */
+    BSP_IO_QSPI0_IO0   = 0xFFFF0A01,      /* QSPI0_IO0 */
+    BSP_IO_QSPI0_IO1   = 0xFFFF0A02,      /* QSPI0_IO1 */
+    BSP_IO_QSPI0_IO2   = 0xFFFF0A03,      /* QSPI0_IO2 */
+    BSP_IO_QSPI0_IO3   = 0xFFFF0A04,      /* QSPI0_IO3 */
+    BSP_IO_QSPI0_SSL   = 0xFFFF0A05,      /* QSPI0_SSL */
 
-    BSP_IO_QSPI_RESET_N = 0xFFFF0C00,   /* QSPI_RESET_N */
-    BSP_IO_QSPI_WP_N    = 0xFFFF0C01,   /* QSPI_WP_N */
+    BSP_IO_QSPI_RESET_N = 0xFFFF0C00,     /* QSPI_RESET_N */
+    BSP_IO_QSPI_WP_N    = 0xFFFF0C01,     /* QSPI_WP_N */
 
-    BSP_IO_WDTOVF_PERROUT = 0xFFFF0D00, /* WDTOVF_PERROUT */
+    BSP_IO_WDTOVF_PERROUT_N = 0xFFFF0D00, /* WDTOVF_PERROUT_N */
 
-    BSP_IO_RIIC0_SDA = 0xFFFF0E00,      /* RIIC0_SDA */
-    BSP_IO_RIIC0_SCL = 0xFFFF0E01,      /* RIIC0_SCL */
-    BSP_IO_RIIC1_SDA = 0xFFFF0E02,      /* RIIC1_SDA */
-    BSP_IO_RIIC1_SCL = 0xFFFF0E03,      /* RIIC1_SCL */
+    BSP_IO_RIIC0_SDA = 0xFFFF0E00,        /* RIIC0_SDA */
+    BSP_IO_RIIC0_SCL = 0xFFFF0E01,        /* RIIC0_SCL */
+    BSP_IO_RIIC1_SDA = 0xFFFF0E02,        /* RIIC1_SDA */
+    BSP_IO_RIIC1_SCL = 0xFFFF0E03,        /* RIIC1_SCL */
 } bsp_io_port_pin_t;
+
+/** BSP System Reset Signals */
+typedef enum e_bsp_system_reset_signal
+{
+    BSP_SYSTEM_RESET_SIGNAL_WDT_CA55_0 = 0, ///< WDT for Cortex-A55 Core 0.
+    BSP_SYSTEM_RESET_SIGNAL_WDT_CM33   = 2, ///< WDT for Cortex-M33.
+    BSP_SYSTEM_RESET_SIGNAL_MAX        = 3, ///< The number of supported system reset signals.
+} bsp_system_reset_signal_t;
 
 /*==============================================
  * DMAC_B External Detection Overrides
  *==============================================*/
 
- /** Detection method of the external DMA request signal. See RZ/T2M hardware manual Table 14.19 DMA Transfer Request Detection Operation Setting Table. */
+/** Detection method of the external DMA request signal. */
 typedef enum e_dmac_b_external_detection
 {
-    DMAC_B_EXTERNAL_DETECTION_NO_DETECTION = 0,   ///< Not using hardware detection.
+    DMAC_B_EXTERNAL_DETECTION_NO_DETECTION = 0, ///< Not using hardware detection.
 } dmac_b_external_detection_t;
 
 /** access control. */
@@ -447,9 +512,41 @@ typedef enum e_fsp_priv_clock
     FSP_PRIV_CLOCK_NUM,
 } fsp_priv_clock_t;
 
+/* Private enum used in R_BSP_ClockDividerSet. */
+typedef enum e_fsp_priv_clock_divider
+{
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL1 = 0,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_B,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_C,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_CLK200FIX,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_A,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_B,
+    FSP_PRIV_CLOCK_DIVIDER_NUM,
+} fsp_priv_clock_divider_t;
+
+/* Private enum used in R_BSP_ClockSelectorSet. */
+typedef enum e_fsp_priv_clock_selector
+{
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI0 = 0,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI1,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL3_3,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL4,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL6_2,
+    FSP_PRIV_CLOCK_SELECTOR_NUM,
+} fsp_priv_clock_selector_t;
+
 /*==============================================
  * Transfer API Overrides
  *==============================================*/
+
+/** Events that can trigger a callback function. */
+typedef enum e_transfer_event
+{
+    TRANSFER_EVENT_TRANSFER_END   = 0, ///< Transfer has completed.
+    TRANSFER_EVENT_TRANSFER_ERROR = 1, ///< Transfer error has occurred.
+} transfer_event_t;
 
 /** Transfer mode describes what will happen when a transfer request occurs. */
 typedef enum e_transfer_mode
@@ -483,6 +580,13 @@ typedef enum e_transfer_addr_mode
     /** Address pointer remains fixed after each transfer. */
     TRANSFER_ADDR_MODE_FIXED = 1
 } transfer_addr_mode_t;
+
+/** Callback function parameter data. */
+typedef struct st_transfer_callback_args_t
+{
+    transfer_event_t event;            ///< Event code
+    void const     * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in ::transfer_cfg_t.
+} transfer_callback_args_t;
 
 typedef struct st_transfer_info
 {
@@ -529,6 +633,61 @@ typedef struct st_adc_info
     uint32_t              calibration_data1; ///< Temperature sensor calibration data1
     uint32_t              calibration_data2; ///< Temperature sensor calibration data2
 } adc_info_t;
+
+/*==============================================
+ * CANFD Overrides
+ *==============================================*/
+
+/** CANFD Transmit Buffer (MB + CFIFO) */
+typedef enum e_canfd_tx_buffer
+{
+    CANFD_TX_BUFFER_0 = 0,
+    CANFD_TX_BUFFER_1 = 1,
+    CANFD_TX_BUFFER_2 = 2,
+    CANFD_TX_BUFFER_3 = 3,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_TX_BUFFER_4  = 4,
+    CANFD_TX_BUFFER_5  = 5,
+    CANFD_TX_BUFFER_6  = 6,
+    CANFD_TX_BUFFER_7  = 7,
+    CANFD_TX_BUFFER_8  = 8,
+    CANFD_TX_BUFFER_9  = 9,
+    CANFD_TX_BUFFER_10 = 10,
+    CANFD_TX_BUFFER_11 = 11,
+    CANFD_TX_BUFFER_12 = 12,
+    CANFD_TX_BUFFER_13 = 13,
+    CANFD_TX_BUFFER_14 = 14,
+    CANFD_TX_BUFFER_15 = 15,
+#endif
+    CANFD_TX_BUFFER_FIFO_COMMON_0 = 16,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_TX_BUFFER_FIFO_COMMON_1 = 17,
+    CANFD_TX_BUFFER_FIFO_COMMON_2 = 18,
+#endif
+} canfd_tx_buffer_t;
+
+/** CANFD Transmit Message Buffer (TX MB) */
+typedef enum e_canfd_tx_mb
+{
+    CANFD_TX_MB_0 = 0,
+    CANFD_TX_MB_1 = 1,
+    CANFD_TX_MB_2 = 2,
+    CANFD_TX_MB_3 = 3,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_TX_MB_4  = 4,
+    CANFD_TX_MB_5  = 5,
+    CANFD_TX_MB_6  = 6,
+    CANFD_TX_MB_7  = 7,
+    CANFD_TX_MB_8  = 8,
+    CANFD_TX_MB_9  = 9,
+    CANFD_TX_MB_10 = 10,
+    CANFD_TX_MB_11 = 11,
+    CANFD_TX_MB_12 = 12,
+    CANFD_TX_MB_13 = 13,
+    CANFD_TX_MB_14 = 14,
+    CANFD_TX_MB_15 = 15,
+#endif
+} canfd_tx_mb_t;
 
 /***********************************************************************************************************************
  * Exported global variables

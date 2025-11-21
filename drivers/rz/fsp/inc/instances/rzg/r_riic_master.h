@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -100,6 +100,7 @@ typedef struct st_riic_master_extended_cfg
     IRQn_Type spi_irq;                            ///< Stop condition IRQ Number
     IRQn_Type ali_irq;                            ///< Arbitration lost IRQ Number
     IRQn_Type tmoi_irq;                           ///< Timeout IRQ Number
+    void    * p_reg;                              ///< Register base address for specified channel
 } riic_master_extended_cfg_t;
 
 /**********************************************************************************************************************

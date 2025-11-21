@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -14,37 +14,35 @@
  * Macro definitions
  **********************************************************************************************************************/
 #ifndef SCIF_UART_CFG_RX_ENABLE
- #define SCIF_UART_CFG_RX_ENABLE               1
+ #define SCIF_UART_CFG_RX_ENABLE           1
 #endif
 #ifndef SCIF_UART_CFG_TX_ENABLE
- #define SCIF_UART_CFG_TX_ENABLE               1
+ #define SCIF_UART_CFG_TX_ENABLE           1
 #endif
 
 /** Number of divisors in the data table used for baud rate calculation. */
-#define SCIF_UART_NUM_DIVISORS_ASYNC           (9U)
+#define SCIF_UART_NUM_DIVISORS_ASYNC       (9U)
 
 /** Valid range of values for the modulation duty register is 128 - 256 (256 = modulation disabled). */
-#define SCIF_UART_MDDR_MIN                     (128U)
-#define SCIF_UART_MDDR_MAX                     (256U)
+#define SCIF_UART_MDDR_MIN                 (128U)
+#define SCIF_UART_MDDR_MAX                 (256U)
 
 /** The bit rate register is 8-bits, so the maximum value is 255. */
-#define SCIF_UART_BRR_MAX                      (255U)
+#define SCIF_UART_BRR_MAX                  (255U)
 
 /** No limit to the number of bytes to read or write. */
-#define SCIF_UART_MAX_READ_WRITE               (0xFFFFFFFFU)
+#define SCIF_UART_MAX_READ_WRITE           (0xFFFFFFFFU)
 
 /** "SCFU" in ASCIFAI.  Used to determine if the control block is open. */
-#define SCIF_UART_OPEN                         (0x53434655U)
+#define SCIF_UART_OPEN                     (0x53434655U)
 
-#define SCIF_UART_BRR_DEFAULT_VALUE            (0xFFU)
+#define SCIF_UART_BRR_DEFAULT_VALUE        (0xFFU)
 
-#define SCIF_UART_DMAC_RX_TRIGGER_LEVEL        (1U)
+#define SCIF_UART_DMAC_RX_TRIGGER_LEVEL    (1U)
 
-#define SCIF_UART_DMAC_MAX_TRANSFER            (0xFFFFFFFFU)
+#define SCIF_UART_DMAC_MAX_TRANSFER        (0xFFFFFFFFU)
 
-#define SCIF_REG_SIZE                          (R_SCIFA1_BASE - R_SCIFA0_BASE)
-
-#define SCI_UART_INVALID_16BIT_PARAM           (0xFFFFU)
+#define SCIF_UART_INVALID_16BIT_PARAM      (0xFFFFU)
 
 /***********************************************************************************************************************
  * Private constants
@@ -134,11 +132,6 @@ void scif_uart_rx_dmac_callback(scif_uart_instance_ctrl_t * p_ctrl);
  * Private global variables
  **********************************************************************************************************************/
 
-/** Name of module used by error logger macro */
-#if BSP_CFG_ERROR_LOG != 0
-static const char g_module_name[] = "scif_uart";
-#endif
-
 /** Baud rate divisor information (UART mode) */
 static const baud_setting_const_t g_async_baud[SCIF_UART_NUM_DIVISORS_ASYNC] =
 {
@@ -216,38 +209,29 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
     FSP_ERROR_RETURN(SCIF_UART_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
 
     /* Make sure this channel exists. */
-    FSP_ERROR_RETURN(BSP_FEATURE_SCIF_CHANNELS & (1U << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
+    FSP_ERROR_RETURN(BSP_FEATURE_SCIF_CHANNEL_MASK & (1U << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 
     FSP_ASSERT(p_cfg->rxi_irq >= 0);
     FSP_ASSERT(p_cfg->txi_irq >= 0);
     FSP_ASSERT(p_cfg->tei_irq >= 0);
     FSP_ASSERT(p_cfg->eri_irq >= 0);
     FSP_ASSERT(((scif_uart_extended_cfg_t *) p_cfg->p_extend)->bri_irq >= 0);
+    FSP_ASSERT(NULL != ((scif_uart_extended_cfg_t *) p_cfg->p_extend)->p_reg);
  #if (SCIF_UART_CFG_FLOW_CONTROL_SUPPORT)
     if (((scif_uart_extended_cfg_t *) p_cfg->p_extend)->uart_mode != SCIF_UART_MODE_RS232)
     {
         FSP_ERROR_RETURN(
-            ((scif_uart_extended_cfg_t *) p_cfg->p_extend)->rs485_setting.de_control_pin != SCI_UART_INVALID_16BIT_PARAM,
+            ((scif_uart_extended_cfg_t *) p_cfg->p_extend)->rs485_setting.de_control_pin != SCIF_UART_INVALID_16BIT_PARAM,
             FSP_ERR_INVALID_ARGUMENT);
     }
  #endif
 #endif
 
-#if defined(BSP_MCU_GROUP_RZG3S)
+    /* Get extended configuration structure pointer. */
+    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_cfg->p_extend;
 
-    /* The difference of base address between channel 4 and 5 is 0x1800. But the difference between other channel is 0x0400 */
-    if (5U == p_cfg->channel)
-    {
-        p_ctrl->p_reg = ((R_SCIFA0_Type *) (R_SCIFA5_BASE));
-    }
-    else
-    {
-        p_ctrl->p_reg = ((R_SCIFA0_Type *) (R_SCIFA0_BASE + (SCIF_REG_SIZE * p_cfg->channel)));
-    }
-
-#else
-    p_ctrl->p_reg = ((R_SCIFA0_Type *) (R_SCIFA0_BASE + (SCIF_REG_SIZE * p_cfg->channel)));
-#endif
+    /* Set the base address for specified channel */
+    p_ctrl->p_reg = (R_SCIFA0_Type *) p_extend->p_reg;
 
     p_ctrl->p_cfg = p_cfg;
 
@@ -266,9 +250,7 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 #endif
 
-    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
-
-    /* Enable the SCIF channel and reset the registers to their initial state. */
+    /* Enable the SCIF channel. */
     R_BSP_MODULE_START(FSP_IP_SCIF, p_cfg->channel);
 
     /* Initialize registers as defined in section "SCIFA Initialization in Asynchronous Mode" in the user's
@@ -338,6 +320,8 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
 #endif
     p_ctrl->p_reg->SCR = (uint16_t) scr;
 
+#if BSP_FEATURE_SCIF_RTSCTS_SUPPORT
+
     /* Automatic RTS/CTS control */
     if (p_extend->flow_control != SCIF_UART_FLOW_CONTROL_NONE)
     {
@@ -350,6 +334,7 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
         p_ctrl->sptr            |= (R_SCIFA0_SPTR_RTS2IO_Msk | R_SCIFA0_SPTR_RTS2DT_Msk);
         p_ctrl->p_reg->FCR_b.MCE = 0;
     }
+#endif
 
 #if SCIF_UART_CFG_FLOW_CONTROL_SUPPORT
     if ((p_extend->rs485_setting.de_control_pin != SCIF_UART_INVALID_16BIT_PARAM) &&
@@ -360,7 +345,7 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
             R_BSP_PinAccessEnable();
 
             /* Assert driver enable if RS-485 FullDuplex mode is enabled. */
-            bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+            bsp_io_level_t level = SCIF_UART_RS485_DE_POLARITY_HIGH ==
                                    p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW;
             R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
 
@@ -468,7 +453,7 @@ fsp_err_t R_SCIF_UART_Read (uart_ctrl_t * const p_api_ctrl, uint8_t * const p_de
         FSP_ASSERT(bytes <= SCIF_UART_DMAC_MAX_TRANSFER);
   #endif
         p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->p_dest = (void *) p_dest;
-        p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->length = bytes;
+        p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->length = (uint16_t) bytes;
 
         err =
             p_ctrl->p_cfg->p_transfer_rx->p_api->reconfigure(p_ctrl->p_cfg->p_transfer_rx->p_ctrl,
@@ -542,7 +527,7 @@ fsp_err_t R_SCIF_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * con
   #endif
 
         p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->p_src  = (void const *) (p_ctrl->p_tx_src);
-        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->length = num_transfer;
+        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->length = (uint16_t) num_transfer;
 
         err = p_ctrl->p_cfg->p_transfer_tx->p_api->reconfigure(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
                                                                p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info);
@@ -558,7 +543,7 @@ fsp_err_t R_SCIF_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * con
     {
         R_BSP_PinAccessEnable();
 
-        bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+        bsp_io_level_t level = SCIF_UART_RS485_DE_POLARITY_HIGH ==
                                p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_HIGH : BSP_IO_LEVEL_LOW;
         R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
 
@@ -761,11 +746,12 @@ fsp_err_t R_SCIF_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communic
         uint32_t scr = p_ctrl->p_reg->SCR;
         scr               &= (~(R_SCIFA0_SCR_TIE_Msk | R_SCIFA0_SCR_TEIE_Msk));
         p_ctrl->p_reg->SCR = (uint16_t) scr;
-
+ #if SCIF_UART_CFG_DMAC_ENABLE
         if (NULL != p_ctrl->p_cfg->p_transfer_tx)
         {
             err = p_ctrl->p_cfg->p_transfer_tx->p_api->disable(p_ctrl->p_cfg->p_transfer_tx->p_ctrl);
         }
+ #endif
 
         p_ctrl->tx_src_bytes = 0U;
 
@@ -789,11 +775,12 @@ fsp_err_t R_SCIF_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communic
         err = FSP_SUCCESS;
 
         p_ctrl->rx_dest_bytes = 0U;
-
+ #if SCIF_UART_CFG_DMAC_ENABLE
         if (NULL != p_ctrl->p_cfg->p_transfer_rx)
         {
             err = p_ctrl->p_cfg->p_transfer_rx->p_api->disable(p_ctrl->p_cfg->p_transfer_rx->p_ctrl);
         }
+ #endif
 
         /* Reset the receive fifo */
         p_ctrl->p_reg->FCR_b.RFRST = 1U;
@@ -891,7 +878,11 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
     FSP_ERROR_RETURN(SCIF_UART_MAX_BAUD_RATE_ERROR_X_1000 >= baud_rate_error_x_1000, FSP_ERR_INVALID_ARGUMENT);
     FSP_ERROR_RETURN((0U != baudrate), FSP_ERR_INVALID_ARGUMENT);
 #endif
+#if BSP_FEATURE_SCIF_CKS2_LIMITATION
     scif_uart_instance_ctrl_t const * p_ctrl = (scif_uart_instance_ctrl_t const *) p_api_ctrl;
+#else
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+#endif
 
     p_baud_setting->brr = SCIF_UART_BRR_MAX;
     p_baud_setting->semr_baudrate_bits_b.brme = 0U;
@@ -904,6 +895,7 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
      *  BRR = (PCLK / (div_coefficient * baud)) - 1
      */
     int32_t  hit_bit_err = SCIF_UART_100_PERCENT_X_1000;
+    uint8_t  hit_mddr    = 0U;
     uint32_t divisor     = 0U;
 
     uint32_t freq_hz = R_FSP_SystemClockHzGet(BSP_FEATURE_SCIF_CLOCK);
@@ -924,11 +916,13 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
                 continue;
             }
 
+#if BSP_FEATURE_SCIF_CKS2_LIMITATION
             if ((p_ctrl->p_cfg->channel == 0) && (g_async_baud[i].cks == 2))
             {
                 /* Skip if channel eq 0 and cks eq 2 */
                 continue;
             }
+#endif
 
             divisor = (uint32_t) g_div_coefficient[i] * baudrate;
             uint32_t temp_brr = freq_hz / divisor;
@@ -965,17 +959,16 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
                     int32_t bit_err = (int32_t) ((((int64_t) freq_hz * SCIF_UART_100_PERCENT_X_1000) / err_divisor) -
                                                  SCIF_UART_100_PERCENT_X_1000);
 
-                    uint32_t mddr = SCIF_UART_MDDR_MAX;
+                    uint8_t mddr = 0;
                     if (bitrate_modulation)
                     {
                         /* Calculate the MDDR (M) value if bit rate modulation is enabled,
-                         * The formula to calculate MBBR (from the M and N relationship given in the hardware manual)
-                         * is as follows and it must be between 128 and 256.
+                         * The formula to calculate MBBR (from the M and N relationship given in the user's manual)
+                         * is as follows and it must be between 128 and 255.
                          * MDDR = ((div_coefficient * baud * 256) * (BRR + 1)) / PCLK */
-                        mddr = (uint32_t) err_divisor / (freq_hz / SCIF_UART_MDDR_MAX);
+                        mddr = (uint8_t) ((uint32_t) err_divisor / (freq_hz / SCIF_UART_MDDR_MAX));
 
-                        /* The maximum value that could result from the calculation above is 256, which is a valid MDDR
-                         * value, so only the lower bound is checked. */
+                        /* MDDR value must be greater than or equal to SCIF_UART_MDDR_MIN. */
                         if (mddr < SCIF_UART_MDDR_MIN)
                         {
                             break;
@@ -1005,21 +998,17 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
                         p_baud_setting->semr_baudrate_bits_b.cks  = g_async_baud[i].cks;
                         p_baud_setting->brr = (uint8_t) temp_brr;
                         hit_bit_err         = bit_err;
-                        if (SCIF_UART_MDDR_MAX <= mddr)
-                        {
-                            p_baud_setting->semr_baudrate_bits_b.brme = 0U;
-                            p_baud_setting->mddr = SCIF_UART_MDDR_MAX - 1;
-                        }
-                        else
-                        {
-                            p_baud_setting->semr_baudrate_bits_b.brme = 1U;
-                            p_baud_setting->mddr = (uint8_t) mddr;
-                        }
+                        hit_mddr            = mddr;
+                    }
 
-                        if (!bitrate_modulation)
-                        {
-                            break;
-                        }
+                    if (bitrate_modulation)
+                    {
+                        p_baud_setting->semr_baudrate_bits_b.brme = 1U;
+                        p_baud_setting->mddr = hit_mddr;
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
             }
@@ -1054,7 +1043,7 @@ static void r_scif_negate_de_pin (scif_uart_instance_ctrl_t const * const p_ctrl
     if (p_extend->uart_mode == SCIF_UART_MODE_RS485_HD)
     {
         R_BSP_PinAccessEnable();
-        bsp_io_level_t level = SCI_UART_RS485_DE_POLARITY_HIGH ==
+        bsp_io_level_t level = SCIF_UART_RS485_DE_POLARITY_HIGH ==
                                p_extend->rs485_setting.polarity ? BSP_IO_LEVEL_LOW : BSP_IO_LEVEL_HIGH;
         R_BSP_PinWrite(p_extend->rs485_setting.de_control_pin, level);
 
@@ -1279,30 +1268,30 @@ static void r_scif_uart_config_set (scif_uart_instance_ctrl_t * const p_ctrl, ua
  * @param[in] rtrg  Parameter on configuration table
  * @return RTRG Field value
  **********************************************************************************************************************/
-static uint32_t r_scif_uart_make_rtrg (scif_uart_receive_trigger_t rtrg)
+static uint32_t r_scif_uart_make_rtrg (scif_uart_rx_fifo_trigger_t rtrg)
 {
     uint32_t value = 0;
     switch (rtrg)
     {
-        case SCIF_UART_RECEIVE_TRIGGER_ONE:
+        case SCIF_UART_RX_FIFO_TRIGGER_ONE:
         {
             /* stay RTRG as 0 */
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_QUARTER:
+        case SCIF_UART_RX_FIFO_TRIGGER_QUARTER:
         {
             value = 1 << R_SCIFA0_FCR_RTRG_Pos;
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_HALF:
+        case SCIF_UART_RX_FIFO_TRIGGER_HALF:
         {
             value = 2 << R_SCIFA0_FCR_RTRG_Pos;
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_MAX:
+        case SCIF_UART_RX_FIFO_TRIGGER_MAX:
         {
             value = 3 << R_SCIFA0_FCR_RTRG_Pos;
             break;
@@ -1324,96 +1313,96 @@ static uint32_t r_scif_uart_make_rtrg (scif_uart_receive_trigger_t rtrg)
  * @param[in] rtrg  Parameter on configuration table
  * @return RFTC|RTRGS Field value
  **********************************************************************************************************************/
-static uint32_t r_scif_uart_make_rftc (scif_uart_receive_trigger_t rtrg)
+static uint32_t r_scif_uart_make_rftc (scif_uart_rx_fifo_trigger_t rtrg)
 {
     uint32_t value = 0;
     switch (rtrg)
     {
-        case SCIF_UART_RECEIVE_TRIGGER_1:
+        case SCIF_UART_RX_FIFO_TRIGGER_1:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (1 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_2:
+        case SCIF_UART_RX_FIFO_TRIGGER_2:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (2 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_3:
+        case SCIF_UART_RX_FIFO_TRIGGER_3:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (3 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_4:
+        case SCIF_UART_RX_FIFO_TRIGGER_4:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (4 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_5:
+        case SCIF_UART_RX_FIFO_TRIGGER_5:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (5 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_6:
+        case SCIF_UART_RX_FIFO_TRIGGER_6:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (6 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_7:
+        case SCIF_UART_RX_FIFO_TRIGGER_7:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (7 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_8:
+        case SCIF_UART_RX_FIFO_TRIGGER_8:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (8 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_9:
+        case SCIF_UART_RX_FIFO_TRIGGER_9:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (9 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_10:
+        case SCIF_UART_RX_FIFO_TRIGGER_10:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (10 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_11:
+        case SCIF_UART_RX_FIFO_TRIGGER_11:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (11 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_12:
+        case SCIF_UART_RX_FIFO_TRIGGER_12:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (12 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_13:
+        case SCIF_UART_RX_FIFO_TRIGGER_13:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (13 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_14:
+        case SCIF_UART_RX_FIFO_TRIGGER_14:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (14 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
         }
 
-        case SCIF_UART_RECEIVE_TRIGGER_15:
+        case SCIF_UART_RX_FIFO_TRIGGER_15:
         {
             value = R_SCIFA0_FTCR_RTRGS_Msk | (15 << R_SCIFA0_FTCR_RFTC_Pos);
             break;
@@ -1428,6 +1417,8 @@ static uint32_t r_scif_uart_make_rftc (scif_uart_receive_trigger_t rtrg)
 
     return value;
 }
+
+#if BSP_FEATURE_SCIF_RTSCTS_SUPPORT
 
 /*******************************************************************************************************************//**
  * Make RSTRG register field value
@@ -1498,6 +1489,8 @@ static uint32_t r_scif_uart_make_rstrg (scif_uart_rts_trigger_t rstrg)
     return value;
 }
 
+#endif
+
 /*******************************************************************************************************************//**
  * Resets FIFO related registers.
  *
@@ -1507,8 +1500,12 @@ static void r_scif_uart_fifo_cfg (scif_uart_instance_ctrl_t * const p_ctrl)
 {
     /* Enable the fifo and set the tx and rx reset bits */
     uint32_t fcr = p_ctrl->p_reg->FCR;
-    fcr               |= (R_SCIFA0_FCR_RFRST_Msk | R_SCIFA0_FCR_TFRST_Msk);
-    fcr               &= (~(R_SCIFA0_FCR_RTRG_Msk | R_SCIFA0_FCR_TTRG_Msk | R_SCIFA0_FCR_RSTRG_Msk));
+    fcr |= (R_SCIFA0_FCR_RFRST_Msk | R_SCIFA0_FCR_TFRST_Msk);
+#if BSP_FEATURE_SCIF_RTSCTS_SUPPORT
+    fcr &= (~(R_SCIFA0_FCR_RTRG_Msk | R_SCIFA0_FCR_TTRG_Msk | R_SCIFA0_FCR_RSTRG_Msk));
+#else
+    fcr &= (~(R_SCIFA0_FCR_RTRG_Msk | R_SCIFA0_FCR_TTRG_Msk));
+#endif
     p_ctrl->p_reg->FCR = (uint16_t) fcr;
     uint32_t ftcr = 0U;
 
@@ -1538,7 +1535,9 @@ static void r_scif_uart_fifo_cfg (scif_uart_instance_ctrl_t * const p_ctrl)
         }
  #endif
 
+ #if BSP_FEATURE_SCIF_RTSCTS_SUPPORT
         fcr |= r_scif_uart_make_rstrg(p_extend->rts_fifo_trigger);
+ #endif
     }
 #endif
     p_ctrl->p_reg->FTCR = (uint16_t) ftcr;

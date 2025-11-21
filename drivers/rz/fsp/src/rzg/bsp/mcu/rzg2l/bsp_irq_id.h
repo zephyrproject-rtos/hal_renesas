@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -131,12 +131,12 @@ typedef enum IRQn
     GTM0_OSTM0INT_IRQn         = 46,   /* IRQ No:46,  OSTM0TINT */
     GTM1_OSTM1INT_IRQn         = 47,   /* IRQ No:47,  OSTM1TINT */
     GTM2_OSTM2INT_IRQn         = 48,   /* IRQ No:48,  OSTM2TINT */
-    WDT0_WDTINT_A0_IRQn        = 49,   /* IRQ No:49,  WDTINT_A0 */
-    WDT0_PERROUT_A0_IRQn       = 50,   /* IRQ No:50,  PERROUT_A0 */
-    WDT1_WDTINT_A1_IRQn        = 51,   /* IRQ No:51,  WDTINT_A1 */
-    WDT1_PERROUT_A1_IRQn       = 52,   /* IRQ No:52,  PERROUT_A1 */
-    WDT2_WDTINT_M_IRQn         = 53,   /* IRQ No:53,  WDTINT_M */
-    WDT2_PERROUT_M_IRQn        = 54,   /* IRQ No:54,  PERROUT_M */
+    WDT0_WDTINT_IRQn           = 49,   /* IRQ No:49,  WDTINT_A0 */
+    WDT0_PERROUT_IRQn          = 50,   /* IRQ No:50,  PERROUT_A0 */
+    WDT1_WDTINT_IRQn           = 51,   /* IRQ No:51,  WDTINT_A1 */
+    WDT1_PERROUT_IRQn          = 52,   /* IRQ No:52,  PERROUT_A1 */
+    WDT2_WDTINT_IRQn           = 53,   /* IRQ No:53,  WDTINT_M */
+    WDT2_PERROUT_IRQn          = 54,   /* IRQ No:54,  PERROUT_M */
                                        /* IRQ No:55,  Reserved */
                                        /* IRQ No:56,  msg_ch0_s */
     MHU1_S_IRQn = 57,                  /* IRQ No:57,  msg_ch1_s */

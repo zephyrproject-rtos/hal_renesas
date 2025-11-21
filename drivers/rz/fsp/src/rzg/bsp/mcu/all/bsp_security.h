@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -174,9 +174,389 @@ FSP_HEADER
 
 #endif
 
+#if BSP_FEATURE_BSP_ACCESS_CONTROL_SET_SUPPORT
+
+ #define R_BSP_MASTER_ACCESS_CONTROL_SET(ip, level, direction)           {FSP_CRITICAL_SECTION_DEFINE;                 \
+                                                                          FSP_CRITICAL_SECTION_ENTER;                  \
+                                                                          BSP_ACCESS_CONTROL_ ## direction(ip, level); \
+                                                                          FSP_CRITICAL_SECTION_EXIT;}
+
+ #define BSP_ACCESS_CONTROL_BSP_MST_ACCCNT_WRITE_DIRECTION(ip, level)    BSP_ACCESS_CONTROL_WRITE_ ## ip(level)
+
+ #define BSP_ACCESS_CONTROL_BSP_MST_ACCCNT_READ_DIRECTION(ip, level)     BSP_ACCESS_CONTROL_READ_ ## ip(level)
+
+ #define R_BSP_SLAVE_ACCESS_CONTROL_SET(ip, level, direction)            {FSP_CRITICAL_SECTION_DEFINE;                     \
+                                                                          FSP_CRITICAL_SECTION_ENTER;                      \
+                                                                          BSP_SLV_ACCCNT_REG_ ## ip =                      \
+                                                                              (BSP_SLV_ACCCNT_REG_ ## ip                   \
+                                                                               & ~(((uint32_t) (                           \
+                                                                                        R_TZC_REGION_ID_ACCESS_0_NRE_Msk)) \
+                                                                                   <<                                      \
+                                                                                   (direction))                            \
+                                                                               | (level <<                                 \
+                                                                                  (direction)));                           \
+                                                                          FSP_CRITICAL_SECTION_EXIT;}
+
+ #define BSP_MST_ACCCNT_LEVEL_NONPRIVILEGED_NONSECURE    (2U)
+ #define BSP_MST_ACCCNT_LEVEL_PRIVILEGED_NONSECURE       (3U)
+ #define BSP_MST_ACCCNT_LEVEL_NONPRIVILEGED_SECURE       (0U)
+ #define BSP_MST_ACCCNT_LEVEL_PRIVILEGED_SECURE          (1U)
+
+ #define BSP_MST_ACCCNT_WRITE_DIRECTION                  (0U)
+ #define BSP_MST_ACCCNT_READ_DIRECTION                   (4U)
+
+ #define BSP_SLV_ACCCNT_LEVEL_NONPRIVILEGED_NONSECURE    (0xF)
+ #define BSP_SLV_ACCCNT_LEVEL_PRIVILEGED_NONSECURE       (0xB)
+ #define BSP_SLV_ACCCNT_LEVEL_NONPRIVILEGED_SECURE       (0x3)
+ #define BSP_SLV_ACCCNT_LEVEL_PRIVILEGED_SECURE          (0x2)
+
+ #define BSP_SLV_ACCCNT_WRITE_DIRECTION                  (16U)
+ #define BSP_SLV_ACCCNT_READ_DIRECTION                   (0U)
+
+ #define BSP_SLV_ACCCNT_REG_BSP_SLV_ACCCNT_SRAMM         (R_TZC_SRAMM->REGION_ID_ACCESS_0)
+ #define BSP_SLV_ACCCNT_REG_BSP_SLV_ACCCNT_SRAMA         (R_TZC_SRAMA->REGION_ID_ACCESS_0)
+ #define BSP_SLV_ACCCNT_REG_BSP_SLV_ACCCNT_DDR01         (R_TZC_DDR01->REGION_ID_ACCESS_0)
+ #define BSP_SLV_ACCCNT_REG_BSP_SLV_ACCCNT_DDR11         (R_TZC_DDR11->REGION_ID_ACCESS_0)
+
+ #ifndef BSP_OVERRIDE_BSP_MST_ACCESS_CONTROL
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_DMAC0(level)         {R_SYSC->SYS_MSTACCCTL0 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL0                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL0_DMAC0_AWPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL0_DMAC0_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL0_DMAC0_AWSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL0_DMAC0_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_DMAC0(level)          {R_SYSC->SYS_MSTACCCTL0 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL0                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL0_DMAC0_ARPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL0_DMAC0_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL0_DMAC0_ARSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL0_DMAC0_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_DMAC1(level)         {R_SYSC->SYS_MSTACCCTL0 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL0                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL0_DMAC1_AWPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL0_DMAC1_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL0_DMAC1_AWSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL0_DMAC1_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_DMAC1(level)          {R_SYSC->SYS_MSTACCCTL0 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL0                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL0_DMAC1_ARPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL0_DMAC1_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL0_DMAC1_ARSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL0_DMAC1_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_3DGE(level)          {R_SYSC->SYS_MSTACCCTL0 =                             \
+                                                                        (R_SYSC->SYS_MSTACCCTL0                          \
+                                                                         & ~(uint32_t) (                                 \
+                                                                             R_SYSC_SYS_MSTACCCTL0_GPU_AWPU_Msk          \
+                                                                             |                                           \
+                                                                             R_SYSC_SYS_MSTACCCTL0_GPU_AWNS_Msk))        \
+                                                                        | R_SYSC_SYS_MSTACCCTL0_GPU_AWSEL_Msk            \
+                                                                        | (level << R_SYSC_SYS_MSTACCCTL0_GPU_AWPU_Pos); \
+}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_3DGE(level)           {R_SYSC->SYS_MSTACCCTL0 =                             \
+                                                                        (R_SYSC->SYS_MSTACCCTL0                          \
+                                                                         & ~(uint32_t) (                                 \
+                                                                             R_SYSC_SYS_MSTACCCTL0_GPU_ARPU_Msk          \
+                                                                             |                                           \
+                                                                             R_SYSC_SYS_MSTACCCTL0_GPU_ARNS_Msk))        \
+                                                                        | R_SYSC_SYS_MSTACCCTL0_GPU_ARSEL_Msk            \
+                                                                        | (level << R_SYSC_SYS_MSTACCCTL0_GPU_ARPU_Pos); \
+}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_SDHI0(level)         {R_SYSC->SYS_MSTACCCTL1 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL1                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL1_SDHI0_AWPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL1_SDHI0_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL1_SDHI0_AWSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL1_SDHI0_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_SDHI0(level)          {R_SYSC->SYS_MSTACCCTL1 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL1                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL1_SDHI0_ARPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL1_SDHI0_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL1_SDHI0_ARSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL1_SDHI0_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_SDHI1(level)         {R_SYSC->SYS_MSTACCCTL1 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL1                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL1_SDHI1_AWPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL1_SDHI1_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL1_SDHI1_AWSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL1_SDHI1_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_SDHI1(level)          {R_SYSC->SYS_MSTACCCTL1 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL1                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL1_SDHI1_ARPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL1_SDHI1_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL1_SDHI1_ARSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL1_SDHI1_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_GBETHER0(level)      {R_SYSC->SYS_MSTACCCTL1 =                          \
+                                                                        (R_SYSC->SYS_MSTACCCTL1                       \
+                                                                         & ~(uint32_t) (                              \
+                                                                             R_SYSC_SYS_MSTACCCTL1_GEther0_AWPU_Msk   \
+                                                                             |                                        \
+                                                                             R_SYSC_SYS_MSTACCCTL1_GEther0_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL1_GEther0_AWSEL_Msk     \
+                                                                        | (level <<                                   \
+                                                                            R_SYSC_SYS_MSTACCCTL1_GEther0_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_GBETHER0(level)       {R_SYSC->SYS_MSTACCCTL1 =                          \
+                                                                        (R_SYSC->SYS_MSTACCCTL1                       \
+                                                                         & ~(uint32_t) (                              \
+                                                                             R_SYSC_SYS_MSTACCCTL1_GEther0_ARPU_Msk   \
+                                                                             |                                        \
+                                                                             R_SYSC_SYS_MSTACCCTL1_GEther0_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL1_GEther0_ARSEL_Msk     \
+                                                                        | (level <<                                   \
+                                                                            R_SYSC_SYS_MSTACCCTL1_GEther0_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_GBETHER1(level)      {R_SYSC->SYS_MSTACCCTL1 =                          \
+                                                                        (R_SYSC->SYS_MSTACCCTL1                       \
+                                                                         & ~(uint32_t) (                              \
+                                                                             R_SYSC_SYS_MSTACCCTL1_GEther1_AWPU_Msk   \
+                                                                             |                                        \
+                                                                             R_SYSC_SYS_MSTACCCTL1_GEther1_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL1_GEther1_AWSEL_Msk     \
+                                                                        | (level <<                                   \
+                                                                            R_SYSC_SYS_MSTACCCTL1_GEther1_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_GBETHER1(level)       {R_SYSC->SYS_MSTACCCTL1 =                          \
+                                                                        (R_SYSC->SYS_MSTACCCTL1                       \
+                                                                         & ~(uint32_t) (                              \
+                                                                             R_SYSC_SYS_MSTACCCTL1_GEther1_ARPU_Msk   \
+                                                                             |                                        \
+                                                                             R_SYSC_SYS_MSTACCCTL1_GEther1_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL1_GEther1_ARSEL_Msk     \
+                                                                        | (level <<                                   \
+                                                                            R_SYSC_SYS_MSTACCCTL1_GEther1_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_USB20_HOST(level)    {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                        (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                         & ~(uint32_t) (                             \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB20H_AWPU_Msk   \
+                                                                             |                                       \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB20H_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL2_USB20H_AWSEL_Msk     \
+                                                                        | (level <<                                  \
+                                                                            R_SYSC_SYS_MSTACCCTL2_USB20H_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_USB20_HOST(level)     {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                        (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                         & ~(uint32_t) (                             \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB20H_ARPU_Msk   \
+                                                                             |                                       \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB20H_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL2_USB20H_ARSEL_Msk     \
+                                                                        | (level <<                                  \
+                                                                            R_SYSC_SYS_MSTACCCTL2_USB20H_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_USB21_HOST(level)    {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                        (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                         & ~(uint32_t) (                             \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB21H_AWPU_Msk   \
+                                                                             |                                       \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB21H_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL2_USB21H_AWSEL_Msk     \
+                                                                        | (level <<                                  \
+                                                                            R_SYSC_SYS_MSTACCCTL2_USB21H_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_USB21_HOST(level)     {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                        (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                         & ~(uint32_t) (                             \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB21H_ARPU_Msk   \
+                                                                             |                                       \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB21H_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL2_USB21H_ARSEL_Msk     \
+                                                                        | (level <<                                  \
+                                                                            R_SYSC_SYS_MSTACCCTL2_USB21H_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_USB20_FUNC(level)    {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                        (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                         & ~(uint32_t) (                             \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB20D_AWPU_Msk   \
+                                                                             |                                       \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB20D_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL2_USB20D_AWSEL_Msk     \
+                                                                        | (level <<                                  \
+                                                                            R_SYSC_SYS_MSTACCCTL2_USB20D_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_USB20_FUNC(level)     {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                        (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                         & ~(uint32_t) (                             \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB20D_ARPU_Msk   \
+                                                                             |                                       \
+                                                                             R_SYSC_SYS_MSTACCCTL2_USB20D_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL2_USB20D_ARSEL_Msk     \
+                                                                        | (level <<                                  \
+                                                                            R_SYSC_SYS_MSTACCCTL2_USB20D_ARPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_VCPL(level)          {R_SYSC->SYS_MSTACCCTL3 =                       \
+                                                                        (R_SYSC->SYS_MSTACCCTL3                    \
+                                                                         & ~(uint32_t) (                           \
+                                                                             R_SYSC_SYS_MSTACCCTL3_H264_AWPU_Msk   \
+                                                                             |                                     \
+                                                                             R_SYSC_SYS_MSTACCCTL3_H264_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL3_H264_AWSEL_Msk     \
+                                                                        | (level <<                                \
+                                                                            R_SYSC_SYS_MSTACCCTL3_H264_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_VCPL(level)           {R_SYSC->SYS_MSTACCCTL3 =                       \
+                                                                        (R_SYSC->SYS_MSTACCCTL3                    \
+                                                                         & ~(uint32_t) (                           \
+                                                                             R_SYSC_SYS_MSTACCCTL3_H264_ARPU_Msk   \
+                                                                             |                                     \
+                                                                             R_SYSC_SYS_MSTACCCTL3_H264_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL3_H264_ARSEL_Msk     \
+                                                                        | (level <<                                \
+                                                                            R_SYSC_SYS_MSTACCCTL3_H264_ARPU_Pos);} \
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_LCDC(level)          {R_SYSC->SYS_MSTACCCTL3 =                       \
+                                                                        (R_SYSC->SYS_MSTACCCTL3                    \
+                                                                         & ~(uint32_t) (                           \
+                                                                             R_SYSC_SYS_MSTACCCTL3_LCDC_AWPU_Msk   \
+                                                                             |                                     \
+                                                                             R_SYSC_SYS_MSTACCCTL3_LCDC_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL3_LCDC_AWSEL_Msk     \
+                                                                        | (level <<                                \
+                                                                            R_SYSC_SYS_MSTACCCTL3_LCDC_AWPU_Pos);  \
+}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_LCDC(level)           {R_SYSC->SYS_MSTACCCTL3 =                       \
+                                                                        (R_SYSC->SYS_MSTACCCTL3                    \
+                                                                         & ~(uint32_t) (                           \
+                                                                             R_SYSC_SYS_MSTACCCTL3_LCDC_ARPU_Msk   \
+                                                                             |                                     \
+                                                                             R_SYSC_SYS_MSTACCCTL3_LCDC_ARNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL3_LCDC_ARSEL_Msk     \
+                                                                        | (level <<                                \
+                                                                            R_SYSC_SYS_MSTACCCTL3_LCDC_ARPU_Pos);  \
+}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_MIPI_DSI(level)      {R_SYSC->SYS_MSTACCCTL3 =                             \
+                                                                        (R_SYSC->SYS_MSTACCCTL3                          \
+                                                                         & ~(uint32_t) (                                 \
+                                                                             R_SYSC_SYS_MSTACCCTL3_DSI_AWPU_Msk          \
+                                                                             |                                           \
+                                                                             R_SYSC_SYS_MSTACCCTL3_DSI_AWNS_Msk))        \
+                                                                        | R_SYSC_SYS_MSTACCCTL3_DSI_AWSEL_Msk            \
+                                                                        | (level << R_SYSC_SYS_MSTACCCTL3_DSI_AWPU_Pos); \
+}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_MIPI_DSI(level)       {R_SYSC->SYS_MSTACCCTL3 =                             \
+                                                                        (R_SYSC->SYS_MSTACCCTL3                          \
+                                                                         & ~(uint32_t) (                                 \
+                                                                             R_SYSC_SYS_MSTACCCTL3_DSI_ARPU_Msk          \
+                                                                             |                                           \
+                                                                             R_SYSC_SYS_MSTACCCTL3_DSI_ARNS_Msk))        \
+                                                                        | R_SYSC_SYS_MSTACCCTL3_DSI_ARSEL_Msk            \
+                                                                        | (level << R_SYSC_SYS_MSTACCCTL3_DSI_ARPU_Pos); \
+}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_ISU(level)           {R_SYSC->SYS_MSTACCCTL4 =                             \
+                                                                        (R_SYSC->SYS_MSTACCCTL4                          \
+                                                                         & ~(uint32_t) (                                 \
+                                                                             R_SYSC_SYS_MSTACCCTL4_ISU_AWPU_Msk          \
+                                                                             |                                           \
+                                                                             R_SYSC_SYS_MSTACCCTL4_ISU_AWNS_Msk))        \
+                                                                        | R_SYSC_SYS_MSTACCCTL4_ISU_AWSEL_Msk            \
+                                                                        | (level << R_SYSC_SYS_MSTACCCTL4_ISU_AWPU_Pos); \
+}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_ISU(level)            {R_SYSC->SYS_MSTACCCTL4 =                             \
+                                                                        (R_SYSC->SYS_MSTACCCTL4                          \
+                                                                         & ~(uint32_t) (                                 \
+                                                                             R_SYSC_SYS_MSTACCCTL4_ISU_ARPU_Msk          \
+                                                                             |                                           \
+                                                                             R_SYSC_SYS_MSTACCCTL4_ISU_ARNS_Msk))        \
+                                                                        | R_SYSC_SYS_MSTACCCTL4_ISU_ARSEL_Msk            \
+                                                                        | (level << R_SYSC_SYS_MSTACCCTL4_ISU_ARPU_Pos); \
+}
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_CRU_VIDEO(level)     {R_SYSC->SYS_MSTACCCTL4 =                        \
+                                                                        (R_SYSC->SYS_MSTACCCTL4                     \
+                                                                         & ~(uint32_t) (                            \
+                                                                             R_SYSC_SYS_MSTACCCTL4_CRUVD_AWPU_Msk   \
+                                                                             |                                      \
+                                                                             R_SYSC_SYS_MSTACCCTL4_CRUVD_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL4_CRUVD_AWSEL_Msk     \
+                                                                        | (level <<                                 \
+                                                                            R_SYSC_SYS_MSTACCCTL4_CRUVD_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_CRU_VIDEO(level)
+
+  #define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_CRU_STATIC(level)    {R_SYSC->SYS_MSTACCCTL4 =                         \
+                                                                        (R_SYSC->SYS_MSTACCCTL4                      \
+                                                                         & ~(uint32_t) (                             \
+                                                                             R_SYSC_SYS_MSTACCCTL4_CRU_ST_AWPU_Msk   \
+                                                                             |                                       \
+                                                                             R_SYSC_SYS_MSTACCCTL4_CRU_ST_AWNS_Msk)) \
+                                                                        | R_SYSC_SYS_MSTACCCTL4_CRU_ST_AWSEL_Msk     \
+                                                                        | (level <<                                  \
+                                                                            R_SYSC_SYS_MSTACCCTL4_CRU_ST_AWPU_Pos);}
+
+  #define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_CRU_STATIC(level)
+
+ #endif
+
+#endif
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
+
+#ifndef BSP_OVERRIDE_BSP_MST_ACC_CONTROL_IP_T
+
+typedef enum e_mst_acc_control_ip
+{
+    MST_ACCCNT_DMAC0,
+    MST_ACCCNT_DMAC1,
+    MST_ACCCNT_3DGE,
+    MST_ACCCNT_SDHI0,
+    MST_ACCCNT_SDHI1,
+    MST_ACCCNT_GBETHER0,
+    MST_ACCCNT_GBETHER1,
+    MST_ACCCNT_USB20_HOST,
+    MST_ACCCNT_USB21_HOST,
+    MST_ACCCNT_USB20_FUNC,
+    MST_ACCCNT_VCPL,
+    MST_ACCCNT_LCDC,
+    MST_ACCCNT_MIPI_DSI,
+    MST_ACCCNT_ISU,
+    MST_ACCCNT_CRU_VIDEO,
+    MST_ACCCNT_CRU_STATIC
+} fsp_mst_acc_control_ip_t;
+
+#endif
 
 #ifndef BSP_OVERRIDE_BSP_ACC_CONTROL_IP_T
 
@@ -250,6 +630,22 @@ typedef enum e_acc_control_ip
     ACCCNT_LP,
     ACCCNT_GPREG,
 } fsp_acc_control_ip_t;
+
+#endif
+
+#if BSP_FEATURE_BSP_ACCESS_CONTROL_SET_SUPPORT
+
+ #ifndef BSP_OVERRIDE_BSP_SLV_ACC_CONTROL_IP_T
+
+typedef enum e_bsp_slv_acccnt
+{
+    BSP_SLV_ACCCNT_SRAMM,
+    BSP_SLV_ACCCNT_SRAMA,
+    BSP_SLV_ACCCNT_DDR01,
+    BSP_SLV_ACCCNT_DDR11
+} bsp_slv_acccnt_t;
+
+ #endif
 
 #endif
 
