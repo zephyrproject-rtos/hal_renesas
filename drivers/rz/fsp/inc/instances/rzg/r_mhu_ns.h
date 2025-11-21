@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -55,6 +55,12 @@ typedef struct st_mhu_ns_instance_ctrl
     void const * p_context;
 } mhu_ns_instance_ctrl_t;
 
+/** R_MHU_NS extended configuration */
+typedef struct st_mhu_ns_extended_cfg
+{
+    void * p_reg;                      ///< Register base address for specified channel
+} mhu_ns_extended_cfg_t;
+
 /**********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
@@ -75,7 +81,7 @@ fsp_err_t R_MHU_NS_MsgSend(mhu_ctrl_t * const p_ctrl, uint32_t const msg);
 fsp_err_t R_MHU_NS_Close(mhu_ctrl_t * const p_ctrl);
 
 fsp_err_t R_MHU_NS_CallbackSet(mhu_ctrl_t * const          p_api_ctrl,
-                               void (                    * p_callback ) (mhu_callback_args_t *),
+                               void (                    * p_callback)(mhu_callback_args_t *),
                                void const * const          p_context,
                                mhu_callback_args_t * const p_callback_memory);
 

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -9,10 +9,6 @@
  **********************************************************************************************************************/
 #include "r_rspi.h"
 #include "r_rspi_cfg.h"
-
-#if RSPI_CFG_DMAC_ENABLE
- #include "r_dmac_b.h"
-#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -149,6 +145,8 @@ fsp_err_t R_RSPI_Open (spi_ctrl_t * p_api_ctrl, spi_cfg_t const * const p_cfg)
     FSP_ASSERT(NULL != p_cfg->p_extend);
     FSP_ERROR_RETURN(BSP_FEATURE_RSPI_VALID_CHANNELS_MASK & (1 << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
     FSP_ASSERT(p_cfg->eri_irq >= 0);
+    rspi_extended_cfg_t * p_extend = (rspi_extended_cfg_t *) p_cfg->p_extend;
+    FSP_ASSERT(NULL != p_extend->p_reg);
 #endif
 
     /* Initialize the control structure */
@@ -494,8 +492,8 @@ static void r_rspi_init_control_structure (rspi_instance_ctrl_t * p_ctrl, spi_cf
     p_ctrl->p_callback_memory = NULL;
 
     /* register base address */
-    ptrdiff_t size_of_regs = (ptrdiff_t) R_RSPI1 - (ptrdiff_t) R_RSPI0;
-    p_ctrl->p_regs = (R_RSPI0_Type *) ((ptrdiff_t) R_RSPI0 + (size_of_regs * p_ctrl->p_cfg->channel));
+    rspi_extended_cfg_t * p_extend = (rspi_extended_cfg_t *) p_cfg->p_extend;
+    p_ctrl->p_regs = (R_RSPI0_Type *) p_extend->p_reg;
 
     /* Clear flags */
     p_ctrl->transfer_is_pending = false;
@@ -651,7 +649,7 @@ static void r_rspi_nvic_config (rspi_instance_ctrl_t * p_ctrl)
  * @param[in]  p_ctrl          pointer to control structure.
  *
  * Note: For 8-Bit wide data frames, the devices require the SPBYT bit to enable byte level access to the
- * data register. Although this register is not documented in some MCU hardware manuals, it does seem to be available
+ * data register. Although this register is not documented in some user's manual, it does seem to be available
  * on all of them.
  **********************************************************************************************************************/
 static void r_rspi_bit_width_config (rspi_instance_ctrl_t * p_ctrl)

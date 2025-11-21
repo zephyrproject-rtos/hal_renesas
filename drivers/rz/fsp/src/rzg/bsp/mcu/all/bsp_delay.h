@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -24,11 +24,6 @@ FSP_HEADER
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-
-/* The number of cycles required per software delay loop. */
-#ifndef BSP_DELAY_LOOP_CYCLES
- #define BSP_DELAY_LOOP_CYCLES    (100)
-#endif
 
 /** Available delay units for R_BSP_SoftwareDelay(). These are ultimately used to calculate a total # of microseconds */
 typedef enum

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -106,7 +106,6 @@ typedef struct
 /* ================================================================================================================= */
 
 #define R_WDT0_BASE    0x42800800
-#define R_WDT1_BASE    0x42800C00
 #define R_WDT2_BASE    0x42800400
 
 /* ================================================================================================================= */
@@ -114,7 +113,6 @@ typedef struct
 /* ================================================================================================================= */
 
 #define R_WDT0    ((R_WDT0_Type *) R_WDT0_BASE)
-#define R_WDT1    ((R_WDT0_Type *) R_WDT1_BASE)
 #define R_WDT2    ((R_WDT0_Type *) R_WDT2_BASE)
 
 #endif                                 /* WDT_IODEFINE_H */
