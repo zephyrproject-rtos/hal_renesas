@@ -91,3 +91,7 @@ Patch List:
    * Add the header file <stdint.h>
    Impacted files:
       drivers/rx/rdp/src/r_bsp/mcu/rx130/mcu_clocks.h
+
+   * Remove unsed variables to fix build warnings
+   Impacted files:
+      drivers/rx/rdp/src/r_s12ad_rx/src/targets/rx261/r_s12ad_rx261.c
