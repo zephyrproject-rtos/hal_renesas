@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -8,9 +8,6 @@
  * Includes
  **********************************************************************************************************************/
 #include "r_riic_master.h"
-#if RIIC_MASTER_CFG_DMAC_ENABLE
- #include "r_dmac_b.h"
-#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -58,7 +55,7 @@
 #define IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK       (0xB3U)
 #define IIC_MASTER_FUNCTION_ENABLE_INIT_SETTINGS    (0x77U)
 #define IIC_MASTER_BUS_MODE_REGISTER_1_MASK         (0x08U)
-#define IIC_MASTER_BUS_MODE_REGISTER_2_MASK         (0x06U)
+#define IIC_MASTER_BUS_MODE_REGISTER_2_MASK         (0x04U)
 #define IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN           (0x1FU)
 #define IIC_MASTER_ICCR1_ICE_BIT_MASK               (0x80)
 #define IIC_MASTER_ICCR1_IICRST_BIT_MASK            (0x40)
@@ -131,9 +128,9 @@ static fsp_err_t iic_master_run_hw_master(iic_master_instance_ctrl_t * const p_c
 static void      iic_master_rxi_read_data(iic_master_instance_ctrl_t * const p_ctrl);
 static void      iic_master_txi_send_address(iic_master_instance_ctrl_t * const p_ctrl);
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
-void             riic_master_rx_dmac_callback(iic_master_instance_ctrl_t * p_ctrl);
-void             riic_master_tx_dmac_callback(iic_master_instance_ctrl_t * p_ctrl);
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
+void             riic_master_rx_dmac_b_callback(iic_master_instance_ctrl_t * p_ctrl);
+void             riic_master_tx_dmac_b_callback(iic_master_instance_ctrl_t * p_ctrl);
 static fsp_err_t iic_master_transfer_open(i2c_master_cfg_t const * const p_cfg);
 static fsp_err_t iic_master_transfer_configure(transfer_instance_t const * p_transfer,
                                                iic_master_transfer_dir_t   direction);
@@ -193,6 +190,7 @@ fsp_err_t R_RIIC_MASTER_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_c
 
     riic_master_extended_cfg_t * p_extend = (riic_master_extended_cfg_t *) p_cfg->p_extend;
     FSP_ASSERT(p_extend != NULL);
+    FSP_ASSERT(NULL != p_extend->p_reg);
     FSP_ASSERT(p_cfg->rxi_irq >= (IRQn_Type) 0);
     FSP_ASSERT(p_cfg->txi_irq >= (IRQn_Type) 0);
     FSP_ASSERT(p_cfg->tei_irq >= (IRQn_Type) 0);
@@ -204,11 +202,12 @@ fsp_err_t R_RIIC_MASTER_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_c
     FSP_ERROR_RETURN(IIC_MASTER_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
 
     FSP_ERROR_RETURN(BSP_FEATURE_IIC_VALID_CHANNEL_MASK & (1 << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
+#else
+    riic_master_extended_cfg_t * p_extend = (riic_master_extended_cfg_t *) p_cfg->p_extend;
 #endif
 
     /* Save register base address. */
-    p_ctrl->p_reg =
-        (R_RIIC0_Type *) ((uint32_t) R_RIIC0 + (p_cfg->channel * ((uint32_t) R_RIIC1 - (uint32_t) R_RIIC0)));
+    p_ctrl->p_reg = (R_RIIC0_Type *) p_extend->p_reg;
 
     /* Record the pointer to the configuration structure for later use */
     p_ctrl->p_cfg             = p_cfg;
@@ -223,7 +222,7 @@ fsp_err_t R_RIIC_MASTER_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_c
     /* Open the hardware in master mode. */
     iic_master_open_hw_master(p_ctrl, p_cfg);
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
     fsp_err_t err = FSP_SUCCESS;
 
     /* Open the IIC transfer interface if available */
@@ -469,14 +468,14 @@ fsp_err_t R_RIIC_MASTER_Close (i2c_master_ctrl_t * const p_api_ctrl)
     /* Abort an in-progress transfer with this device only */
     iic_master_abort_seq_master(p_ctrl, true);
 
-    /* Disable I2C interrupts. Described in hardware manual (see section
+    /* Disable I2C interrupts. Described in the user's manual (see section
      * 'I2C Bus Interrupt Enable Register (ICIER)' of the user's manual). */
     p_ctrl->p_reg->ICIER = 0x00000000UL;
 
     /* The device is now considered closed */
     p_ctrl->open = 0U;
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
 
     /* Close the handles for the transfer interfaces */
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
@@ -605,7 +604,7 @@ static void iic_master_notify (iic_master_instance_ctrl_t * const p_ctrl, i2c_ma
     p_args->p_context = p_ctrl->p_context;
     p_args->event     = event;
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
 
     /* Stop any DMAC assisted transfer for tx */
     const transfer_instance_t * p_transfer_tx = p_ctrl->p_cfg->p_transfer_tx;
@@ -798,18 +797,20 @@ static void iic_master_open_hw_master (iic_master_instance_ctrl_t * const p_ctrl
  **********************************************************************************************************************/
 static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_ctrl)
 {
-    /* RIICn operates using P0CLK. The ratio I2CLK (System Clock)/(P0CLK/IIC) gives the CPU cycles for 1 ICBRL count.
-     * IIC is division ratio of internal reference clock of RIICn.
-     * The internal reference clock (IIC_CLK) is calculated as P0CLK/IIC.
+    /* RIICn operates using Peripheral Clock of I2C (I2C_PERIF_CLK).
+     * The CPU_CLK is the cpu clock of the target core.
+     * The IIC_CLK is the operation clock of I2C. It is calculated as I2C_PERIF_CLK/2^(ICMR1.CKS bit value).
+     * (CPU_CLK/IIC_CLK)*ICBRL gives the CPU cycles for entire ICBRL count.
      * Since each time we loop the timeout count will be decremented by 1 this would require at least 4 CPU clocks,
      * making the final timeout count as:
-     * Timeout = ((I2CLK/(IIC_CLK))*ICBRL)/4.
+     * Timeout = ((CPU_CLK/IIC_CLK)*ICBRL)/4.
      */
     riic_master_extended_cfg_t * p_extend = (riic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
-    uint32_t i2_clk        = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_I2CLK);
-    uint32_t p0_clk        = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_P0CLK);
-    uint32_t iic_clk       = p0_clk / (1U << p_ctrl->p_reg->ICMR1_b.CKS);
-    uint32_t timeout_count = (i2_clk / iic_clk * p_ctrl->p_reg->ICBRL_b.BRL) >> 2U;
+
+    uint32_t cpu_clk       = R_FSP_SystemClockHzGet(BSP_FEATURE_BSP_SYSTEM_CORE_CLOCK);
+    uint32_t i2c_perif_clk = R_FSP_SystemClockHzGet(BSP_FEATURE_IIC_SOURCE_CLOCK);
+    uint32_t iic_clk       = i2c_perif_clk / (1U << p_ctrl->p_reg->ICMR1_b.CKS);
+    uint32_t timeout_count = (cpu_clk / iic_clk * p_ctrl->p_reg->ICBRL_b.BRL) >> 2U;
 
     /* Check if this is a new transaction or a continuation */
     if (!p_ctrl->restarted)
@@ -855,6 +856,11 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
                                       (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT == p_extend->timeout_mode) |
                                       (uint8_t) (p_extend->timeout_scl_low << R_RIIC0_ICMR2_TMOL_Pos));
 
+    /* Set the response as ACK */
+    p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write Enable */
+    p_ctrl->p_reg->ICMR3_b.ACKBT = 0UL; /* Write */
+    p_ctrl->p_reg->ICMR3_b.ACKWP = 0UL;
+
     /* Enable timeout function */
     p_ctrl->p_reg->ICFER_b.TMOE = 1UL;
 
@@ -869,7 +875,7 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
      * If the previous transaction was not restart enabled -
      * NVIC-enable TXI which will fire after the start condition below.
      */
-    NVIC_EnableIRQ(p_ctrl->p_cfg->txi_irq);
+    R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->txi_irq);
 
     /* Enable SPIE to detect unexpected STOP condition. This is disabled between communication events as it can lead
      * to undesired interrupts in multi-master setups. */
@@ -927,10 +933,11 @@ static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_ctrl)
              */
             p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write enable ACKBT */
             p_ctrl->p_reg->ICMR3_b.ACKBT = 1UL;
+            p_ctrl->p_reg->ICMR3_b.ACKWP = 0UL;
         }
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
-        uint8_t volatile const * p_iic_master_rx_buffer = &(p_ctrl->p_reg->ICDRR);
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
+        uint8_t volatile const * p_iic_master_rx_buffer = (uint8_t *) (&(p_ctrl->p_reg->ICDRR));
 
         /* Enable transfer support if possible */
         if ((NULL != p_ctrl->p_cfg->p_transfer_rx) && (p_ctrl->read) && (p_ctrl->total > 3U))
@@ -956,7 +963,7 @@ static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_ctrl)
         p_ctrl->dummy_read_completed = true;
     }
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
 
     /* If this is the interrupt that got fired after DMAC transfer,
      * ignore it as the DMAC has already taken care of the data transfer */
@@ -991,7 +998,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
     }
     else if (!p_ctrl->read)
     {
-#if RIIC_MASTER_CFG_DMAC_ENABLE
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
 
         /* If this is the interrupt that got fired after DMAC transfer,
          * ignore it as the DMAC has already taken care of the data transfer */
@@ -1031,7 +1038,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
             /* Enable the transmit end IRQ, to issue a STOP or RESTART */
             /* Clear any pending TEND interrupts */
             R_BSP_IrqStatusClear(p_ctrl->p_cfg->tei_irq);
-            NVIC_ClearPendingIRQ(p_ctrl->p_cfg->tei_irq);
+            R_BSP_IrqClearPending(p_ctrl->p_cfg->tei_irq);
 
             /* Enable the TXEND interrupt */
             p_ctrl->p_reg->ICIER_b.TEIE = 1UL;
@@ -1122,8 +1129,6 @@ static void iic_master_tei_master (iic_master_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void iic_master_naki_master (iic_master_instance_ctrl_t * p_ctrl)
 {
-    riic_master_extended_cfg_t * p_extend = (riic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
-
     if ((1UL != p_ctrl->p_reg->ICCR2_b.MST) && (true != p_ctrl->nack_before_stop))
     {
         p_ctrl->p_reg->ICSR2_b.NACKF = 0UL;
@@ -1172,7 +1177,8 @@ static void iic_master_naki_master (iic_master_instance_ctrl_t * p_ctrl)
         /* Allow timeouts to be generated on the low value of SCL using either long or short mode */
         p_ctrl->p_reg->ICMR2 = ((uint8_t) 0x02UL |
                                 (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT ==
-                                           p_extend->timeout_mode));
+                                           ((riic_master_extended_cfg_t *) p_ctrl->p_cfg->
+                                            p_extend)->timeout_mode));
         p_ctrl->p_reg->ICFER_b.TMOE = 1UL;
 
         /* NACK flag must be cleared after ICSR2_b.STOP=1. */
@@ -1310,6 +1316,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
          */
         p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write enable ACKBT */
         p_ctrl->p_reg->ICMR3_b.ACKBT = 1UL;
+        p_ctrl->p_reg->ICMR3_b.ACKWP = 0UL;
     }
     /* If next data = final byte, send STOP or RESTART */
     else if (1U == p_ctrl->remain)
@@ -1322,12 +1329,12 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
             R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
             p_ctrl->p_reg->ICIER_b.TIE = 1UL;
 
-            p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write enable ACKBT */
-
             /* This bit clears to 0 automatically by issuing stop condition.
              * For restart condition, clear bit by software.
              */
+            p_ctrl->p_reg->ICMR3_b.ACKWP = 1UL; /* Write enable ACKBT */
             p_ctrl->p_reg->ICMR3_b.ACKBT = 0UL;
+            p_ctrl->p_reg->ICMR3_b.ACKWP = 0UL;
 
             /* Request RIIC to issue the restart condition */
             p_ctrl->p_reg->ICCR2 = IIC_MASTER_ICCR2_RS_BIT_MASK;
@@ -1406,7 +1413,7 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
         /* Enable the transmit end IRQ, so that we can generate a RESTART condition */
         /* Clear any pending TEND interrupts */
         R_BSP_IrqStatusClear(p_ctrl->p_cfg->tei_irq);
-        NVIC_ClearPendingIRQ(p_ctrl->p_cfg->tei_irq);
+        R_BSP_IrqClearPending(p_ctrl->p_cfg->tei_irq);
 
         /* Enable the TXEND interrupt */
         p_ctrl->p_reg->ICIER_b.TEIE = 1UL;
@@ -1442,8 +1449,8 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
         }
 #endif
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
-        uint8_t volatile const * p_iic_master_tx_buffer = &(p_ctrl->p_reg->ICDRT);
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
+        uint8_t volatile const * p_iic_master_tx_buffer = (uint8_t *) (&(p_ctrl->p_reg->ICDRT));
 
         /* If this is the last address byte, enable transfer */
         if (1U == p_ctrl->addr_remain)
@@ -1473,7 +1480,7 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
     }
 }
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
 
 /*******************************************************************************************************************//**
  * Configures IIC related transfer drivers (if enabled).
@@ -1719,7 +1726,7 @@ void riic_master_tmoi_isr (void)
     FSP_CONTEXT_RESTORE
 }
 
-#if RIIC_MASTER_CFG_DMAC_ENABLE
+#if RIIC_MASTER_CFG_DMAC_B_ENABLE
 
 /*******************************************************************************************************************//**
  * End processing of IIC transmission operation after the end of dmac transfer.
@@ -1727,7 +1734,7 @@ void riic_master_tmoi_isr (void)
  * This function implements that IIC transmission interrupt is disabled and transmission end interrupt is enabled.
  *
  **********************************************************************************************************************/
-void riic_master_tx_dmac_callback (iic_master_instance_ctrl_t * p_ctrl)
+void riic_master_tx_dmac_b_callback (iic_master_instance_ctrl_t * p_ctrl)
 {
     iic_master_txi_master(p_ctrl);
 
@@ -1741,7 +1748,7 @@ void riic_master_tx_dmac_callback (iic_master_instance_ctrl_t * p_ctrl)
  * This function implements that the remaining 3 bytes of data are read and a stop condition is issued.
  *
  **********************************************************************************************************************/
-void riic_master_rx_dmac_callback (iic_master_instance_ctrl_t * p_ctrl)
+void riic_master_rx_dmac_b_callback (iic_master_instance_ctrl_t * p_ctrl)
 {
     iic_master_rxi_master(p_ctrl);
 

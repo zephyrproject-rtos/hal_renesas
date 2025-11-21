@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -266,16 +266,128 @@ typedef struct
     __IOM R_DMAC_B0_GRP_Type GRP[2];
 } R_DMAC_B0_Type;
 
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t DMARS0;
+        struct
+        {
+            __IOM uint32_t CH0_RID : 2;
+            __IOM uint32_t CH0_MID : 8;
+            uint32_t               : 6;
+            __IOM uint32_t CH1_RID : 2;
+            __IOM uint32_t CH1_MID : 8;
+            uint32_t               : 6;
+        } DMARS0_b;
+    };
+    union
+    {
+        __IOM uint32_t DMARS1;
+        struct
+        {
+            __IOM uint32_t CH2_RID : 2;
+            __IOM uint32_t CH2_MID : 8;
+            uint32_t               : 6;
+            __IOM uint32_t CH3_RID : 2;
+            __IOM uint32_t CH3_MID : 8;
+            uint32_t               : 6;
+        } DMARS1_b;
+    };
+    union
+    {
+        __IOM uint32_t DMARS2;
+        struct
+        {
+            __IOM uint32_t CH4_RID : 2;
+            __IOM uint32_t CH4_MID : 8;
+            uint32_t               : 6;
+            __IOM uint32_t CH5_RID : 2;
+            __IOM uint32_t CH5_MID : 8;
+            uint32_t               : 6;
+        } DMARS2_b;
+    };
+    union
+    {
+        __IOM uint32_t DMARS3;
+        struct
+        {
+            __IOM uint32_t CH6_RID : 2;
+            __IOM uint32_t CH6_MID : 8;
+            uint32_t               : 6;
+            __IOM uint32_t CH7_RID : 2;
+            __IOM uint32_t CH7_MID : 8;
+            uint32_t               : 6;
+        } DMARS3_b;
+    };
+    union
+    {
+        __IOM uint32_t DMARS4;
+        struct
+        {
+            __IOM uint32_t CH8_RID : 2;
+            __IOM uint32_t CH8_MID : 8;
+            uint32_t               : 6;
+            __IOM uint32_t CH9_RID : 2;
+            __IOM uint32_t CH9_MID : 8;
+            uint32_t               : 6;
+        } DMARS4_b;
+    };
+    union
+    {
+        __IOM uint32_t DMARS5;
+        struct
+        {
+            __IOM uint32_t CH10_RID : 2;
+            __IOM uint32_t CH10_MID : 8;
+            uint32_t                : 6;
+            __IOM uint32_t CH11_RID : 2;
+            __IOM uint32_t CH11_MID : 8;
+            uint32_t                : 6;
+        } DMARS5_b;
+    };
+    union
+    {
+        __IOM uint32_t DMARS6;
+        struct
+        {
+            __IOM uint32_t CH12_RID : 2;
+            __IOM uint32_t CH12_MID : 8;
+            uint32_t                : 6;
+            __IOM uint32_t CH13_RID : 2;
+            __IOM uint32_t CH13_MID : 8;
+            uint32_t                : 6;
+        } DMARS6_b;
+    };
+    union
+    {
+        __IOM uint32_t DMARS7;
+        struct
+        {
+            __IOM uint32_t CH14_RID : 2;
+            __IOM uint32_t CH14_MID : 8;
+            uint32_t                : 6;
+            __IOM uint32_t CH15_RID : 2;
+            __IOM uint32_t CH15_MID : 8;
+            uint32_t                : 6;
+        } DMARS7_b;
+    };
+} R_DMAC_B0_EX_Type;
+
 /* =========================================================================================================================== */
 /* ================                          Device Specific Peripheral Address Map                           ================ */
 /* =========================================================================================================================== */
-#define R_DMAC_B0_BASE    0x41800000
-#define R_DMAC_B1_BASE    0x41820000
+#define R_DMAC_B0_BASE       0x41800000
+#define R_DMAC_B1_BASE       0x41820000
+#define R_DMAC_B0_EX_BASE    0x41810000
+#define R_DMAC_B1_EX_BASE    0x41830000
 
 /* =========================================================================================================================== */
 /* ================                                  Peripheral declaration                                   ================ */
 /* =========================================================================================================================== */
-#define R_DMAC_B0         ((R_DMAC_B0_Type *) R_DMAC_B0_BASE)
-#define R_DMAC_B1         ((R_DMAC_B0_Type *) R_DMAC_B1_BASE)
+#define R_DMAC_B0            ((R_DMAC_B0_Type *) R_DMAC_B0_BASE)
+#define R_DMAC_B1            ((R_DMAC_B0_Type *) R_DMAC_B1_BASE)
+#define R_DMAC_B0_EX         ((R_DMAC_B0_EX_Type *) R_DMAC_B0_EX_BASE)
+#define R_DMAC_B1_EX         ((R_DMAC_B0_EX_Type *) R_DMAC_B1_EX_BASE)
 
 #endif

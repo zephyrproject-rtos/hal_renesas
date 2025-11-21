@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -22,6 +22,7 @@
 #include "bsp_compiler_support.h"
 #include "bsp_module_stop.h"
 #include "bsp_clocks.h"
+#include "bsp_system_reset.h"
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -38,7 +39,7 @@
  * @param      ip       fsp_ip_t enum value for the module to be started
  * @param      ch       The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
-#define R_BSP_MODULE_START(ip, ch)                   (R_BSP_MODULE_START_ ## ip(ip, ch))
+#define R_BSP_MODULE_START(ip, ch)                    (R_BSP_MODULE_START_ ## ip(ip, ch))
 
 /*******************************************************************************************************************//**
  * Enables the module stop state.
@@ -46,142 +47,217 @@
  * @param      ip       fsp_ip_t enum value for the module to be stopped
  * @param      ch       The channel. Use channel 0 for modules without channels.
  **********************************************************************************************************************/
-#define R_BSP_MODULE_STOP(ip, ch)                    (R_BSP_MODULE_STOP_ ## ip(ip, ch))
+#define R_BSP_MODULE_STOP(ip, ch)                     (R_BSP_MODULE_STOP_ ## ip(ip, ch))
 
 /*******************************************************************************************************************//**
  * @} (end addtogroup BSP_MCU)
  **********************************************************************************************************************/
 
-#define R_BSP_MODULE_START_FSP_IP_GTM(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTON(ip, ch); \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_GTM
+ #define R_BSP_MODULE_START_FSP_IP_GTM(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTON(ip, ch); \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_GTM(ip, ch)         {R_BSP_MSTP_STOP(ip, ch); \
-                                                      R_BSP_MODULE_CLKOFF(ip, ch);}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_GTM
+ #define R_BSP_MODULE_STOP_FSP_IP_GTM(ip, ch)         {R_BSP_MSTP_STOP(ip, ch); \
+                                                       R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_MTU3(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_MTU3
+ #define R_BSP_MODULE_START_FSP_IP_MTU3(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_MTU3(ip, ch)        {NULL;}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_MTU3
+ #define R_BSP_MODULE_STOP_FSP_IP_MTU3(ip, ch)        {NULL;}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_GPT(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_GPT
+ #define R_BSP_MODULE_START_FSP_IP_GPT(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_GPT(ip, ch)         {NULL;}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_GPT
+ #define R_BSP_MODULE_STOP_FSP_IP_GPT(ip, ch)         {NULL;}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_POEG(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_POEG
+ #define R_BSP_MODULE_START_FSP_IP_POEG(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_POEG(ip, ch)        {R_BSP_MSTP_STOP(ip, ch); \
-                                                      R_BSP_MODULE_CLKOFF(ip, ch);}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_POEG
+ #define R_BSP_MODULE_STOP_FSP_IP_POEG(ip, ch)        {R_BSP_MSTP_STOP(ip, ch); \
+                                                       R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_SCIF(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_SCIF
+ #define R_BSP_MODULE_START_FSP_IP_SCIF(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_SCIF(ip, ch)        {R_BSP_MSTP_STOP(ip, ch); \
-                                                      R_BSP_MODULE_CLKOFF(ip, ch);}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_SCIF
+ #define R_BSP_MODULE_STOP_FSP_IP_SCIF(ip, ch)        {R_BSP_MSTP_STOP(ip, ch); \
+                                                       R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_RIIC(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_RIIC
+ #define R_BSP_MODULE_START_FSP_IP_RIIC(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_RIIC(ip, ch)        {R_BSP_MSTP_STOP(ip, ch); \
-                                                      R_BSP_MODULE_CLKOFF(ip, ch);}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_RIIC
+ #define R_BSP_MODULE_STOP_FSP_IP_RIIC(ip, ch)        {R_BSP_MSTP_STOP(ip, ch); \
+                                                       R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_RSPI(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_RSPI
+ #define R_BSP_MODULE_START_FSP_IP_RSPI(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_RSPI(ip, ch)        {R_BSP_MSTP_STOP(ip, ch); \
-                                                      R_BSP_MODULE_CLKOFF(ip, ch);}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_RSPI
+ #define R_BSP_MODULE_STOP_FSP_IP_RSPI(ip, ch)        {R_BSP_MSTP_STOP(ip, ch); \
+                                                       R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_MHU(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_MHU
+ #define R_BSP_MODULE_START_FSP_IP_MHU(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_MHU(ip, ch)         {NULL;}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_MHU
+ #define R_BSP_MODULE_STOP_FSP_IP_MHU(ip, ch)         {NULL;}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_DMAC(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch);          \
-                                                      R_BSP_MSTP_START(FSP_IP_DMAC_s, ch); \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_DMAC
+ #define R_BSP_MODULE_START_FSP_IP_DMAC(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch);          \
+                                                       R_BSP_MSTP_START(FSP_IP_DMAC_s, ch); \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_DMAC(ip, ch)        {NULL;}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_DMAC
+ #define R_BSP_MODULE_STOP_FSP_IP_DMAC(ip, ch)        {NULL;}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_DMAC_s(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_DMAC
+ #define R_BSP_MODULE_START_FSP_IP_DMAC_s(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_DMAC_s(ip, ch)      {NULL;}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_DMAC
+ #define R_BSP_MODULE_STOP_FSP_IP_DMAC_s(ip, ch)      {NULL;}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_SSI(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
-                                                      R_BSP_MSTP_START(ip, ch);   \
-                                                      R_BSP_MODULE_RSTOFF(ip, ch);}
+#ifndef R_BSP_MODULE_START_FSP_IP_SSI
+ #define R_BSP_MODULE_START_FSP_IP_SSI(ip, ch)        {R_BSP_MODULE_CLKON(ip, ch); \
+                                                       R_BSP_MSTP_START(ip, ch);   \
+                                                       R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_SSI(ip, ch)         {R_BSP_MSTP_STOP(ip, ch); \
-                                                      R_BSP_MODULE_CLKOFF(ip, ch);}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_SSI
+ #define R_BSP_MODULE_STOP_FSP_IP_SSI(ip, ch)         {R_BSP_MSTP_STOP(ip, ch); \
+                                                       R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
-#if BSP_FEATURE_CANFD_LITE
- #define R_BSP_MODULE_START_FSP_IP_CANFD(ip, ch)     {R_BSP_MSTP_START(ip, ch);}
-#else
- #if BSP_FEATURE_CANFD_HAS_RSCANFD == 0
-  #define R_BSP_MODULE_START_FSP_IP_CANFD(ip, ch)    {R_BSP_MSTP_START(ip, 0U);    \
-                                                      R_BSP_MODULE_CLKON(ip, 0U);  \
-                                                      R_BSP_MODULE_CLKON(ip, 1U);  \
-                                                      R_BSP_MODULE_RSTOFF(ip, 0U); \
-                                                      R_BSP_MODULE_RSTOFF(ip, 1U);}
+#ifndef R_BSP_MODULE_START_FSP_IP_CANFD
+ #if BSP_FEATURE_CANFD_LITE
+  #define R_BSP_MODULE_START_FSP_IP_CANFD(ip, ch)     {R_BSP_MSTP_START(ip, ch);}
  #else
-  #define R_BSP_MODULE_START_FSP_IP_CANFD(ip, ch)    {R_BSP_MSTP_START(ip, 0U);    \
-                                                      R_BSP_MODULE_CLKON(ip, 0U);  \
-                                                      R_BSP_MODULE_RSTOFF(ip, 0U); \
-                                                      R_BSP_MODULE_RSTOFF(ip, 1U);}
+  #if BSP_FEATURE_CANFD_HAS_RSCANFD == 0
+   #define R_BSP_MODULE_START_FSP_IP_CANFD(ip, ch)    {R_BSP_MSTP_START(ip, 0U);    \
+                                                       R_BSP_MODULE_CLKON(ip, 0U);  \
+                                                       R_BSP_MODULE_CLKON(ip, 1U);  \
+                                                       R_BSP_MODULE_RSTOFF(ip, 0U); \
+                                                       R_BSP_MODULE_RSTOFF(ip, 1U);}
+  #else
+   #define R_BSP_MODULE_START_FSP_IP_CANFD(ip, ch)    {R_BSP_MSTP_START(ip, 0U);    \
+                                                       R_BSP_MODULE_CLKON(ip, 0U);  \
+                                                       R_BSP_MODULE_RSTOFF(ip, 0U); \
+                                                       R_BSP_MODULE_RSTOFF(ip, 1U);}
+  #endif
  #endif
 #endif
 
-#if BSP_FEATURE_CANFD_LITE
- #define R_BSP_MODULE_STOP_FSP_IP_CANFD(ip, ch)    {R_BSP_MSTP_STOP(ip, ch)};
-#else
- #define R_BSP_MODULE_STOP_FSP_IP_CANFD(ip, ch)    {R_BSP_MODULE_CLKOFF(ip, 0U); \
-                                                    R_BSP_MSTP_STOP(ip, 0U);}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_CANFD
+ #if BSP_FEATURE_CANFD_LITE
+  #define R_BSP_MODULE_STOP_FSP_IP_CANFD(ip, ch)    {R_BSP_MSTP_STOP(ip, ch)};
+ #else
+  #define R_BSP_MODULE_STOP_FSP_IP_CANFD(ip, ch)    {R_BSP_MODULE_CLKOFF(ip, 0U); \
+                                                     R_BSP_MSTP_STOP(ip, 0U);}
+ #endif
 #endif
 
-#define R_BSP_MODULE_START_FSP_IP_ADC(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
+#ifndef R_BSP_MODULE_START_FSP_IP_ADC
+ #define R_BSP_MODULE_START_FSP_IP_ADC(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
+                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
+
+/*******************************************************************************************************************//**
+ * Enables the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
+#ifndef R_BSP_MODULE_STOP_FSP_IP_ADC
+ #define R_BSP_MODULE_STOP_FSP_IP_ADC(ip, ch)      {R_BSP_MSTP_STOP(ip, ch); \
+                                                    R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
+
+#ifndef R_BSP_MODULE_START_FSP_IP_TSU
+ #define R_BSP_MODULE_START_FSP_IP_TSU(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_ADC(ip, ch)       {R_BSP_MSTP_STOP(ip, ch); \
+#ifndef R_BSP_MODULE_STOP_FSP_IP_TSU
+ #define R_BSP_MODULE_STOP_FSP_IP_TSU(ip, ch)      {R_BSP_MSTP_STOP(ip, ch); \
                                                     R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_TSU(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
-                                                    R_BSP_MSTP_START(ip, ch);   \
-                                                    R_BSP_MODULE_RSTOFF(ip, ch);}
-
-#define R_BSP_MODULE_STOP_FSP_IP_TSU(ip, ch)       {R_BSP_MSTP_STOP(ip, ch); \
-                                                    R_BSP_MODULE_CLKOFF(ip, ch);}
-
-#define R_BSP_MODULE_START_FSP_IP_WDT(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
+#ifndef R_BSP_MODULE_START_FSP_IP_WDT
+ #define R_BSP_MODULE_START_FSP_IP_WDT(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch)    \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_WDT(ip, ch)       {NULL;}
+#ifndef R_BSP_MODULE_STOP_FSP_IP_WDT
+ #define R_BSP_MODULE_STOP_FSP_IP_WDT(ip, ch)      {NULL;}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_SCI(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
+#ifndef R_BSP_MODULE_START_FSP_IP_SCI
+ #define R_BSP_MODULE_START_FSP_IP_SCI(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_SCI(ip, ch)       {R_BSP_MSTP_STOP(ip, ch); \
+#ifndef R_BSP_MODULE_STOP_FSP_IP_SCI
+ #define R_BSP_MODULE_STOP_FSP_IP_SCI(ip, ch)      {R_BSP_MSTP_STOP(ip, ch); \
                                                     R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_START_FSP_IP_XSPI(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
+#ifndef R_BSP_MODULE_START_FSP_IP_XSPI
+ #define R_BSP_MODULE_START_FSP_IP_XSPI(ip, ch)    {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
+#endif
 
-#define R_BSP_MODULE_STOP_FSP_IP_XSPI(ip, ch)      {R_BSP_MSTP_STOP(ip, ch); \
+#ifndef R_BSP_MODULE_STOP_FSP_IP_XSPI
+ #define R_BSP_MODULE_STOP_FSP_IP_XSPI(ip, ch)     {R_BSP_MSTP_STOP(ip, ch); \
                                                     R_BSP_MODULE_CLKOFF(ip, ch);}
+#endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 
@@ -191,7 +267,7 @@ FSP_HEADER
  * @addtogroup BSP_MCU
  * @{
  **********************************************************************************************************************/
- 
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/

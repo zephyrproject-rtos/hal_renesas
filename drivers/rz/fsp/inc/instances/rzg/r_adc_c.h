@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -141,6 +141,7 @@ typedef struct st_adc_c_extended_cfg
     adc_c_buffer_mode_t                       buffer_mode;                    ///< Buffer mode.
     uint16_t                                  sampling_time;                  ///< Sampling period. (6~2800)
     adc_c_filter_stage_setting_t              external_trigger_filter;        ///< AD external trigger pin filter.
+    void                                    * p_reg;                          ///< Register base address for specified unit
 } adc_c_extended_cfg_t;
 
 /** ADC channel(s) configuration       */
