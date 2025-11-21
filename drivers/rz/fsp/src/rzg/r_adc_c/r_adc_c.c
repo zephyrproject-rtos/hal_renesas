@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -42,11 +42,11 @@ typedef BSP_CMSE_NONSECURE_CALL void (*volatile adc_prv_ns_callback)(adc_callbac
 static void r_adc_c_open_sub(adc_c_instance_ctrl_t * const p_instance_ctrl, adc_cfg_t const * const p_cfg);
 static void r_adc_c_scan_cfg(adc_c_instance_ctrl_t * const     p_instance_ctrl,
                              adc_c_channel_cfg_t const * const p_channel_cfg);
-void           adc_c_scan_end_isr(void);
-static void    r_adc_c_irq_enable(IRQn_Type irq, uint8_t ipl, void * p_context);
-static void    r_adc_c_irq_disable(IRQn_Type irq);
-static int32_t r_adc_c_lowest_channel_get(uint32_t adc_mask);
-static int32_t r_adc_c_highest_channel_get(uint32_t adc_mask);
+void            adc_c_scan_end_isr(void);
+static void     r_adc_c_irq_enable(IRQn_Type irq, uint8_t ipl, void * p_context);
+static void     r_adc_c_irq_disable(IRQn_Type irq);
+static uint32_t r_adc_c_lowest_channel_get(uint32_t adc_mask);
+static uint32_t r_adc_c_highest_channel_get(uint32_t adc_mask);
 
 /***********************************************************************************************************************
  * Global Variables
@@ -108,6 +108,11 @@ fsp_err_t R_ADC_C_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
     {
         FSP_ERROR_RETURN((p_cfg->scan_end_irq >= 0), FSP_ERR_IRQ_BSP_DISABLED);
     }
+
+    adc_c_extended_cfg_t const * p_cfg_extend = (adc_c_extended_cfg_t const *) p_cfg->p_extend;
+    FSP_ASSERT(NULL != p_cfg_extend->p_reg);
+#else
+    adc_c_extended_cfg_t const * p_cfg_extend = (adc_c_extended_cfg_t const *) p_cfg->p_extend;
 #endif
 
     /* Save configurations. */
@@ -117,7 +122,7 @@ fsp_err_t R_ADC_C_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
     p_instance_ctrl->p_callback_memory = NULL;
 
     /* Calculate the register base address. */
-    p_instance_ctrl->p_reg = R_ADC_C;
+    p_instance_ctrl->p_reg = p_cfg_extend->p_reg;
 
     /* Initialize the hardware based on the configuration. */
     r_adc_c_open_sub(p_instance_ctrl, p_cfg);
@@ -340,7 +345,7 @@ fsp_err_t R_ADC_C_Read (adc_ctrl_t * p_ctrl, adc_channel_t const reg_id, uint16_
     FSP_ERROR_RETURN(ADC_C_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
     FSP_ERROR_RETURN(ADC_C_OPEN == p_instance_ctrl->initialized, FSP_ERR_NOT_INITIALIZED);
 
-    /* Verify that the channel is valid for this MCU */
+    /* Verify that the channel is valid for this MPU */
     uint32_t requested_channel_mask = (1U << (uint32_t) reg_id);
     FSP_ASSERT(0 != (requested_channel_mask & BSP_FEATURE_ADC_C_VALID_CHANNEL_MASK));
 #endif
@@ -410,7 +415,9 @@ fsp_err_t R_ADC_C_SampleStateCountSet (adc_ctrl_t * p_ctrl, uint16_t num_states)
 #endif
 
     /* Set the sample state count for the specified register */
-    uint32_t adm3  = (uint32_t) (ADC_C_IDLE_TIME << R_ADC_C_ADM3_ADIL_Pos) | (uint32_t) (BSP_FEATURE_ADC_C_CONVERSION_TIME << R_ADC_C_ADM3_ADCMP_Pos) | (num_states << R_ADC_C_ADM3_ADSMP_Pos);
+    uint32_t adm3 = (uint32_t) (ADC_C_IDLE_TIME << R_ADC_C_ADM3_ADIL_Pos) |
+                    (uint32_t) (BSP_FEATURE_ADC_C_CONVERSION_TIME << R_ADC_C_ADM3_ADCMP_Pos) |
+                    (num_states << R_ADC_C_ADM3_ADSMP_Pos);
     p_instance_ctrl->p_reg->ADM3 = adm3;
 
     /* Return the error code */
@@ -454,12 +461,12 @@ fsp_err_t R_ADC_C_InfoGet (adc_ctrl_t * p_ctrl, adc_info_t * p_adc_info)
         if (adc_mask != 0U)
         {
             uint32_t adc_mask_in_order = adc_mask;
-            int32_t  lowest_channel    = r_adc_c_lowest_channel_get(adc_mask_in_order);
+            uint32_t lowest_channel    = r_adc_c_lowest_channel_get(adc_mask_in_order);
 
             p_adc_info->p_address = (uint32_t *) (&p_instance_ctrl->p_reg->ADCR0 + lowest_channel);
 
             /* Determine the highest channel that is configured. */
-            int32_t highest_channel = r_adc_c_highest_channel_get(adc_mask_in_order);
+            uint32_t highest_channel = r_adc_c_highest_channel_get(adc_mask_in_order);
 
             /* Determine the size of data that must be read to read all the channels between and including the
              * highest and lowest channels.*/
@@ -544,7 +551,7 @@ fsp_err_t R_ADC_C_Close (adc_ctrl_t * p_ctrl)
 /*******************************************************************************************************************//**
  * @ref adc_api_t::calibrate is not supported.
  *
- * @retval FSP_ERR_UNSUPPORTED         Calibration not supported on this MCU.
+ * @retval FSP_ERR_UNSUPPORTED         Calibration not supported on this MPU.
  **********************************************************************************************************************/
 fsp_err_t R_ADC_C_Calibrate (adc_ctrl_t * const p_ctrl, void const * p_extend)
 {
@@ -725,13 +732,13 @@ static void r_adc_c_scan_cfg (adc_c_instance_ctrl_t * const     p_instance_ctrl,
         /* Set the temperature sensor to place in the normal operating mode. */
         R_TSU->TSU_SM = R_TSU_TSU_SM_EN_Msk;
 
-        /* Wait 30us. See the TSU "Operation" section of the RZ microprocessor manual. */
+        /* Wait 30us. See the TSU "Operation" section of the user's manual. */
         R_BSP_SoftwareDelay(BSP_FEATURE_ADC_C_TSU_ENABLE_STABILIZATION_TIME_US, BSP_DELAY_UNITS_MICROSECONDS);
 
         /* Enable the temperature sensor. */
         R_TSU->TSU_SM |= R_TSU_TSU_SM_OE_Msk;
 
-        /* Wait 1000us. See the TSU "Operation" section of the RZ microprocessor manual. */
+        /* Wait 1000us. See the TSU "Operation" section of the the user's manual. */
         R_BSP_SoftwareDelay(BSP_FEATURE_ADC_C_TSU_START_STABILIZATION_TIME_MS, BSP_DELAY_UNITS_MILLISECONDS);
 #endif
     }
@@ -767,7 +774,7 @@ static void r_adc_c_scan_cfg (adc_c_instance_ctrl_t * const     p_instance_ctrl,
             uint32_t adc_mask_in_order = p_channel_cfg->scan_mask;
 
             /* Determine the highest channel that is configured. */
-            int32_t highest_channel = r_adc_c_highest_channel_get(adc_mask_in_order);
+            uint32_t highest_channel = r_adc_c_highest_channel_get(adc_mask_in_order);
 
             /* Highest channel interrupt output is enabled. */
             adint |= (uint32_t) (1U << highest_channel);
@@ -819,7 +826,7 @@ static void r_adc_c_irq_disable (IRQn_Type irq)
  *
  * @retval  adc_mask_count  index value of lowest channel
  **********************************************************************************************************************/
-static int32_t r_adc_c_lowest_channel_get (uint32_t adc_mask)
+static uint32_t r_adc_c_lowest_channel_get (uint32_t adc_mask)
 {
     /* Initialize the mask result */
     uint32_t adc_mask_result = 0U;
@@ -831,7 +838,7 @@ static int32_t r_adc_c_lowest_channel_get (uint32_t adc_mask)
         adc_mask_result = (uint32_t) (adc_mask & (1U << adc_mask_count));
     }
 
-    return adc_mask_count;
+    return (uint32_t) adc_mask_count;
 }
 
 /*******************************************************************************************************************//**
@@ -841,7 +848,7 @@ static int32_t r_adc_c_lowest_channel_get (uint32_t adc_mask)
  *
  * @retval  adc_mask_count  index value of highest channel
  **********************************************************************************************************************/
-static int32_t r_adc_c_highest_channel_get (uint32_t adc_mask)
+static uint32_t r_adc_c_highest_channel_get (uint32_t adc_mask)
 {
     /* Initialize the mask result */
     uint32_t adc_mask_result = 0U;
@@ -853,7 +860,7 @@ static int32_t r_adc_c_highest_channel_get (uint32_t adc_mask)
         adc_mask_result = (uint32_t) (adc_mask & (1U << adc_mask_count));
     }
 
-    return adc_mask_count;
+    return (uint32_t) adc_mask_count;
 }
 
 /*******************************************************************************************************************//**

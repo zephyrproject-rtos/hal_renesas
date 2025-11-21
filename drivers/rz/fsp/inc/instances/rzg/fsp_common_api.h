@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -43,8 +43,11 @@
 #endif
 
 /** FSP Header and Footer definitions */
-#define FSP_HEADER             FSP_CPP_HEADER
-#define FSP_FOOTER             FSP_CPP_FOOTER
+#define FSP_HEADER    FSP_CPP_HEADER
+#define FSP_FOOTER    FSP_CPP_FOOTER
+
+/* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+FSP_HEADER
 
 /** Macro to be used when argument to function is ignored since function call is NSC and the parameter is statically
  *  defined on the Secure side. */
@@ -94,6 +97,7 @@ typedef enum e_fsp_err
     FSP_ERR_NOT_FOUND             = 34,                     ///< The requested item could not be found
     FSP_ERR_NO_CALLBACK_MEMORY    = 35,                     ///< Non-secure callback memory not provided for non-secure callback
     FSP_ERR_BUFFER_EMPTY          = 36,                     ///< No data available in buffer
+    FSP_ERR_INVALID_DATA          = 37,                     ///< Accuracy of data is not guaranteed
 
     /* Start of RTOS only error codes */
     FSP_ERR_INTERNAL     = 100,                             ///< Internal error
@@ -138,6 +142,9 @@ typedef enum e_fsp_err
     /* Start of CAC Specific */
     FSP_ERR_INVALID_CAC_REF_CLOCK = 600,                    ///< Measured clock rate < reference clock rate
 
+    /* Start of IIRFA Specific */
+    FSP_ERR_INVALID_RESULT = 700,                           ///< The result of one or more calculations was +/- infinity.
+
     /* Start of GLCD Specific */
     FSP_ERR_CLOCK_GENERATION           = 1000,              ///< Clock cannot be specified as system clock
     FSP_ERR_INVALID_TIMING_SETTING     = 1001,              ///< Invalid timing parameter
@@ -171,6 +178,10 @@ typedef enum e_fsp_err
 
     /* Start of touch panel framework specific */
     FSP_ERR_CALIBRATE_FAILED = 1200,                        ///< Calibration failed
+
+    /* Start of IIRFA specific */
+    FSP_ERR_IIRFA_ECC_1BIT = 1300,                          ///< 1-bit ECC error detected
+    FSP_ERR_IIRFA_ECC_2BIT = 1301,                          ///< 2-bit ECC error detected
 
     /* Start of IP specific */
     FSP_ERR_IP_HARDWARE_NOT_PRESENT = 1400,                 ///< Requested IP does not exist on this device
@@ -211,6 +222,7 @@ typedef enum e_fsp_err
     FSP_ERR_ETHER_ERROR_TRANSMIT_BUFFER_FULL = 4003, ///< Transmit buffer is not empty
     FSP_ERR_ETHER_ERROR_FILTERING            = 4004, ///< Detect multicast frame when multicast frame filtering enable
     FSP_ERR_ETHER_ERROR_PHY_COMMUNICATION    = 4005, ///< ETHERC/EDMAC has an error in the phy communication
+    FSP_ERR_ETHER_RECEIVE_BUFFER_ACTIVE      = 4006, ///< Receive buffer is active.
 
     /* Start of ETHER_PHY Driver specific */
     FSP_ERR_ETHER_PHY_ERROR_LINK = 5000,             ///< PHY is not link up.
@@ -221,9 +233,24 @@ typedef enum e_fsp_err
     FSP_ERR_QUEUE_EMPTY = 10001,                     ///< Queue is empty, no data to dequeue
 
     /* Start of CTSU Driver specific */
-    FSP_ERR_CTSU_SCANNING          = 6000,           ///< Scanning.
-    FSP_ERR_CTSU_NOT_GET_DATA      = 6001,           ///< Not processed previous scan data.
-    FSP_ERR_CTSU_INCOMPLETE_TUNING = 6002,           ///< Incomplete initial offset tuning.
+    FSP_ERR_CTSU_SCANNING              = 6000,       ///< Scanning.
+    FSP_ERR_CTSU_NOT_GET_DATA          = 6001,       ///< Not processed previous scan data.
+    FSP_ERR_CTSU_INCOMPLETE_TUNING     = 6002,       ///< Incomplete initial offset tuning.
+    FSP_ERR_CTSU_DIAG_NOT_YET          = 6003,       ///< Diagnosis of data collected no yet.
+    FSP_ERR_CTSU_DIAG_LDO_OVER_VOLTAGE = 6004,       ///< Diagnosis of LDO over voltage failed.
+    FSP_ERR_CTSU_DIAG_CCO_HIGH         = 6005,       ///< Diagnosis of CCO into 19.2uA failed.
+    FSP_ERR_CTSU_DIAG_CCO_LOW          = 6006,       ///< Diagnosis of CCO into 2.4uA failed.
+    FSP_ERR_CTSU_DIAG_SSCG             = 6007,       ///< Diagnosis of SSCG frequency failed.
+    FSP_ERR_CTSU_DIAG_DAC              = 6008,       ///< Diagnosis of non-touch count value failed.
+    FSP_ERR_CTSU_DIAG_OUTPUT_VOLTAGE   = 6009,       ///< Diagnosis of LDO output voltage failed.
+    FSP_ERR_CTSU_DIAG_OVER_VOLTAGE     = 6010,       ///< Diagnosis of over voltage detection circuit failed.
+    FSP_ERR_CTSU_DIAG_OVER_CURRENT     = 6011,       ///< Diagnosis of over current detection circuit failed.
+    FSP_ERR_CTSU_DIAG_LOAD_RESISTANCE  = 6012,       ///< Diagnosis of LDO internal resistance value failed.
+    FSP_ERR_CTSU_DIAG_CURRENT_SOURCE   = 6013,       ///< Diagnosis of Current source value failed.
+    FSP_ERR_CTSU_DIAG_SENSCLK_GAIN     = 6014,       ///< Diagnosis of SENSCLK frequency gain failed.
+    FSP_ERR_CTSU_DIAG_SUCLK_GAIN       = 6015,       ///< Diagnosis of SUCLK frequency gain failed.
+    FSP_ERR_CTSU_DIAG_CLOCK_RECOVERY   = 6016,       ///< Diagnosis of SUCLK clock recovery function failed.
+    FSP_ERR_CTSU_DIAG_CFC_GAIN         = 6017,       ///< Diagnosis of CFC oscillator gain failed.
 
     /* Start of SDMMC specific */
     FSP_ERR_CARD_INIT_FAILED     = 40000,            ///< SD card or eMMC device failed to initialize.
@@ -246,14 +273,26 @@ typedef enum e_fsp_err
     FSP_ERR_CAN_RECEIVE_MAILBOX    = 60004,          ///< Mailbox is setup as a receive mailbox.
     FSP_ERR_CAN_TRANSMIT_MAILBOX   = 60005,          ///< Mailbox is setup as a transmit mailbox.
     FSP_ERR_CAN_MESSAGE_LOST       = 60006,          ///< Receive message has been overwritten or overrun.
+    FSP_ERR_CAN_TRANSMIT_FIFO_FULL = 60007,          ///< Transmit FIFO is full.
 
     /* Start of SF_WIFI Specific */
-    FSP_ERR_WIFI_CONFIG_FAILED   = 70000,            ///< WiFi module Configuration failed.
-    FSP_ERR_WIFI_INIT_FAILED     = 70001,            ///< WiFi module initialization failed.
-    FSP_ERR_WIFI_TRANSMIT_FAILED = 70002,            ///< Transmission failed
-    FSP_ERR_WIFI_INVALID_MODE    = 70003,            ///< API called when provisioned in client mode
-    FSP_ERR_WIFI_FAILED          = 70004,            ///< WiFi Failed.
-    FSP_ERR_WIFI_SCAN_COMPLETE   = 70005,            ///< Wifi scan has completed.
+    FSP_ERR_WIFI_CONFIG_FAILED    = 70000,           ///< WiFi module Configuration failed.
+    FSP_ERR_WIFI_INIT_FAILED      = 70001,           ///< WiFi module initialization failed.
+    FSP_ERR_WIFI_TRANSMIT_FAILED  = 70002,           ///< Transmission failed
+    FSP_ERR_WIFI_INVALID_MODE     = 70003,           ///< API called when provisioned in client mode
+    FSP_ERR_WIFI_FAILED           = 70004,           ///< WiFi Failed.
+    FSP_ERR_WIFI_SCAN_COMPLETE    = 70005,           ///< Wifi scan has completed.
+    FSP_ERR_WIFI_AP_NOT_CONNECTED = 70006,           ///< WiFi module is not connected to access point
+    FSP_ERR_WIFI_UNKNOWN_AT_CMD   = 70007,           ///< DA16XXX Unknown AT command Error
+    FSP_ERR_WIFI_INSUF_PARAM      = 70008,           ///< DA16XXX Insufficient parameter
+    FSP_ERR_WIFI_TOO_MANY_PARAMS  = 70009,           ///< DA16XXX Too many parameters
+    FSP_ERR_WIFI_INV_PARAM_VAL    = 70010,           ///< DA16XXX Wrong parameter value
+    FSP_ERR_WIFI_NO_RESULT        = 70011,           ///< DA16XXX No result
+    FSP_ERR_WIFI_RSP_BUF_OVFLW    = 70012,           ///< DA16XXX Response buffer overflow
+    FSP_ERR_WIFI_FUNC_NOT_CONFIG  = 70013,           ///< DA16XXX Function is not configured
+    FSP_ERR_WIFI_NVRAM_WR_FAIL    = 70014,           ///< DA16XXX NVRAM write failure
+    FSP_ERR_WIFI_RET_MEM_WR_FAIL  = 70015,           ///< DA16XXX Retention memory write failure
+    FSP_ERR_WIFI_UNKNOWN_ERR      = 70016,           ///< DA16XXX unknown error
 
     /* Start of SF_CELLULAR Specific */
     FSP_ERR_CELLULAR_CONFIG_FAILED       = 80000,    ///< Cellular module Configuration failed.
@@ -296,7 +335,16 @@ typedef enum e_fsp_err
     FSP_ERR_CRYPTO_INSTALL_KEY_FAILED    = 0x10010,  ///< Specified input key is invalid.
     FSP_ERR_CRYPTO_AUTHENTICATION_FAILED = 0x10011,  ///< Authentication failed
     FSP_ERR_CRYPTO_SCE_KEY_SET_FAIL      = 0x10012,  ///< Failure to Init Cipher
-    FSP_ERR_CRYPTO_SCE_AUTHENTICATION    = 0x10013,
+    FSP_ERR_CRYPTO_SCE_AUTHENTICATION    = 0x10013,  ///< Authentication failed
+    FSP_ERR_CRYPTO_SCE_PARAMETER         = 0x10014,  ///< Input date is illegal.
+    FSP_ERR_CRYPTO_SCE_PROHIBIT_FUNCTION = 0x10015,  ///< An invalid function call occurred.
+
+    /* Start of Crypto RSIP specific (0x10100) */
+    FSP_ERR_CRYPTO_RSIP_RESOURCE_CONFLICT = 0x10100, ///< Hardware resource is busy
+    FSP_ERR_CRYPTO_RSIP_FATAL             = 0x10101, ///< Hardware fatal error or unexpected return
+    FSP_ERR_CRYPTO_RSIP_FAIL              = 0x10102, ///< Internal error
+    FSP_ERR_CRYPTO_RSIP_KEY_SET_FAIL      = 0x10103, ///< Input key type is illegal
+    FSP_ERR_CRYPTO_RSIP_AUTHENTICATION    = 0x10104, ///< Authentication failed
 
     /* Start of SF_CRYPTO specific */
     FSP_ERR_CRYPTO_COMMON_NOT_OPENED      = 0x20000, ///< Crypto Framework Common is not opened
@@ -320,26 +368,13 @@ typedef enum e_fsp_err
     FSP_ERR_COMMS_BUS_NOT_OPEN = 0x40000,              ///< Bus is not open.
 } fsp_err_t;
 
-/** Common version structure */
-typedef union st_fsp_version
-{
-    /** Version id */
-    uint32_t version_id;
-
-    /** Code version parameters */
-    struct
-    {
-        uint8_t code_version_minor;    ///< Code minor version
-        uint8_t code_version_major;    ///< Code major version
-        uint8_t api_version_minor;     ///< API minor version
-        uint8_t api_version_major;     ///< API major version
-    };
-} fsp_version_t;
-
 /** @} */
 
 /***********************************************************************************************************************
  * Function prototypes
  **********************************************************************************************************************/
+
+/* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
+FSP_FOOTER
 
 #endif

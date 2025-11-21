@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -11,6 +11,11 @@
 
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
+
+/***********************************************************************************************************************
+ * Includes   <System Includes> , "Project Includes"
+ **********************************************************************************************************************/
+#include "bsp_select_irq.h"
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -66,6 +71,22 @@ __STATIC_INLINE void R_FSP_IsrContextSet (IRQn_Type const irq, void * p_context)
      * being part of bsp_irq.c for performance considerations because it is used in interrupt service routines. */
     gp_renesas_isr_context[irq] = p_context;
 }
+
+/*******************************************************************************************************************//**
+ * @brief      Finds the ISR context associated with the requested IRQ.
+ *
+ * @param[in]  irq            IRQ number (parameter checking must ensure the IRQ number is valid before calling this
+ *                            function.
+ * @return  ISR context for IRQ.
+ **********************************************************************************************************************/
+__STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
+{
+    /* This provides access to the ISR context array defined in bsp_irq.c. This is an inline function instead of
+     * being part of bsp_irq.c for performance considerations because it is used in interrupt service routines. */
+    return gp_renesas_isr_context[irq];
+}
+
+#if BSP_CFG_INLINE_IRQ_FUNCTIONS
 
 /*******************************************************************************************************************//**
  * Clear the interrupt status flag for a given interrupt.
@@ -131,7 +152,10 @@ __STATIC_INLINE void R_BSP_IrqEnableNoClear (IRQn_Type const irq)
     /* The following statement is used in place of NVIC_EnableIRQ to avoid including a branch for system exceptions
      * every time an interrupt is enabled in the NVIC. */
     uint32_t _irq = (uint32_t) irq;
-    NVIC->ISER[(((uint32_t) irq) >> 5UL)] = (uint32_t) (1UL << (_irq & 0x1FUL));
+
+    __COMPILER_BARRIER();
+    NVIC->ISER[(_irq >> 5UL)] = (uint32_t) (1UL << (_irq & 0x1FUL));
+    __COMPILER_BARRIER();
 }
 
 /*******************************************************************************************************************//**
@@ -185,19 +209,16 @@ __STATIC_INLINE void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority,
     R_BSP_IrqEnable(irq);
 }
 
-/*******************************************************************************************************************//**
- * @brief      Finds the ISR context associated with the requested IRQ.
- *
- * @param[in]  irq            IRQ number (parameter checking must ensure the IRQ number is valid before calling this
- *                            function.
- * @return  ISR context for IRQ.
- **********************************************************************************************************************/
-__STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
-{
-    /* This provides access to the ISR context array defined in bsp_irq.c. This is an inline function instead of
-     * being part of bsp_irq.c for performance considerations because it is used in interrupt service routines. */
-    return gp_renesas_isr_context[irq];
-}
+#else
+void R_BSP_IrqStatusClear(IRQn_Type irq);
+void R_BSP_IrqClearPending(IRQn_Type irq);
+void R_BSP_IrqCfg(IRQn_Type const irq, uint32_t priority, void * p_context);
+void R_BSP_IrqEnableNoClear(IRQn_Type const irq);
+void R_BSP_IrqEnable(IRQn_Type const irq);
+void R_BSP_IrqDisable(IRQn_Type const irq);
+void R_BSP_IrqCfgEnable(IRQn_Type const irq, uint32_t priority, void * p_context);
+
+#endif
 
 /*******************************************************************************************************************//**
  * @internal

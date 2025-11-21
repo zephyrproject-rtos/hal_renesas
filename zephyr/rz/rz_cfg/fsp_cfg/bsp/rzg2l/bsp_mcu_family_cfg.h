@@ -6,6 +6,10 @@
 
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_cfg.h"
 #include "bsp_override.h"
@@ -15,6 +19,7 @@
 #define BSP_MCU_GROUP_RZG2L (1)
 #define BSP_CORTEX_VECTOR_TABLE_ENTRIES    (16U)
 #define BSP_VECTOR_TABLE_MAX_ENTRIES       (496U)
+#define BSP_CFG_INLINE_IRQ_FUNCTIONS       (1)
 
 #if defined(_RZG2L_TZ_SECURE)
  #define BSP_TZ_SECURE_BUILD           (1)
@@ -54,5 +59,9 @@
 
 #ifndef FPU_FPCCR_CLRONRET_VAL
 #define FPU_FPCCR_CLRONRET_VAL            (1)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -46,7 +46,7 @@
  *              One loop time through bsp_prv_software_delay_loop() takes roughly 500ns. This value is based on the
  *              actual measured time in the condition that a frequency of the CPU clock is 200MHz and the code is
  *              excuted on DDR3L-1333 DRAM(133MHz).
- *              One loop running time of software_delay_loop() can be modified by redefining BSP_DELAY_LOOP_CYCLES.
+ *              One loop running time of software_delay_loop() can be modified by redefining BSP_FEATURE_BSP_DELAY_LOOP_CYCLES.
  *
  * @param[in]   delay  The number of 'units' to delay.
  * @param[in]   units  The 'base' (bsp_delay_units_t) for the units specified. Valid values are:
@@ -91,12 +91,12 @@ void R_BSP_SoftwareDelay (uint32_t delay, bsp_delay_units_t units)
     {
         /* No, we will not overflow. */
         cycles_requested = (((uint32_t) ns_64bits / us_per_cycle) * BSP_DELAY_UNIT_CONV_US_TO_NS);
-        loops_required   = cycles_requested / BSP_DELAY_LOOP_CYCLES;
+        loops_required   = cycles_requested / BSP_FEATURE_BSP_DELAY_LOOP_CYCLES;
     }
     else
     {
         /* We did overflow. Try dividing down first. */
-        total_us  = (total_us / ((us_per_cycle * BSP_DELAY_LOOP_CYCLES) / BSP_DELAY_UNIT_CONV_US_TO_NS));
+        total_us  = (total_us / ((us_per_cycle * BSP_FEATURE_BSP_DELAY_LOOP_CYCLES) / BSP_DELAY_UNIT_CONV_US_TO_NS));
         ns_64bits = (uint64_t) total_us * (uint64_t) BSP_DELAY_UNIT_CONV_US_TO_NS; // Convert to ns.
 
         /* Have we overflowed 32 bits? */

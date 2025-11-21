@@ -11,7 +11,7 @@ Origin:
 
 Status:
    RZ/A FSP: version v3.5.0
-   RZ/G FSP: version v2.1.0
+   RZ/G FSP: version v3.1.0
    RZ/V FSP: version v3.0.0
    RZ/N FSP: version v2.1.0
    RZ/T FSP: version v2.2.0
@@ -31,7 +31,7 @@ URL:
    Commit: efa73c09f98e6d124d98692fffc1091eac0bbe47
 
    https://github.com/renesas/rzg-fsp
-   Commit: 8db06f881784144e86361b1266ac4d3c026f6ad8
+   Commit: 48efef301dc699fdf46ea8df274dbc0f3587e222
 
    https://github.com/renesas/rzv-fsp
    Commit: dbc49dea2a0fe4b2cc7c7f1de40a6f6aadf4b980
@@ -66,7 +66,6 @@ Patch List:
    * Rename GPT capture compare ISR from gpt_capture_a_isr, gpt_capture_b_isr to 
      gpt_capture_compare_a_isr, gpt_capture_compare_b_isr respectively
    Impacted files:
-      drivers/rz/fsp/src/rzg/r_gpt/r_gpt.c
       drivers/rz/fsp/src/rzt/r_gpt/r_gpt.c
       drivers/rz/fsp/src/rzn/r_gpt/r_gpt.c
 
@@ -75,12 +74,6 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rza/r_adc_c/r_adc_c.c
       drivers/rz/fsp/inc/instances/rza/r_adc_c.h
-
-   * Rename g_adc_on_adc to g_adc_on_adc_c with _c suffix to match with ADC_C FSP driver and 
-     make the Zephyr ADC driver generic
-   Impacted files:
-      drivers/rz/fsp/src/rzg/r_adc_c/r_adc_c.c
-      drivers/rz/fsp/inc/instances/rzg/r_adc_c.h
 
    * Modify the ISR prototype from void gtm_int_isr(void) to void gtm_int_isr(IRQn_Type const intid)
      in the GTM FSP driver to unify with rza-fsp, making the Zephyr Counter driver and System Timer
