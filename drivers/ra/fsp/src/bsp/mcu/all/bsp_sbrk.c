@@ -28,6 +28,8 @@
  * Exported global variables (to be accessed by other files)
  **********************************************************************************************************************/
 
+ /* Currently, Zephyr SDK and its built-in newlib does not support sbrk */
+#if BSP_CFG_RTOS != 3
 #if defined(__llvm__)
 void * sbrk(ptrdiff_t incr);
 
@@ -97,6 +99,7 @@ caddr_t _sbrk (int incr)
 #endif
 }
 
+#endif /* BSP_CFG_RTOS != 3 */
 #endif
 
 /******************************************************************************************************************//**
