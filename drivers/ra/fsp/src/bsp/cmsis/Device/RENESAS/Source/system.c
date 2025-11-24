@@ -63,30 +63,33 @@
 /** System Clock Frequency (Core Clock) */
 uint32_t SystemCoreClock BSP_SECTION_EARLY_INIT;
 
-#if defined(__GNUC__)
+#if BSP_CFG_RTOS != 3
+    /* Redundant, Zephyr manage their own C environment */
+ #if defined(__GNUC__)
 
 /* Nested in __GNUC__ because LLVM generates both __GNUC__ and __llvm__*/
- #if defined(__llvm__) && !defined(__CLANG_TIDY__)
+  #if defined(__llvm__) && !defined(__CLANG_TIDY__)
 extern uint32_t __tls_base;
+  #endif
+
  #endif
 
-#endif
-
 /* Initialize static constructors */
-#if defined(__GNUC__)
+ #if defined(__GNUC__)
 
 extern void (* __init_array_start[])(void);
 
 extern void (* __init_array_end[])(void);
-#elif defined(__ICCARM__)
+ #elif defined(__ICCARM__)
 extern void __call_ctors(void const *, void const *);
 
  #pragma section = "SHT$$PREINIT_ARRAY" const
  #pragma section = "SHT$$INIT_ARRAY" const
-#endif
+ #endif
 
 extern void  * __VECTOR_TABLE[];
 extern uint8_t g_main_stack[];
+#endif /* BSP_CFG_RTOS != 3 */
 
 extern void R_BSP_SAUInit(void);
 extern void R_BSP_SecurityInit(void);
@@ -119,13 +122,17 @@ static void bsp_init_uninitialized_vars(void);
 
 #if (BSP_CFG_CPU_CORE == 0) && (BSP_FEATURE_BSP_HAS_ITCM || BSP_FEATURE_BSP_HAS_DTCM)
  #if !BSP_TZ_NONSECURE_BUILD
+   #if BSP_CFG_RTOS != 3
 static void memset_64(uint64_t * destination, const uint64_t value, size_t count);
-
+   #endif /* BSP_CFG_RTOS != 3 */
  #endif
 #endif
 
 #if BSP_CFG_DCACHE_ENABLED
+    /* Zephyr has its own MPU management: arch/arm/core/mpu/arm_mpu.c */
+ #if BSP_CFG_RTOS != 3
 static void bsp_init_mpu(void);
+ #endif /* BSP_CFG_RTOS != 3 */
 
 #endif
 
@@ -158,6 +165,8 @@ static void SystemRuntimeInit (const uint32_t external)
 }
 
 #endif
+
+extern void bsp_init(void * p_args);
 
 /*******************************************************************************************************************//**
  * Initialize the MCU and the runtime environment.
@@ -205,21 +214,28 @@ void SystemInit (void)
 #endif
 
 #if __FPU_USED
+    /* Zephyr has its own FPU management: arch/arm/core/cortex_m/prep_c.c */
+    /* z_arm_floating_point_init */
+ #if BSP_CFG_RTOS != 3
 
     /* Enable the FPU only when it is used.
      * Code taken from Section 7.1, Cortex-M4 TRM (DDI0439C) */
 
     /* Set bits 20-23 (CP10 and CP11) to enable FPU. */
     SCB->CPACR = (uint32_t) CP_MASK;
+ #endif /* BSP_CFG_RTOS != 3 */
 #endif
 
 #if BSP_TZ_SECURE_BUILD
-
+    /* Zephyr has its own stack management */
+    /* kernel/init.c: K_THREAD_PINNED_STACK_DEFINE(z_main_stack, CONFIG_MAIN_STACK_SIZE); */
+ #if BSP_CFG_RTOS != 3
     /* Seal the main stack for secure projects. Reference:
      * https://developer.arm.com/documentation/100720/0300
      * https://developer.arm.com/support/arm-security-updates/armv8-m-stack-sealing */
     uint32_t * p_main_stack_top = (uint32_t *) &g_main_stack[BSP_CFG_STACK_MAIN_BYTES];
     *p_main_stack_top = BSP_TZ_STACK_SEAL_VALUE;
+ #endif /* BSP_CFG_RTOS != 3 */
 
  #if BSP_SECONDARY_CORE_BUILD
 
@@ -229,12 +245,15 @@ void SystemInit (void)
 #endif
 
 #if !BSP_TZ_NONSECURE_BUILD
-
+    /* Zephyr has its own IRQ relay management */
+    /* arch/arm/core/cortex_m/prep_c.c: relocate_vector_table(void) */
+ #if BSP_CFG_RTOS != 3
     /* VTOR is in undefined state out of RESET:
      * https://developer.arm.com/documentation/100235/0004/the-cortex-m33-peripherals/system-control-block/system-control-block-registers-summary?lang=en.
      * Set the Secure/Non-Secure VTOR to the vector table address based on the build. This is skipped for non-secure
      * projects because SCB_NS->VTOR is set by the secure project before the non-secure project runs. */
     SCB->VTOR = (uint32_t) &__VECTOR_TABLE;
+ #endif /* BSP_CFG_RTOS != 3 */
 #endif
 
 #if !BSP_TZ_CFG_SKIP_INIT && !BSP_CFG_SKIP_INIT
@@ -324,6 +343,8 @@ void SystemInit (void)
     R_BSP_WarmStart(BSP_WARM_START_POST_CLOCK);
 
 #if BSP_FEATURE_BSP_HAS_SP_MON
+    /* Disable for now, due to these stack setting should reflect Zephyr configuration */
+ #if BSP_CFG_RTOS != 3
 
     /* Disable MSP monitoring  */
     R_MPU_SPMON->SP[0].CTL = 0;
@@ -343,14 +364,19 @@ void SystemInit (void)
 
     /* Enable MSP monitoring  */
     R_MPU_SPMON->SP[0].CTL = 1U;
+ #endif
 #endif
 
 #if BSP_FEATURE_TZ_HAS_TRUSTZONE
+    /* Disable for now, due to these stack setting should reflect Zephyr configuration */
+ #if BSP_CFG_RTOS != 3
     __set_MSPLIM(BSP_PRV_STACK_LIMIT);
+ #endif
 #endif
 
 #if (BSP_CFG_CPU_CORE == 0) && (BSP_FEATURE_BSP_HAS_ITCM || BSP_FEATURE_BSP_HAS_DTCM)
  #if !BSP_TZ_NONSECURE_BUILD
+  #if BSP_CFG_RTOS != 3
 
     /* Zero initialize all available Cortex-M85 TCM memory if ECC is enabled for it and the very first project is executing.
      * This may be either a bootloader if present, or a Flat or Secure application. */
@@ -366,6 +392,7 @@ void SystemInit (void)
         memset_64((uint64_t *) BSP_PRV_ITCM_START_ADDRESS, 0, itcm_num_doublewords);
         memset_64((uint64_t *) BSP_PRV_DTCM_START_ADDRESS, 0, dtcm_num_doublewords);
     }
+  #endif /* BSP_CFG_RTOS != 3 */
  #endif
 #endif
 
@@ -432,9 +459,12 @@ void SystemInit (void)
 #endif
 
 #if BSP_CFG_DCACHE_ENABLED
+    /* Zephyr has its own MPU management: arch/arm/core/mpu/arm_mpu.c */
+ #if BSP_CFG_RTOS != 3
     bsp_init_mpu();
 
     SCB_EnableDCache();
+ #endif /* BSP_CFG_RTOS != 3 */
 #endif
 
 #if BSP_FEATURE_BSP_HAS_GRAPHICS_DOMAIN && !BSP_CFG_SKIP_INIT
@@ -484,42 +514,48 @@ void SystemInit (void)
 #endif
 
 #if defined(__ICCARM__)
-
+ #if BSP_CFG_RTOS != 3
     /* Copy main thread TLS to RAM. */
  #pragma section="__DLIB_PERTHREAD_init"
  #pragma section="__DLIB_PERTHREAD"
     memcpy((uint32_t *) __section_begin("__DLIB_PERTHREAD"), (uint32_t *) __section_begin("__DLIB_PERTHREAD_init"),
            (uint32_t) __section_size("__DLIB_PERTHREAD_init"));
+ #endif /* BSP_CFG_RTOS != 3 */
 #endif
 
 #if defined(RENESAS_CORTEX_M85)
-
+    /* Zephyr use the .ramfunc for code in RAM instead -> move to soc_early_init_hook() */
+ #if BSP_CFG_RTOS != 3
     /* Invalidate I-Cache after initializing the .ram_from_flash section. */
     SCB_InvalidateICache();
+ #endif /* BSP_CFG_RTOS != 3 */
 #endif
 
+    /* Zephyr have their own static constructors initial sequence */
+#if BSP_CFG_RTOS != 3
     /* Initialize static constructors */
-#if defined(__ARMCC_VERSION)
+ #if defined(__ARMCC_VERSION)
 
     /* TODO: should be replaced with some macro generated by e2studio */
- #if defined(__ARMCC_USING_STANDARDLIB)
+  #if defined(__ARMCC_USING_STANDARDLIB)
 
     /* C++ requires default lib: https://developer.arm.com/documentation/dui0475/i/the-arm-c-micro-library/differences-between-microlib-and-the-default-c-library?lang=en */
     extern uint8_t g_heap[BSP_CFG_HEAP_BYTES];
     __rt_lib_init((uint32_t) g_heap, (uint32_t) g_heap + BSP_CFG_HEAP_BYTES);
- #endif
-#elif defined(__GNUC__)
+  #endif
+ #elif defined(__GNUC__)
     int32_t count = __init_array_end - __init_array_start;
     for (int32_t i = 0; i < count; i++)
     {
         __init_array_start[i]();
     }
 
-#elif defined(__ICCARM__)
+ #elif defined(__ICCARM__)
     void const * pibase = __section_begin("SHT$$PREINIT_ARRAY");
     void const * ilimit = __section_end("SHT$$INIT_ARRAY");
     __call_ctors(pibase, ilimit);
-#endif
+ #endif
+#endif /* BSP_CFG_RTOS != 3 */
 
     /* Initialize ELC events that will be used to trigger NVIC interrupts. */
     bsp_irq_cfg();
@@ -637,7 +673,7 @@ static void bsp_init_uninitialized_vars (void)
 
 #if (BSP_CFG_CPU_CORE == 0) && (BSP_FEATURE_BSP_HAS_ITCM || BSP_FEATURE_BSP_HAS_DTCM)
  #if !BSP_TZ_NONSECURE_BUILD
-
+  #if BSP_CFG_RTOS != 3
 /*******************************************************************************************************************//**
  * 64-bit memory set for Armv8.1-M using low overhead loop instructions.
  *
@@ -664,11 +700,12 @@ static void memset_64 (uint64_t * destination, const uint64_t value, size_t coun
         : "lr", "memory"
         );
 }
-
+  #endif /* BSP_CFG_RTOS != 3 */
  #endif
 #endif
 
 #if BSP_CFG_DCACHE_ENABLED
+ #if BSP_CFG_RTOS != 3
 
 /*******************************************************************************************************************//**
  * Initialize MPU for Armv8-M devices.
@@ -712,7 +749,7 @@ static void bsp_init_mpu (void)
      */
     ARM_MPU_Enable(MPU_CTRL_PRIVDEFENA_Msk);
 }
-
+ #endif
 #endif
 
 /** @} (end addtogroup BSP_MCU) */
