@@ -17,6 +17,17 @@ FSP_HEADER
  **********************************************************************************************************************/
 #define BSP_ICU_VECTOR_MAX_ENTRIES    (BSP_VECTOR_TABLE_MAX_ENTRIES - BSP_CORTEX_VECTOR_TABLE_ENTRIES)
 
+#if (BSP_CFG_CPU_CORE == 1)
+ #define BSP_EVENT_NUM_TO_INTSELR(x)         (x >> 5)        // Convert event number to INTSELR register number
+ #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)    (1 << (x % 32)) // Convert event number to INTSELR bit mask
+ #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event) \
+    R_ICU->INTSELR[BSP_EVENT_NUM_TO_INTSELR(event)] |= BSP_EVENT_NUM_TO_INTSELR_MASK(event);
+#else
+ #define BSP_EVENT_NUM_TO_INTSELR(x)
+ #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)
+ #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event)
+#endif
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -119,18 +130,22 @@ __STATIC_INLINE void R_BSP_IrqClearPending (IRQn_Type irq)
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
 {
+ #if BSP_CFG_RTOS == 3
+    FSP_PARAMETER_NOT_USED(priority);
+ #else    
     /* The following statement is used in place of NVIC_SetPriority to avoid including a branch for system exceptions
      * every time a priority is configured in the NVIC. */
- #if (4U == __CORTEX_M)
+  #if (4U == __CORTEX_M)
     NVIC->IPR[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
- #elif (33 == __CORTEX_M)
+  #elif (33 == __CORTEX_M)
     NVIC->IPR[((uint32_t) irq)] = (uint8_t) ((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX);
- #elif (23 == __CORTEX_M)
+  #elif (23 == __CORTEX_M)
     NVIC->IPR[_IP_IDX(irq)] = ((uint32_t) (NVIC->IPR[_IP_IDX(irq)] & ~((uint32_t) UINT8_MAX << _BIT_SHIFT(irq))) |
                                (((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t) UINT8_MAX) << _BIT_SHIFT(irq)));
- #else
+  #else
     NVIC_SetPriority(irq, priority);
- #endif
+  #endif
+ #endif /* BSP_CFG_RTOS == 3 */
 
     /* Store the context. The context is recovered in the ISR. */
     R_FSP_IsrContextSet(irq, p_context);

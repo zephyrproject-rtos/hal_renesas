@@ -13,7 +13,12 @@
 
 /* Mathematical Functions includes. */
 #ifdef __cplusplus
+    /* Zephyr SDK doesn't support CPP cmath library yet */
+ #if BSP_CFG_RTOS == 3
+ #include <math.h>
+ #else
  #include <cmath>
+ #endif
 #else
  #include <math.h>
 #endif

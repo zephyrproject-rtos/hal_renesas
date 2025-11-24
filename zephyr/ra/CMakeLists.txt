@@ -6,6 +6,10 @@ zephyr_include_directories(
     portable/inc
     ra_gen)
 
+zephyr_library_sources(
+    portable/src/bsp/mcu/all/bsp_irq.c
+)
+
 # Optional build base on feature configuration
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_AGT
     portable/src/rp_agt/rp_agt.c)

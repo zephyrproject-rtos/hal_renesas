@@ -15,6 +15,8 @@ extern "C" {
 #include "bsp_mcu_family_cfg.h"
 #include "bsp_mcu_ofs_cfg.h"
 
+#define BSP_CFG_RTC_USED IS_ENABLED(CONFIG_RTC_RENESAS_RA)
+
 #define SUBCLOCK_STABILIZATION_MAX(x) ((x < 10000) ? x : 10000)
 
 /* Disable BSP_CFG_PARAM_CHECKING_ENABLE as default to reduce code size */
@@ -42,6 +44,15 @@ extern "C" {
 #define BSP_CLOCK_CFG_SUBCLOCK_STABILIZATION_MS                                                    \
 	SUBCLOCK_STABILIZATION_MAX((DT_PROP_OR(DT_NODELABEL(subclk), stabilization_time, 500)))
 #endif
+
+/* 0: No RTOS, 1: Azure, 2: FreeRTOS, 3: Zephyr */
+#define BSP_CFG_RTOS	3
+
+/* Disable due to it initial in Zephyr kernel */
+#define BSP_CFG_C_RUNTIME_INIT	(BSP_CFG_RTOS != 3)
+
+/* Enable early init due to some global resource will be use for device init before z_cstart */
+#define BSP_CFG_EARLY_INIT	(1)
 
 #ifdef __cplusplus
 }

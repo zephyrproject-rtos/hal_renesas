@@ -12,6 +12,8 @@
 #include "bsp_mcu_family_cfg.h"
 #include "bsp_mcu_ofs_cfg.h"
 
+#define BSP_CFG_RTC_USED IS_ENABLED(CONFIG_RTC_RENESAS_RA)
+
 #define SUBCLOCK_STABILIZATION_MAX(x) ((x < 10000) ? x : 10000)
 
 /* Disable BSP_CFG_PARAM_CHECKING_ENABLE as default to reduce code size */
@@ -43,5 +45,14 @@
 #ifdef CONFIG_SOC_RA_ENABLE_START_SECOND_CORE
 #define BSP_PARTITION_FLASH_CPU1_S_START DT_REG_ADDR(DT_NODELABEL(code_mram_cm33))
 #endif /* CONFIG_SOC_RA_ENABLE_START_SECOND_CORE */
+
+/* 0: No RTOS, 1: Azure, 2: FreeRTOS, 3: Zephyr */
+#define BSP_CFG_RTOS	3
+
+/* Disable due to it initial in Zephyr kernel */
+#define BSP_CFG_C_RUNTIME_INIT	(BSP_CFG_RTOS != 3)
+
+/* Enable early init due to some global resource will be use for device init before z_cstart */
+#define BSP_CFG_EARLY_INIT	(1)
 
 #endif /* BSP_CFG_H_ */

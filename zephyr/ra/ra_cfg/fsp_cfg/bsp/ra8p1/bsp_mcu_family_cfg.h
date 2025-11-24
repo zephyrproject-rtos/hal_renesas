@@ -447,6 +447,16 @@
 #endif
 #endif
 
+#if (0U == BSP_CFG_CPU_CORE)
+  #define BSP_CFG_DCACHE_FORCE_WRITETHROUGH (0)
+#else
+  #define BSP_CFG_DCACHE_FORCE_WRITETHROUGH (0)
+#endif
+
+#define BSP_CFG_IOPORT_VOLTAGE_MODE_VCC (0)
+
+#define BSP_CFG_IOPORT_VOLTAGE_MODE_VCC2 (0)
+
 /* SDRAM controller configuration */
 #if DT_NODE_HAS_STATUS_OKAY(DT_INST(0, renesas_ra_sdram))
 #define BSP_CFG_SDRAM_TRAS                                                     \
@@ -500,5 +510,7 @@
 #define BSP_CFG_SDRAM_ACCESS_MODE (0)
 #define BSP_CFG_SDRAM_BUS_WIDTH (0)
 #endif /* DT_NODE_HAS_STATUS_OKAY(DT_INST(0, renesas_ra_sdram)) */
+
+#define BSP_CFG_OSPI_B_STARTUP_ENABLED (0)
 
 #endif /* BSP_MCU_FAMILY_CFG_H_ */
