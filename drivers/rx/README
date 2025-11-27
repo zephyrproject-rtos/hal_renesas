@@ -35,6 +35,12 @@ License Link:
 
 Patch List:
 
+   * Remove unused includes in r_bsp.h
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/board/generic_rx261/r_bsp.h
+      drivers/rx/rdp/src/r_bsp/board/generic_rx130/r_bsp.h
+      drivers/rx/rdp/src/r_bsp/board/generic_rx26t/r_bsp.h
+
    * Remove the static definition in Flash driver
    Impacted files:
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.c
