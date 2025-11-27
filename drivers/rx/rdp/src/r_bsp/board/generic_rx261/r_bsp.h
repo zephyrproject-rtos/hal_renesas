@@ -44,7 +44,7 @@ INCLUDE APPROPRIATE MCU AND BOARD FILES
 #include    "mcu/rx261/register_access/iccrx/iodefine.h"
 #endif /* defined(__CCRX__), defined(__GNUC__), defined(__ICCRX__) */
 #include    "mcu/rx261/r_bsp_cpu.h"
-// #include    "mcu/rx261/r_bsp_locking.h"
+#include    "mcu/rx261/r_bsp_locking.h"
 #include    "mcu/rx261/mcu_clocks.h"
 #include    "mcu/rx261/mcu_info.h"
 #include    "mcu/rx261/mcu_init.h"
@@ -52,15 +52,9 @@ INCLUDE APPROPRIATE MCU AND BOARD FILES
 #include    "mcu/rx261/mcu_locks.h"
 #include    "mcu/rx261/vecttbl.h"
 
-// #include    "board/generic_rx261/hwsetup.h"
-
 #include    "mcu/all/r_bsp_interrupts.h"
 #include    "mcu/all/r_bsp_software_interrupt.h"
 #include    "mcu/all/r_rx_intrinsic_functions.h"
-// #include    "mcu/all/r_rtos.h"
-
-// #include    "mcu/all/fsp_common_api.h"
-// #include    "mcu/all/r_fsp_error.h"
 
 #ifdef __cplusplus
 }
