@@ -175,6 +175,7 @@ typedef void (*bsp_int_cb_t)(void *);
 typedef struct
 {
     bsp_int_src_t vector;         /* Which vector caused this interrupt */
+    void *p_context;              /* Pointer to the callback function's argument */
 } bsp_int_cb_args_t;
 
 /***********************************************************************************************************************
