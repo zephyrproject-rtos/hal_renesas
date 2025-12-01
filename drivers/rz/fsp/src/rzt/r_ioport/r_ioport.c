@@ -1041,7 +1041,8 @@ static void r_ioport_pin_set_safety (R_PORT_COMMON_Type * p_ioport_regs,
         }
         else
         {
-            /* Do Nothing */
+            /* Set to Hi-Z */
+            p_ioport_regs->PM[port] &= ~(IOPORT_PM_BIT_MASK << (pin_num * 2U));
         }
     }
 }
@@ -1150,7 +1151,8 @@ static void r_ioport_pin_set_non_safety (R_PORT_NS_COMMON_Type * p_ioport_regs,
         }
         else
         {
-            /* Do Nothing */
+            /* Set to Hi-Z */
+            p_ioport_regs->PM[port] &= ~(IOPORT_PM_BIT_MASK << (pin_num * 2U));
         }
     }
 }
