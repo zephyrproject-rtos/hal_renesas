@@ -31,6 +31,8 @@ extern "C" {
 #endif
 #define ETHER_PHY_CFG_USE_REF_CLK (BOARD_PHY_REF_CLK)
 
+#define RMAC_PHY_CFG_CUSTOM_PHY_INIT
+
 #ifdef __cplusplus
 }
 #endif
