@@ -223,9 +223,11 @@ fsp_err_t R_RMAC_PHY_Open (ether_phy_ctrl_t * const p_ctrl, ether_phy_cfg_t cons
     /* Initialize configuration of ethernet phy module. */
     p_instance_ctrl->p_ether_phy_cfg = p_cfg;
 
+#ifndef RMAC_PHY_CFG_CUSTOM_PHY_INIT
     /* ETHA IP should be CONFIG mode */
     RMAC_PHY_ERROR_RETURN(RMAC_PHY_ETHA_CONFIG_MODE == r_rmac_phy_get_operation_mode(p_instance_ctrl),
                           FSP_ERR_INVALID_MODE);
+#endif
 
     /* Set the RMAC register address of this channel. */
     p_instance_ctrl->p_reg_rmac      = (R_RMAC0_Type *) (R_RMAC0_BASE + (RMAC_REG_SIZE * p_cfg->channel));
@@ -253,11 +255,21 @@ fsp_err_t R_RMAC_PHY_Open (ether_phy_ctrl_t * const p_ctrl, ether_phy_cfg_t cons
     /* Configure PHY interface for each available channels. */
     for (uint32_t i = 0; i < BSP_FEATURE_ETHER_NUM_CHANNELS; i++)
     {
+#ifndef RMAC_PHY_CFG_CUSTOM_PHY_INIT
         if (NULL != p_extend->p_phy_lsi_cfg_list[i])
         {
             p_reg_rmac       = (R_RMAC0_Type *) (R_RMAC0_BASE + (RMAC_REG_SIZE * i));
             p_reg_rmac->MPIC = r_rmac_phy_calculate_mpic(p_instance_ctrl, link_speed);
         }
+#else
+		r_rmac_phy_set_operation_mode(i, RMAC_PHY_ETHA_DISABLE_MODE);
+		r_rmac_phy_set_operation_mode(i, RMAC_PHY_ETHA_CONFIG_MODE);
+		p_reg_rmac       = (R_RMAC0_Type *) (R_RMAC0_BASE + (RMAC_REG_SIZE * i));
+		p_reg_rmac->MPIC = r_rmac_phy_calculate_mpic(p_instance_ctrl, link_speed);
+		r_rmac_phy_set_mii_type_configuration(p_instance_ctrl, i);
+		r_rmac_phy_set_operation_mode(i, RMAC_PHY_ETHA_DISABLE_MODE);
+		r_rmac_phy_set_operation_mode(i, RMAC_PHY_ETHA_OPERATION_MODE);
+#endif
     }
 
     p_instance_ctrl->open = RMAC_PHY_OPEN;
