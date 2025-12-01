@@ -559,9 +559,6 @@ fsp_err_t R_RMAC_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint3
 
     p_extend = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
-    FSP_CRITICAL_SECTION_DEFINE;
-    FSP_CRITICAL_SECTION_ENTER;
-
     p_read_buffer_node = r_rmac_buffer_dequeue(&p_instance_ctrl->rx_completed_buffer_queue);
     if (NULL != p_read_buffer_node)
     {
@@ -626,8 +623,6 @@ fsp_err_t R_RMAC_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint3
             RMAC_INCREMENT_DESCRIPTOR_QUEUE_INDEX(p_instance_ctrl->read_queue_index, p_extend->rx_queue_num);
         }
     }
-
-    FSP_CRITICAL_SECTION_EXIT;
 
     return err;
 }                                      /* End of function R_RMAC_Read() */

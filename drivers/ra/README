@@ -200,3 +200,7 @@ Patch List:
    * Add RMAC_PHY_CFG_CUSTOM_PHY_INIT to be compatible with muli PHY on the same MDIO bus.
       Impacted files:
          drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
+
+   * Remove crictical section barrier for read function in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
