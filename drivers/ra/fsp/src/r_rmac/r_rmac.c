@@ -1013,17 +1013,8 @@ void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_insta
             mrafc &= ~(R_RMAC0_MRAFC_MCENE_Msk | R_RMAC0_MRAFC_MCENP_Msk);
         }
 
-        /* Configure broadcast reception features. */
-        if (0 < p_instance_ctrl->p_cfg->broadcast_filter)
-        {
-            /* Enable broadcast reception. */
-            mrafc |= R_RMAC0_MRAFC_BCENE_Msk | R_RMAC0_MRAFC_BCENP_Msk;
-        }
-        else
-        {
-            mrafc &=
-                ~(R_RMAC0_MRAFC_BCENE_Msk | R_RMAC0_MRAFC_BCENP_Msk);
-        }
+        /* Enable broadcast reception. */
+        mrafc |= R_RMAC0_MRAFC_BCENE_Msk | R_RMAC0_MRAFC_BCENP_Msk;
     }
 
     /* Set the broadcast storm filter regardless of the promiscuous mode configuration. */
@@ -1036,6 +1027,10 @@ void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_insta
         /*  Configure how many broadcast frames can be received consecutively. */
         p_instance_ctrl->p_reg_rmac->MRSCE_b.CBFE = (R_RMAC0_MRSCE_CBFE_Msk >> R_RMAC0_MRSCE_CBFE_Pos) &
                                                     (p_instance_ctrl->p_cfg->broadcast_filter - 1);
+    }
+	else
+    {
+        mrafc &= ~(R_RMAC0_MRAFC_BSTENE_Msk | R_RMAC0_MRAFC_BSTENP_Msk);
     }
 
     p_instance_ctrl->p_reg_rmac->MRAFC = mrafc;
