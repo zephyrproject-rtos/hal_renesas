@@ -204,3 +204,7 @@ Patch List:
    * Remove crictical section barrier for read function in RMAC
       Impacted files:
          drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Seperate broadcast storm filter reception settings in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
