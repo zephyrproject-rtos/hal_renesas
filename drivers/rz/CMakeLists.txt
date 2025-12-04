@@ -45,6 +45,9 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_ADC
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_ADC_C
 	fsp/src/${SOC_SERIES_PREFIX}/r_adc_c/r_adc_c.c)
 
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_ADC_E
+	fsp/src/${SOC_SERIES_PREFIX}/r_adc_e/r_adc_e.c)
+
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_MHU
 	fsp/src/${SOC_SERIES_PREFIX}/r_mhu_ns/r_mhu_ns.c)
 
