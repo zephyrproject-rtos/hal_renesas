@@ -229,7 +229,7 @@ Configuration Options
 * as well as TEI interrupts for all SCI channels.
 */
 /* (RX64M/RX71M/RX65N/RX72M/RX72N/RX66N/RX671/RX660/RX26T ONLY) 1 lowest, 15 highest */
-#define SCI_CFG_ERI_TEI_PRIORITY (3)
+#define SCI_CFG_ERI_TEI_PRIORITY (1)
 
 /* ENABLE TX/RX FIFO; (SCIi supported MCU ONLY) 1=included, 0=not */
 #define SCI_CFG_CH7_FIFO_INCLUDED   (0)
