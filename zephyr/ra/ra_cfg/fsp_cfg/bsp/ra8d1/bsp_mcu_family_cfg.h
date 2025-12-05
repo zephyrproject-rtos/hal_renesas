@@ -395,7 +395,7 @@
 #define BSP_CFG_SDRAM_MULTIPLEX_ADDR_SHIFT                                     \
   DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), multiplex_addr_shift)
 #define BSP_CFG_SDRAM_ENDIAN_MODE                                              \
-  DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), edian_mode)
+  DT_ENUM_IDX(DT_INST(0, renesas_ra_sdram), endian_mode)
 #define BSP_CFG_SDRAM_ACCESS_MODE                                              \
   DT_PROP(DT_INST(0, renesas_ra_sdram), continuous_access)
 #define BSP_CFG_SDRAM_BUS_WIDTH                                                \
