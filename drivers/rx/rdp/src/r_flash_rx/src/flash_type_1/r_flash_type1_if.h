@@ -21,6 +21,7 @@
 *                24.01.2023 5.00    Modified FLASH_FREQ_HI.
 *                30.07.2024 5.20    Added support for RX260 and RX261.
 *                20.03.2025 5.22    Changed the disclaimer in program sources
+*                31.07.2025 5.30    Added support for RX14T.
 **********************************************************************************************************************/
 
 #ifndef R_FLASH_TYPE1_IF_H
@@ -51,7 +52,7 @@ Macro definitions
 
 #define FLASH_FREQ_LO           (1000000)
 #if (FLASH_TYPE_VARIETY == FLASH_TYPE_VARIETY_A)
-#if defined(MCU_RX140)
+#if defined(MCU_RX140) || defined(MCU_RX14T)
 #define FLASH_FREQ_HI           (48000000)
 #elif defined(MCU_RX260) || defined(MCU_RX261)
 #define FLASH_FREQ_HI           (64000000)
