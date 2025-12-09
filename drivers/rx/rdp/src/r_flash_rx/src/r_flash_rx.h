@@ -41,6 +41,7 @@
 *           01.10.2023 5.11    Added support for Tool News R20TS0963.
 *           30.07.2024 5.20    Added RX260, and RX261.
 *           20.03.2025 5.22    Changed the disclaimer in program sources
+*           31.07.2025 5.30    Added RX14T.
 ***********************************************************************************************************************/
 
 #ifndef FLASH_RX_HEADER_FILE
@@ -62,6 +63,8 @@
     #include "./src/targets/rx13t/r_flash_rx13t.h"
 #elif defined(MCU_RX140)
     #include "./src/targets/rx140/r_flash_rx140.h"
+#elif defined(MCU_RX14T)
+    #include "./src/targets/rx14t/r_flash_rx14t.h"
 #elif defined(MCU_RX230)
     #include "./src/targets/rx230/r_flash_rx230.h"
 #elif defined(MCU_RX231)
