@@ -87,6 +87,7 @@ Patch List:
    Impacted files:
       drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_clocks.c
       drivers/rx/rdp/src/r_sci_rx/src/targets/rx26t/r_sci_rx26t.c
+      drivers/rx/rdp/src/r_sci_rx/src/targets/rx140/r_sci_rx140.c
 
    * Add the header file <stdint.h>
    Impacted files:
@@ -95,3 +96,7 @@ Patch List:
    * Remove unsed variables to fix build warnings
    Impacted files:
       drivers/rx/rdp/src/r_s12ad_rx/src/targets/rx261/r_s12ad_rx261.c
+
+   * Remove unnecessary include header files
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/board/generic_rx140/r_bsp.h
