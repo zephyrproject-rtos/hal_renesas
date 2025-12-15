@@ -50,6 +50,12 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_LPM
 	fsp/src/r_lpm/r_lpm.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I2C_IIC
 	fsp/src/r_iic_master/r_iic_master.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I2C_IIC_SLAVE
+	fsp/src/r_iic_slave/r_iic_slave.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I2C_IIC_B_SLAVE
+	fsp/src/r_iic_b_slave/r_iic_b_slave.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I2C_IICA_SLAVE
+	fsp/src/r_iica_slave/r_iica_slave.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_I2C
 	fsp/src/r_sci_i2c/r_sci_i2c.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_B_I2C
