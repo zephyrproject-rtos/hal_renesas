@@ -1,23 +1,20 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_SYSTEM_INTERFACES
  * @defgroup MHU_API MHU Interface (for secure and non secure channels)
  * @brief Interface for Message Handling Unit
  *
  * @section MHU_API_SUMMARY Summary
  * The Message Handling Unit interface provides a common API for MHU HAL drivers.
  * The Message Handling Unit interface supports:
- *        - Message communication between Cortex-A55 and Cortex-M33.
+ *        - Message communication between two cores.
  *        - 32-bit data can be communicated between CPUs via shared memory.
  *
- * Implemented by:
- * - @ref MHU_S
- * - @ref MHU_NS
  *
  * @{
  **********************************************************************************************************************/
@@ -73,11 +70,10 @@ typedef struct st_mhu_cfg
 
     /** Placeholder for user data.  Passed to the user callback in @ref mhu_callback_args_t. */
     void const * p_context;
+    void const * p_extend;             ///< Extension parameter for hardware specific settings
 } mhu_cfg_t;
 
 /** MHU control block.  Allocate an instance specific control block to pass into the MHU API calls.
- * @par Implemented as
- * - mhu_instance_ctrl_t
  */
 typedef void mhu_ctrl_t;
 
@@ -85,9 +81,6 @@ typedef void mhu_ctrl_t;
 typedef struct st_mhu_api
 {
     /** Opens the MHU driver and initializes the hardware.
-     * @par Implemented as
-     * - @ref R_MHU_S_Open()
-     * - @ref R_MHU_NS_Open()
      *
      * @param[in] p_ctrl    Pointer to control block. Must be declared by user. Elements are set here.
      * @param[in] p_cfg     Pointer to configuration structure.
@@ -95,9 +88,6 @@ typedef struct st_mhu_api
     fsp_err_t (* open)(mhu_ctrl_t * const p_ctrl, mhu_cfg_t const * const p_cfg);
 
     /** Performs a send operation on an MHU device.
-     * @par Implemented as
-     * - @ref R_MHU_S_MsgSend()
-     * - @ref R_MHU_NS_MsgSend()
      *
      * @param[in] p_ctrl    Pointer to control block set in mhu_api_t::open call.
      * @param[in] msg       32bit send data.
@@ -106,9 +96,6 @@ typedef struct st_mhu_api
 
     /**
      * Specify callback function and optional context pointer and working memory pointer.
-     * @par Implemented as
-     * - @ref R_MHU_S_CallbackSet()
-     * - @ref R_MHU_NS_CallbackSet()
      *
      * @param[in]   p_ctrl                   Control block set in @ref mhu_api_t::open call for this channel.
      * @param[in]   p_callback               Callback function to register
@@ -116,13 +103,10 @@ typedef struct st_mhu_api
      * @param[in]   p_callback_memory        Pointer to volatile memory where callback structure can be allocated.
      *                                       Callback arguments allocated here are only valid during the callback.
      */
-    fsp_err_t (* callbackSet)(mhu_ctrl_t * const p_api_ctrl, void (* p_callback) (mhu_callback_args_t *),
+    fsp_err_t (* callbackSet)(mhu_ctrl_t * const p_ctrl, void (* p_callback)(mhu_callback_args_t *),
                               void const * const p_context, mhu_callback_args_t * const p_callback_memory);
 
     /** Closes the driver and releases the MHU device.
-     * @par Implemented as
-     * - @ref R_MHU_S_Close()
-     * - @ref R_MHU_NS_Close()
      *
      * @param[in] p_ctrl    Pointer to control block set in mhu_api_t::open call.
      */
@@ -138,7 +122,7 @@ typedef struct st_mhu_instance
 } mhu_instance_t;
 
 /******************************************************************************************************************//**
- * @} (end addtogroup MHU_API)
+ * @} (end defgroup MHU_API)
  *********************************************************************************************************************/
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
