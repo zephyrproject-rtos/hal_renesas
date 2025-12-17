@@ -694,6 +694,8 @@ __STATIC_INLINE void R_BSP_FlashCacheEnable (void)
     /* Enable the C-Cache. */
     R_CACHE->CCACTL = 1U;
  #else
+  /* TODO: Add C-CACHE management for MRAM/Zephyr FLASH MRAM drivers */
+  #if BSP_FEATURE_FLASH_CODE_CACHE_VERSION != 2 && BSP_CFG_CPU_CORE != 1
     uint32_t volatile * p_ccactl = &R_CACHE->CCACTL;
 
     /* Flush cache before enabling */
@@ -713,6 +715,7 @@ __STATIC_INLINE void R_BSP_FlashCacheEnable (void)
 
     /* Enable the C-Cache. */
     *p_ccactl = 1U;
+   #endif
  #endif
 #endif
 }
