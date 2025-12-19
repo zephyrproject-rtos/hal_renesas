@@ -130,7 +130,7 @@
 /* Setting to */
 /* 1: includes riic port setting processing */
 /* 0: compiles out riic port setting processing */
-    #define RIIC_CFG_PORT_SET_PROCESSING    (1)
+    #define RIIC_CFG_PORT_SET_PROCESSING    (0)
 
 /* Set mode */
 /* 0 = single master mode, 1 = multi master mode(Master arbitration-lost detection is enabled.) */
