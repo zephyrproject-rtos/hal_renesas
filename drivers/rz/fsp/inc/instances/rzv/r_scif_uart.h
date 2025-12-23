@@ -189,6 +189,7 @@ typedef struct st_scif_uart_extended_cfg
     scif_uart_mode_t         uart_mode;           ///< UART communication mode selection
     scif_uart_flow_control_t flow_control;        ///< CTS/RTS function
     scif_uart_rs485_setting_t rs485_setting;       ///< RS-485 settings.
+    void                    * p_reg;              ///< Register base address for specified channel
 } scif_uart_extended_cfg_t;
 
 /**********************************************************************************************************************

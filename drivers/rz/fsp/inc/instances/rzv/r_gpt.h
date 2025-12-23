@@ -394,6 +394,8 @@ typedef struct st_gpt_extended_cfg
 
     gpt_extended_pwm_cfg_t const * p_pwm_cfg;     ///< Advanced PWM features, optional
     gpt_gtior_setting_t            gtior_setting; ///< Custom GTIOR settings used for configuring GTIOCxA and GTIOCxB pins.
+
+    void * p_reg;                                 ///< Register base address for specified channel
 } gpt_extended_cfg_t;
 
 /**********************************************************************************************************************
