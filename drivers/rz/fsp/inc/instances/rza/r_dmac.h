@@ -235,6 +235,8 @@ typedef struct st_dmac_extended_cfg
 
     /** Placeholder for user data.  Passed to the user p_callback in ::transfer_callback_args_t. */
     void const * p_context;
+
+    void * p_reg;                      ///< Register base address for specified unit
 } dmac_extended_cfg_t;
 
 /** DMAC transfer configuration extension. This extension is required. */
