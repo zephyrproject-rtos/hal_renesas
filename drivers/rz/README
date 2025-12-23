@@ -100,3 +100,25 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rzn/r_ioport/r_ioport.c
       drivers/rz/fsp/src/rzt/r_ioport/r_ioport.c
+
+   * Add p_reg member to extended configuration structures to hold register base address for
+     specified unit/channel in various FSP drivers to make them generic across RZ series MPUs
+   Impacted files:
+      drivers/rz/fsp/inc/instances/rza/r_adc_c.h
+      drivers/rz/fsp/inc/instances/rza/r_dmac.h
+      drivers/rz/fsp/inc/instances/rza/r_gtm.h
+      drivers/rz/fsp/inc/instances/rza/r_riic_master.h
+      drivers/rz/fsp/inc/instances/rza/r_rspi.h
+      drivers/rz/fsp/inc/instances/rza/r_scif_uart.h
+      drivers/rz/fsp/inc/instances/rzn/r_dmac.h
+      drivers/rz/fsp/inc/instances/rzn/r_gpt.h
+      drivers/rz/fsp/inc/instances/rzt/r_dmac.h
+      drivers/rz/fsp/inc/instances/rzt/r_gpt.h
+      drivers/rz/fsp/inc/instances/rzv/r_adc_c.h
+      drivers/rz/fsp/inc/instances/rzv/r_dmac_b.h
+      drivers/rz/fsp/inc/instances/rzv/r_gpt.h
+      drivers/rz/fsp/inc/instances/rzv/r_gtm.h
+      drivers/rz/fsp/inc/instances/rzv/r_mhu_ns.h
+      drivers/rz/fsp/inc/instances/rzv/r_riic_master.h
+      drivers/rz/fsp/inc/instances/rzv/r_rspi.h
+      drivers/rz/fsp/inc/instances/rzv/r_scif_uart.h
