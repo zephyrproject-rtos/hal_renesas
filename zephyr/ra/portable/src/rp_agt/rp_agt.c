@@ -95,6 +95,7 @@ fsp_err_t RP_AGT_CompareMatchSet (timer_ctrl_t * const        p_ctrl,
                                   timer_compare_match_t const match_channel)
 {
     agt_instance_ctrl_t * p_instance_ctrl = (agt_instance_ctrl_t *) p_ctrl;
+    uint32_t compare_match_reg = (compare_match_value - 1U);
 
 #if AGT_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
@@ -108,22 +109,22 @@ fsp_err_t RP_AGT_CompareMatchSet (timer_ctrl_t * const        p_ctrl,
     {
         if (TIMER_COMPARE_MATCH_A == match_channel)
         {
-            p_instance_ctrl->p_reg->AGT32.AGTCMA = compare_match_value;
+            p_instance_ctrl->p_reg->AGT32.AGTCMA = compare_match_reg;
         }
         else
         {
-            p_instance_ctrl->p_reg->AGT32.AGTCMB = compare_match_value;
+            p_instance_ctrl->p_reg->AGT32.AGTCMB = compare_match_reg;
         }
     }
     else
     {
         if (TIMER_COMPARE_MATCH_A == match_channel)
         {
-            p_instance_ctrl->p_reg->AGT16.AGTCMA = compare_match_value;
+            p_instance_ctrl->p_reg->AGT16.AGTCMA = compare_match_reg;
         }
         else
         {
-            p_instance_ctrl->p_reg->AGT16.AGTCMB = compare_match_value;
+            p_instance_ctrl->p_reg->AGT16.AGTCMB = compare_match_reg;
         }
     }
 
