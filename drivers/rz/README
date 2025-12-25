@@ -102,3 +102,8 @@ Patch List:
      DMAC FSP driver of the RZ/A3UL to avoid build warnings
    Impacted files:
       drivers/rz/fsp/src/rza/r_dmac/r_dmac.c
+
+   * Add support for Hi-Z mode of I/O Ports of RZ/T, N
+   Impacted files:
+      drivers/rz/fsp/src/rzn/r_ioport/r_ioport.c
+      drivers/rz/fsp/src/rzt/r_ioport/r_ioport.c
