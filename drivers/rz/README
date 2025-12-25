@@ -93,10 +93,11 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/inc/api/r_transfer_api.h
 
-   * Disable the BSP_FEATURE_BSP_HAS_MMU_SUPPORT configuration of the RZ/A3UL to avoid using
+   * Disable the BSP_FEATURE_BSP_HAS_MMU_SUPPORT configuration of the RZ/A3UL, A3M to avoid using
      FSP MMU functions and let Zephyr handle MMU
    Impacted files:
       drivers/rz/fsp/src/rza/bsp/mcu/rza3ul/bsp_feature.h
+      drivers/rz/fsp/src/rza/bsp/mcu/rza3m/bsp_feature.h
 
    * Change the cast type from uint32_t to uintptr_t when assigning an address to a register in the
      DMAC FSP driver of the RZ/A3UL to avoid build warnings
