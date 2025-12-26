@@ -83,6 +83,9 @@ zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_SPI
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_RSPI_SPI
 	fsp/src/${SOC_SERIES_PREFIX}/r_rspi/r_rspi.c)
 
+zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_SPI_B
+	fsp/src/${SOC_SERIES_PREFIX}/r_spi_b/r_spi_b.c)
+
 zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_DMAC
 	fsp/src/${SOC_SERIES_PREFIX}/r_dmac/r_dmac.c)
 
