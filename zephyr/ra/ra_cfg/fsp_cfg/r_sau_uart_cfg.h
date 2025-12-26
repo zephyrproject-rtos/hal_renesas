@@ -15,6 +15,7 @@ extern "C" {
 #define SAU_UART_CFG_DTC_SUPPORT_ENABLE (0)
 #define SAU_UART_CFG_SINGLE_CHANNEL (0)
 #define SAU_UART_CFG_FIXED_BAUDRATE_ENABLE (1)
+#define SAU_UART_CFG_IRQ_CONFIG (0)
 
 #ifdef __cplusplus
 }
