@@ -272,18 +272,23 @@ fsp_err_t R_SAU_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * co
     p_ctrl->rx_count = 0U;
 
 #if (SAU_UART_CFG_RX_ENABLE)
+#if SAU_UART_CFG_IRQ_CONFIG
     R_BSP_IrqCfgEnable(p_cfg->rxi_irq, p_cfg->rxi_ipl, p_ctrl);
     if (FSP_INVALID_VECTOR != p_ctrl->p_cfg->eri_irq)
     {
         R_BSP_IrqCfgEnable(p_cfg->eri_irq, p_cfg->eri_ipl, p_ctrl);
     }
+#endif /* SAU_UART_CFG_IRQ_CONFIG */
     SAU_REG->SS = (uint16_t) (SAU_UART_SS_START_TRG_ON << SAU_RX_INDEX);
 #endif
 
 #if (SAU_UART_CFG_TX_ENABLE)
+#if SAU_UART_CFG_IRQ_CONFIG
     R_BSP_IrqCfgEnable(p_cfg->txi_irq, p_cfg->txi_ipl, p_ctrl);
+#endif /* SAU_UART_CFG_IRQ_CONFIG */
     SAU_REG->SS = (uint16_t) (SAU_UART_SS_START_TRG_ON << SAU_TX_INDEX);
 #endif
+
 
     p_ctrl->open = SAU_UART_OPEN;
 
@@ -335,16 +340,20 @@ fsp_err_t R_SAU_UART_Close (uart_ctrl_t * const p_api_ctrl)
     /* Clear the TX/RX configuration. */
 #if (SAU_UART_CFG_TX_ENABLE)
     SAU_REG->SCR[SAU_TX_INDEX] = 0U;
+#if SAU_UART_CFG_IRQ_CONFIG
     R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
+#endif /* SAU_UART_CFG_IRQ_CONFIG */
 #endif
 
 #if (SAU_UART_CFG_RX_ENABLE)
     SAU_REG->SCR[SAU_RX_INDEX] = 0U;
+#if SAU_UART_CFG_IRQ_CONFIG
     R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
     if (FSP_INVALID_VECTOR != p_ctrl->p_cfg->eri_irq)
     {
         R_BSP_IrqDisable(p_ctrl->p_cfg->eri_irq);
     }
+#endif /* SAU_UART_CFG_IRQ_CONFIG */
 #endif
 
 #if SAU_UART_CFG_DTC_SUPPORT_ENABLE
