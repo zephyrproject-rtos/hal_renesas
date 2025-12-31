@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -41,326 +41,25 @@
 #define DETECTION_RISING_EDGE        (2 << 24)
 #define DETECTION_HIGH_LEVEL         (6 << 24)
 
-#define R_BSP_DMAC_ACTIVATION_SOURCE_ENABLE(unit, channel, activation)    {if (0 == (channel / 2)) {                                  \
-                                                                               R_DMAC_B0_EX->DMARS0 &=                                \
-                                                                                   ~((uint32_t) (                                     \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_RID_Msk              \
-                                                                                         |                                            \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)             \
-                                                                                       << (16U * (channel % 2)));                     \
-                                                                               R_DMAC_B0_EX->DMARS0 |=                                \
-                                                                                   (uint32_t) ((activation                            \
-                                                                                                & (                                   \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk   \
-                                                                                                    |                                 \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)) \
-                                                                                               <<                                     \
-                                                                                               (16U *                                 \
-                                                                                                (channel %                            \
-                                                                                                 2)));                                \
-                                                                               R_DMAC_B0->GRP[channel /                               \
-                                                                                              8].CH[                                  \
-                                                                                   channel %                                          \
-                                                                                   8].CHCFG |=                                        \
-                                                                                   ((((activation >> 16U) & 0x7U) <<                  \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) |               \
-                                                                                    (((                                               \
-                                                                                          activation                                  \
-                                                                                          >>                                          \
-                                                                                          24U) & 0x7U) <<                             \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos));             \
-                                                                           }                                                          \
-                                                                           else if (1 == (channel / 2)) {                             \
-                                                                               R_DMAC_B0_EX->DMARS1 &=                                \
-                                                                                   ~((uint32_t) (                                     \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_RID_Msk              \
-                                                                                         |                                            \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)             \
-                                                                                       << (16U * (channel % 2)));                     \
-                                                                               R_DMAC_B0_EX->DMARS1 |=                                \
-                                                                                   (uint32_t) ((activation                            \
-                                                                                                & (                                   \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk   \
-                                                                                                    |                                 \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)) \
-                                                                                               <<                                     \
-                                                                                               (16U *                                 \
-                                                                                                (channel %                            \
-                                                                                                 2)));                                \
-                                                                               R_DMAC_B0->GRP[channel /                               \
-                                                                                              8].CH[                                  \
-                                                                                   channel %                                          \
-                                                                                   8].CHCFG |=                                        \
-                                                                                   ((((activation >> 16U) & 0x7U) <<                  \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) |               \
-                                                                                    (((                                               \
-                                                                                          activation                                  \
-                                                                                          >>                                          \
-                                                                                          24U) & 0x7U) <<                             \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos));             \
-                                                                           }                                                          \
-                                                                           else if (2 == (channel / 2)) {                             \
-                                                                               R_DMAC_B0_EX->DMARS2 &=                                \
-                                                                                   ~((uint32_t) (                                     \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_RID_Msk              \
-                                                                                         |                                            \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)             \
-                                                                                       << (16U * (channel % 2)));                     \
-                                                                               R_DMAC_B0_EX->DMARS2 |=                                \
-                                                                                   (uint32_t) ((activation                            \
-                                                                                                & (                                   \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk   \
-                                                                                                    |                                 \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)) \
-                                                                                               <<                                     \
-                                                                                               (16U *                                 \
-                                                                                                (channel %                            \
-                                                                                                 2)));                                \
-                                                                               R_DMAC_B0->GRP[channel /                               \
-                                                                                              8].CH[                                  \
-                                                                                   channel %                                          \
-                                                                                   8].CHCFG |=                                        \
-                                                                                   ((((activation >> 16U) & 0x7U) <<                  \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) |               \
-                                                                                    (((                                               \
-                                                                                          activation                                  \
-                                                                                          >>                                          \
-                                                                                          24U) & 0x7U) <<                             \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos));             \
-                                                                           }                                                          \
-                                                                           else if (3 == (channel / 2)) {                             \
-                                                                               R_DMAC_B0_EX->DMARS3 &=                                \
-                                                                                   ~((uint32_t) (                                     \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_RID_Msk              \
-                                                                                         |                                            \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)             \
-                                                                                       << (16U * (channel % 2)));                     \
-                                                                               R_DMAC_B0_EX->DMARS3 |=                                \
-                                                                                   (uint32_t) ((activation                            \
-                                                                                                & (                                   \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk   \
-                                                                                                    |                                 \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)) \
-                                                                                               <<                                     \
-                                                                                               (16U *                                 \
-                                                                                                (channel %                            \
-                                                                                                 2)));                                \
-                                                                               R_DMAC_B0->GRP[channel /                               \
-                                                                                              8].CH[                                  \
-                                                                                   channel %                                          \
-                                                                                   8].CHCFG |=                                        \
-                                                                                   ((((activation >> 16U) & 0x7U) <<                  \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) |               \
-                                                                                    (((                                               \
-                                                                                          activation                                  \
-                                                                                          >>                                          \
-                                                                                          24U) & 0x7U) <<                             \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos));             \
-                                                                           }                                                          \
-                                                                           else if (4 == (channel / 2)) {                             \
-                                                                               R_DMAC_B0_EX->DMARS4 &=                                \
-                                                                                   ~((uint32_t) (                                     \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_RID_Msk              \
-                                                                                         |                                            \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)             \
-                                                                                       << (16U * (channel % 2)));                     \
-                                                                               R_DMAC_B0_EX->DMARS4 |=                                \
-                                                                                   (uint32_t) ((activation                            \
-                                                                                                & (                                   \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk   \
-                                                                                                    |                                 \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)) \
-                                                                                               <<                                     \
-                                                                                               (16U *                                 \
-                                                                                                (channel %                            \
-                                                                                                 2)));                                \
-                                                                               R_DMAC_B0->GRP[channel /                               \
-                                                                                              8].CH[                                  \
-                                                                                   channel %                                          \
-                                                                                   8].CHCFG |=                                        \
-                                                                                   ((((activation >> 16U) & 0x7U) <<                  \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) |               \
-                                                                                    (((                                               \
-                                                                                          activation                                  \
-                                                                                          >>                                          \
-                                                                                          24U) & 0x7U) <<                             \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos));             \
-                                                                           }                                                          \
-                                                                           else if (5 == (channel / 2)) {                             \
-                                                                               R_DMAC_B0_EX->DMARS5 &=                                \
-                                                                                   ~((uint32_t) (                                     \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_RID_Msk              \
-                                                                                         |                                            \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)             \
-                                                                                       << (16U * (channel % 2)));                     \
-                                                                               R_DMAC_B0_EX->DMARS5 |=                                \
-                                                                                   (uint32_t) ((activation                            \
-                                                                                                & (                                   \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk   \
-                                                                                                    |                                 \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)) \
-                                                                                               <<                                     \
-                                                                                               (16U *                                 \
-                                                                                                (channel %                            \
-                                                                                                 2)));                                \
-                                                                               R_DMAC_B0->GRP[channel /                               \
-                                                                                              8].CH[                                  \
-                                                                                   channel %                                          \
-                                                                                   8].CHCFG |=                                        \
-                                                                                   ((((activation >> 16U) & 0x7U) <<                  \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) |               \
-                                                                                    (((                                               \
-                                                                                          activation                                  \
-                                                                                          >>                                          \
-                                                                                          24U) & 0x7U) <<                             \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos));             \
-                                                                           }                                                          \
-                                                                           else if (6 == (channel / 2)) {                             \
-                                                                               R_DMAC_B0_EX->DMARS6 &=                                \
-                                                                                   ~((uint32_t) (                                     \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_RID_Msk              \
-                                                                                         |                                            \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)             \
-                                                                                       << (16U * (channel % 2)));                     \
-                                                                               R_DMAC_B0_EX->DMARS6 |=                                \
-                                                                                   (uint32_t) ((activation                            \
-                                                                                                & (                                   \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk   \
-                                                                                                    |                                 \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)) \
-                                                                                               <<                                     \
-                                                                                               (16U *                                 \
-                                                                                                (channel %                            \
-                                                                                                 2)));                                \
-                                                                               R_DMAC_B0->GRP[channel /                               \
-                                                                                              8].CH[                                  \
-                                                                                   channel %                                          \
-                                                                                   8].CHCFG |=                                        \
-                                                                                   ((((activation >> 16U) & 0x7U) <<                  \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) |               \
-                                                                                    (((                                               \
-                                                                                          activation                                  \
-                                                                                          >>                                          \
-                                                                                          24U) & 0x7U) <<                             \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos));             \
-                                                                           }                                                          \
-                                                                           else if (7 == (channel / 2)) {                             \
-                                                                               R_DMAC_B0_EX->DMARS7 &=                                \
-                                                                                   ~((uint32_t) (                                     \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_RID_Msk              \
-                                                                                         |                                            \
-                                                                                         R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)             \
-                                                                                       << (16U * (channel % 2)));                     \
-                                                                               R_DMAC_B0_EX->DMARS7 |=                                \
-                                                                                   (uint32_t) ((activation                            \
-                                                                                                & (                                   \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk   \
-                                                                                                    |                                 \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)) \
-                                                                                               <<                                     \
-                                                                                               (16U *                                 \
-                                                                                                (channel %                            \
-                                                                                                 2)));                                \
-                                                                               R_DMAC_B0->GRP[channel /                               \
-                                                                                              8].CH[                                  \
-                                                                                   channel %                                          \
-                                                                                   8].CHCFG |=                                        \
-                                                                                   ((((activation >> 16U) & 0x7U) <<                  \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) |               \
-                                                                                    (((                                               \
-                                                                                          activation                                  \
-                                                                                          >>                                          \
-                                                                                          24U) & 0x7U) <<                             \
-                                                                                       R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos));             \
-                                                                           }                                                          \
-                                                                           else { /* Do nothing */}                                   \
-}                                                                                                                                     \
+#define ACTIVATION_SOURCE_CLEAR_Msk  (R_DMAC_B0_EX_DMARS0_CH0_RID_Msk | R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)
 
+#define R_BSP_DMAC_DREQ_DETECT_METHOD_SELECT(dmac_reg, channel,                                                                \
+                                             detection, activation)       { /* No configuration required for this device. */;  \
+}                                                                                                                              \
 
-#define R_BSP_DMAC_ACTIVATION_SOURCE_DISABLE(unit, channel)               {if (0 == (channel / 2)) {                                 \
-                                                                               R_DMAC_B0_EX->DMARS0 &=                               \
-                                                                                   (uint32_t) ~((                                    \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk  \
-                                                                                                    |                                \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk) \
-                                                                                                << (16U *                            \
-                                                                                                    (channel % 2)));                 \
-                                                                           }                                                         \
-                                                                           else if (1 == (channel / 2)) {                            \
-                                                                               R_DMAC_B0_EX->DMARS1 &=                               \
-                                                                                   (uint32_t) ~((                                    \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk  \
-                                                                                                    |                                \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk) \
-                                                                                                << (16U *                            \
-                                                                                                    (channel % 2)));                 \
-                                                                           }                                                         \
-                                                                           else if (2 == (channel / 2)) {                            \
-                                                                               R_DMAC_B0_EX->DMARS2 &=                               \
-                                                                                   (uint32_t) ~((                                    \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk  \
-                                                                                                    |                                \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk) \
-                                                                                                << (16U *                            \
-                                                                                                    (channel % 2)));                 \
-                                                                           }                                                         \
-                                                                           else if (3 == (channel / 2)) {                            \
-                                                                               R_DMAC_B0_EX->DMARS3 &=                               \
-                                                                                   (uint32_t) ~((                                    \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk  \
-                                                                                                    |                                \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk) \
-                                                                                                << (16U *                            \
-                                                                                                    (channel % 2)));                 \
-                                                                           }                                                         \
-                                                                           else if (4 == (channel / 2)) {                            \
-                                                                               R_DMAC_B0_EX->DMARS4 &=                               \
-                                                                                   (uint32_t) ~((                                    \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk  \
-                                                                                                    |                                \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk) \
-                                                                                                << (16U *                            \
-                                                                                                    (channel % 2)));                 \
-                                                                           }                                                         \
-                                                                           else if (5 == (channel / 2)) {                            \
-                                                                               R_DMAC_B0_EX->DMARS5 &=                               \
-                                                                                   (uint32_t) ~((                                    \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk  \
-                                                                                                    |                                \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk) \
-                                                                                                << (16U *                            \
-                                                                                                    (channel % 2)));                 \
-                                                                           }                                                         \
-                                                                           else if (6 == (channel / 2)) {                            \
-                                                                               R_DMAC_B0_EX->DMARS6 &=                               \
-                                                                                   (uint32_t) ~((                                    \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk  \
-                                                                                                    |                                \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk) \
-                                                                                                << (16U *                            \
-                                                                                                    (channel % 2)));                 \
-                                                                           }                                                         \
-                                                                           else if (7 == (channel / 2)) {                            \
-                                                                               R_DMAC_B0_EX->DMARS7 &=                               \
-                                                                                   (uint32_t) ~((                                    \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_RID_Msk  \
-                                                                                                    |                                \
-                                                                                                    R_DMAC_B0_EX_DMARS0_CH0_MID_Msk) \
-                                                                                                << (16U *                            \
-                                                                                                    (channel % 2)));                 \
-                                                                           }                                                         \
-                                                                           else { /* Do nothing */}                                  \
-}                                                                                                                                    \
-
-#define R_BSP_DMAC_DREQ_DETECT_METHOD_SELECT(detection,                                                                       \
-                                             activation)                  { /* No configuration required for this device. */; \
-}                                                                                                                             \
-
-#define R_BSP_DMAC_B_TRANSFER_END_DETECT_METHOD_SELECT(unit, channel,                                                         \
-                                                       dmaint_detect)     { /* No configuration required for this device. */; \
-}                                                                                                                             \
+#define R_BSP_DMAC_B_TRANSFER_END_DETECT_METHOD_SELECT(unit, channel,                                                          \
+                                                       dmaint_detect)     { /* No configuration required for this device. */;  \
+}                                                                                                                              \
 
 #define R_BSP_DMAC_DREQ_STATUS_CLEAR(activation)                          { /* No clearing required for this device. */; \
+}                                                                                                                        \
+
+#define R_BSP_DMAC_DACK_OUTPUT_PIN_SET(unit, channel, ack_output_pin)                                                    \
+	                                                                      { /* No clearing required for this device. */; \
+}                                                                                                                        \
+
+#define R_BSP_DMAC_TEND_OUTPUT_PIN_SET(unit, channel, dtend_pin)                                                         \
+	                                                                      { /* No clearing required for this device. */; \
 }                                                                                                                        \
 
 typedef enum e_dmac_trigger_event
@@ -444,7 +143,7 @@ typedef enum e_dmac_trigger_event
     DMAC_TRIGGER_EVENT_GPT_CMPE3          = 371 | ACK_MODE_LEVEL_MODE | DETECTION_RISING_EDGE,
     DMAC_TRIGGER_EVENT_GPT_CMPF3          = 375 | ACK_MODE_LEVEL_MODE | DETECTION_RISING_EDGE,
     DMAC_TRIGGER_EVENT_GPT_ADTRGA3        = 379 | ACK_MODE_LEVEL_MODE | DETECTION_RISING_EDGE,
-    DMAC_TRIGGER_EVENT_GPT_ADTRGB3        = 384 | ACK_MODE_LEVEL_MODE | DETECTION_RISING_EDGE,
+    DMAC_TRIGGER_EVENT_GPT_ADTRGB3        = 383 | ACK_MODE_LEVEL_MODE | DETECTION_RISING_EDGE,
     DMAC_TRIGGER_EVENT_GPT_OVF3           = 387 | ACK_MODE_LEVEL_MODE | DETECTION_RISING_EDGE,
     DMAC_TRIGGER_EVENT_GPT_UNF3           = 391 | ACK_MODE_LEVEL_MODE | DETECTION_RISING_EDGE,
     DMAC_TRIGGER_EVENT_GPT_CCMPA4         = 407 | ACK_MODE_LEVEL_MODE | DETECTION_RISING_EDGE,
@@ -557,6 +256,74 @@ typedef enum e_dmac_trigger_event
     DMAC_TRIGGER_EVENT_PDM_INT_PDM_DAT1   = 643 | ACK_MODE_MASK_DACK_OUTPUT | DETECTION_HIGH_LEVEL,
     DMAC_TRIGGER_EVENT_PDM_INT_PDM_DAT2   = 647 | ACK_MODE_MASK_DACK_OUTPUT | DETECTION_HIGH_LEVEL,
 } dmac_trigger_event_t;
+
+typedef enum e_dmac_b_external_input_pin
+{
+    DMAC_B_EXTERNAL_INPUT_PIN_NO_INPUT = 0x7F
+} dmac_b_external_input_pin_t;
+
+typedef enum e_dmac_b_external_output_pin
+{
+    DMAC_B_EXTERNAL_OUTPUT_PIN_NO_OUTPUT = 0x7F
+} dmac_b_external_output_pin_t;
+
+/* If this macro is intended for use only within r_dmac_b.c, it is advisable to redefine it as a file-scoped static
+ * function inside r_dmac_b.c, instead of placing it in a header file. */
+#define R_BSP_DMAC_ACTIVATION_SOURCE_ENABLE(dmac_reg, unit, channel, activation)                                    \
+    do                                                                                                              \
+    {                                                                                                               \
+        static volatile uint32_t * const DMARSk_TABLE[2][8] = {                                                     \
+            {&R_DMAC_B0_EX->DMARS0, &R_DMAC_B0_EX->DMARS1, &R_DMAC_B0_EX->DMARS2, &R_DMAC_B0_EX->DMARS3,            \
+             &R_DMAC_B0_EX->DMARS4, &R_DMAC_B0_EX->DMARS5, &R_DMAC_B0_EX->DMARS6, &R_DMAC_B0_EX->DMARS7},           \
+            {&R_DMAC_B1_EX->DMARS0, &R_DMAC_B1_EX->DMARS1, &R_DMAC_B1_EX->DMARS2, &R_DMAC_B1_EX->DMARS3,            \
+             &R_DMAC_B1_EX->DMARS4, &R_DMAC_B1_EX->DMARS5, &R_DMAC_B1_EX->DMARS6, &R_DMAC_B1_EX->DMARS7},           \
+        };                                                                                                          \
+        volatile uint32_t              * p_target_register = DMARSk_TABLE[unit][channel / 2];                       \
+        uint32_t reg_value    = *p_target_register;                                                                 \
+        uint32_t bit_position = (channel % 2) * 16U;                                                                \
+        uint32_t clear_mask   = ACTIVATION_SOURCE_CLEAR_Msk << bit_position;                                        \
+        reg_value         &= ~clear_mask;                                                                           \
+        reg_value         |= ((uint16_t) activation) << bit_position;                                               \
+        *p_target_register = reg_value;                                                                             \
+                                                                                                                    \
+        p_target_register = &dmac_reg->GRP[channel / 8].CH[channel % 8].CHCFG;                                      \
+        reg_value         = *p_target_register;                                                                     \
+        uint32_t ack_clear_mask    = R_DMAC_B0_GRP_CH_CHCFG_AM_Msk;                                                 \
+        uint32_t ack_value         = ((activation >> 16U) << R_DMAC_B0_GRP_CH_CHCFG_AM_Pos) & ack_clear_mask;       \
+        uint32_t detect_clear_mask = R_DMAC_B0_GRP_CH_CHCFG_LOEN_Msk | R_DMAC_B0_GRP_CH_CHCFG_HIEN_Msk |            \
+                                     R_DMAC_B0_GRP_CH_CHCFG_LVL_Msk;                                                \
+        uint32_t detect_value      = ((activation >> 24U) << R_DMAC_B0_GRP_CH_CHCFG_LOEN_Pos) & detect_clear_mask;  \
+        reg_value &= ~(ack_clear_mask | detect_clear_mask);                                                         \
+        reg_value |= ack_value | detect_value;                                                                      \
+        *p_target_register = reg_value;                                                                             \
+    } while (0)
+
+/* If this macro is intended for use only within r_dmac_b.c, it is advisable to redefine it as a file-scoped static
+ * function inside r_dmac_b.c, instead of placing it in a header file. */
+#define R_BSP_DMAC_ACTIVATION_SOURCE_DISABLE(dmac_reg, unit, channel)                                               \
+    do                                                                                                              \
+    {                                                                                                               \
+        static volatile uint32_t * const DMARSk_TABLE[2][8] = {                                                     \
+            {&R_DMAC_B0_EX->DMARS0, &R_DMAC_B0_EX->DMARS1, &R_DMAC_B0_EX->DMARS2, &R_DMAC_B0_EX->DMARS3,            \
+             &R_DMAC_B0_EX->DMARS4, &R_DMAC_B0_EX->DMARS5, &R_DMAC_B0_EX->DMARS6, &R_DMAC_B0_EX->DMARS7},           \
+            {&R_DMAC_B1_EX->DMARS0, &R_DMAC_B1_EX->DMARS1, &R_DMAC_B1_EX->DMARS2, &R_DMAC_B1_EX->DMARS3,            \
+             &R_DMAC_B1_EX->DMARS4, &R_DMAC_B1_EX->DMARS5, &R_DMAC_B1_EX->DMARS6, &R_DMAC_B1_EX->DMARS7},           \
+        };                                                                                                          \
+        volatile uint32_t              * p_target_register = DMARSk_TABLE[unit][channel / 2];                       \
+        uint32_t bit_position = (channel % 2) * 16U;                                                                \
+        uint32_t clear_mask   = ACTIVATION_SOURCE_CLEAR_Msk << bit_position;                                        \
+        *p_target_register   &= ~clear_mask;                                                                        \
+                                                                                                                    \
+        /* Clear the DMA Transfer Request Detection and DMA acknowledge output settings. */                         \
+        p_target_register = &dmac_reg->GRP[channel / 8].CH[channel % 8].CHCFG;                                      \
+        uint32_t reg_value         = *p_target_register;                                                            \
+        uint32_t ack_clear_mask    = R_DMAC_B0_GRP_CH_CHCFG_AM_Msk;                                                 \
+        uint32_t detect_clear_mask = R_DMAC_B0_GRP_CH_CHCFG_LOEN_Msk | R_DMAC_B0_GRP_CH_CHCFG_HIEN_Msk |            \
+                                     R_DMAC_B0_GRP_CH_CHCFG_LVL_Msk;                                                \
+        reg_value &= ~(ack_clear_mask | detect_clear_mask);                                                         \
+        reg_value |= DMAC_B_ACK_MODE_MASK_DACK_OUTPUT;                                                              \
+        *p_target_register = reg_value;                                                                             \
+    } while (0)
 
 /** @} (end addtogroup BSP_MPU_RZG3S) */
 

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -15,17 +15,17 @@
  **********************************************************************************************************************/
 
 /** "IRQ" in ASCII, used to determine if channel is open. */
-#define INTC_IRQ_OPEN                (0x0000495251U)
+#define INTC_IRQ_OPEN                  (0x0000495251U)
 
-#define INTC_IRQ_TRIG_LEVEL_LOW      (0U)
-#define INTC_IRQ_TRIG_FALLING        (1U)
-#define INTC_IRQ_TRIG_RISING         (2U)
-#define INTC_IRQ_TRIG_BOTH_EDGE      (3U)
+#define INTC_IRQ_TRIG_LEVEL_LOW        (0U)
+#define INTC_IRQ_TRIG_FALLING          (1U)
+#define INTC_IRQ_TRIG_RISING           (2U)
+#define INTC_IRQ_TRIG_BOTH_EDGE        (3U)
 
-#define INTC_IRQ_IITSR_IITSEL_MASK   (3U)
-#define INTC_IRQ_IITSR_IITSEL_WIDTH  (2U)
+#define INTC_IRQ_IITSR_IITSEL_MASK     (3U)
+#define INTC_IRQ_IITSR_IITSEL_WIDTH    (2U)
 
-#define INTC_IRQ_ISCR_ISTAT_MASK     (1U)
+#define INTC_IRQ_CLR_REG_MASK          (1U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -81,6 +81,7 @@ const external_irq_api_t g_external_irq_on_intc_irq =
  *                                        Call the associated Close function to reconfigure the channel.
  * @retval FSP_ERR_IP_CHANNEL_NOT_PRESENT The channel requested in p_cfg is not available on the device selected in
  *                                        r_bsp_cfg.h.
+ *
  * @note This function is reentrant for different channels. It is not reentrant for the same channel.
  **********************************************************************************************************************/
 fsp_err_t R_INTC_IRQ_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, external_irq_cfg_t const * const p_cfg)
@@ -91,7 +92,8 @@ fsp_err_t R_INTC_IRQ_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, ex
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(INTC_IRQ_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
     FSP_ASSERT(NULL != p_cfg);
-    FSP_ERROR_RETURN(0 != ((1U << p_cfg->channel) & BSP_FEATURE_INTC_IRQ_VALID_CHANNEL_MASK), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
+    FSP_ERROR_RETURN(0 != ((1ULL << p_cfg->channel) & BSP_FEATURE_INTC_IRQ_VALID_CHANNEL_MASK),
+                     FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 #endif
 
     p_ctrl->irq = p_cfg->irq;
@@ -108,6 +110,7 @@ fsp_err_t R_INTC_IRQ_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, ex
     p_ctrl->channel    = p_cfg->channel;
 
     uint32_t trigger = 0;
+
     /* Convert the trigger. */
     if (EXTERNAL_IRQ_TRIG_LEVEL_LOW == p_cfg->trigger)
     {
@@ -131,10 +134,10 @@ fsp_err_t R_INTC_IRQ_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, ex
     }
 
     /* Set the trigger. */
-    uint32_t iitsr = R_INTC_IM33->IITSR;
+    uint32_t iitsr = BSP_FEATURE_INTC_BASE_ADDR->IITSR;
     iitsr &= ~(INTC_IRQ_IITSR_IITSEL_MASK << (p_ctrl->channel * INTC_IRQ_IITSR_IITSEL_WIDTH));
     iitsr |= (trigger << (p_ctrl->channel * INTC_IRQ_IITSR_IITSEL_WIDTH));
-    R_INTC_IM33->IITSR = iitsr;
+    BSP_FEATURE_INTC_BASE_ADDR->IITSR = iitsr;
 
     if (INTC_IRQ_TRIG_LEVEL_LOW == trigger)
     {
@@ -142,18 +145,9 @@ fsp_err_t R_INTC_IRQ_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, ex
     }
     else
     {
-        /* Dummy read the ISCR before clearing the ISTAT bit. */
-        volatile uint32_t iscr = R_INTC_IM33->ISCR;
-        FSP_PARAMETER_NOT_USED(iscr);
-
-        /* Clear the ISTAT bit after changing the trigger setting to the edge type.
+        /* Clear the IRQ state flag after changing the trigger setting to the edge type.
          * Reference section "Precaution when Changing Interrupt Settings" of the user's manual. */
-        R_INTC_IM33->ISCR = ~(INTC_IRQ_ISCR_ISTAT_MASK << p_ctrl->channel);
-
-        /* Dummy read the ISCR to prevent the interrupt cause that have been cleared from being accidentally accepted.
-         * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */
-        iscr = R_INTC_IM33->ISCR;
-        FSP_PARAMETER_NOT_USED(iscr);
+        BSP_INTC_IRQ_CLR_STATE_FLAG(p_ctrl->channel);
     }
 
     if (p_ctrl->irq >= 0)
@@ -308,12 +302,12 @@ void r_intc_irq_isr (void)
     /* Save context if RTOS is used. */
     FSP_CONTEXT_SAVE
 
-    IRQn_Type                  irq    = R_FSP_CurrentIrqGet();
+    IRQn_Type irq = R_FSP_CurrentIrqGet();
     intc_irq_instance_ctrl_t * p_ctrl = (intc_irq_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
     /* Retrieve the trigger setting. */
-    uint32_t iitsr = R_INTC_IM33->IITSR;
-    iitsr &= (INTC_IRQ_IITSR_IITSEL_MASK << (p_ctrl->channel * INTC_IRQ_IITSR_IITSEL_WIDTH));
+    uint32_t iitsr = BSP_FEATURE_INTC_BASE_ADDR->IITSR;
+    iitsr  &= (INTC_IRQ_IITSR_IITSEL_MASK << (p_ctrl->channel * INTC_IRQ_IITSR_IITSEL_WIDTH));
     iitsr >>= (p_ctrl->channel * INTC_IRQ_IITSR_IITSEL_WIDTH);
 
     if (INTC_IRQ_TRIG_LEVEL_LOW == iitsr)
@@ -322,18 +316,9 @@ void r_intc_irq_isr (void)
     }
     else
     {
-        /* Dummy read the ISCR before clearing the ISTAT bit. */
-        volatile uint32_t iscr = R_INTC_IM33->ISCR;
-        FSP_PARAMETER_NOT_USED(iscr);
-
-        /* Clear the ISTAT bit before calling the user callback so that if an edge is detected while the ISR is active
+        /* Clear the IRQ state flag before calling the user callback so that if an edge is detected while the ISR is active
          * it will not be missed. */
-        R_INTC_IM33->ISCR = ~(INTC_IRQ_ISCR_ISTAT_MASK << p_ctrl->channel);
-
-        /* Dummy read the ISCR to prevent the interrupt cause that should have been cleared from being accidentally
-         * accepted again. Reference section "Clear Timing of Interrupt Cause" of the user's manual. */
-        iscr = R_INTC_IM33->ISCR;
-        FSP_PARAMETER_NOT_USED(iscr);
+        BSP_INTC_IRQ_CLR_STATE_FLAG(p_ctrl->channel);
     }
 
     if ((NULL != p_ctrl) && (NULL != p_ctrl->p_callback))

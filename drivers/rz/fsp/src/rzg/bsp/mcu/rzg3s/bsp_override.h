@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -25,15 +25,22 @@
 /* Define overrides required for this MCU. */
 #define BSP_OVERRIDE_ADC_INCLUDE
 #define BSP_OVERRIDE_ADC_INFO_T
+#define BSP_OVERRIDE_BSP_MST_ACC_CONTROL_IP_T
 #define BSP_OVERRIDE_BSP_ACC_CONTROL_IP_T
+#define BSP_OVERRIDE_BSP_MST_ACCESS_CONTROL
 #define BSP_OVERRIDE_BSP_ACCESS_CONTROL
 #define BSP_OVERRIDE_BSP_PIN_T
 #define BSP_OVERRIDE_BSP_PORT_T
+#define BSP_OVERRIDE_BSP_SYSTEM_RESET_SIGNAL_T
+#define BSP_OVERRIDE_CANFD_TX_BUFFER_T
+#define BSP_OVERRIDE_CANFD_TX_MB_T
 #define BSP_OVERRIDE_DMAC_B_EXTERNAL_DETECTION_T
-#define BSP_OVERRIDE_FSP_IP_T
 #define BSP_OVERRIDE_FSP_PRIV_CLOCK_T
+#define BSP_OVERRIDE_FSP_PRIV_CLOCK_DIVIDER_T
+#define BSP_OVERRIDE_FSP_PRIV_CLOCK_SELECTOR_T
 #define BSP_OVERRIDE_IOPORT_PERIPHERAL_T
 #define BSP_OVERRIDE_TRANSFER_ADDR_MODE_T
+#define BSP_OVERRIDE_TRANSFER_CALLBACK_ARGS_T
 #define BSP_OVERRIDE_TRANSFER_INFO_T
 #define BSP_OVERRIDE_TRANSFER_MODE_T
 #define BSP_OVERRIDE_TRANSFER_SIZE_T
@@ -219,48 +226,277 @@
 #define BSP_ACCESS_CONTROL_REG_ACCCNT_IPCONT       (R_SYSC->SYS_SLVACCCTL20)
 #define BSP_ACCESS_CONTROL_POS_ACCCNT_IPCONT       (R_SYSC_SYS_SLVACCCTL20_IPCONT_SL_Pos)
 
+/***********************************************************************************************************************
+ * Definition of macros to set value to Master Access Control Registers
+ **********************************************************************************************************************/
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_DMAC0(level)         {R_SYSC->SYS_MSTACCCTL0 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL0                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL0_DMAC0_AWPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL0_DMAC0_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL0_DMAC0_AWSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL0_DMAC0_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_DMAC0(level)          {R_SYSC->SYS_MSTACCCTL0 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL0                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL0_DMAC0_ARPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL0_DMAC0_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL0_DMAC0_ARSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL0_DMAC0_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_DMAC1(level)         {R_SYSC->SYS_MSTACCCTL0 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL0                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL0_DMAC1_AWPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL0_DMAC1_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL0_DMAC1_AWSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL0_DMAC1_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_DMAC1(level)          {R_SYSC->SYS_MSTACCCTL0 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL0                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL0_DMAC1_ARPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL0_DMAC1_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL0_DMAC1_ARSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL0_DMAC1_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_SDHI0(level)         {R_SYSC->SYS_MSTACCCTL1 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL1                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL1_SDHI0_AWPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL1_SDHI0_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL1_SDHI0_AWSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL1_SDHI0_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_SDHI0(level)          {R_SYSC->SYS_MSTACCCTL1 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL1                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL1_SDHI0_ARPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL1_SDHI0_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL1_SDHI0_ARSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL1_SDHI0_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_SDHI1(level)         {R_SYSC->SYS_MSTACCCTL1 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL1                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL1_SDHI1_AWPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL1_SDHI1_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL1_SDHI1_AWSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL1_SDHI1_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_SDHI1(level)          {R_SYSC->SYS_MSTACCCTL1 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL1                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL1_SDHI1_ARPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL1_SDHI1_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL1_SDHI1_ARSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL1_SDHI1_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_GBETHER0(level)      {R_SYSC->SYS_MSTACCCTL1 =                          \
+                                                                      (R_SYSC->SYS_MSTACCCTL1                       \
+                                                                       & ~(uint32_t) (                              \
+                                                                           R_SYSC_SYS_MSTACCCTL1_GEther0_AWPU_Msk   \
+                                                                           |                                        \
+                                                                           R_SYSC_SYS_MSTACCCTL1_GEther0_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL1_GEther0_AWSEL_Msk     \
+                                                                      | (level <<                                   \
+                                                                          R_SYSC_SYS_MSTACCCTL1_GEther0_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_GBETHER0(level)       {R_SYSC->SYS_MSTACCCTL1 =                          \
+                                                                      (R_SYSC->SYS_MSTACCCTL1                       \
+                                                                       & ~(uint32_t) (                              \
+                                                                           R_SYSC_SYS_MSTACCCTL1_GEther0_ARPU_Msk   \
+                                                                           |                                        \
+                                                                           R_SYSC_SYS_MSTACCCTL1_GEther0_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL1_GEther0_ARSEL_Msk     \
+                                                                      | (level <<                                   \
+                                                                          R_SYSC_SYS_MSTACCCTL1_GEther0_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_GBETHER1(level)      {R_SYSC->SYS_MSTACCCTL1 =                          \
+                                                                      (R_SYSC->SYS_MSTACCCTL1                       \
+                                                                       & ~(uint32_t) (                              \
+                                                                           R_SYSC_SYS_MSTACCCTL1_GEther1_AWPU_Msk   \
+                                                                           |                                        \
+                                                                           R_SYSC_SYS_MSTACCCTL1_GEther1_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL1_GEther1_AWSEL_Msk     \
+                                                                      | (level <<                                   \
+                                                                          R_SYSC_SYS_MSTACCCTL1_GEther1_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_GBETHER1(level)       {R_SYSC->SYS_MSTACCCTL1 =                          \
+                                                                      (R_SYSC->SYS_MSTACCCTL1                       \
+                                                                       & ~(uint32_t) (                              \
+                                                                           R_SYSC_SYS_MSTACCCTL1_GEther1_ARPU_Msk   \
+                                                                           |                                        \
+                                                                           R_SYSC_SYS_MSTACCCTL1_GEther1_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL1_GEther1_ARSEL_Msk     \
+                                                                      | (level <<                                   \
+                                                                          R_SYSC_SYS_MSTACCCTL1_GEther1_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_USB20_HOST(level)    {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                      (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                       & ~(uint32_t) (                             \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB20H_AWPU_Msk   \
+                                                                           |                                       \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB20H_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL2_USB20H_AWSEL_Msk     \
+                                                                      | (level <<                                  \
+                                                                          R_SYSC_SYS_MSTACCCTL2_USB20H_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_USB20_HOST(level)     {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                      (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                       & ~(uint32_t) (                             \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB20H_ARPU_Msk   \
+                                                                           |                                       \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB20H_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL2_USB20H_ARSEL_Msk     \
+                                                                      | (level <<                                  \
+                                                                          R_SYSC_SYS_MSTACCCTL2_USB20H_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_USB20_FUNC(level)    {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                      (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                       & ~(uint32_t) (                             \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB20D_AWPU_Msk   \
+                                                                           |                                       \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB20D_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL2_USB20D_AWSEL_Msk     \
+                                                                      | (level <<                                  \
+                                                                          R_SYSC_SYS_MSTACCCTL2_USB20D_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_USB20_FUNC(level)     {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                      (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                       & ~(uint32_t) (                             \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB20D_ARPU_Msk   \
+                                                                           |                                       \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB20D_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL2_USB20D_ARSEL_Msk     \
+                                                                      | (level <<                                  \
+                                                                          R_SYSC_SYS_MSTACCCTL2_USB20D_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_USB21_HOST(level)    {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                      (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                       & ~(uint32_t) (                             \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB21H_AWPU_Msk   \
+                                                                           |                                       \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB21H_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL2_USB21H_AWSEL_Msk     \
+                                                                      | (level <<                                  \
+                                                                          R_SYSC_SYS_MSTACCCTL2_USB21H_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_USB21_HOST(level)     {R_SYSC->SYS_MSTACCCTL2 =                         \
+                                                                      (R_SYSC->SYS_MSTACCCTL2                      \
+                                                                       & ~(uint32_t) (                             \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB21H_ARPU_Msk   \
+                                                                           |                                       \
+                                                                           R_SYSC_SYS_MSTACCCTL2_USB21H_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL2_USB21H_ARSEL_Msk     \
+                                                                      | (level <<                                  \
+                                                                          R_SYSC_SYS_MSTACCCTL2_USB21H_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_SDHI2(level)         {R_SYSC->SYS_MSTACCCTL6 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL6                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL6_SDHI2_AWPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL6_SDHI2_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL6_SDHI2_AWSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL6_SDHI2_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_SDHI2(level)          {R_SYSC->SYS_MSTACCCTL6 =                        \
+                                                                      (R_SYSC->SYS_MSTACCCTL6                     \
+                                                                       & ~(uint32_t) (                            \
+                                                                           R_SYSC_SYS_MSTACCCTL6_SDHI2_ARPU_Msk   \
+                                                                           |                                      \
+                                                                           R_SYSC_SYS_MSTACCCTL6_SDHI2_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL6_SDHI2_ARSEL_Msk     \
+                                                                      | (level <<                                 \
+                                                                          R_SYSC_SYS_MSTACCCTL6_SDHI2_ARPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_WRITE_MST_ACCCNT_PCIE(level)          {R_SYSC->SYS_MSTACCCTL6 =                       \
+                                                                      (R_SYSC->SYS_MSTACCCTL6                    \
+                                                                       & ~(uint32_t) (                           \
+                                                                           R_SYSC_SYS_MSTACCCTL6_PCIE_AWPU_Msk   \
+                                                                           |                                     \
+                                                                           R_SYSC_SYS_MSTACCCTL6_PCIE_AWNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL6_PCIE_AWSEL_Msk     \
+                                                                      | (level <<                                \
+                                                                          R_SYSC_SYS_MSTACCCTL6_PCIE_AWPU_Pos);}
+
+#define BSP_ACCESS_CONTROL_READ_MST_ACCCNT_PCIE(level)           {R_SYSC->SYS_MSTACCCTL6 =                       \
+                                                                      (R_SYSC->SYS_MSTACCCTL6                    \
+                                                                       & ~(uint32_t) (                           \
+                                                                           R_SYSC_SYS_MSTACCCTL6_PCIE_ARPU_Msk   \
+                                                                           |                                     \
+                                                                           R_SYSC_SYS_MSTACCCTL6_PCIE_ARNS_Msk)) \
+                                                                      | R_SYSC_SYS_MSTACCCTL6_PCIE_ARSEL_Msk     \
+                                                                      | (level <<                                \
+                                                                          R_SYSC_SYS_MSTACCCTL6_PCIE_ARPU_Pos);}
+
 /*==============================================
  * CPG control macros Overrides
  *==============================================*/
 
-#define BSP_CLKON_REG_FSP_IP_GTM(channel)      (R_CPG->CPG_CLKON_GTM)
-#define BSP_CLKON_BIT_FSP_IP_GTM(channel)      (1U << (R_CPG_CPG_CLKON_GTM_CLK0_ON_Pos + (channel)))
-#define BSP_CLKMON_REG_FSP_IP_GTM(channel)     (R_CPG->CPG_CLKMON_GTM)
-#define BSP_CLKMON_BIT_FSP_IP_GTM(channel)     (1U << (R_CPG_CPG_CLKMON_GTM_CLK0_MON_Pos + (channel)))
-#define BSP_RST_REG_FSP_IP_GTM(channel)        (R_CPG->CPG_RST_GTM)
-#define BSP_RST_BIT_FSP_IP_GTM(channel)        (1U << (R_CPG_CPG_RST_GTM_UNIT0_RSTB_Pos + (channel)))
-#define BSP_RSTMON_REG_FSP_IP_GTM(channel)     (R_CPG->CPG_RSTMON_GTM)
-#define BSP_RSTMON_BIT_FSP_IP_GTM(channel)     (1U << (R_CPG_CPG_RSTMON_GTM_RST0_MON_Pos + (channel)))
+#define BSP_CLKON_REG_FSP_IP_GTM(channel)                        (R_CPG->CPG_CLKON_GTM)
+#define BSP_CLKON_BIT_FSP_IP_GTM(channel)                        (1U << (R_CPG_CPG_CLKON_GTM_CLK0_ON_Pos + (channel)))
+#define BSP_CLKMON_REG_FSP_IP_GTM(channel)                       (R_CPG->CPG_CLKMON_GTM)
+#define BSP_CLKMON_BIT_FSP_IP_GTM(channel)                       (1U << (R_CPG_CPG_CLKMON_GTM_CLK0_MON_Pos + (channel)))
+#define BSP_RST_REG_FSP_IP_GTM(channel)                          (R_CPG->CPG_RST_GTM)
+#define BSP_RST_BIT_FSP_IP_GTM(channel)                          (1U << (R_CPG_CPG_RST_GTM_UNIT0_RSTB_Pos + (channel)))
+#define BSP_RSTMON_REG_FSP_IP_GTM(channel)                       (R_CPG->CPG_RSTMON_GTM)
+#define BSP_RSTMON_BIT_FSP_IP_GTM(channel)                       (1U << (R_CPG_CPG_RSTMON_GTM_RST0_MON_Pos + (channel)))
 
-#define BSP_CLKON_REG_FSP_IP_XSPI(channel)     (R_CPG->CPG_CLKON_SPI)
-#define BSP_CLKON_BIT_FSP_IP_XSPI(channel)     (0xFU << (R_CPG_CPG_CLKON_SPI_CLK0_ON_Pos))
-#define BSP_CLKMON_REG_FSP_IP_XSPI(channel)    (R_CPG->CPG_CLKMON_SPI)
-#define BSP_CLKMON_BIT_FSP_IP_XSPI(channel)    (0xFU << (R_CPG_CPG_CLKMON_SPI_CLK0_MON_Pos))
-#define BSP_RST_REG_FSP_IP_XSPI(channel)       (R_CPG->CPG_RST_SPI)
-#define BSP_RST_BIT_FSP_IP_XSPI(channel)       (3U << (R_CPG_CPG_RST_SPI_UNIT0_RSTB_Pos))
-#define BSP_RSTMON_REG_FSP_IP_XSPI(channel)    (R_CPG->CPG_RSTMON_SPI)
-#define BSP_RSTMON_BIT_FSP_IP_XSPI(channel)    (3U << (R_CPG_CPG_RSTMON_SPI_RST0_MON_Pos))
+#define BSP_CLKON_REG_FSP_IP_XSPI(channel)                       (R_CPG->CPG_CLKON_SPI)
+#define BSP_CLKON_BIT_FSP_IP_XSPI(channel)                       (0xFU << (R_CPG_CPG_CLKON_SPI_CLK0_ON_Pos))
+#define BSP_CLKMON_REG_FSP_IP_XSPI(channel)                      (R_CPG->CPG_CLKMON_SPI)
+#define BSP_CLKMON_BIT_FSP_IP_XSPI(channel)                      (0xFU << (R_CPG_CPG_CLKMON_SPI_CLK0_MON_Pos))
+#define BSP_RST_REG_FSP_IP_XSPI(channel)                         (R_CPG->CPG_RST_SPI)
+#define BSP_RST_BIT_FSP_IP_XSPI(channel)                         (3U << (R_CPG_CPG_RST_SPI_UNIT0_RSTB_Pos))
+#define BSP_RSTMON_REG_FSP_IP_XSPI(channel)                      (R_CPG->CPG_RSTMON_SPI)
+#define BSP_RSTMON_BIT_FSP_IP_XSPI(channel)                      (3U << (R_CPG_CPG_RSTMON_SPI_RST0_MON_Pos))
 
-#define BSP_DELAY_LOOP_CYCLES    (49)
+#define BSP_MSTP_REG_FSP_IP_SCIF(channel)                        *((4U >=                                             \
+                                                                    channel) ? &R_CPG->CPG_BUS_MCPU2_MSTOP : &R_CPG-> \
+                                                                   CPG_BUS_MCPU3_MSTOP)
+#define BSP_MSTP_BIT_FSP_IP_SCIF(channel)                        ((4U >=                                                \
+                                                                   channel) ? (1U <<                                    \
+                                                                               (R_CPG_CPG_BUS_MCPU2_MSTOP_MSTOP1_ON_Pos \
+                                                                                + channel))                             \
+                                                                  : (1U << R_CPG_CPG_BUS_MCPU3_MSTOP_MSTOP4_ON_Pos))
 
-#define BSP_MSTP_REG_FSP_IP_SCIF(channel)      *((4U >= \
-                                                  channel) ? &R_CPG->CPG_BUS_MCPU2_MSTOP : &R_CPG->CPG_BUS_MCPU3_MSTOP)
-#define BSP_MSTP_BIT_FSP_IP_SCIF(channel)      ((4U >=                                                                  \
-                                                 channel) ? (1U << (R_CPG_CPG_BUS_MCPU2_MSTOP_MSTOP1_ON_Pos + channel)) \
-                                                : (1U << R_CPG_CPG_BUS_MCPU3_MSTOP_MSTOP4_ON_Pos))
+#define BSP_MSTP_REG_FSP_IP_XSPI(channel)                        R_CPG->CPG_BUS_MCPU1_MSTOP
+#define BSP_MSTP_BIT_FSP_IP_XSPI(channel)                        (1U << R_CPG_CPG_BUS_MCPU1_MSTOP_MSTOP1_ON_Pos)
 
-#define BSP_MSTP_REG_FSP_IP_XSPI(channel)      R_CPG->CPG_BUS_MCPU1_MSTOP
-#define BSP_MSTP_BIT_FSP_IP_XSPI(channel)      (1U << R_CPG_CPG_BUS_MCPU1_MSTOP_MSTOP1_ON_Pos)
-
-#define BSP_MSTP_REG_FSP_IP_RSPI(channel)      *((1U >= channel) ? &R_CPG->CPG_BUS_MCPU1_MSTOP    \
-                                                 : ((2U == channel) ? &R_CPG->CPG_BUS_MCPU2_MSTOP \
-                                                    : &R_CPG->CPG_BUS_MCPU3_MSTOP))
-#define BSP_MSTP_BIT_FSP_IP_RSPI(channel)      ((1U >=                                                                   \
-                                                 channel) ? (1U << (R_CPG_CPG_BUS_MCPU1_MSTOP_MSTOP14_ON_Pos + channel)) \
-                                                : ((2U == channel) ? (1U << R_CPG_CPG_BUS_MCPU2_MSTOP_MSTOP0_ON_Pos)     \
-                                                   : (1U <<                                                              \
-                                                      (R_CPG_CPG_BUS_MCPU3_MSTOP_MSTOP2_ON_Pos +                         \
-                                                       (uint32_t) (channel - 3)))))
+#define BSP_MSTP_REG_FSP_IP_RSPI(channel)                        *((1U >= channel) ? &R_CPG->CPG_BUS_MCPU1_MSTOP    \
+                                                                   : ((2U == channel) ? &R_CPG->CPG_BUS_MCPU2_MSTOP \
+                                                                      : &R_CPG->CPG_BUS_MCPU3_MSTOP))
+#define BSP_MSTP_BIT_FSP_IP_RSPI(channel)                        ((1U >=                                                   \
+                                                                   channel) ? (1U <<                                       \
+                                                                               (R_CPG_CPG_BUS_MCPU1_MSTOP_MSTOP14_ON_Pos   \
+                                                                                + channel))                                \
+                                                                  : ((2U ==                                                \
+                                                                      channel) ? (1U <<                                    \
+                                                                                  R_CPG_CPG_BUS_MCPU2_MSTOP_MSTOP0_ON_Pos) \
+                                                                     : (1U <<                                              \
+                                                                        (R_CPG_CPG_BUS_MCPU3_MSTOP_MSTOP2_ON_Pos +         \
+                                                                         (uint32_t) (channel - 3)))))
 
 /*==============================================
  * IOPORT-Related Macros Overrides
@@ -273,24 +509,67 @@
  *==============================================*/
 
 #if BSP_CURRENT_CORE == RZG3S_CORE_CM33
- #define R_BSP_IM33_DISABLE()       {R_SYSC->SYS_LP_CTL7 = R_SYSC->SYS_LP_CTL7 | \
-                                                           R_SYSC_SYS_LP_CTL7_IM33_MASK_Msk;}
- #define R_BSP_IM33_ENABLE()        {R_SYSC->SYS_LP_CTL7 = R_SYSC->SYS_LP_CTL7 & \
-                                                           ~R_SYSC_SYS_LP_CTL7_IM33_MASK_Msk;}
- #define R_BSP_WAIT_CM33_RESET()    {while ((R_SYSC->SYS_LP_CM33CTL0 &                      \
-                                             R_SYSC_SYS_LP_CM33CTL0_SYSRESETREQ_Msk) == 0U) \
-                                     { /* wait */};                                         \
-}
+ #define R_BSP_IM33_DISABLE()    {R_SYSC->SYS_LP_CTL7 = R_SYSC->SYS_LP_CTL7 | \
+                                                        R_SYSC_SYS_LP_CTL7_IM33_MASK_Msk;}
+ #define R_BSP_IM33_ENABLE()     {R_SYSC->SYS_LP_CTL7 = R_SYSC->SYS_LP_CTL7 & \
+                                                        ~R_SYSC_SYS_LP_CTL7_IM33_MASK_Msk;}
 #elif BSP_CURRENT_CORE == RZG3S_CORE_CM33_FPU
- #define R_BSP_IM33_DISABLE()       {R_SYSC->SYS_LP_CTL7 = R_SYSC->SYS_LP_CTL7 | \
-                                                           R_SYSC_SYS_LP_CTL7_IM33FPU_MASK_Msk;}
- #define R_BSP_IM33_ENABLE()        {R_SYSC->SYS_LP_CTL7 = R_SYSC->SYS_LP_CTL7 & \
-                                                           ~R_SYSC_SYS_LP_CTL7_IM33FPU_MASK_Msk;}
- #define R_BSP_WAIT_CM33_RESET()    {while ((R_SYSC->SYS_LP_CM33FPUCTL0 &                      \
-                                             R_SYSC_SYS_LP_CM33FPUCTL0_SYSRESETREQ_Msk) == 0U) \
-                                     { /* wait */};                                            \
-}
+ #define R_BSP_IM33_DISABLE()    {R_SYSC->SYS_LP_CTL7 = R_SYSC->SYS_LP_CTL7 | \
+                                                        R_SYSC_SYS_LP_CTL7_IM33FPU_MASK_Msk;}
+ #define R_BSP_IM33_ENABLE()     {R_SYSC->SYS_LP_CTL7 = R_SYSC->SYS_LP_CTL7 & \
+                                                        ~R_SYSC_SYS_LP_CTL7_IM33FPU_MASK_Msk;}
 #endif
+
+/***********************************************************************************************************************
+ * Definition of macros to clear state flag of INTC IRQ
+ **********************************************************************************************************************/
+#define BSP_INTC_IRQ_CLR_STATE_FLAG(channel)                                    \
+    do                                                                          \
+    {                                                                           \
+        /* Dummy read the ISCR before clearing the ISTAT bit. */                \
+        volatile uint32_t iscr = BSP_FEATURE_INTC_BASE_ADDR->ISCR;              \
+        FSP_PARAMETER_NOT_USED(iscr);                                           \
+        /* Clear the ISTAT bit. */                                              \
+        BSP_FEATURE_INTC_BASE_ADDR->ISCR = ~(INTC_IRQ_CLR_REG_MASK << channel); \
+        /* Dummy read the ISCR to prevent the interrupt cause that have been cleared from being accidentally accepted. \
+         * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
+        iscr = BSP_FEATURE_INTC_BASE_ADDR->ISCR;                                        \
+        FSP_PARAMETER_NOT_USED(iscr);                                                   \
+    } while (0);
+
+/***********************************************************************************************************************
+ * Definition of macros to clear state flag of INTC NMI
+ **********************************************************************************************************************/
+#define BSP_INTC_NMI_CLR_STATE_FLAG()                              \
+    do                                                             \
+    {                                                              \
+        /* Dummy read the NSCR before clearing the NSTAT bit. */   \
+        volatile uint32_t nscr = BSP_FEATURE_INTC_BASE_ADDR->NSCR; \
+        FSP_PARAMETER_NOT_USED(nscr);                              \
+        /* Clear the NSTAT bit. */                                 \
+        BSP_FEATURE_INTC_BASE_ADDR->NSCR_b.NSTAT = 0;              \
+        /* Dummy read the NSCR to prevent the interrupt cause that have been cleared from being accidentally accepted. \
+         * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
+        nscr = BSP_FEATURE_INTC_BASE_ADDR->NSCR;                                        \
+        FSP_PARAMETER_NOT_USED(nscr);                                                   \
+    } while (0);
+
+/***********************************************************************************************************************
+ * Definition of macros to clear state flag of INTC TINT
+ **********************************************************************************************************************/
+#define BSP_INTC_TINT_CLR_STATE_FLAG(channel)                                    \
+    do                                                                           \
+    {                                                                            \
+        /* Dummy read the TSCR before clearing the TSTAT bit. */                 \
+        volatile uint32_t tscr = BSP_FEATURE_INTC_BASE_ADDR->TSCR;               \
+        FSP_PARAMETER_NOT_USED(tscr);                                            \
+        /* Clear the TSTAT bit. */                                               \
+        BSP_FEATURE_INTC_BASE_ADDR->TSCR = ~(INTC_TINT_CLR_REG_MASK << channel); \
+        /* Dummy read the TSCR to prevent the interrupt cause that should have been cleared from being accidentally \
+         * accepted again. Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
+        tscr = BSP_FEATURE_INTC_BASE_ADDR->TSCR;                                                        \
+        FSP_PARAMETER_NOT_USED(tscr);                                                                   \
+    } while (0);
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -480,14 +759,110 @@ typedef enum e_bsp_io_port_pin_t
     BSP_IO_SD1_DATA3 = 0xFFFF1303,      /* SD1_DATA3 */
 } bsp_io_port_pin_t;
 
+/** BSP System Reset Signals */
+typedef enum e_bsp_system_reset_signal
+{
+    BSP_SYSTEM_RESET_SIGNAL_WDT_CA55_0   = 0, ///< WDT for Cortex-A55 Core 0.
+    BSP_SYSTEM_RESET_SIGNAL_WDT_CM33     = 1, ///< WDT for Cortex-M33.
+    BSP_SYSTEM_RESET_SIGNAL_WDT_CM33_FPU = 2, ///< WDT for Cortex-M33_FPU.
+    BSP_SYSTEM_RESET_SIGNAL_MAX          = 3, ///< The number of supported system reset signals.
+} bsp_system_reset_signal_t;
+
+/*==============================================
+ * CANFD Overrides
+ *==============================================*/
+
+/** CANFD Transmit Buffer (MB + CFIFO) */
+typedef enum e_canfd_tx_buffer
+{
+    CANFD_TX_BUFFER_0 = 0,
+    CANFD_TX_BUFFER_1 = 1,
+    CANFD_TX_BUFFER_2 = 2,
+    CANFD_TX_BUFFER_3 = 3,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_TX_BUFFER_4  = 4,
+    CANFD_TX_BUFFER_5  = 5,
+    CANFD_TX_BUFFER_6  = 6,
+    CANFD_TX_BUFFER_7  = 7,
+    CANFD_TX_BUFFER_8  = 8,
+    CANFD_TX_BUFFER_9  = 9,
+    CANFD_TX_BUFFER_10 = 10,
+    CANFD_TX_BUFFER_11 = 11,
+    CANFD_TX_BUFFER_12 = 12,
+    CANFD_TX_BUFFER_13 = 13,
+    CANFD_TX_BUFFER_14 = 14,
+    CANFD_TX_BUFFER_15 = 15,
+    CANFD_TX_BUFFER_32 = 32,
+    CANFD_TX_BUFFER_33 = 33,
+    CANFD_TX_BUFFER_34 = 34,
+    CANFD_TX_BUFFER_35 = 35,
+    CANFD_TX_BUFFER_36 = 36,
+    CANFD_TX_BUFFER_37 = 37,
+    CANFD_TX_BUFFER_38 = 38,
+    CANFD_TX_BUFFER_39 = 39,
+    CANFD_TX_BUFFER_40 = 40,
+    CANFD_TX_BUFFER_41 = 41,
+    CANFD_TX_BUFFER_42 = 42,
+    CANFD_TX_BUFFER_43 = 43,
+    CANFD_TX_BUFFER_44 = 44,
+    CANFD_TX_BUFFER_45 = 45,
+    CANFD_TX_BUFFER_46 = 46,
+    CANFD_TX_BUFFER_47 = 47,
+#endif
+    CANFD_TX_BUFFER_FIFO_COMMON_0 = 48,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_TX_BUFFER_FIFO_COMMON_1 = 49,
+    CANFD_TX_BUFFER_FIFO_COMMON_2 = 50,
+#endif
+} canfd_tx_buffer_t;
+
+/** CANFD Transmit Message Buffer (TX MB) */
+typedef enum e_canfd_tx_mb
+{
+    CANFD_TX_MB_0 = 0,
+    CANFD_TX_MB_1 = 1,
+    CANFD_TX_MB_2 = 2,
+    CANFD_TX_MB_3 = 3,
+#if !BSP_FEATURE_CANFD_LITE
+    CANFD_TX_MB_4  = 4,
+    CANFD_TX_MB_5  = 5,
+    CANFD_TX_MB_6  = 6,
+    CANFD_TX_MB_7  = 7,
+    CANFD_TX_MB_8  = 8,
+    CANFD_TX_MB_9  = 9,
+    CANFD_TX_MB_10 = 10,
+    CANFD_TX_MB_11 = 11,
+    CANFD_TX_MB_12 = 12,
+    CANFD_TX_MB_13 = 13,
+    CANFD_TX_MB_14 = 14,
+    CANFD_TX_MB_15 = 15,
+    CANFD_TX_MB_32 = 32,
+    CANFD_TX_MB_33 = 33,
+    CANFD_TX_MB_34 = 34,
+    CANFD_TX_MB_35 = 35,
+    CANFD_TX_MB_36 = 36,
+    CANFD_TX_MB_37 = 37,
+    CANFD_TX_MB_38 = 38,
+    CANFD_TX_MB_39 = 39,
+    CANFD_TX_MB_40 = 40,
+    CANFD_TX_MB_41 = 41,
+    CANFD_TX_MB_42 = 42,
+    CANFD_TX_MB_43 = 43,
+    CANFD_TX_MB_44 = 44,
+    CANFD_TX_MB_45 = 45,
+    CANFD_TX_MB_46 = 46,
+    CANFD_TX_MB_47 = 47,
+#endif
+} canfd_tx_mb_t;
+
 /*==============================================
  * DMAC_B External Detection Overrides
  *==============================================*/
 
- /** Detection method of the external DMA request signal. See RZ/T2M hardware manual Table 14.19 DMA Transfer Request Detection Operation Setting Table. */
+/** Detection method of the external DMA request signal. */
 typedef enum e_dmac_b_external_detection
 {
-    DMAC_B_EXTERNAL_DETECTION_NO_DETECTION = 0,   ///< Not using hardware detection.
+    DMAC_B_EXTERNAL_DETECTION_NO_DETECTION = 0, ///< Not using hardware detection.
 } dmac_b_external_detection_t;
 
 /** access control. */
@@ -582,28 +957,21 @@ typedef enum e_acc_control_ip
     ACCCNT_IPCONT,
 } fsp_acc_control_ip_t;
 
-/** Available modules. */
-typedef enum e_fsp_ip
+/** master access control. */
+typedef enum e_mst_acc_control_ip
 {
-    FSP_IP_GTM    = 0,                 ///< General Timer
-    FSP_IP_GPT    = 1,                 ///< General PWM Timer
-    FSP_IP_POEG   = 2,                 ///< Port Output Enable for GPT
-    FSP_IP_PORT   = 3,                 ///< I/O Ports
-    FSP_IP_IM33   = 4,                 ///< IM33 (Interrupt controller)
-    FSP_IP_SCIF   = 5,                 ///< Serial Communications Interface with FIFO
-    FSP_IP_RIIC   = 6,                 ///< I2C Bus Interface
-    FSP_IP_RSPI   = 7,                 ///< Renesas Serial Peripheral Interface
-    FSP_IP_MHU    = 8,                 ///< Message Handling Unit
-    FSP_IP_DMAC   = 9,                 ///< Direct Memory Access Controller
-    FSP_IP_DMAC_s = 9,                 ///< Direct Memory Access Controller
-    FSP_IP_SSI    = 10,                ///< Serial Sound Interface
-    FSP_IP_CANFD  = 11,                ///< CANFD Interface (RS-CANFD)
-    FSP_IP_ADC    = 12,                ///< A/D Converter
-    FSP_IP_TSU    = 13,                ///< Thermal Sensor Unit
-    FSP_IP_WDT    = 14,                ///< Watchdog Timer
-    FSP_IP_SCI    = 15,                ///< Serial Communications Interface
-    FSP_IP_XSPI   = 16                 ///< Expanded Serial Peripheral Interface
-} fsp_ip_t;
+    MST_ACCCNT_DMAC0,
+    MST_ACCCNT_DMAC1,
+    MST_ACCCNT_SDHI0,
+    MST_ACCCNT_SDHI1,
+    MST_ACCCNT_GBETHER0,
+    MST_ACCCNT_GBETHER1,
+    MST_ACCCNT_USB20_HOST,
+    MST_ACCCNT_USB21_HOST,
+    MST_ACCCNT_USB20_FUNC,
+    MST_ACCCNT_SDHI2,
+    MST_ACCCNT_PCIE
+} fsp_mst_acc_control_ip_t;
 
 /* Private enum used in R_FSP_SystemClockHzGet. */
 typedef enum e_fsp_priv_clock
@@ -634,6 +1002,36 @@ typedef enum e_fsp_priv_clock
     FSP_PRIV_CLOCK_OSCCLK2,            /* OSC2 Clock */
     FSP_PRIV_CLOCK_NUM,
 } fsp_priv_clock_t;
+
+/* Private enum used in R_BSP_ClockDividerSet. */
+typedef enum e_fsp_priv_clock_divider
+{
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL1 = 0,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_100,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_200,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_100,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_200MCPU,
+    FSP_PRIV_CLOCK_DIVIDER_DIVPL6A,
+    FSP_PRIV_CLOCK_DIVIDER_DIVPL6B,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI0_SEL,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI1_SEL,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI2_SEL,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_OCTA,
+    FSP_PRIV_CLOCK_DIVIDER_DIV_SPI,
+    FSP_PRIV_CLOCK_DIVIDER_NUM,
+} fsp_priv_clock_divider_t;
+
+/* Private enum used in R_BSP_ClockSelectorSet. */
+typedef enum e_fsp_priv_clock_selector
+{
+    FSP_PRIV_CLOCK_SELECTOR_SEL_PLL4 = 0,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI0,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI1,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI2,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_OCTA,
+    FSP_PRIV_CLOCK_SELECTOR_SEL_SPI,
+    FSP_PRIV_CLOCK_SELECTOR_NUM,
+} fsp_priv_clock_selector_t;
 
 /*==============================================
  * IOPORT Overrides
@@ -671,6 +1069,13 @@ typedef enum e_ioport_peripheral
  * Transfer API Overrides
  *==============================================*/
 
+/** Events that can trigger a callback function. */
+typedef enum e_transfer_event
+{
+    TRANSFER_EVENT_TRANSFER_END   = 0, ///< Transfer has completed.
+    TRANSFER_EVENT_TRANSFER_ERROR = 1, ///< Transfer error has occurred.
+} transfer_event_t;
+
 /** Transfer mode describes what will happen when a transfer request occurs. */
 typedef enum e_transfer_mode
 {
@@ -703,6 +1108,13 @@ typedef enum e_transfer_addr_mode
     /** Address pointer remains fixed after each transfer. */
     TRANSFER_ADDR_MODE_FIXED = 1
 } transfer_addr_mode_t;
+
+/** Callback function parameter data. */
+typedef struct st_transfer_callback_args_t
+{
+    transfer_event_t event;            ///< Event code
+    void const     * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in ::transfer_cfg_t.
+} transfer_callback_args_t;
 
 typedef struct st_transfer_info
 {
