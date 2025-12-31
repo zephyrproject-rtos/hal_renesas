@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -30,7 +30,6 @@ void R_BSP_PinCfgSecurityInit(void);
 /***********************************************************************************************************************
  * External symbols
  **********************************************************************************************************************/
-extern fsp_vector_t g_vector_table[BSP_ICU_VECTOR_MAX_ENTRIES];
 
 #if defined(__ARMCC_VERSION) || defined(__ICCARM__)
 typedef void (BSP_CMSE_NONSECURE_CALL * bsp_nonsecure_func_t)(void);
@@ -89,7 +88,7 @@ void R_BSP_NonSecureEnter (void)
     /* Set the NS vector table address */
     SCB_NS->VTOR = (uint32_t) p_ns_vector_table;
 
-    /* Use CM33 stack monitor. */
+    /* Use Cortex-M33 stack monitor. */
     __TZ_set_MSPLIM_NS(BSP_PRV_STACK_LIMIT);
 
     /* Set the NS stack pointer to the first entry in the NS vector table */
