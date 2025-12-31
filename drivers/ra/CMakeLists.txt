@@ -10,11 +10,21 @@ set(include_dirs
 )
 
 set(srcs
+	fsp/src/bsp/cmsis/Device/RENESAS/Source/startup.c
+	fsp/src/bsp/cmsis/Device/RENESAS/Source/system.c
 	fsp/src/bsp/mcu/all/bsp_clocks.c
+	fsp/src/bsp/mcu/all/bsp_common.c
 	fsp/src/bsp/mcu/all/bsp_delay.c
-	fsp/src/bsp/mcu/all/bsp_register_protection.c
-	fsp/src/bsp/mcu/all/bsp_irq.c
 	fsp/src/bsp/mcu/all/bsp_group_irq.c
+	fsp/src/bsp/mcu/all/bsp_guard.c
+	fsp/src/bsp/mcu/all/bsp_io.c
+	fsp/src/bsp/mcu/all/bsp_ipc.c
+	fsp/src/bsp/mcu/all/bsp_irq.c
+	fsp/src/bsp/mcu/all/bsp_macl.c
+	fsp/src/bsp/mcu/all/bsp_ospi_b.c
+	fsp/src/bsp/mcu/all/bsp_register_protection.c
+	fsp/src/bsp/mcu/all/bsp_sbrk.c
+	fsp/src/bsp/mcu/all/bsp_security.c
 )
 
 zephyr_include_directories(${include_dirs})
