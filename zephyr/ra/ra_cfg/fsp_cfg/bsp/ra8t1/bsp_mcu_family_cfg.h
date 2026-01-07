@@ -342,6 +342,12 @@
 #define BSP_CFG_DCACHE_ENABLED (CONFIG_DCACHE)
 #endif
 
+#define BSP_CFG_DCACHE_FORCE_WRITETHROUGH (0)
+
+#define BSP_CFG_IOPORT_VOLTAGE_MODE_VCC (0)
+
+#define BSP_CFG_IOPORT_VOLTAGE_MODE_VCC2 (0)
+
 /* SDRAM controller configuration */
 #if DT_NODE_HAS_STATUS_OKAY(DT_INST(0, renesas_ra_sdram))
 #define BSP_CFG_SDRAM_ENABLED (1)
