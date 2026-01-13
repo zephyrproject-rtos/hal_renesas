@@ -22,8 +22,6 @@
 #elif (CONFIG_RENESAS_PN_PACKAGE_TYPE == 3)
 #define BSP_PACKAGE_LGA
 #define BSP_PACKAGE_PINS (145)
-#else
-#error "Invalid Package type"
 #endif
 
 #endif /* BSP_MCU_DEVICE_PN_CFG_H_ */
