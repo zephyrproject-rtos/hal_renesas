@@ -45,6 +45,7 @@ typedef enum e_sau_operation_clock
 {
     SAU_UART_OPERATION_CLOCK_CK0 = 0U, ///< Operating clock use CK0
     SAU_UART_OPERATION_CLOCK_CK1 = 1U, ///< Operating clock use CK1
+    SAU_UART_OPERATION_CLOCK_INVALID = 2U,  ///< Operating clock invalid
 } sau_operation_clock_t;
 
 /** UART data signal level definition */

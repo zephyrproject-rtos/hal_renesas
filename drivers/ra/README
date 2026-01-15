@@ -193,3 +193,7 @@ Patch List:
       Impacted files:
          drivers/ra/fsp/inc/instances/r_sau_uart.h
          drivers/ra/fsp/src/r_sau_uart/r_sau_uart.c
+
+   * Add SAU_UART_OPERATION_CLOCK_INVALID enum value to r_sau_uart.h
+      Impacted files:
+         drivers/ra/fsp/inc/instances/r_sau_uart.h
