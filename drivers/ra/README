@@ -188,3 +188,8 @@ Patch List:
       Impacted files:
          zephyr/ra/ra_cfg/fsp_cfg/r_sau_uart_cfg.h
          drivers/ra/fsp/src/r_sau_uart/r_sau_uart.c
+
+   * Move SAU_UART_STCLK_MAX and SAU_UART_STCLK_MIN from r_sau_uart.c to r_sau_uart.h to allow Zephyr driver include and use it
+      Impacted files:
+         drivers/ra/fsp/inc/instances/r_sau_uart.h
+         drivers/ra/fsp/src/r_sau_uart/r_sau_uart.c

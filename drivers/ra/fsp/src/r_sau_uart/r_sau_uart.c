@@ -113,8 +113,6 @@
 
 #define SAU_UART_SMR_DEFAULT_VALUE           (0x0020U)
 #define SAU_UART_SCR_DEFAULT_VALUE           (0x0004U)
-#define SAU_UART_STCLK_MAX                   (127)
-#define SAU_UART_STCLK_MIN                   (2)
 #define SAU_UART_PRS_DIVIDER_MAX             (0xFU)
 
 #if (SAU_UART_CFG_PARAM_CHECKING_ENABLE)
