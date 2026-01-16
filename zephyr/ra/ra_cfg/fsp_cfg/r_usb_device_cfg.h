@@ -31,6 +31,9 @@ extern "C" {
 #define USBD_CFG_PHYSET_CLKSEL            (-1)
 #endif
 
+/* Enable auto status for control write/read endpoint */
+#define USBD_CFG_CONTROL_EP_AUTO_STATUS_ENABLE (1U)
+
 #ifdef __cplusplus
 }
 #endif

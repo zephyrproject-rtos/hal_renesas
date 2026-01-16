@@ -60,14 +60,6 @@
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
-typedef enum e_usb_control_stage
-{
-    USB_CONTROL_STAGE_IDLE   = 0,
-    USB_CONTROL_STAGE_SETUP  = 0,
-    USB_CONTROL_STAGE_DATA   = 1,
-    USB_CONTROL_STAGE_STATUS = 2,
-    USB_CONTROL_STAGE_ERROR  = 3,
-} usb_control_stage_t;
 
 typedef struct st_pipe_state
 {
@@ -94,9 +86,9 @@ static inline uint32_t get_first_bit1_offset (uint32_t s) {
     return __builtin_ctz(s);
 }
 
-static usb_control_stage_t dcp_get_current_stage(usbd_instance_ctrl_t * p_ctrl);
-static inline uint16_t     get_edpt_packet_size(usbd_instance_ctrl_t * const p_ctrl,
-                                                usbd_desc_endpoint_t const * p_desc_ep);
+static void            process_control_status(usbd_instance_ctrl_t * p_ctrl);
+static inline uint16_t get_edpt_packet_size(usbd_instance_ctrl_t * const p_ctrl,
+                                            usbd_desc_endpoint_t const * p_desc_ep);
 static uint32_t                   find_pipe(usbd_instance_ctrl_t * const p_ctrl, uint32_t xfer_type);
 static inline volatile uint16_t * get_pipectr(usbd_instance_ctrl_t * const p_ctrl, uint32_t num);
 static volatile void *            get_pipetre(usbd_instance_ctrl_t * const p_ctrl, uint32_t num);
@@ -117,7 +109,6 @@ static inline bool      pipe_xfer_in(usbd_instance_ctrl_t * const p_ctrl, uint8_
 static inline bool      pipe_xfer_out(usbd_instance_ctrl_t * const p_ctrl, uint8_t num);
 static void             r_usb_device_call_callback(usbd_instance_ctrl_t * const p_ctrl, usbd_event_t * event);
 static inline void      process_setup_packet(usbd_instance_ctrl_t * const p_ctrl);
-static inline void      process_status_completion(usbd_instance_ctrl_t * const p_ctrl);
 static inline fsp_err_t process_pipe0_xfer(usbd_instance_ctrl_t * const p_ctrl,
                                            uint8_t                      ep_addr,
                                            void                       * buffer,
@@ -1096,15 +1087,17 @@ static inline void process_setup_packet (usbd_instance_ctrl_t * const p_ctrl)
     *intsts0 = ~((uint16_t) R_USB_INTSTS0_VALID_Msk);
 }
 
+#if USBD_CFG_CONTROL_EP_AUTO_STATUS_ENABLE == 0
+
 /* status packet transfer complete event handler */
 static inline void process_status_completion (usbd_instance_ctrl_t * const p_ctrl)
 {
-#ifdef USB_HIGH_SPEED_MODULE
+ #ifdef USB_HIGH_SPEED_MODULE
     volatile uint16_t * cfifosel =
         USB_IS_USBHS(p_ctrl->p_cfg->module_number) ? &R_USB_HS0->CFIFOSEL : &R_USB_FS0->CFIFOSEL;
-#else
+ #else
     volatile uint16_t * cfifosel = &R_USB_FS0->CFIFOSEL;
-#endif
+ #endif
     uint8_t ep_addr;
 
     /* Check the data stage direction */
@@ -1132,6 +1125,8 @@ static inline void process_status_completion (usbd_instance_ctrl_t * const p_ctr
 
     r_usb_device_call_callback(p_ctrl, &event);
 }
+
+#endif
 
 /* pipe0 transfer */
 static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
@@ -1187,15 +1182,31 @@ static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
         /* ZLP */
         pipe->buf = NULL;
 
-        if (USB_CONTROL_STAGE_STATUS == dcp_get_current_stage(p_ctrl))
+        switch (p_ctrl->dcp_stage)
         {
-            /* perform status stage */
-            *dcpctr = R_USB_DCPCTR_CCPL_Msk | R_USB_PIPE_CTR_PID_BUF;
-        }
-        else
-        {
-            /* notice that this is the end of data stage */
-            *cfifoctr |= R_USB_CFIFOCTR_BVAL_Msk;
+            case USB_CONTROL_STAGE_WRITE_NODATA_STATUS:
+#if USBD_CFG_CONTROL_EP_AUTO_STATUS_ENABLE == 0
+            case USB_CONTROL_STAGE_READ_STATUS:
+            case USB_CONTROL_STAGE_WRITE_STATUS:
+#endif
+            {
+                /* perform status stage */
+                process_control_status(p_ctrl);
+                break;
+            }
+
+            case USB_CONTROL_STAGE_READ_DATA:
+            case USB_CONTROL_STAGE_WRITE_DATA:
+            {
+                /* notice that this is the end of data stage */
+                *cfifoctr = R_USB_CFIFOCTR_BVAL_Msk;
+                break;
+            }
+
+            default:
+            {
+                return FSP_ERR_INVALID_CALL;
+            }
         }
     }
 
@@ -1889,7 +1900,7 @@ static inline void process_pipe_forced_termination (usbd_instance_ctrl_t * const
 
 static inline uint16_t get_active_bit_intsts0 (usbd_instance_ctrl_t * p_ctrl)
 {
-    uint16_t intsts0 = 0;
+    uint16_t intsts0;
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->p_cfg->module_number))
@@ -1911,44 +1922,6 @@ static inline uint16_t get_active_bit_intsts0 (usbd_instance_ctrl_t * p_ctrl)
     }
 
     return intsts0;
-}
-
-static usb_control_stage_t dcp_get_current_stage (usbd_instance_ctrl_t * p_ctrl)
-{
-    uint16_t            intsts0 = get_active_bit_intsts0(p_ctrl);
-    usb_control_stage_t stage;
-
-    switch (intsts0 & R_USB_INTSTS0_CTSQ_Msk)
-    {
-        case R_USB_INTSTS0_CTSQ_CTRL_IDLE:
-        {
-            stage = USB_CONTROL_STAGE_IDLE;
-            break;
-        }
-
-        case R_USB_INTSTS0_CTSQ_CTRL_RDATA:
-        case R_USB_INTSTS0_CTSQ_CTRL_WDATA:
-        {
-            stage = USB_CONTROL_STAGE_DATA;
-            break;
-        }
-
-        case R_USB_INTSTS0_CTSQ_CTRL_RSTATUS:
-        case R_USB_INTSTS0_CTSQ_CTRL_WSTATUS:
-        case R_USB_INTSTS0_CTSQ_CTRL_WSTATUS_NODATA:
-        {
-            stage = USB_CONTROL_STAGE_STATUS;
-            break;
-        }
-
-        default:
-        {
-            stage = USB_CONTROL_STAGE_ERROR;
-            break;
-        }
-    }
-
-    return stage;
 }
 
 static inline void process_vbus_changed (usbd_instance_ctrl_t * p_ctrl, uint16_t intsts0)
@@ -2115,6 +2088,23 @@ static inline void process_brdy_event (usbd_instance_ctrl_t * p_ctrl)
     }
 }
 
+static void process_control_status (usbd_instance_ctrl_t * p_ctrl)
+{
+#ifdef USB_HIGH_SPEED_MODULE
+    const bool          is_usbhs = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
+    volatile uint16_t * dcpctr   = is_usbhs ? &R_USB_HS0->DCPCTR : &R_USB_FS0->DCPCTR;
+#else
+    volatile uint16_t * dcpctr = &R_USB_FS0->DCPCTR;
+#endif
+
+    if (p_ctrl->dcp_stage == USB_CONTROL_STAGE_WRITE_NODATA_STATUS)
+    {
+        *dcpctr = R_USB_PIPE_CTR_PID_BUF;
+    }
+
+    *dcpctr |= R_USB_DCPCTR_CCPL_Msk;
+}
+
 /***********************************************************************************************************************
  * USB device isr
  **********************************************************************************************************************/
@@ -2188,22 +2178,33 @@ void usb_device_isr (void)
     /* Control transfer stage changes */
     if (intsts0 & R_USB_INTSTS0_CTRT_Msk)
     {
-        switch (intsts0 & R_USB_INTSTS0_CTSQ_Msk)
+        p_ctrl->dcp_stage = (intsts0 & R_USB_INTSTS0_CTSQ_Msk) >> R_USB_INTSTS0_CTSQ_Pos;
+
+        switch (p_ctrl->dcp_stage)
         {
-            case R_USB_INTSTS0_CTSQ_CTRL_RDATA:
-            case R_USB_INTSTS0_CTSQ_CTRL_WDATA:
-            case R_USB_INTSTS0_CTSQ_CTRL_WSTATUS_NODATA:
+            case USB_CONTROL_STAGE_READ_DATA:
+            case USB_CONTROL_STAGE_WRITE_DATA:
+            case USB_CONTROL_STAGE_WRITE_NODATA_STATUS:
             {
                 process_setup_packet(p_ctrl);
                 break;
             }
 
-            case R_USB_INTSTS0_CTSQ_CTRL_IDLE:
+#if USBD_CFG_CONTROL_EP_AUTO_STATUS_ENABLE
+            case USB_CONTROL_STAGE_READ_STATUS:
+            case USB_CONTROL_STAGE_WRITE_STATUS:
+            {
+                process_control_status(p_ctrl);
+                break;
+            }
+#else
+            case USB_CONTROL_STAGE_IDLE:
             {
                 /* A ZLP has been sent/received. */
                 process_status_completion(p_ctrl);
                 break;
             }
+#endif
 
             default:
             {
