@@ -25,14 +25,27 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
+typedef enum e_usbd_control_stage
+{
+    USB_CONTROL_STAGE_IDLE                = 0x0,
+    USB_CONTROL_STAGE_SETUP               = 0x0,
+    USB_CONTROL_STAGE_READ_DATA           = 0x1,
+    USB_CONTROL_STAGE_READ_STATUS         = 0x2,
+    USB_CONTROL_STAGE_WRITE_DATA          = 0x3,
+    USB_CONTROL_STAGE_WRITE_STATUS        = 0x4,
+    USB_CONTROL_STAGE_WRITE_NODATA_STATUS = 0x5,
+    USB_CONTROL_STAGE_ERROR               = 0x6,
+} usbd_control_stage_t;
+
 typedef struct st_usbd_instance_ctrl
 {
     uint32_t           open;
     void             * p_reg;
     usbd_cfg_t const * p_cfg;
     void (* p_callback)(usbd_callback_arg_t * p_args);
-    usbd_callback_arg_t * p_callback_memory;
-    void const          * p_context;
+    usbd_callback_arg_t         * p_callback_memory;
+    void const                  * p_context;
+    volatile usbd_control_stage_t dcp_stage;
 } usbd_instance_ctrl_t;
 
 /**********************************************************************************************************************
