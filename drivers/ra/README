@@ -130,6 +130,7 @@ Patch List:
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8M1AH.h
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8D1BH.h
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8T1AH.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8E1AF.h
 
    * Keep OSPI_B at fsp 5.8.0 since it need big change for OSPI driver in zephyr
       Impacted files:
