@@ -1,0 +1,33 @@
+/*
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
+
+#ifndef BSP_MCU_DEVICE_PN_CFG_H_
+#define BSP_MCU_DEVICE_PN_CFG_H_
+#define BSP_MCU_FEATURE_SET ('0')
+#define BSP_NUMBER_OF_CORES (1)
+#define BSP_PACKAGE_LQFP
+#define BSP_ROM_SIZE_BYTES (DT_REG_SIZE(DT_NODELABEL(flash0)))
+#define BSP_RAM_SIZE_BYTES (DT_REG_SIZE(DT_NODELABEL(sram)))
+#define BSP_DATA_FLASH_SIZE_BYTES (DT_REG_SIZE(DT_NODELABEL(flash1)))
+
+#if defined(CONFIG_SOC_R7FA0E1073CFJ) || defined(CONFIG_SOC_R7FA0E1053CFJ)
+#define BSP_PACKAGE_LQFP
+#define BSP_PACKAGE_PINS (32)
+#elif defined(CONFIG_SOC_R7FA0E1073CNH) || defined(CONFIG_SOC_R7FA0E1053CNH)
+#define BSP_PACKAGE_HWQFN
+#define BSP_PACKAGE_PINS (32)
+#elif defined(CONFIG_SOC_R7FA0E1073CNK) || defined(CONFIG_SOC_R7FA0E1053CNK)
+#define BSP_PACKAGE_HWQFN
+#define BSP_PACKAGE_PINS (24)
+#elif defined(CONFIG_SOC_R7FA0E1073CSC) || defined(CONFIG_SOC_R7FA0E1053CSC)
+#define BSP_PACKAGE_LSSOP
+#define BSP_PACKAGE_PINS (20)
+#elif defined(CONFIG_SOC_R7FA0E1073CNL) || defined(CONFIG_SOC_R7FA0E1053CNL)
+#define BSP_PACKAGE_HWQFN
+#define BSP_PACKAGE_PINS (16)
+#endif
+
+#endif /* BSP_MCU_DEVICE_PN_CFG_H_ */
