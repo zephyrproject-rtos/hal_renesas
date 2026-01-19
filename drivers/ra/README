@@ -183,3 +183,24 @@ Patch List:
          drivers/ra/fsp/src/bsp/mcu/ra8m2/bsp_linker.c
          drivers/ra/fsp/src/bsp/mcu/ra8p1/bsp_linker.c
          drivers/ra/fsp/src/bsp/mcu/ra8t2/bsp_linker.c
+
+   * Remove the static definition in RMAC and RMAC_PHY
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
+
+   * Add RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK to skip checking PHY link state in do-link process.
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Add RMAC_PHY_CFG_CUSTOM_PHY_INIT to be compatible with muli PHY on the same MDIO bus.
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
+
+   * Remove crictical section barrier for read function in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Seperate broadcast storm filter reception settings in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
