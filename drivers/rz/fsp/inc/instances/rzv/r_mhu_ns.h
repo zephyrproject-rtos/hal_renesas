@@ -55,6 +55,12 @@ typedef struct st_mhu_ns_instance_ctrl
     void const * p_context;
 } mhu_ns_instance_ctrl_t;
 
+/** R_MHU_NS extended configuration */
+typedef struct st_mhu_ns_extended_cfg
+{
+    void * p_reg;                      ///< Register base address for specified channel
+} mhu_ns_extended_cfg_t;
+
 /**********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/

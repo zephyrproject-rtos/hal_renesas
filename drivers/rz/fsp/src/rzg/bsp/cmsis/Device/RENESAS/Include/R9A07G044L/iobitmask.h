@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -27,6 +27,7 @@
 #include "iobitmasks/riic_iobitmask.h"
 #include "iobitmasks/rspi_iobitmask.h"
 #include "iobitmasks/scifa_iobitmask.h"
+#include "iobitmasks/scig_iobitmask.h"
 #include "iobitmasks/spibsc_iobitmask.h"
 #include "iobitmasks/ssi_iobitmask.h"
 #include "iobitmasks/sysc_iobitmask.h"

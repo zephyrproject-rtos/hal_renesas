@@ -6,10 +6,16 @@
 
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define BSP_MCU_GROUP_RZG3S (1)
 #define BSP_CURRENT_CORE    (RZG3S_CORE_CM33)
 #define BSP_CORTEX_VECTOR_TABLE_ENTRIES    (16U)
 #define BSP_VECTOR_TABLE_MAX_ENTRIES       (496U)
+#define BSP_CFG_INLINE_IRQ_FUNCTIONS       (1)
+
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_cfg.h"
 #include "bsp_multi_core.h"
@@ -55,5 +61,9 @@
 
 #ifndef FPU_FPCCR_CLRONRET_VAL
 #define FPU_FPCCR_CLRONRET_VAL            (1)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */

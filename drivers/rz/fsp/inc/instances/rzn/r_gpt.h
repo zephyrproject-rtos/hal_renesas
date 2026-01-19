@@ -473,6 +473,7 @@ typedef struct st_gpt_extended_cfg
     uint8_t cycle_end_source_select;            ///< Cycle end interrupt source select
     uint8_t dead_time_error_source_select;      ///< Dead time error interrupt source select
     uint8_t trough_source_select;               ///< Trough interrupt source select
+    void  * p_reg;                              ///< Register base address for specified channel
 } gpt_extended_cfg_t;
 
 /**********************************************************************************************************************
