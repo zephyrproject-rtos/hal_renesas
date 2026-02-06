@@ -122,3 +122,4 @@ Patch List:
       drivers/rz/fsp/inc/instances/rzv/r_riic_master.h
       drivers/rz/fsp/inc/instances/rzv/r_rspi.h
       drivers/rz/fsp/inc/instances/rzv/r_scif_uart.h
+      drivers/rz/fsp/inc/instances/rzv/r_sci_b_uart.h
