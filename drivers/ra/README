@@ -182,3 +182,8 @@ Patch List:
    * Disable C-CACHE for RA8P1 CM33 core to avoid cache conhenrency issue with MRAM
       Impacted file:
          drivers/ra/fsp/src/bsp/mcu/all/bsp_common.h
+
+   * Add patch to skip IRQ enable/disable in r_sau_uart driver, Zephyr SAU UART driver will manage IRQ enable/disable
+      Impacted files:
+         zephyr/ra/ra_cfg/fsp_cfg/r_sau_uart_cfg.h
+         drivers/ra/fsp/src/r_sau_uart/r_sau_uart.c
