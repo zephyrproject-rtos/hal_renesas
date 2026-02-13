@@ -182,3 +182,24 @@ Patch List:
    * Disable C-CACHE for RA8P1 CM33 core to avoid cache conhenrency issue with MRAM
       Impacted file:
          drivers/ra/fsp/src/bsp/mcu/all/bsp_common.h
+
+   * Remove the static definition in RMAC and RMAC_PHY
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
+
+   * Add RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK to skip checking PHY link state in do-link process.
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Add RMAC_PHY_CFG_CUSTOM_PHY_INIT to be compatible with muli PHY on the same MDIO bus.
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
+
+   * Remove crictical section barrier for read function in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Seperate broadcast storm filter reception settings in RMAC
+      Impacted files:
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
