@@ -46,6 +46,7 @@
 *           03.04.2023 5.30    Added RX26T 48k support.
 *           13.02.2024 5.40    Added RX260 and RX261 support.
 *           20.03.2025 5.41    Changed the disclaimer in program sources.
+*           20.07.2025 5.50    Added RX14T support.
 ***********************************************************************************************************************/
 
 #ifndef S12AD_PRV_IF_H
@@ -112,6 +113,8 @@ Includes   <System Includes> , "Project Includes"
 #include "./src/targets/rx260/r_s12ad_rx260_if.h"
 #elif defined(BSP_MCU_RX261)
 #include "./src/targets/rx261/r_s12ad_rx261_if.h"
+#elif defined(BSP_MCU_RX14T)
+#include "./src/targets/rx14T/r_s12ad_rx14t_if.h"
 #endif
 
 /******************************************************************************
@@ -119,7 +122,7 @@ Macro definitions
 *******************************************************************************/
 /* Version Number of API. */
 #define ADC_VERSION_MAJOR       (5)
-#define ADC_VERSION_MINOR       (41)
+#define ADC_VERSION_MINOR       (50)
 
 /*****************************************************************************
 Typedef definitions
@@ -150,7 +153,8 @@ typedef enum e_adc_cb_evt           // callback function events
 #if (defined(BSP_MCU_RX65_ALL) || defined(BSP_MCU_RX66T) || defined(BSP_MCU_RX72T) \
     || defined(BSP_MCU_RX72M)  || defined(BSP_MCU_RX13T) || defined(BSP_MCU_RX66N) \
     || defined(BSP_MCU_RX72N)  || defined(BSP_MCU_RX24T) || defined(BSP_MCU_RX24U) \
-    || defined(BSP_MCU_RX671)  || defined(BSP_MCU_RX660) || defined(BSP_MCU_RX26T))
+    || defined(BSP_MCU_RX671)  || defined(BSP_MCU_RX660) || defined(BSP_MCU_RX26T) \
+    || defined(BSP_MCU_RX14T))
     ADC_EVT_SCAN_COMPLETE_GROUPC,   // Group C scan complete
 #endif    
 #if (defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65_ALL) || defined(BSP_MCU_RX66T) \
@@ -183,6 +187,7 @@ typedef struct st_adc_cb_args       // callback arguments
 #if (defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65_ALL) || defined(BSP_MCU_RX66T) \
     || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M) \
     || defined(BSP_MCU_RX66N) || defined(BSP_MCU_RX72N) || defined(BSP_MCU_RX24T) \
+    || defined(BSP_MCU_RX14T) \
     || defined(BSP_MCU_RX24U) || defined(BSP_MCU_RX671) || defined(BSP_MCU_RX26T))
     uint8_t        unit;
 #endif
