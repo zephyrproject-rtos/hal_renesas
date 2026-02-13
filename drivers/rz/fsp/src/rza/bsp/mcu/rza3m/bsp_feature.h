@@ -27,7 +27,7 @@
  * Private global variables and functions
  **********************************************************************************************************************/
 
-#define BSP_FEATURE_BSP_HAS_MMU_SUPPORT                (1)
+#define BSP_FEATURE_BSP_HAS_MMU_SUPPORT                (0)
 
 #define BSP_FEATURE_BSP_HAS_MIPI_DSI                   (1U)
 
