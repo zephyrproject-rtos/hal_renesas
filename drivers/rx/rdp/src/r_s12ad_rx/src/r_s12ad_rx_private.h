@@ -39,6 +39,7 @@
 *           03.04.2023 5.30    Added RX26T 48k support.
 *           13.02.2024 5.40    Added RX260 and RX261 support.
 *           20.03.2025 5.41    Changed the disclaimer in program sources.
+*           13.07.2025 5.50    Added RX14T support.
 *******************************************************************************/
 
 #ifndef S12AD_PRV_PRIVATE_H
@@ -164,6 +165,7 @@ Macro definitions
 #endif  /* BSP_PACKAGE_PINS == 48 */
 
 #endif
+
 
 
 #ifdef BSP_MCU_RX140
