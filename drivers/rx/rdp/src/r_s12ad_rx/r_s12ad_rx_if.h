@@ -114,7 +114,7 @@ Includes   <System Includes> , "Project Includes"
 #elif defined(BSP_MCU_RX261)
 #include "./src/targets/rx261/r_s12ad_rx261_if.h"
 #elif defined(BSP_MCU_RX14T)
-#include "./src/targets/rx14T/r_s12ad_rx14t_if.h"
+#include "./src/targets/rx14t/r_s12ad_rx14t_if.h"
 #endif
 
 /******************************************************************************
@@ -156,7 +156,7 @@ typedef enum e_adc_cb_evt           // callback function events
     || defined(BSP_MCU_RX671)  || defined(BSP_MCU_RX660) || defined(BSP_MCU_RX26T) \
     || defined(BSP_MCU_RX14T))
     ADC_EVT_SCAN_COMPLETE_GROUPC,   // Group C scan complete
-#endif    
+#endif
 #if (defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65_ALL) || defined(BSP_MCU_RX66T) \
     || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M) \
     || defined(BSP_MCU_RX66N) || defined(BSP_MCU_RX72N) || defined(BSP_MCU_RX671) \
@@ -327,5 +327,5 @@ adc_err_t R_ADC_Close(uint8_t const unit);
 ******************************************************************************/
 uint32_t  R_ADC_GetVersion(void);
 
-                                    
+
 #endif /* S12AD_PRV_IF_H */

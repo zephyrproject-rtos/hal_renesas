@@ -8,7 +8,7 @@
 * Description  : Primary source code for 12-bit A/D Converter driver.
 ***********************************************************************************************************************/
 /**********************************************************************************************************************
-* History : DD.MM.YYYY Version Description           
+* History : DD.MM.YYYY Version Description
 *           10.07.2025 1.00    Initial Release.
 ***********************************************************************************************************************/
 
@@ -28,7 +28,7 @@ Includes   <System Includes> , "Project Includes"
 Macro definitions
 ***********************************************************************************************************************/
 #define ADC_PRV_GET_SST_ARR(x)     (((x)==0) ?  gp_sreg0_ptrs : \
-                                                gp_sreg1_ptrs) 
+                                                gp_sreg1_ptrs)
 
 #define ADC_PRV_LOCK(x)             (((x)==0) ? BSP_LOCK_S12AD  : \
                                                 BSP_LOCK_S12AD1)
@@ -190,8 +190,8 @@ adc_err_t adc_open(uint8_t     const  unit,
                     void     (* const  p_callback)(void *p_args))
 {
     aregs_t     *p_regs;
-    volatile uint16_t   u16_dummy;  /* Dummy read for "1" change to "0".(read first) */
-    volatile uint8_t    u8_dummy;   /* Dummy read for "1" change to "0".(read first) */
+    // volatile uint16_t   u16_dummy;  /* Dummy read for "1" change to "0".(read first) */
+    // volatile uint8_t    u8_dummy;   /* Dummy read for "1" change to "0".(read first) */
 #if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
     volatile uint32_t   ipl_value;
 #endif
@@ -235,7 +235,7 @@ adc_err_t adc_open(uint8_t     const  unit,
     {
         MSTP(S12AD) = 0;
     }
-    else 
+    else
     {
         MSTP(S12AD1) = 0;
     }
@@ -631,9 +631,9 @@ static adc_err_t adc_check_open_cfg(uint8_t                unit,
 *       cannot be done while the ADCSR.ADST bit is set (conversion in progress).
 *       Because these commands should only be called once during initialization
 *       before triggers are enabled, this should not be an issue. Registers
-*       with this restriction include ADANSA0, ADANSB0, ADADS, ADADC, ADADS0, 
-*       ADSSTRx, ADSHCR, ADSHMSR, ADEXICR, ADCMPCR, ADCMPANSR0, 
-*       ADCMPANSR1, ADACMPANSER, ADCMPLR0, ADCMPLR1, ADCMPLER, ADCMPDR0, 
+*       with this restriction include ADANSA0, ADANSB0, ADADS, ADADC, ADADS0,
+*       ADSSTRx, ADSHCR, ADSHMSR, ADEXICR, ADCMPCR, ADCMPANSR0,
+*       ADCMPANSR1, ADACMPANSER, ADCMPLR0, ADCMPLR1, ADCMPLER, ADCMPDR0,
 *       ADCMPDR1, and some bits in ADCSR, ADCMPCR, ADGSPCR and TSCR.
 *       No runtime operational sequence checking of any kind is performed.
 *
@@ -763,7 +763,7 @@ adc_err_t adc_control(uint8_t const       unit,
             {
                 return ADC_ERR_ILLEGAL_ARG;
             }
-            
+
 #endif
             S12AD1.ADEXICR.BIT.TSSA = 1;                  // select temperature sensor
             if (ADC_ADD_OFF != S12AD1.ADADC.BIT.ADC)
@@ -798,7 +798,7 @@ adc_err_t adc_control(uint8_t const       unit,
             break;
 
         case ADC_CMD_CHECK_SCAN_DONE:           // default/Group A or Group B
-            if (1 == p_regs->ADCSR.BIT.ADST) 
+            if (1 == p_regs->ADCSR.BIT.ADST)
             {
                 err = ADC_ERR_SCAN_NOT_DONE;
             }
@@ -816,7 +816,7 @@ adc_err_t adc_control(uint8_t const       unit,
                     err = ADC_ERR_SCAN_NOT_DONE;
                 }
             }
-            else 
+            else
             {
                 if (1 == IR(S12AD1,S12ADI1))
                 {
@@ -1015,7 +1015,7 @@ static adc_err_t adc_configure_scan(uint8_t const   unit,
                 default:
                     break;
             }
-            
+
             PGA0.PGACR.WORD = (tmp_pgacr[0] | tmp_pgacr[1] | tmp_pgacr[2]);
             switch(p_config->pga_gain[i])
             {
@@ -1219,7 +1219,7 @@ static adc_err_t adc_check_scan_config(uint8_t const   unit,
         {
             return ADC_ERR_INVALID_ARG;
         }
-	
+
         /* When A/D conversion of the internal reference voltage is to be performed, set all the bits in the ADANSA0
            and ADANSB0 and ADANSC0 registers and the ADCSR.DBLE bit should be set
             to all 0 in single scan mode. */
@@ -1338,7 +1338,7 @@ static adc_err_t adc_check_scan_config(uint8_t const   unit,
             return ADC_ERR_INVALID_ARG;
         }
     }
-    
+
 
     if ((ADC_DIAG_OFF != p_config->diag_method)
     &&   ((0 != p_regs->ADADC.BIT.ADC)            /* addition */
@@ -1603,7 +1603,7 @@ adc_err_t adc_close(uint8_t const  unit)
     {
         MSTP(S12AD) = 1;
     }
-    else 
+    else
     {
         MSTP(S12AD1) = 1;
     }
