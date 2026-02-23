@@ -208,3 +208,7 @@ Patch List:
    * Seperate broadcast storm filter reception settings in RMAC
       Impacted files:
          drivers/ra/fsp/src/r_rmac/r_rmac.c
+
+   * Add initial value to routing_number in layer3_switch driver to suppress compliler warning
+      Impacted files:
+         drivers/ra/fsp/src/r_layer3_switch/r_layer3_switch.c

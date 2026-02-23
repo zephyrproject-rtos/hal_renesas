@@ -2089,7 +2089,7 @@ static fsp_err_t r_layer3_switch_learn_l3_entry (layer3_switch_instance_ctrl_t  
     layer3_switch_extended_cfg_t * p_extend  = (layer3_switch_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     layer3_switch_stream_id_t      stream_id = {0};
     uint32_t frer_number = 0;
-    uint32_t routing_number;
+    uint32_t routing_number = 0;
 
     FSP_ERROR_RETURN(p_extend->l3_filter_list_length > p_instance_ctrl->l3_entry_count, FSP_ERR_OVERFLOW);
 
