@@ -188,18 +188,13 @@ Patch List:
          zephyr/ra/ra_cfg/fsp_cfg/r_sau_uart_cfg.h
          drivers/ra/fsp/src/r_sau_uart/r_sau_uart.c
 
-   * Remove the static definition in RMAC and RMAC_PHY
+   * Remove the static definition in RMAC
       Impacted files:
          drivers/ra/fsp/src/r_rmac/r_rmac.c
-         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
 
    * Add RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK to skip checking PHY link state in do-link process.
       Impacted files:
          drivers/ra/fsp/src/r_rmac/r_rmac.c
-
-   * Add RMAC_PHY_CFG_CUSTOM_PHY_INIT to be compatible with muli PHY on the same MDIO bus.
-      Impacted files:
-         drivers/ra/fsp/src/r_rmac_phy/r_rmac_phy.c
 
    * Remove crictical section barrier for read function in RMAC
       Impacted files:
@@ -212,3 +207,9 @@ Patch List:
    * Add initial value to routing_number in layer3_switch driver to suppress compliler warning
       Impacted files:
          drivers/ra/fsp/src/r_layer3_switch/r_layer3_switch.c
+
+   * Add new define LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP to skip phy link setup in layer3 switch
+     driver since it is handled by Zephyr phy driver.
+      Impacted files:
+         drivers/ra/fsp/src/r_layer3_switch/r_layer3_switch.c
+         zephyr/ra/ra_cfg/fsp_cfg/r_layer3_switch_cfg.h

@@ -364,6 +364,7 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
         }
     }
 
+#ifndef LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP
     /* Open all ETHER_PHY instances. */
     for (uint8_t channel = 0;
          (channel < BSP_FEATURE_ETHER_NUM_CHANNELS) && ((FSP_SUCCESS == phy_err) | (FSP_ERR_ALREADY_OPEN == phy_err));
@@ -422,6 +423,9 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
 
         FSP_RETURN(FSP_ERR_ETHER_ERROR_PHY_COMMUNICATION);
     }
+#else
+    FSP_PARAMETER_NOT_USED(p_ether_phy);
+#endif
 
     /* Enable GWCA Data Interrupt IRQ. It occurs when a descriptor completes RX/TX or receive frame for a full queue. */
     R_BSP_IrqCfgEnable(p_instance_ctrl->p_cfg->irq, p_instance_ctrl->p_cfg->ipl, p_instance_ctrl);

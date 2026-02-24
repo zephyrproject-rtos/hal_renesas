@@ -21,6 +21,8 @@ extern "C" {
 		     DT_FOREACH_CHILD_SEP_VARGS(DT_NODELABEL(eswm), LAYER3_SWITCH_GET_QUEUE_NUM,   \
 						(+), renesas_ra_ethernet_rmac, rxq_num))
 
+#define LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP 1
+
 #ifdef __cplusplus
 }
 #endif
