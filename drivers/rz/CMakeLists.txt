@@ -67,7 +67,7 @@ if(CONFIG_DT_HAS_RENESAS_RZ_INTC_ENABLED)
 		fsp/src/${SOC_SERIES_PREFIX}/r_intc_nmi/r_intc_nmi.c)
 endif()
 
-if(CONFIG_DT_HAS_RENESAS_RZ_ICU_ENABLED)
+if(CONFIG_DT_HAS_RENESAS_RZ_ICU_ENABLED OR CONFIG_DT_HAS_RENESAS_RZ_ICU_V2_ENABLED)
 	zephyr_library_sources_ifdef(CONFIG_USE_RZ_FSP_EXT_IRQ
 		fsp/src/${SOC_SERIES_PREFIX}/r_icu/r_icu.c)
 endif()
