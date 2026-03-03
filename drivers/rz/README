@@ -123,3 +123,10 @@ Patch List:
       drivers/rz/fsp/inc/instances/rzv/r_rspi.h
       drivers/rz/fsp/inc/instances/rzv/r_scif_uart.h
       drivers/rz/fsp/inc/instances/rzv/r_sci_b_uart.h
+
+   * Disable advanced features of RZ/N2H in bsp_feature.h including
+     TZC-400 (BSP_FEATURE_TZC400_SUPPORTED), DDR (BSP_FEATURE_DDR_SUPPORTED),
+     Address Expander (BSP_FEATURE_ADDRESS_EXPANDER_SUPPORTED) since they are not required at
+     the time the minimal support is added
+   Impacted files:
+      drivers/rz/fsp/src/rzn/bsp/mcu/rzn2h/bsp_feature.h
