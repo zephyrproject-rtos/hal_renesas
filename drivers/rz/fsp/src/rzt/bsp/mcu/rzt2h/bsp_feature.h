@@ -43,7 +43,7 @@ FSP_HEADER
 #define BSP_FEATURE_ADC_UNIT_2_CHANNELS                        (0x003FU) // 0 to 15 in unit 2
 #define BSP_FEATURE_ADC_VALID_UNIT_MASK                        (7U)
 
-#define BSP_FEATURE_ADDRESS_EXPANDER_SUPPORTED                 (1U)
+#define BSP_FEATURE_ADDRESS_EXPANDER_SUPPORTED                 (0U)
 
 #define BSP_FEATURE_BSC_32BIT_DATA_BUS_WIDTH_SUPPORTED         (1U)
 #define BSP_FEATURE_BSC_HAS_CS_MIRROR_AREA                     (0U)
@@ -184,7 +184,7 @@ FSP_HEADER
 
 #define BSP_FEATURE_CRC_VALID_CHANNEL_MASK                     (0x3U)
 
-#define BSP_FEATURE_DDR_SUPPORTED                              (1U)
+#define BSP_FEATURE_DDR_SUPPORTED                              (0U)
 
 #define BSP_FEATURE_DMAC_HAS_CPU1_TCM_AREA                     (1U)
 #define BSP_FEATURE_DMAC_MAX_CHANNEL                           (16U)
@@ -407,7 +407,7 @@ FSP_HEADER
 #define BSP_FEATURE_TSU_B_ELC_TRIGGER_SUPPORTED                (0)
 #define BSP_FEATURE_TSU_B_CONTINUOUS_MODE_SUPPORTED            (1)
 
-#define BSP_FEATURE_TZC400_SUPPORTED                           (1U)
+#define BSP_FEATURE_TZC400_SUPPORTED                           (0U)
 
 #define BSP_FEATURE_USB_HOST_HS_SET_TYPE                       (2U)
 
