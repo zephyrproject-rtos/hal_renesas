@@ -2119,6 +2119,15 @@ void usb_device_isr (void)
 
     uint16_t intsts0 = get_active_bit_intsts0(p_ctrl);
 
+    /*
+     * Clear pending IRQ to make sure it doesn't fire again after exiting
+     *
+     * The flag clearing should be done immediately after reading the interrupt status registers.
+     * This will prevent missing interrupts that occur during ISR execution which should be handled
+     * right after exiting the current ISR.
+     */
+    R_BSP_IrqStatusClear(irq);
+
     /* VBUS changes */
     if (intsts0 & R_USB_INTSTS0_VBINT_Msk)
     {
@@ -2224,9 +2233,6 @@ void usb_device_isr (void)
     {
         process_brdy_event(p_ctrl);
     }
-
-    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
-    R_BSP_IrqStatusClear(irq);
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
