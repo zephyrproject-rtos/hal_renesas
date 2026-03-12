@@ -155,6 +155,7 @@
 *                               ROM access occurs during P/E mode.)
 *           15.11.2024 5.21    Added WAIT_LOOP comment.
 *           20.03.2025 5.22    Changed the disclaimer in program sources
+*           31.07.2025 5.30    Added support for RX14T
 ***********************************************************************************************************************/
 
 #ifndef FLASH_INTERFACE_HEADER_FILE
@@ -172,7 +173,7 @@ Macro definitions
 ***********************************************************************************************************************/
 /* Driver Version Number. */
 #define FLASH_RX_VERSION_MAJOR           (5)
-#define FLASH_RX_VERSION_MINOR           (22)
+#define FLASH_RX_VERSION_MINOR           (30)
 
 
 /***********************************************************************************************************************
@@ -191,7 +192,7 @@ Typedef definitions
      defined(MCU_RX24T) || defined(MCU_RX24U) || defined(MCU_RX230) || \
      defined(MCU_RX23W) || defined(MCU_RX13T) || defined(MCU_RX23E_A) || \
      defined(MCU_RX140) || defined(MCU_RX23E_B) || defined(MCU_RX260) || \
-     defined(MCU_RX261))
+     defined(MCU_RX261) || defined(MCU_RX14T))
 #define FLASH_TYPE              FLASH_TYPE_1
 
 #elif (defined(MCU_RX64M) || defined(MCU_RX66T) || defined(MCU_RX71M) || \
@@ -208,7 +209,8 @@ Typedef definitions
 
 #define FLASH_TYPE_VARIETY_A    (1)
 
-#if (defined(MCU_RX140) || defined(MCU_RX260) || defined(MCU_RX261))
+#if (defined(MCU_RX140) || defined(MCU_RX260) || defined(MCU_RX261) || \
+      defined(MCU_RX14T))
 #define FLASH_TYPE_VARIETY      (FLASH_TYPE_VARIETY_A)
 #endif
 

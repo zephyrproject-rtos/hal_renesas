@@ -130,6 +130,8 @@
         #include "./targets/rx260/r_riic_rx260_private.h"
     #elif defined(BSP_MCU_RX261)
         #include "./targets/rx261/r_riic_rx261_private.h"
+    #elif defined(BSP_MCU_RX14T)
+        #include "./targets/rx14t/r_riic_rx14t_private.h"
     #else
         #error "This MCU is not supported by the current r_riic_rx module."
     #endif

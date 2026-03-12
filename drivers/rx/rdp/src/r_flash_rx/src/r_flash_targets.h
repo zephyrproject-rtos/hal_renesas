@@ -26,6 +26,7 @@
 *           28.02.2023 5.10    Added RX23E-B.
 *           30.07.2024 5.20    Added RX260, and RX261.
 *           20.03.2025 5.22    Changed the disclaimer in program sources
+*           31.07.2025 5.30    Added RX14T.
 ***********************************************************************************************************************/
 
 #ifndef FLASH_TARGETS_HEADER_FILE
@@ -62,6 +63,9 @@ Macro definitions
     #define MCU_RX13_ALL
 #elif defined(BSP_MCU_RX140)
     #define MCU_RX140
+    #define MCU_RX14_ALL
+#elif defined(BSP_MCU_RX14T)
+    #define MCU_RX14T
     #define MCU_RX14_ALL
 #elif defined(BSP_MCU_RX231)
     #define MCU_RX231
