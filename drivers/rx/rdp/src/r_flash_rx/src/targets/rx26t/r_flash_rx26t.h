@@ -41,7 +41,7 @@ Macro definitions
 #define FLASH_DF_MIN_PGM_SIZE               (4)
 #define FLASH_CF_MIN_PGM_SIZE               (128)
 
-#define FLASH_CF_SMALL_BLOCK_SIZE           (4096)
+#define FLASH_CF_BLOCK_SIZE                 (4096)
 #define FLASH_CF_MEDIUM_BLOCK_SIZE          (16384)
 #define FLASH_CF_LO_BANK_SMALL_BLOCK_ADDR   (FLASH_CF_BLOCK_29)
 #define FLASH_CF_LOWEST_VALID_BLOCK         (FLASH_CF_BLOCK_INVALID + 1)
