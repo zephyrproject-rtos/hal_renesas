@@ -81,6 +81,15 @@ if(CONFIG_USE_RX_RDP_FLASH)
 			rdp/src/r_flash_rx/src/flash_type_1
 		)
 	endif()
+
+	if(CONFIG_RX_FLASH_TYPE5)
+		zephyr_library_sources(
+			rdp/src/r_flash_rx/src/flash_type_5/r_flash_type5.c
+		)
+		zephyr_include_directories(
+			rdp/src/r_flash_rx/src/flash_type_5
+		)
+	endif()
 endif()
 
 if(CONFIG_USE_RX_RDP_RSPI)
