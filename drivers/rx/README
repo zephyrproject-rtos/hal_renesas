@@ -119,3 +119,9 @@ Patch List:
    * Fix implicit conversion build warnings
    Impacted files:
       drivers/rx/rdp/src/r_sci_rx/src/targets/rx140/r_sci_rx14t.c
+
+   * Rename marco definition for code flash block size
+   Impacted files:
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_fcu.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_group.c
+      drivers/rx/rdp/src/r_flash_rx/src/targets/rx26t/r_flash_rx26t.h

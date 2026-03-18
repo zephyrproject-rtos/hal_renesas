@@ -23,9 +23,9 @@
 *                                   Modified minor problem.
 *              : 10.12.2021 4.81    Added support for Tool News R20TS0765, R20TS0772.
 *                                   Modified to transition to Data Flash P/E Mode in flash_fcuram_codecopy().
-*              : 13.05.2022 4.90    Added support for Technical Update TN-RX*-A0261A. 
+*              : 13.05.2022 4.90    Added support for Technical Update TN-RX*-A0261A.
 *              : 24.01.2023 5.00    Added Flash Type 5.
-*                                   Added support for Tool News R20TS0872. 
+*                                   Added support for Tool News R20TS0872.
 *                                   Modified the condition of PFRAM section definition.
 *                                   Modified to check that the value of FENTRYR is set even if it is not Flash Type 4.
 *              : 01.10.2023 5.11    Added support for Tool News R20TS0963.
@@ -389,7 +389,7 @@ FLASH_PE_MODE_SECTION
 flash_err_t flash_wait_frdy(void)
 {
     flash_err_t err = FLASH_SUCCESS;
-    
+
     /* WAIT_LOOP */
     while (1 != FLASH.FSTATR.BIT.FRDY)
     {
@@ -527,7 +527,7 @@ flash_err_t flash_erase(uint32_t block_address, uint32_t num_blocks)
             }
             else
             {
-                g_current_parameters.dest_addr -= FLASH_CF_SMALL_BLOCK_SIZE;
+                g_current_parameters.dest_addr -= FLASH_CF_BLOCK_SIZE;
 #if (FLASH_TYPE == FLASH_TYPE_5)
                 g_current_parameters.wait_cnt = WAIT_MAX_ERASE_CF_SMALL;
 #else
@@ -813,7 +813,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
                 }
                 else
                 {
-                    g_current_parameters.dest_addr -= FLASH_CF_SMALL_BLOCK_SIZE;
+                    g_current_parameters.dest_addr -= FLASH_CF_BLOCK_SIZE;
                 }
             }
 #endif
@@ -874,7 +874,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
                 }
                 else
                 {
-                    g_current_parameters.dest_addr -= FLASH_CF_SMALL_BLOCK_SIZE;
+                    g_current_parameters.dest_addr -= FLASH_CF_BLOCK_SIZE;
                 }
 
                 /* Init flash registers and write fcu command */

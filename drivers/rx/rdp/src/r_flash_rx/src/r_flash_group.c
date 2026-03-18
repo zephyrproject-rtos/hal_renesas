@@ -27,11 +27,11 @@
 *              : 19.07.2019 4.20    Modified get_cf_addr_info().
 *                                   Added volatile to g_current_parameters.
 *              : 09.09.2019 4.30    Fixed error processing for r_flash_erase(), r_flash_blankcheck(), r_flash_write().
-*                                   Modified the switch statement of r_flash_control() to the if statement. 
+*                                   Modified the switch statement of r_flash_control() to the if statement.
 *              : 27.09.2019 4.40    Added NULL check for "blank_check_result" in r_flash_blankcheck().
 *              : 18.11,2019 4.50    Modified to use BSP API functions to enable/disable interrupt requests.
 *                                   Modified where the error return code was not being checked when calling
-*                                     FLASH_CMD_ROM_CACHE_ENABLE in set_non_cached_regs(). 
+*                                     FLASH_CMD_ROM_CACHE_ENABLE in set_non_cached_regs().
 *              : 26.06.2020 4.60    Modified to not use BSP API functions to enable/disable interrupt requests.
 *                                   Added error check for successful completion of r_flash_open(),
 *                                     in r_flash_erase(), r_flash_blankcheck(), r_flash_write(), and r_flash_control().
@@ -758,7 +758,7 @@ static void get_cf_addr_info(uint32_t addr, flash_addr_info_t *info)
     info->low_addr = (flash_block_address_t)((uint32_t)FLASH_CF_BLOCK_INVALID + 1);
 #endif
 
-    info->block_size = (addr >= info->size_boundary) ? FLASH_CF_SMALL_BLOCK_SIZE : FLASH_CF_MEDIUM_BLOCK_SIZE;
+    info->block_size = (addr >= info->size_boundary) ? FLASH_CF_BLOCK_SIZE : FLASH_CF_MEDIUM_BLOCK_SIZE;
     info->on_block_boundary = ((addr & (info->block_size - 1)) != 0) ? false : true;
 
     return;
@@ -804,7 +804,7 @@ flash_err_t check_cf_block_total(flash_block_address_t block_start_address, uint
     if (block_start_address >= info.size_boundary)
     {
         /* set tmp = available number of small blocks to erase */
-        tmp = ((block_start_address - info.size_boundary) / FLASH_CF_SMALL_BLOCK_SIZE) + 1;
+        tmp = ((block_start_address - info.size_boundary) / FLASH_CF_BLOCK_SIZE) + 1;
         /* set num_blocks = number of large blocks to erase */
         num_blocks -= (tmp < num_blocks) ? tmp : num_blocks;
         /* adjusted start address for number of large blocks to erase */
