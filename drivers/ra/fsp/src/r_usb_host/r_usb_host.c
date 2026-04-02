@@ -1502,15 +1502,6 @@ static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * con
                                                       uint32_t                     xferred_bytes,
                                                       usb_xfer_result_t            result)
 {
-    usbh_event_t event =
-    {
-        .event_id = USBH_EVENT_XFER_COMPLETE,
-        .dev_addr = dev_addr,
-    };
-    event.complete.ep_addr = ep_addr;
-    event.complete.result  = result;
-    event.complete.len     = xferred_bytes;
-
     usbh_callback_arg_t   args;
     usbh_callback_arg_t * p_args = p_ctrl->p_callback_memory;
 
@@ -1533,7 +1524,16 @@ static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * con
 
     p_args->module_number = p_ctrl->module_number;
     p_args->p_context     = p_ctrl->p_context;
-    memcpy(&p_args->event, &event, sizeof(usbh_event_t));
+    p_args->event         = (usbh_event_t) {
+        .event_id = USBH_EVENT_XFER_COMPLETE,
+        .dev_addr = dev_addr,
+        .complete =
+        {
+            .ep_addr = ep_addr,
+            .result  = result,
+            .len     = xferred_bytes
+        }
+    };
 
     if (p_ctrl->p_callback != NULL)
     {
@@ -1543,11 +1543,6 @@ static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * con
 
 static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * const p_ctrl)
 {
-    usbh_event_t event;
-    event.event_id        = USBH_EVENT_DEVICE_ATTACH;
-    event.attach.hub_addr = 0;
-    event.attach.hub_port = 0;
-
     usbh_callback_arg_t   args;
     usbh_callback_arg_t * p_args = p_ctrl->p_callback_memory;
 
@@ -1570,7 +1565,14 @@ static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * con
 
     p_args->module_number = p_ctrl->module_number;
     p_args->p_context     = p_ctrl->p_context;
-    memcpy(&p_args->event, &event, sizeof(usbh_event_t));
+    p_args->event         = (usbh_event_t) {
+        .event_id = USBH_EVENT_DEVICE_ATTACH,
+        .attach   =
+        {
+            .hub_addr = 0,
+            .hub_port = 0
+        }
+    };
 
     if (p_ctrl->p_callback != NULL)
     {
@@ -2200,11 +2202,6 @@ static bool r_usbh_process_edpt_xfer (usbh_instance_ctrl_t * const p_ctrl,
 
 static inline void r_usbh_event_device_remove_notify (usbh_instance_ctrl_t * const p_ctrl)
 {
-    usbh_event_t event;
-    event.event_id        = USBH_EVENT_DEVICE_REMOVE;
-    event.remove.hub_addr = 0;
-    event.remove.hub_port = 0;
-
     usbh_callback_arg_t   args;
     usbh_callback_arg_t * p_args = p_ctrl->p_callback_memory;
 
@@ -2226,7 +2223,14 @@ static inline void r_usbh_event_device_remove_notify (usbh_instance_ctrl_t * con
 
     p_args->module_number = p_ctrl->module_number;
     p_args->p_context     = p_ctrl->p_context;
-    memcpy(&p_args->event, &event, sizeof(usbh_event_t));
+    p_args->event         = (usbh_event_t) {
+        .event_id = USBH_EVENT_DEVICE_REMOVE,
+        .remove   =
+        {
+            .hub_addr = 0,
+            .hub_port = 0
+        }
+    };
 
     if (p_ctrl->p_callback != NULL)
     {
