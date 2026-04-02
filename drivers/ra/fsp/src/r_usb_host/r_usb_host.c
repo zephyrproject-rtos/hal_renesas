@@ -211,6 +211,8 @@ static uint16_t    r_usbh_edpt0_max_packet_size(usbh_instance_ctrl_t * const p_c
 static inline void r_usbh_interrupt_configure(usbh_instance_ctrl_t * p_ctrl);
 static inline void r_usbh_interrupt_enable(usbh_instance_ctrl_t * p_ctrl);
 static inline void r_usbh_interrupt_disable(usbh_instance_ctrl_t * p_ctrl);
+static void        r_usbh_process_terminate_control_xfer(usbh_instance_ctrl_t * const p_ctrl);
+static void        r_usbh_process_terminate_xfer(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -1094,6 +1096,43 @@ fsp_err_t R_USBH_Disable (usb_ctrl_t * const p_api_ctrl)
     {
         R_USB_FS0->SYSCFG &= ~(R_USB_SYSCFG_DRPD_Msk | R_USB_SYSCFG_DPRPU_Msk | R_USB_SYSCFG_USBE_Msk);
     }
+
+    return FSP_SUCCESS;
+}
+
+fsp_err_t R_USBH_XferAbort (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uint8_t ep_addr)
+{
+    usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
+    const uint32_t         epn    = r_usbh_edpt_number(ep_addr);
+
+#if USBH_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(p_api_ctrl)
+    FSP_ERROR_RETURN(0 != p_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN(USB_DEVICE_COUNT_MAX > dev_addr, FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN(USB_EP_COUNT_MAX > epn, FSP_ERR_INVALID_ARGUMENT);
+#endif
+
+    r_usbh_interrupt_disable(p_ctrl);
+
+    if (0 == epn)
+    {
+        r_usbh_process_terminate_control_xfer(p_ctrl);
+    }
+    else
+    {
+        const uint32_t dir = r_usbh_edpt_dir(ep_addr);
+        const uint32_t num = g_uhc_data[p_ctrl->module_number].ep[dev_addr - 1][dir][epn - 1];
+
+        if (num == 0)
+        {
+            r_usbh_interrupt_enable(p_ctrl);
+            return FSP_ERR_INVALID_ARGUMENT;
+        }
+
+        r_usbh_process_terminate_xfer(p_ctrl, num);
+    }
+
+    r_usbh_interrupt_enable(p_ctrl);
 
     return FSP_SUCCESS;
 }
@@ -2124,6 +2163,72 @@ static void r_usbh_process_pipe_brdy (usbh_instance_ctrl_t * const p_ctrl, uint3
                                           p_pipe->ep,
                                           p_pipe->length - p_pipe->remaining,
                                           USB_XFER_RESULT_SUCCESS);
+    }
+}
+
+static void r_usbh_process_terminate_xfer (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
+{
+    volatile usb_reg_pipetre_t * p_reg_pipetr  = r_usbh_get_pipetre(p_ctrl, num);
+    volatile uint16_t          * p_reg_pipectr = r_usbh_get_pipectr(p_ctrl, num);
+
+    /* Set NAK */
+    if (0 != (*p_reg_pipectr & R_USB_PIPE_CTR_PID_Msk))
+    {
+        *p_reg_pipectr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
+    }
+
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        /* Disable pipe interrupt */
+        R_USB_HS0->BRDYENB &= (uint16_t) ~(1 << num);
+        R_USB_HS0->NRDYENB &= (uint16_t) ~(1 << num);
+        R_USB_HS0->BEMPENB &= (uint16_t) ~(1 << num);
+
+        /* Clear FIFO port */
+        if (num == R_USB_HS0->D0FIFOSEL_b.CURPIPE)
+        {
+            R_USB_HS0->D0FIFOSEL_b.CURPIPE = 0;
+        }
+    }
+    else
+#endif
+    {
+        R_USB_FS0->BRDYENB &= (uint16_t) ~(1 << num);
+        R_USB_FS0->NRDYENB &= (uint16_t) ~(1 << num);
+        R_USB_FS0->BEMPENB &= (uint16_t) ~(1 << num);
+
+        /* Clear FIFO port */
+        if (num == R_USB_FS0->D0FIFOSEL_b.CURPIPE)
+        {
+            R_USB_FS0->D0FIFOSEL_b.CURPIPE = 0;
+        }
+    }
+
+    /* Clear transaction counter */
+    p_reg_pipetr->TRE &= ~R_USB_PIPE_TR_E_TRENB_Msk;
+    p_reg_pipetr->TRE |= R_USB_PIPE_TR_E_TRCLR_Msk;
+}
+
+static void r_usbh_process_terminate_control_xfer (usbh_instance_ctrl_t * const p_ctrl)
+{
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        /* Set NAK */
+        R_USB_HS0->DCPCTR = USB_PIPE_CTR_PID_NAK << R_USB_DCPCTR_PID_Pos;
+
+        /* Clear FIFO port */
+        R_USB_HS0->CFIFOCTR = R_USB_CFIFOCTR_BCLR_Msk;
+    }
+    else
+#endif
+    {
+        /* Set NAK */
+        R_USB_FS0->DCPCTR = USB_PIPE_CTR_PID_NAK << R_USB_DCPCTR_PID_Pos;
+
+        /* Clear FIFO port */
+        R_USB_FS0->CFIFOCTR = R_USB_CFIFOCTR_BCLR_Msk;
     }
 }
 
