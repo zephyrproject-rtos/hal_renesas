@@ -54,8 +54,6 @@ fsp_err_t R_USBH_XferStart(usb_ctrl_t * const p_api_ctrl,
                            uint8_t          * buffer,
                            uint16_t           buflen);
 fsp_err_t R_USBH_Close(usb_ctrl_t * const p_ctrl);
-fsp_err_t R_USBH_SOFEnable(usb_ctrl_t * const p_api_ctrl);
-fsp_err_t R_USBH_SOFDisable(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_BusResume(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_BusSuspend(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_Enable(usb_ctrl_t * const p_api_ctrl);
