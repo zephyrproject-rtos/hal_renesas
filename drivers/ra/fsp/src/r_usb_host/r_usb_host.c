@@ -91,17 +91,6 @@
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
-typedef __PACKED_UNION
-{
-    struct
-    {
-        volatile uint16_t u8       : 8;
-        volatile          uint16_t : 0;
-    };
-
-    volatile uint16_t u16;
-} hw_fifo_t;
-
 typedef __PACKED_STRUCT
 {
     union
@@ -177,6 +166,58 @@ static inline uint16_t r_usbh_edpt_packet_size (usb_desc_endpoint_t const * desc
     return (desc_ep->wMaxPacketSize) & 0x7FF;
 }
 
+static void fifo_set_mbw (volatile void * p_fifo, uint32_t mbw)
+{
+    volatile uint16_t * p_fifosel;
+
+    switch ((uintptr_t) p_fifo)
+    {
+#ifdef USB_HIGH_SPEED_MODULE
+        case ((uintptr_t) &R_USB_HS0->CFIFO):
+        {
+            p_fifosel = &R_USB_HS0->CFIFOSEL;
+            break;
+        }
+
+        case ((uintptr_t) &R_USB_HS0->D0FIFO):
+        {
+            p_fifosel = &R_USB_HS0->D0FIFOSEL;
+            break;
+        }
+
+        case ((uintptr_t) &R_USB_HS0->D1FIFO):
+        {
+            p_fifosel = &R_USB_HS0->D1FIFOSEL;
+            break;
+        }
+#endif /* USB_HIGH_SPEED_MODULE */
+        case ((uintptr_t) &R_USB_FS0->CFIFO):
+        {
+            p_fifosel = &R_USB_FS0->CFIFOSEL;
+            break;
+        }
+
+        case ((uintptr_t) &R_USB_FS0->D0FIFO):
+        {
+            p_fifosel = &R_USB_FS0->D0FIFOSEL;
+            break;
+        }
+
+        case ((uintptr_t) &R_USB_FS0->D1FIFO):
+        {
+            p_fifosel = &R_USB_FS0->D1FIFOSEL;
+            break;
+        }
+
+        default:
+        {
+            return;
+        }
+    }
+
+    *p_fifosel = (*p_fifosel & ~R_USB_CFIFOSEL_MBW_Msk) | (mbw << R_USB_CFIFOSEL_MBW_Pos);
+}
+
 static volatile uint16_t * r_usbh_get_pipectr(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static uint32_t            r_usbh_find_pipe(usbh_instance_ctrl_t * const p_ctrl, uint8_t xfer_type);
 static fsp_err_t           r_usbh_hw_module_start(usbh_instance_ctrl_t * const p_ctrl);
@@ -200,12 +241,20 @@ static bool r_usbh_process_pipe0_xfer(usbh_instance_ctrl_t * const p_ctrl,
                                       uint8_t                      ep_addr,
                                       void                       * buffer,
                                       uint16_t                     buflen);
-static bool        r_usbh_pipe_xfer_out(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
-static bool        r_usbh_pipe0_xfer_out(usbh_instance_ctrl_t * const p_ctrl);
-static bool        r_usbh_pipe_xfer_in(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
-static bool        r_usbh_pipe0_xfer_in(usbh_instance_ctrl_t * const p_ctrl);
-static void        r_usbh_pipe_write_packet(void * p_buf, volatile void * p_fifo, uint32_t len);
-static void        r_usbh_pipe_read_packet(void * p_buf, volatile void * p_fifo, uint32_t len);
+static bool r_usbh_pipe_xfer_out(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
+static bool r_usbh_pipe0_xfer_out(usbh_instance_ctrl_t * const p_ctrl);
+static bool r_usbh_pipe_xfer_in(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
+static bool r_usbh_pipe0_xfer_in(usbh_instance_ctrl_t * const p_ctrl);
+static void r_usbh_pipe_write_packet(usbh_instance_ctrl_t * const p_ctrl,
+                                     void                       * p_buf,
+                                     volatile void              * p_fifo,
+                                     uint32_t                     len,
+                                     uint32_t                     access_bytes);
+static void r_usbh_pipe_read_packet(usbh_instance_ctrl_t * const p_ctrl,
+                                    void                       * p_buf,
+                                    volatile void              * p_fifo,
+                                    uint32_t                     len,
+                                    uint32_t                     access_bytes);
 static uint16_t    r_usbh_edpt_max_packet_size(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static uint16_t    r_usbh_edpt0_max_packet_size(usbh_instance_ctrl_t * const p_ctrl);
 static inline void r_usbh_interrupt_configure(usbh_instance_ctrl_t * p_ctrl);
@@ -1126,6 +1175,7 @@ fsp_err_t R_USBH_XferAbort (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uin
         if (num == 0)
         {
             r_usbh_interrupt_enable(p_ctrl);
+
             return FSP_ERR_INVALID_ARGUMENT;
         }
 
@@ -1605,34 +1655,113 @@ static inline void r_usbh_pipe_wait_for_ready (usbh_instance_ctrl_t * const p_ct
     }
 }
 
-static void r_usbh_pipe_write_packet (void * p_buf, volatile void * p_fifo, uint32_t len)
+static void r_usbh_pipe_write_packet (usbh_instance_ctrl_t * const p_ctrl,
+                                      void                       * p_buf,
+                                      volatile void              * p_fifo,
+                                      uint32_t                     len,
+                                      uint32_t                     access_bytes)
 {
-    volatile hw_fifo_t * p_reg  = p_fifo;
-    uint8_t            * p_addr = p_buf;
+#ifdef USB_HIGH_SPEED_MODULE
+    const bool          is_usbhs = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
+    volatile uint32_t * p_fifo32 = (volatile uint32_t *) p_fifo;
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (is_usbhs ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
+    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (is_usbhs ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
+#else
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (p_fifo);
+    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (p_fifo);
+#endif
+    uint8_t * p_addr = p_buf;
 
-    while (len >= 2)
+#ifdef USB_HIGH_SPEED_MODULE
+    if (!((uintptr_t) p_addr & 0x3) && (len >= 4) && (access_bytes == 4))
     {
-        p_reg->u16 = *(const uint16_t *) p_addr;
-        p_addr    += 2;
-        len       -= 2;
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_32_BIT);
+
+        while (len >= 4)
+        {
+            *p_fifo32 = *(uint32_t *) p_addr;
+            p_addr   += 4;
+            len      -= 4;
+        }
+    }
+#endif
+
+    if (!((uintptr_t) p_addr & 0x1) && (len >= 2) && (access_bytes >= 2))
+    {
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT);
+
+        while (len >= 2)
+        {
+            *p_fifo16 = *(uint16_t *) p_addr;
+            p_addr   += 2;
+            len      -= 2;
+        }
     }
 
     if (len)
     {
-        p_reg->u8 = *(const uint8_t *) p_addr;
-        ++p_addr;
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT);
+
+        while (len--)
+        {
+            *p_fifo8 = *p_addr;
+            ++p_addr;
+        }
     }
 }
 
-static void r_usbh_pipe_read_packet (void * p_buf, volatile void * p_fifo, uint32_t len)
+static void r_usbh_pipe_read_packet (usbh_instance_ctrl_t * const p_ctrl,
+                                     void                       * p_buf,
+                                     volatile void              * p_fifo,
+                                     uint32_t                     len,
+                                     uint32_t                     access_bytes)
 {
-    uint8_t          * p_data = (uint8_t *) p_buf;
-    volatile uint8_t * p_reg  = (volatile uint8_t *) p_fifo;
+#ifdef USB_HIGH_SPEED_MODULE
+    const bool          is_usbhs = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
+    volatile uint32_t * p_fifo32 = (volatile uint32_t *) p_fifo;
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (is_usbhs ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
+    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (is_usbhs ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
+#else
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (p_fifo);
+    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (p_fifo);
+#endif
+    uint8_t * p_data = (uint8_t *) p_buf;
 
-    /* byte access is always at base register address */
-    while (len--)
+#ifdef USB_HIGH_SPEED_MODULE
+    if (!((uintptr_t) p_data & 0x3) && (len >= 4) && (access_bytes == 4))
     {
-        *p_data++ = *p_reg;
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_32_BIT);
+
+        while (len >= 4)
+        {
+            *(uint32_t *) p_data = *p_fifo32;
+            p_data              += 4;
+            len -= 4;
+        }
+    }
+#endif
+
+    if (!((uintptr_t) p_data & 0x1) && (len >= 2) && (access_bytes >= 2))
+    {
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT);
+
+        while (len >= 2)
+        {
+            *(uint16_t *) p_data = *p_fifo16;
+            p_data              += 2;
+            len -= 2;
+        }
+    }
+
+    if (len)
+    {
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT);
+
+        while (len--)
+        {
+            *p_data = *p_fifo8;
+            ++p_data;
+        }
     }
 }
 
@@ -1641,6 +1770,11 @@ static bool r_usbh_pipe0_xfer_in (usbh_instance_ctrl_t * const p_ctrl)
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[0];
     void         * p_buf  = p_pipe->buf;
     const uint32_t rem    = p_pipe->remaining;
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     volatile uint16_t * p_dcpctr;
     volatile uint16_t * p_cfifoctr;
@@ -1670,7 +1804,7 @@ static bool r_usbh_pipe0_xfer_in (usbh_instance_ctrl_t * const p_ctrl)
     if (len)
     {
         *p_dcpctr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
-        r_usbh_pipe_read_packet(p_buf, p_cfifo, len);
+        r_usbh_pipe_read_packet(p_ctrl, p_buf, p_cfifo, len, access_bytes);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1696,6 +1830,11 @@ static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
 {
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[0];
     const uint32_t rem    = p_pipe->remaining;
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     if (!rem)
     {
@@ -1726,7 +1865,7 @@ static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_buf, p_cfifo, len);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_cfifo, len, access_bytes);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1746,8 +1885,11 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
     void         * p_buf  = p_pipe->buf;
     const uint32_t rem    = p_pipe->remaining;
     const uint32_t mps    = r_usbh_edpt_max_packet_size(p_ctrl, num);
-
-    r_usbh_pipe_wait_for_ready(p_ctrl, num);
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     volatile uint16_t * p_reg_d0fifosel;
     volatile uint16_t * p_reg_d0fifoctr;
@@ -1771,14 +1913,14 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
         vld             = (uint32_t) (R_USB_FS0->CFIFOCTR & R_USB_CFIFOCTR_DTLN_Msk);
     }
 
-    *p_reg_d0fifosel = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) |
-                       (USB_FIFOSEL_MBW_8_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    *p_reg_d0fifosel = ((access_bytes == 4 ? USB_FIFOSEL_MBW_32_BIT : USB_FIFOSEL_MBW_16_BIT) <<
+                        R_USB_D0FIFOSEL_MBW_Pos) | (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
 
     const uint32_t len = USB_MIN(USB_MIN(rem, mps), vld);
 
     if (len)
     {
-        r_usbh_pipe_read_packet(p_buf, p_reg_d0fifo, len);
+        r_usbh_pipe_read_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1808,6 +1950,11 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     const uint32_t rem    = p_pipe->remaining;
     const uint32_t mps    = r_usbh_edpt_max_packet_size(p_ctrl, num);
     const uint32_t len    = USB_MIN(rem, mps);
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     r_usbh_pipe_wait_for_ready(p_ctrl, num);
 
@@ -1837,12 +1984,20 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
         return true;
     }
 
-    *p_reg_d0fifosel = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) |
-                       (USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    if (access_bytes == 4)
+    {
+        *p_reg_d0fifosel = USB_FIFOSEL_MBW_32_BIT << R_USB_D0FIFOSEL_MBW_Pos;
+    }
+    else
+    {
+        *p_reg_d0fifosel = USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos;
+    }
+
+    *p_reg_d0fifosel |= (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_buf, p_reg_d0fifo, len);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1867,6 +2022,11 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
     FSP_PARAMETER_NOT_USED(dev_addr);
 
     const uint32_t dir = r_usbh_edpt_dir(ep_addr);
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     volatile uint16_t * p_reg_cfifosel;
     volatile uint16_t * p_reg_cfifoctr;
@@ -1896,21 +2056,16 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
         p_reg_usbreq   = &R_USB_FS0->USBREQ;
     }
 
+    uint16_t fifosel = (access_bytes == 4 ? USB_FIFOSEL_MBW_32_BIT : USB_FIFOSEL_MBW_16_BIT) << R_USB_CFIFOSEL_MBW_Pos;
+
     /* configure fifo direction and access unit settings */
-    if (USB_DIR_IN == dir)
+    if (USB_DIR_OUT == dir)
     {
-        /* IN, a byte */
-        *p_reg_cfifosel = USB_FIFOSEL_MBW_8_BIT << R_USB_CFIFOSEL_MBW_Pos;
-        FSP_HARDWARE_REGISTER_WAIT((*p_reg_cfifosel & R_USB_CFIFOSEL_ISEL_Msk), 0);
+        fifosel |= R_USB_CFIFOSEL_ISEL_Msk;
     }
-    else
-    {
-        /* OUT, 2 bytes */
-        *p_reg_cfifosel = R_USB_CFIFOSEL_ISEL_Msk |
-                          (USB_FIFOSEL_MBW_16_BIT << R_USB_CFIFOSEL_MBW_Pos);
-        FSP_HARDWARE_REGISTER_WAIT((*p_reg_cfifosel & R_USB_CFIFOSEL_ISEL_Msk),
-                                   R_USB_CFIFOSEL_ISEL_Msk);
-    }
+
+    *p_reg_cfifosel = fifosel;
+    FSP_HARDWARE_REGISTER_WAIT(*p_reg_cfifosel, fifosel);
 
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[0];
     p_pipe->ep        = ep_addr;
