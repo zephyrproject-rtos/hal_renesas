@@ -671,12 +671,14 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     volatile uint16_t * p_reg_pipesel;
     volatile uint16_t * p_reg_pipemaxp;
     volatile uint16_t * p_reg_pipecfg;
+    volatile uint16_t * p_reg_pipeperi;
 
-    const uint8_t  ep_addr = p_ep_desc->bEndpointAddress;
-    const uint8_t  epn     = r_usbh_edpt_number(ep_addr);
-    const uint32_t mps     = r_usbh_edpt_packet_size(p_ep_desc);
-    const uint8_t  dir     = r_usbh_edpt_dir(ep_addr);
-    const uint8_t  xfer    = p_ep_desc->bmAttributes.xfer;
+    const uint8_t  ep_addr  = p_ep_desc->bEndpointAddress;
+    const uint8_t  epn      = r_usbh_edpt_number(ep_addr);
+    const uint32_t mps      = r_usbh_edpt_packet_size(p_ep_desc);
+    const uint8_t  dir      = r_usbh_edpt_dir(ep_addr);
+    const uint8_t  xfer     = p_ep_desc->bmAttributes.xfer;
+    const uint8_t  interval = p_ep_desc->bInterval;
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
@@ -688,6 +690,7 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
         p_reg_pipesel  = &R_USB_HS0->PIPESEL;
         p_reg_pipemaxp = &R_USB_HS0->PIPEMAXP;
         p_reg_pipecfg  = &R_USB_HS0->PIPECFG;
+        p_reg_pipeperi = &R_USB_HS0->PIPEPERI;
     }
     else
 #endif
@@ -699,10 +702,14 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
         p_reg_pipesel  = &R_USB_FS0->PIPESEL;
         p_reg_pipemaxp = &R_USB_FS0->PIPEMAXP;
         p_reg_pipecfg  = &R_USB_FS0->PIPECFG;
+        p_reg_pipeperi = &R_USB_FS0->PIPEPERI;
     }
 
     if (xfer == USB_XFER_ISOCHRONOUS)
     {
+        /* High-bandwidth isochronous endpoints is not supported */
+        FSP_ERROR_RETURN((p_ep_desc->wMaxPacketSize & 0x1800) == 0x0, FSP_ERR_INVALID_ARGUMENT);
+
 #ifdef USB_HIGH_SPEED_MODULE
         if (USB_IS_USBHS(p_ctrl->module_number))
         {
@@ -764,8 +771,14 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     /* PIPE Configuration */
     *p_reg_pipesel  = num;
     *p_reg_pipemaxp = ((dev_addr << R_USB_PIPEMAXP_DEVSEL_Pos) & R_USB_PIPEMAXP_DEVSEL_Msk) |
-                      (mps & R_USB_PIPEMAXP_MXPS_Msk);
+                      (mps);
     *p_reg_pipecfg = pipe_cfg;
+
+    if ((xfer == USB_XFER_INTERRUPT) || (xfer == USB_XFER_ISOCHRONOUS))
+    {
+        *p_reg_pipeperi = ((interval - 1) << R_USB_PIPEPERI_IITV_Pos);
+    }
+
     *p_reg_brdysts = R_USB_BRDYSTS_PIPEBRDY_Msk ^ USB_SETBIT(num);
     *p_reg_pipectr = R_USB_PIPE_CTR_ACLRM_Msk | R_USB_PIPE_CTR_SQCLR_Msk;
     *p_reg_pipectr = (USB_DIR_OUT == dir) ?
@@ -1560,16 +1573,14 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
     {
         R_USB_HS0->PIPESEL = num;
 
-        return (uint16_t) ((R_USB_HS0->PIPEMAXP & R_USB_PIPEMAXP_MXPS_Msk) >>
-                           R_USB_PIPEMAXP_MXPS_Pos);
+        return (uint16_t) (R_USB_HS0->PIPEMAXP >> R_USB_HS0_PIPEMAXP_MXPS_Pos);
     }
     else
 #endif
     {
         R_USB_FS0->PIPESEL = num;
 
-        return (uint16_t) ((R_USB_FS0->PIPEMAXP & R_USB_PIPEMAXP_MXPS_Msk) >>
-                           R_USB_PIPEMAXP_MXPS_Pos);
+        return (uint16_t) ((R_USB_FS0->PIPEMAXP & R_USB_FS0_PIPEMAXP_MXPS_Msk) >> R_USB_FS0_PIPEMAXP_MXPS_Pos);
     }
 }
 
