@@ -21,6 +21,10 @@
 uint8_t vbtbpsr_state_at_boot BSP_SECTION_EARLY_INIT;
 #endif /* BSP_CFG_VBATT_MANUAL_CONFIGURATION */
 
+#if defined(R_SYSTEM_RSTSR2_CWSF_Msk)
+uint8_t rstsr2_state_at_boot BSP_SECTION_EARLY_INIT;
+#endif /* R_SYSTEM_RSTSR2_CWSF_Msk */
+
 FSP_CPP_HEADER
 void R_BSP_WarmStart(bsp_warm_start_event_t event);
 #if BSP_CFG_VBATT_MANUAL_CONFIGURATION
@@ -42,6 +46,12 @@ FSP_CPP_FOOTER
  **/
 void R_BSP_WarmStart(bsp_warm_start_event_t event) {
   if (BSP_WARM_START_RESET == event) {
+#ifdef R_SYSTEM_RSTSR2_CWSF_Msk
+    rstsr2_state_at_boot = R_SYSTEM->RSTSR2;
+    /* Set the CWSF bit to 1. This bit will be cleared when power on reset occurs */
+    R_SYSTEM->RSTSR2 |= R_SYSTEM_RSTSR2_CWSF_Msk;
+#endif /* R_SYSTEM_RSTSR2_CWSF_Msk */
+
 #if BSP_CFG_VBATT_MANUAL_CONFIGURATION
 #if !BSP_CFG_VBATT_ENABLE
     R_BSP_BackupDomainDisableInit();
@@ -64,7 +74,7 @@ void R_BSP_WarmStart(bsp_warm_start_event_t event) {
  * Initialization when using Battery Backup Domain
  **********************************************************************************************************************/
 static void R_BSP_BackupDomainEnableInit(void) {
-  if (R_BSP_ResetStatusGet() == BSP_RESET_TYPE_POR) {
+  if (!(R_BSP_ResetStatusGet() & BSP_RESET_TYPE_WARM)) {
     /*  Check VBPORM bit. If VBPORM flag is 0, wait until it changes to 1 */
     FSP_HARDWARE_REGISTER_WAIT(R_SYSTEM->VBTBPSR_b.VBPORM, 1);
     vbtbpsr_state_at_boot = R_SYSTEM->VBTBPSR;

@@ -36,6 +36,7 @@ typedef enum e_bsp_reset_type {
 #if BSP_CFG_VBATT_MANUAL_CONFIGURATION
 	BSP_RESET_TYPE_VBATPOR	= (1 << 22),	/** Battery Backup Domain Reset */
 #endif /* BSP_CFG_VBATT_MANUAL_CONFIGURATION */
+	BSP_RESET_TYPE_WARM	= (1 << 23)	/** Warm Start Reset */
 } bsp_reset_type_t;
 
 bsp_reset_type_t R_BSP_ResetStatusGet(void);

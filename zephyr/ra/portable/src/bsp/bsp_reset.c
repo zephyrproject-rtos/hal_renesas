@@ -10,6 +10,10 @@
 extern uint8_t vbtbpsr_state_at_boot;
 #endif /* BSP_CFG_VBATT_MANUAL_CONFIGURATION */
 
+#if defined(R_SYSTEM_RSTSR2_CWSF_Msk)
+extern uint8_t rstsr2_state_at_boot;
+#endif /* R_SYSTEM_RSTSR2_CWSF_Msk */
+
 /*******************************************************************************************************************//**
  * Get MCU reset type
  *
@@ -164,6 +168,12 @@ bsp_reset_type_t R_BSP_ResetStatusGet(void)
 	}
   #endif /* R_SYSTEM_VBTBPSR_VBPORF_Msk */
 #endif /* BSP_CFG_VBATT_MANUAL_CONFIGURATION */
+
+#ifdef R_SYSTEM_RSTSR2_CWSF_Msk
+	if (rstsr2_state_at_boot & R_SYSTEM_RSTSR2_CWSF_Msk) {
+		event |= BSP_RESET_TYPE_WARM;
+	}
+#endif /* R_SYSTEM_RSTSR2_CWSF_Msk */
 
 	return event;
 }
