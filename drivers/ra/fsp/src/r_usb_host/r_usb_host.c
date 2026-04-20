@@ -91,17 +91,6 @@
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
-typedef __PACKED_UNION
-{
-    struct
-    {
-        volatile uint16_t u8       : 8;
-        volatile          uint16_t : 0;
-    };
-
-    volatile uint16_t u16;
-} hw_fifo_t;
-
 typedef __PACKED_STRUCT
 {
     union
@@ -177,6 +166,58 @@ static inline uint16_t r_usbh_edpt_packet_size (usb_desc_endpoint_t const * desc
     return (desc_ep->wMaxPacketSize) & 0x7FF;
 }
 
+static void fifo_set_mbw (volatile void * p_fifo, uint32_t mbw)
+{
+    volatile uint16_t * p_fifosel;
+
+    switch ((uintptr_t) p_fifo)
+    {
+#ifdef USB_HIGH_SPEED_MODULE
+        case ((uintptr_t) &R_USB_HS0->CFIFO):
+        {
+            p_fifosel = &R_USB_HS0->CFIFOSEL;
+            break;
+        }
+
+        case ((uintptr_t) &R_USB_HS0->D0FIFO):
+        {
+            p_fifosel = &R_USB_HS0->D0FIFOSEL;
+            break;
+        }
+
+        case ((uintptr_t) &R_USB_HS0->D1FIFO):
+        {
+            p_fifosel = &R_USB_HS0->D1FIFOSEL;
+            break;
+        }
+#endif /* USB_HIGH_SPEED_MODULE */
+        case ((uintptr_t) &R_USB_FS0->CFIFO):
+        {
+            p_fifosel = &R_USB_FS0->CFIFOSEL;
+            break;
+        }
+
+        case ((uintptr_t) &R_USB_FS0->D0FIFO):
+        {
+            p_fifosel = &R_USB_FS0->D0FIFOSEL;
+            break;
+        }
+
+        case ((uintptr_t) &R_USB_FS0->D1FIFO):
+        {
+            p_fifosel = &R_USB_FS0->D1FIFOSEL;
+            break;
+        }
+
+        default:
+        {
+            return;
+        }
+    }
+
+    *p_fifosel = (*p_fifosel & ~R_USB_CFIFOSEL_MBW_Msk) | (mbw << R_USB_CFIFOSEL_MBW_Pos);
+}
+
 static volatile uint16_t * r_usbh_get_pipectr(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static uint32_t            r_usbh_find_pipe(usbh_instance_ctrl_t * const p_ctrl, uint8_t xfer_type);
 static fsp_err_t           r_usbh_hw_module_start(usbh_instance_ctrl_t * const p_ctrl);
@@ -200,17 +241,27 @@ static bool r_usbh_process_pipe0_xfer(usbh_instance_ctrl_t * const p_ctrl,
                                       uint8_t                      ep_addr,
                                       void                       * buffer,
                                       uint16_t                     buflen);
-static bool        r_usbh_pipe_xfer_out(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
-static bool        r_usbh_pipe0_xfer_out(usbh_instance_ctrl_t * const p_ctrl);
-static bool        r_usbh_pipe_xfer_in(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
-static bool        r_usbh_pipe0_xfer_in(usbh_instance_ctrl_t * const p_ctrl);
-static void        r_usbh_pipe_write_packet(void * p_buf, volatile void * p_fifo, uint32_t len);
-static void        r_usbh_pipe_read_packet(void * p_buf, volatile void * p_fifo, uint32_t len);
+static bool r_usbh_pipe_xfer_out(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
+static bool r_usbh_pipe0_xfer_out(usbh_instance_ctrl_t * const p_ctrl);
+static bool r_usbh_pipe_xfer_in(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
+static bool r_usbh_pipe0_xfer_in(usbh_instance_ctrl_t * const p_ctrl);
+static void r_usbh_pipe_write_packet(usbh_instance_ctrl_t * const p_ctrl,
+                                     void                       * p_buf,
+                                     volatile void              * p_fifo,
+                                     uint32_t                     len,
+                                     uint32_t                     access_bytes);
+static void r_usbh_pipe_read_packet(usbh_instance_ctrl_t * const p_ctrl,
+                                    void                       * p_buf,
+                                    volatile void              * p_fifo,
+                                    uint32_t                     len,
+                                    uint32_t                     access_bytes);
 static uint16_t    r_usbh_edpt_max_packet_size(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static uint16_t    r_usbh_edpt0_max_packet_size(usbh_instance_ctrl_t * const p_ctrl);
 static inline void r_usbh_interrupt_configure(usbh_instance_ctrl_t * p_ctrl);
 static inline void r_usbh_interrupt_enable(usbh_instance_ctrl_t * p_ctrl);
 static inline void r_usbh_interrupt_disable(usbh_instance_ctrl_t * p_ctrl);
+static void        r_usbh_process_terminate_control_xfer(usbh_instance_ctrl_t * const p_ctrl);
+static void        r_usbh_process_terminate_xfer(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -620,12 +671,14 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     volatile uint16_t * p_reg_pipesel;
     volatile uint16_t * p_reg_pipemaxp;
     volatile uint16_t * p_reg_pipecfg;
+    volatile uint16_t * p_reg_pipeperi;
 
-    const uint8_t  ep_addr = p_ep_desc->bEndpointAddress;
-    const uint8_t  epn     = r_usbh_edpt_number(ep_addr);
-    const uint32_t mps     = r_usbh_edpt_packet_size(p_ep_desc);
-    const uint8_t  dir     = r_usbh_edpt_dir(ep_addr);
-    const uint8_t  xfer    = p_ep_desc->bmAttributes.xfer;
+    const uint8_t  ep_addr  = p_ep_desc->bEndpointAddress;
+    const uint8_t  epn      = r_usbh_edpt_number(ep_addr);
+    const uint32_t mps      = r_usbh_edpt_packet_size(p_ep_desc);
+    const uint8_t  dir      = r_usbh_edpt_dir(ep_addr);
+    const uint8_t  xfer     = p_ep_desc->bmAttributes.xfer;
+    const uint8_t  interval = p_ep_desc->bInterval;
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
@@ -637,6 +690,7 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
         p_reg_pipesel  = &R_USB_HS0->PIPESEL;
         p_reg_pipemaxp = &R_USB_HS0->PIPEMAXP;
         p_reg_pipecfg  = &R_USB_HS0->PIPECFG;
+        p_reg_pipeperi = &R_USB_HS0->PIPEPERI;
     }
     else
 #endif
@@ -648,12 +702,24 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
         p_reg_pipesel  = &R_USB_FS0->PIPESEL;
         p_reg_pipemaxp = &R_USB_FS0->PIPEMAXP;
         p_reg_pipecfg  = &R_USB_FS0->PIPECFG;
+        p_reg_pipeperi = &R_USB_FS0->PIPEPERI;
     }
 
     if (xfer == USB_XFER_ISOCHRONOUS)
     {
-        /* USBa supports up to 256 bytes */
-        FSP_ERROR_RETURN(mps <= 256, FSP_ERR_INVALID_ARGUMENT);
+        /* High-bandwidth isochronous endpoints is not supported */
+        FSP_ERROR_RETURN((p_ep_desc->wMaxPacketSize & 0x1800) == 0x0, FSP_ERR_INVALID_ARGUMENT);
+
+#ifdef USB_HIGH_SPEED_MODULE
+        if (USB_IS_USBHS(p_ctrl->module_number))
+        {
+            FSP_ERROR_RETURN(mps <= 1024, FSP_ERR_INVALID_ARGUMENT);
+        }
+        else
+#endif
+        {
+            FSP_ERROR_RETURN(mps <= 256, FSP_ERR_INVALID_ARGUMENT);
+        }
     }
 
     /* Find a valid pipe */
@@ -705,8 +771,14 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     /* PIPE Configuration */
     *p_reg_pipesel  = num;
     *p_reg_pipemaxp = ((dev_addr << R_USB_PIPEMAXP_DEVSEL_Pos) & R_USB_PIPEMAXP_DEVSEL_Msk) |
-                      (mps & R_USB_PIPEMAXP_MXPS_Msk);
+                      (mps);
     *p_reg_pipecfg = pipe_cfg;
+
+    if ((xfer == USB_XFER_INTERRUPT) || (xfer == USB_XFER_ISOCHRONOUS))
+    {
+        *p_reg_pipeperi = ((interval - 1) << R_USB_PIPEPERI_IITV_Pos);
+    }
+
     *p_reg_brdysts = R_USB_BRDYSTS_PIPEBRDY_Msk ^ USB_SETBIT(num);
     *p_reg_pipectr = R_USB_PIPE_CTR_ACLRM_Msk | R_USB_PIPE_CTR_SQCLR_Msk;
     *p_reg_pipectr = (USB_DIR_OUT == dir) ?
@@ -797,76 +869,6 @@ fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr)
     }
 
     g_uhc_data[p_ctrl->module_number].ctl_mps[dev_addr] = USB_DCPMAXP_MXPS_DEFAULT;
-
-    return FSP_SUCCESS;
-}
-
-/**
- * @brief Start SOF generator
- *
- * @param p_api_ctrl    [in]
- *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
- */
-fsp_err_t R_USBH_SOFEnable (usb_ctrl_t * const p_api_ctrl)
-{
-    usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
-
-#if !defined(USB_HIGH_SPEED_MODULE) && !USBH_CFG_PARAM_CHECKING_ENABLE
-    FSP_PARAMETER_NOT_USED(p_ctrl);
-#endif
-
-#if USBH_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(p_api_ctrl)
-    FSP_ERROR_RETURN(0 != p_ctrl->open, FSP_ERR_NOT_OPEN);
-#endif
-
-#ifdef USB_HIGH_SPEED_MODULE
-    if (USB_IS_USBHS(p_ctrl->module_number))
-    {
-        R_USB_HS0->DVSTCTR0 |= R_USB_DVSTCTR0_UACT_Msk;
-    }
-    else
-#endif
-    {
-        R_USB_FS0->DVSTCTR0 |= R_USB_DVSTCTR0_UACT_Msk;
-    }
-
-    return FSP_SUCCESS;
-}
-
-/**
- * @brief Stop SOF generator
- *
- * @param p_api_ctrl        [in]
- *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
- */
-fsp_err_t R_USBH_SOFDisable (usb_ctrl_t * const p_api_ctrl)
-{
-    usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
-
-#if !defined(USB_HIGH_SPEED_MODULE) && !USBH_CFG_PARAM_CHECKING_ENABLE
-    FSP_PARAMETER_NOT_USED(p_ctrl);
-#endif
-
-#if USBH_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(p_api_ctrl)
-    FSP_ERROR_RETURN(0 != p_ctrl->open, FSP_ERR_NOT_OPEN);
-#endif
-
-#ifdef USB_HIGH_SPEED_MODULE
-    if (USB_IS_USBHS(p_ctrl->module_number))
-    {
-        R_USB_HS0->DVSTCTR0 &= ~R_USB_DVSTCTR0_UACT_Msk;
-    }
-    else
-#endif
-    {
-        R_USB_FS0->DVSTCTR0 &= ~R_USB_DVSTCTR0_UACT_Msk;
-    }
 
     return FSP_SUCCESS;
 }
@@ -1098,6 +1100,44 @@ fsp_err_t R_USBH_Disable (usb_ctrl_t * const p_api_ctrl)
     return FSP_SUCCESS;
 }
 
+fsp_err_t R_USBH_XferAbort (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uint8_t ep_addr)
+{
+    usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
+    const uint32_t         epn    = r_usbh_edpt_number(ep_addr);
+
+#if USBH_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(p_api_ctrl)
+    FSP_ERROR_RETURN(0 != p_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN(USB_DEVICE_COUNT_MAX > dev_addr, FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN(USB_EP_COUNT_MAX > epn, FSP_ERR_INVALID_ARGUMENT);
+#endif
+
+    r_usbh_interrupt_disable(p_ctrl);
+
+    if (0 == epn)
+    {
+        r_usbh_process_terminate_control_xfer(p_ctrl);
+    }
+    else
+    {
+        const uint32_t dir = r_usbh_edpt_dir(ep_addr);
+        const uint32_t num = g_uhc_data[p_ctrl->module_number].ep[dev_addr - 1][dir][epn - 1];
+
+        if (num == 0)
+        {
+            r_usbh_interrupt_enable(p_ctrl);
+
+            return FSP_ERR_INVALID_ARGUMENT;
+        }
+
+        r_usbh_process_terminate_xfer(p_ctrl, num);
+    }
+
+    r_usbh_interrupt_enable(p_ctrl);
+
+    return FSP_SUCCESS;
+}
+
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
@@ -1216,7 +1256,7 @@ static void r_usbh_hw_init (usbh_instance_ctrl_t * const p_ctrl)
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        R_USB_HS0->SYSCFG = (USB_SPEED_HS == p_ctrl->max_speed) ?
+        R_USB_HS0->SYSCFG = p_ctrl->p_cfg->high_speed ?
                             (R_USB_HS0->SYSCFG | R_USB_SYSCFG_HSE_Msk) :
                             (R_USB_HS0->SYSCFG & ~R_USB_SYSCFG_HSE_Msk);
         R_USB_HS0->PHYSET  = R_USB_PHYSET_DIRPD_Msk | R_USB_PHYSET_PLLRESET_Msk;
@@ -1413,15 +1453,6 @@ static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * con
                                                       uint32_t                     xferred_bytes,
                                                       usb_xfer_result_t            result)
 {
-    usbh_event_t event =
-    {
-        .event_id = USBH_EVENT_XFER_COMPLETE,
-        .dev_addr = dev_addr,
-    };
-    event.complete.ep_addr = ep_addr;
-    event.complete.result  = result;
-    event.complete.len     = xferred_bytes;
-
     usbh_callback_arg_t   args;
     usbh_callback_arg_t * p_args = p_ctrl->p_callback_memory;
 
@@ -1444,7 +1475,16 @@ static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * con
 
     p_args->module_number = p_ctrl->module_number;
     p_args->p_context     = p_ctrl->p_context;
-    memcpy(&p_args->event, &event, sizeof(usbh_event_t));
+    p_args->event         = (usbh_event_t) {
+        .event_id = USBH_EVENT_XFER_COMPLETE,
+        .dev_addr = dev_addr,
+        .complete =
+        {
+            .ep_addr = ep_addr,
+            .result  = result,
+            .len     = xferred_bytes
+        }
+    };
 
     if (p_ctrl->p_callback != NULL)
     {
@@ -1454,11 +1494,6 @@ static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * con
 
 static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * const p_ctrl)
 {
-    usbh_event_t event;
-    event.event_id        = USBH_EVENT_DEVICE_ATTACH;
-    event.attach.hub_addr = 0;
-    event.attach.hub_port = 0;
-
     usbh_callback_arg_t   args;
     usbh_callback_arg_t * p_args = p_ctrl->p_callback_memory;
 
@@ -1481,7 +1516,14 @@ static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * con
 
     p_args->module_number = p_ctrl->module_number;
     p_args->p_context     = p_ctrl->p_context;
-    memcpy(&p_args->event, &event, sizeof(usbh_event_t));
+    p_args->event         = (usbh_event_t) {
+        .event_id = USBH_EVENT_DEVICE_ATTACH,
+        .attach   =
+        {
+            .hub_addr = 0,
+            .hub_port = 0
+        }
+    };
 
     if (p_ctrl->p_callback != NULL)
     {
@@ -1531,16 +1573,14 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
     {
         R_USB_HS0->PIPESEL = num;
 
-        return (uint16_t) ((R_USB_HS0->PIPEMAXP & R_USB_PIPEMAXP_MXPS_Msk) >>
-                           R_USB_PIPEMAXP_MXPS_Pos);
+        return (uint16_t) (R_USB_HS0->PIPEMAXP >> R_USB_HS0_PIPEMAXP_MXPS_Pos);
     }
     else
 #endif
     {
         R_USB_FS0->PIPESEL = num;
 
-        return (uint16_t) ((R_USB_FS0->PIPEMAXP & R_USB_PIPEMAXP_MXPS_Msk) >>
-                           R_USB_PIPEMAXP_MXPS_Pos);
+        return (uint16_t) ((R_USB_FS0->PIPEMAXP & R_USB_FS0_PIPEMAXP_MXPS_Msk) >> R_USB_FS0_PIPEMAXP_MXPS_Pos);
     }
 }
 
@@ -1566,34 +1606,113 @@ static inline void r_usbh_pipe_wait_for_ready (usbh_instance_ctrl_t * const p_ct
     }
 }
 
-static void r_usbh_pipe_write_packet (void * p_buf, volatile void * p_fifo, uint32_t len)
+static void r_usbh_pipe_write_packet (usbh_instance_ctrl_t * const p_ctrl,
+                                      void                       * p_buf,
+                                      volatile void              * p_fifo,
+                                      uint32_t                     len,
+                                      uint32_t                     access_bytes)
 {
-    volatile hw_fifo_t * p_reg  = p_fifo;
-    uint8_t            * p_addr = p_buf;
+#ifdef USB_HIGH_SPEED_MODULE
+    const bool          is_usbhs = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
+    volatile uint32_t * p_fifo32 = (volatile uint32_t *) p_fifo;
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (is_usbhs ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
+    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (is_usbhs ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
+#else
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (p_fifo);
+    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (p_fifo);
+#endif
+    uint8_t * p_addr = p_buf;
 
-    while (len >= 2)
+#ifdef USB_HIGH_SPEED_MODULE
+    if (!((uintptr_t) p_addr & 0x3) && (len >= 4) && (access_bytes == 4))
     {
-        p_reg->u16 = *(const uint16_t *) p_addr;
-        p_addr    += 2;
-        len       -= 2;
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_32_BIT);
+
+        while (len >= 4)
+        {
+            *p_fifo32 = *(uint32_t *) p_addr;
+            p_addr   += 4;
+            len      -= 4;
+        }
+    }
+#endif
+
+    if (!((uintptr_t) p_addr & 0x1) && (len >= 2) && (access_bytes >= 2))
+    {
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT);
+
+        while (len >= 2)
+        {
+            *p_fifo16 = *(uint16_t *) p_addr;
+            p_addr   += 2;
+            len      -= 2;
+        }
     }
 
     if (len)
     {
-        p_reg->u8 = *(const uint8_t *) p_addr;
-        ++p_addr;
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT);
+
+        while (len--)
+        {
+            *p_fifo8 = *p_addr;
+            ++p_addr;
+        }
     }
 }
 
-static void r_usbh_pipe_read_packet (void * p_buf, volatile void * p_fifo, uint32_t len)
+static void r_usbh_pipe_read_packet (usbh_instance_ctrl_t * const p_ctrl,
+                                     void                       * p_buf,
+                                     volatile void              * p_fifo,
+                                     uint32_t                     len,
+                                     uint32_t                     access_bytes)
 {
-    uint8_t          * p_data = (uint8_t *) p_buf;
-    volatile uint8_t * p_reg  = (volatile uint8_t *) p_fifo;
+#ifdef USB_HIGH_SPEED_MODULE
+    const bool          is_usbhs = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
+    volatile uint32_t * p_fifo32 = (volatile uint32_t *) p_fifo;
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (is_usbhs ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
+    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (is_usbhs ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
+#else
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (p_fifo);
+    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (p_fifo);
+#endif
+    uint8_t * p_data = (uint8_t *) p_buf;
 
-    /* byte access is always at base register address */
-    while (len--)
+#ifdef USB_HIGH_SPEED_MODULE
+    if (!((uintptr_t) p_data & 0x3) && (len >= 4) && (access_bytes == 4))
     {
-        *p_data++ = *p_reg;
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_32_BIT);
+
+        while (len >= 4)
+        {
+            *(uint32_t *) p_data = *p_fifo32;
+            p_data              += 4;
+            len -= 4;
+        }
+    }
+#endif
+
+    if (!((uintptr_t) p_data & 0x1) && (len >= 2) && (access_bytes >= 2))
+    {
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT);
+
+        while (len >= 2)
+        {
+            *(uint16_t *) p_data = *p_fifo16;
+            p_data              += 2;
+            len -= 2;
+        }
+    }
+
+    if (len)
+    {
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT);
+
+        while (len--)
+        {
+            *p_data = *p_fifo8;
+            ++p_data;
+        }
     }
 }
 
@@ -1602,6 +1721,11 @@ static bool r_usbh_pipe0_xfer_in (usbh_instance_ctrl_t * const p_ctrl)
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[0];
     void         * p_buf  = p_pipe->buf;
     const uint32_t rem    = p_pipe->remaining;
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     volatile uint16_t * p_dcpctr;
     volatile uint16_t * p_cfifoctr;
@@ -1631,7 +1755,7 @@ static bool r_usbh_pipe0_xfer_in (usbh_instance_ctrl_t * const p_ctrl)
     if (len)
     {
         *p_dcpctr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
-        r_usbh_pipe_read_packet(p_buf, p_cfifo, len);
+        r_usbh_pipe_read_packet(p_ctrl, p_buf, p_cfifo, len, access_bytes);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1657,6 +1781,11 @@ static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
 {
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[0];
     const uint32_t rem    = p_pipe->remaining;
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     if (!rem)
     {
@@ -1687,7 +1816,7 @@ static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_buf, p_cfifo, len);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_cfifo, len, access_bytes);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1707,13 +1836,15 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
     void         * p_buf  = p_pipe->buf;
     const uint32_t rem    = p_pipe->remaining;
     const uint32_t mps    = r_usbh_edpt_max_packet_size(p_ctrl, num);
-
-    r_usbh_pipe_wait_for_ready(p_ctrl, num);
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     volatile uint16_t * p_reg_d0fifosel;
     volatile uint16_t * p_reg_d0fifoctr;
     volatile void     * p_reg_d0fifo;
-    uint16_t            vld;
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
@@ -1721,7 +1852,6 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
         p_reg_d0fifosel = &R_USB_HS0->D0FIFOSEL;
         p_reg_d0fifoctr = &R_USB_HS0->D0FIFOCTR;
         p_reg_d0fifo    = (volatile void *) &R_USB_HS0->D0FIFO;
-        vld             = (uint32_t) (R_USB_HS0->CFIFOCTR & R_USB_CFIFOCTR_DTLN_Msk);
     }
     else
 #endif
@@ -1729,17 +1859,19 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
         p_reg_d0fifosel = &R_USB_FS0->D0FIFOSEL;
         p_reg_d0fifoctr = &R_USB_FS0->D0FIFOCTR;
         p_reg_d0fifo    = (volatile void *) &R_USB_FS0->D0FIFO;
-        vld             = (uint32_t) (R_USB_FS0->CFIFOCTR & R_USB_CFIFOCTR_DTLN_Msk);
     }
 
-    *p_reg_d0fifosel = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) |
-                       (USB_FIFOSEL_MBW_8_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    *p_reg_d0fifosel = ((access_bytes == 4 ? USB_FIFOSEL_MBW_32_BIT : USB_FIFOSEL_MBW_16_BIT) <<
+                        R_USB_D0FIFOSEL_MBW_Pos) | (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
 
+    r_usbh_pipe_wait_for_ready(p_ctrl, num);
+
+    const uint16_t vld = (*p_reg_d0fifoctr & R_USB_CFIFOCTR_DTLN_Msk);
     const uint32_t len = USB_MIN(USB_MIN(rem, mps), vld);
 
     if (len)
     {
-        r_usbh_pipe_read_packet(p_buf, p_reg_d0fifo, len);
+        r_usbh_pipe_read_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1769,6 +1901,11 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     const uint32_t rem    = p_pipe->remaining;
     const uint32_t mps    = r_usbh_edpt_max_packet_size(p_ctrl, num);
     const uint32_t len    = USB_MIN(rem, mps);
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     r_usbh_pipe_wait_for_ready(p_ctrl, num);
 
@@ -1798,12 +1935,20 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
         return true;
     }
 
-    *p_reg_d0fifosel = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) |
-                       (USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    if (access_bytes == 4)
+    {
+        *p_reg_d0fifosel = USB_FIFOSEL_MBW_32_BIT << R_USB_D0FIFOSEL_MBW_Pos;
+    }
+    else
+    {
+        *p_reg_d0fifosel = USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos;
+    }
+
+    *p_reg_d0fifosel |= (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_buf, p_reg_d0fifo, len);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1828,6 +1973,11 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
     FSP_PARAMETER_NOT_USED(dev_addr);
 
     const uint32_t dir = r_usbh_edpt_dir(ep_addr);
+#ifdef USB_HIGH_SPEED_MODULE
+    const uint32_t access_bytes = USB_IS_USBHS(p_ctrl->module_number) ? 4 : 2;
+#else
+    const uint32_t access_bytes = 2;
+#endif
 
     volatile uint16_t * p_reg_cfifosel;
     volatile uint16_t * p_reg_cfifoctr;
@@ -1857,21 +2007,16 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
         p_reg_usbreq   = &R_USB_FS0->USBREQ;
     }
 
+    uint16_t fifosel = (access_bytes == 4 ? USB_FIFOSEL_MBW_32_BIT : USB_FIFOSEL_MBW_16_BIT) << R_USB_CFIFOSEL_MBW_Pos;
+
     /* configure fifo direction and access unit settings */
-    if (USB_DIR_IN == dir)
+    if (USB_DIR_OUT == dir)
     {
-        /* IN, a byte */
-        *p_reg_cfifosel = USB_FIFOSEL_MBW_8_BIT << R_USB_CFIFOSEL_MBW_Pos;
-        FSP_HARDWARE_REGISTER_WAIT((*p_reg_cfifosel & R_USB_CFIFOSEL_ISEL_Msk), 0);
+        fifosel |= R_USB_CFIFOSEL_ISEL_Msk;
     }
-    else
-    {
-        /* OUT, 2 bytes */
-        *p_reg_cfifosel = R_USB_CFIFOSEL_ISEL_Msk |
-                          (USB_FIFOSEL_MBW_16_BIT << R_USB_CFIFOSEL_MBW_Pos);
-        FSP_HARDWARE_REGISTER_WAIT((*p_reg_cfifosel & R_USB_CFIFOSEL_ISEL_Msk),
-                                   R_USB_CFIFOSEL_ISEL_Msk);
-    }
+
+    *p_reg_cfifosel = fifosel;
+    FSP_HARDWARE_REGISTER_WAIT(*p_reg_cfifosel, fifosel);
 
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[0];
     p_pipe->ep        = ep_addr;
@@ -1884,7 +2029,6 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
         if (USB_DIR_OUT == dir)
         {
             /* OUT */
-            FSP_ASSERT((*p_reg_dcpctr & R_USB_DCPCTR_BSTS_Msk) && (*p_reg_usbreq & USB_SETBIT(7)));
             r_usbh_pipe0_xfer_out(p_ctrl);
         }
     }
@@ -1900,7 +2044,6 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
 
         if (dir == ((*p_reg_dcpcfg & R_USB_DCPCFG_DIR_Msk) >> R_USB_DCPCFG_DIR_Pos))
         {
-            FSP_ASSERT((USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos) == (*p_reg_dcpctr & R_USB_DCPCTR_PID_Msk));
             *p_reg_dcpctr |= R_USB_DCPCTR_SQSET_Msk;
             *p_reg_dcpcfg  = (dir) ?
                              (*p_reg_dcpcfg & (~R_USB_DCPCFG_DIR_Msk)) :
@@ -2006,11 +2149,6 @@ static bool r_usbh_process_edpt_xfer (usbh_instance_ctrl_t * const p_ctrl,
 
 static inline void r_usbh_event_device_remove_notify (usbh_instance_ctrl_t * const p_ctrl)
 {
-    usbh_event_t event;
-    event.event_id        = USBH_EVENT_DEVICE_REMOVE;
-    event.remove.hub_addr = 0;
-    event.remove.hub_port = 0;
-
     usbh_callback_arg_t   args;
     usbh_callback_arg_t * p_args = p_ctrl->p_callback_memory;
 
@@ -2032,7 +2170,14 @@ static inline void r_usbh_event_device_remove_notify (usbh_instance_ctrl_t * con
 
     p_args->module_number = p_ctrl->module_number;
     p_args->p_context     = p_ctrl->p_context;
-    memcpy(&p_args->event, &event, sizeof(usbh_event_t));
+    p_args->event         = (usbh_event_t) {
+        .event_id = USBH_EVENT_DEVICE_REMOVE,
+        .remove   =
+        {
+            .hub_addr = 0,
+            .hub_port = 0
+        }
+    };
 
     if (p_ctrl->p_callback != NULL)
     {
@@ -2127,6 +2272,72 @@ static void r_usbh_process_pipe_brdy (usbh_instance_ctrl_t * const p_ctrl, uint3
     }
 }
 
+static void r_usbh_process_terminate_xfer (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
+{
+    volatile usb_reg_pipetre_t * p_reg_pipetr  = r_usbh_get_pipetre(p_ctrl, num);
+    volatile uint16_t          * p_reg_pipectr = r_usbh_get_pipectr(p_ctrl, num);
+
+    /* Set NAK */
+    if (0 != (*p_reg_pipectr & R_USB_PIPE_CTR_PID_Msk))
+    {
+        *p_reg_pipectr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
+    }
+
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        /* Disable pipe interrupt */
+        R_USB_HS0->BRDYENB &= (uint16_t) ~(1 << num);
+        R_USB_HS0->NRDYENB &= (uint16_t) ~(1 << num);
+        R_USB_HS0->BEMPENB &= (uint16_t) ~(1 << num);
+
+        /* Clear FIFO port */
+        if (num == R_USB_HS0->D0FIFOSEL_b.CURPIPE)
+        {
+            R_USB_HS0->D0FIFOSEL_b.CURPIPE = 0;
+        }
+    }
+    else
+#endif
+    {
+        R_USB_FS0->BRDYENB &= (uint16_t) ~(1 << num);
+        R_USB_FS0->NRDYENB &= (uint16_t) ~(1 << num);
+        R_USB_FS0->BEMPENB &= (uint16_t) ~(1 << num);
+
+        /* Clear FIFO port */
+        if (num == R_USB_FS0->D0FIFOSEL_b.CURPIPE)
+        {
+            R_USB_FS0->D0FIFOSEL_b.CURPIPE = 0;
+        }
+    }
+
+    /* Clear transaction counter */
+    p_reg_pipetr->TRE &= ~R_USB_PIPE_TR_E_TRENB_Msk;
+    p_reg_pipetr->TRE |= R_USB_PIPE_TR_E_TRCLR_Msk;
+}
+
+static void r_usbh_process_terminate_control_xfer (usbh_instance_ctrl_t * const p_ctrl)
+{
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        /* Set NAK */
+        R_USB_HS0->DCPCTR = USB_PIPE_CTR_PID_NAK << R_USB_DCPCTR_PID_Pos;
+
+        /* Clear FIFO port */
+        R_USB_HS0->CFIFOCTR = R_USB_CFIFOCTR_BCLR_Msk;
+    }
+    else
+#endif
+    {
+        /* Set NAK */
+        R_USB_FS0->DCPCTR = USB_PIPE_CTR_PID_NAK << R_USB_DCPCTR_PID_Pos;
+
+        /* Clear FIFO port */
+        R_USB_FS0->CFIFOCTR = R_USB_CFIFOCTR_BCLR_Msk;
+    }
+}
+
 static inline void r_usbh_interrupt_configure (usbh_instance_ctrl_t * p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -2197,9 +2408,6 @@ void r_usbh_isr (void)
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
 
-    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
-    R_BSP_IrqStatusClear(irq);
-
     usbh_instance_ctrl_t * p_ctrl = R_FSP_IsrContextGet(irq);
 
     volatile uint16_t * p_reg_intsts0;
@@ -2250,6 +2458,9 @@ void r_usbh_isr (void)
 
     uint16_t status0 = *p_reg_intsts0;
     uint16_t status1 = *p_reg_intsts1;
+
+    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
+    R_BSP_IrqStatusClear(irq);
 
     /* clear active bits except VALID (don't write 0 to already cleared bits
      * according to the HW manual) */
