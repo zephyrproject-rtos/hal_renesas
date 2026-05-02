@@ -652,6 +652,15 @@ static inline uint16_t get_edpt_packet_size (usbd_instance_ctrl_t * const p_ctrl
 /* get the available pipe can be used to configure for new endpoint */
 static uint32_t find_pipe (usbd_instance_ctrl_t * const p_ctrl, uint32_t xfer_type)
 {
+#if BSP_FEATURE_USB_HAS_PIPE04567
+    const uint8_t pipe_idx_arr[4][2] =
+    {
+        {0, 0},                        // Control
+        {0, 0},                        // Isochronous: not supported
+        {4, 5},                        // Bulk
+        {6, 7},                        // Interrupt
+    };
+#else
     const uint8_t pipe_idx_arr[4][2] =
     {
         {0, 0},                        // Control
@@ -659,6 +668,7 @@ static uint32_t find_pipe (usbd_instance_ctrl_t * const p_ctrl, uint32_t xfer_ty
         {1, 5},                        // Bulk
         {6, 9},                        // Interrupt
     };
+#endif
 
     /* find backward since only pipe 1, 2 support ISO */
     const uint8_t idx_first = pipe_idx_arr[xfer_type][0];
@@ -780,10 +790,17 @@ static inline void pipe_wait_for_ready (usbd_instance_ctrl_t * const p_ctrl, uin
     }
     else
 #endif
+#if BSP_FEATURE_USB_HAS_PIPE04567
+    {
+        FSP_HARDWARE_REGISTER_WAIT(R_USB_FS0->CFIFOSEL_b.CURPIPE, num);
+        FSP_HARDWARE_REGISTER_WAIT(R_USB_FS0->CFIFOCTR_b.FRDY, 1);
+    }
+#else
     {
         FSP_HARDWARE_REGISTER_WAIT(R_USB_FS0->D0FIFOSEL_b.CURPIPE, num);
         FSP_HARDWARE_REGISTER_WAIT(R_USB_FS0->D0FIFOCTR_b.FRDY, 1);
     }
+#endif
 }
 
 /* write data buffer --> hw fifo */
@@ -936,6 +953,10 @@ static inline bool pipe_xfer_in (usbd_instance_ctrl_t * const p_ctrl, uint8_t nu
     volatile uint16_t * d0fifosel = hs_module ? &R_USB_HS0->D0FIFOSEL : &R_USB_FS0->D0FIFOSEL;
     volatile void     * d0fifo    = hs_module ? &R_USB_HS0->D0FIFO : &R_USB_FS0->D0FIFO;
     volatile uint16_t * d0fifoctr = hs_module ? &R_USB_HS0->D0FIFOCTR : &R_USB_FS0->D0FIFOCTR;
+#elif BSP_FEATURE_USB_HAS_PIPE04567
+    volatile uint16_t * d0fifosel = &R_USB_FS0->CFIFOSEL;
+    volatile void     * d0fifo    = &R_USB_FS0->CFIFO;
+    volatile uint16_t * d0fifoctr = &R_USB_FS0->CFIFOCTR;
 #else
     volatile uint16_t * d0fifosel = &R_USB_FS0->D0FIFOSEL;
     volatile void     * d0fifo    = &R_USB_FS0->D0FIFO;
@@ -988,6 +1009,10 @@ static inline bool pipe_xfer_out (usbd_instance_ctrl_t * const p_ctrl, uint8_t n
     volatile uint16_t * d0fifosel = hs_module ? &R_USB_HS0->D0FIFOSEL : &R_USB_FS0->D0FIFOSEL;
     volatile uint32_t * d0fifo    = hs_module ? &R_USB_HS0->D0FIFO : &R_USB_FS0->D0FIFO;
     volatile uint16_t * d0fifoctr = hs_module ? &R_USB_HS0->D0FIFOCTR : &R_USB_FS0->D0FIFOCTR;
+#elif BSP_FEATURE_USB_HAS_PIPE04567
+    volatile uint16_t * d0fifosel = &R_USB_FS0->CFIFOSEL;
+    volatile uint32_t * d0fifo    = &R_USB_FS0->CFIFO;
+    volatile uint16_t * d0fifoctr = &R_USB_FS0->CFIFOCTR;
 #else
     volatile uint16_t * d0fifosel = &R_USB_FS0->D0FIFOSEL;
     volatile uint32_t * d0fifo    = &R_USB_FS0->D0FIFO;
@@ -1004,6 +1029,8 @@ static inline bool pipe_xfer_out (usbd_instance_ctrl_t * const p_ctrl, uint8_t n
 
 #ifdef USB_HIGH_SPEED_MODULE
     const uint16_t vld = hs_module ? R_USB_HS0->D0FIFOCTR_b.DTLN : R_USB_FS0->D0FIFOCTR_b.DTLN;
+#elif BSP_FEATURE_USB_HAS_PIPE04567
+    const uint16_t vld = R_USB_FS0->CFIFOCTR_b.DTLN;
 #else
     const uint16_t vld = R_USB_FS0->D0FIFOCTR_b.DTLN;
 #endif
@@ -1223,6 +1250,9 @@ static inline fsp_err_t process_pipe_xfer (usbd_instance_ctrl_t * const p_ctrl,
     bool                hs_module = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
     volatile uint16_t * d0fifosel = hs_module ? &R_USB_HS0->D0FIFOSEL : &R_USB_FS0->D0FIFOSEL;
     volatile uint16_t * d0fifoctr = hs_module ? &R_USB_HS0->D0FIFOCTR : &R_USB_FS0->D0FIFOCTR;
+#elif BSP_FEATURE_USB_HAS_PIPE04567
+    volatile uint16_t * d0fifosel = &R_USB_FS0->CFIFOSEL;
+    volatile uint16_t * d0fifoctr = &R_USB_FS0->CFIFOCTR;
 #else
     volatile uint16_t * d0fifosel = &R_USB_FS0->D0FIFOSEL;
     volatile uint16_t * d0fifoctr = &R_USB_FS0->D0FIFOCTR;
