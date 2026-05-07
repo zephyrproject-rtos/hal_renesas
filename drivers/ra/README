@@ -235,3 +235,7 @@ Patch List:
          zephyr/ra/ra_cfg/fsp_cfg/r_sci_b_spi_cfg.h
          zephyr/ra/ra_cfg/fsp_cfg/r_sci_b_uart_cfg.h
          zephyr/ra/ra_cfg/fsp_cfg/r_spi_b_cfg.h
+
+   * Fix GLCDC stop sequence to wait for the background plane to stop before reset
+      Impacted files:
+         drivers/ra/fsp/src/r_glcdc/r_glcdc.c

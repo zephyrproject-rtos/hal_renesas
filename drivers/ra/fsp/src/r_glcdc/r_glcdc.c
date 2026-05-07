@@ -506,8 +506,8 @@ fsp_err_t R_GLCDC_Close (display_ctrl_t * const p_api_ctrl)
     R_GLCDC->SYSCNT.DTCTEN = 0U;
     R_GLCDC->SYSCNT.INTEN  = 0U;
 
-    /* Disable background plane operation */
-    R_GLCDC->BG.EN_b.EN = 0U;
+    /* Wait the background plane to stop */
+    FSP_HARDWARE_REGISTER_WAIT(R_GLCDC->BG.MON_b.EN, 0U);
 
     /* Reset the GLCDC hardware */
     R_GLCDC->BG.EN_b.SWRST = 0U;
