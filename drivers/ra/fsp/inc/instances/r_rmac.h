@@ -144,6 +144,9 @@ typedef struct st_rmac_instance_ctrl
     ether_link_establish_status_t link_establish_status; ///< Current Link status
     ether_wake_on_lan_t           wake_on_lan;           ///< Wake on LAN mode.
 
+    bool     rx_recover_pending;
+    uint32_t rx_lost_queue_index;
+
     /* Pointer to callback and optional working memory */
     void (* p_callback)(ether_callback_args_t *);
     ether_callback_args_t * p_callback_memory;

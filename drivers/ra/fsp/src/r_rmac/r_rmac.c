@@ -1276,6 +1276,8 @@ void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
     p_instance_ctrl->tx_empty_buffer_queue.p_tail = NULL;
     p_instance_ctrl->rx_empty_buffer_queue.p_head = NULL;
     p_instance_ctrl->rx_empty_buffer_queue.p_tail = NULL;
+    p_instance_ctrl->rx_recover_pending   = false;
+    p_instance_ctrl->rx_lost_queue_index  = RMAC_INVALID_QUEUE_INDEX;
 
     /* Enable Data interrupt for RX descriptor. */
     descriptor.basic.die = 1;
@@ -2079,25 +2081,42 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
 
         case ETHER_SWITCH_EVENT_RX_MESSAGE_LOST:
         {
-            /* When the link is down, ignore this event. */
+            uint32_t lost_queue_index = RMAC_INVALID_QUEUE_INDEX;
+            uint32_t next_queue_index = RMAC_INVALID_QUEUE_INDEX;
+
             FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status, );
 
             callback_args.event = ETHER_EVENT_RX_MESSAGE_LOST;
 
-            /* When the lost error occurs repeatedly, treat the queue as stopped. */
-            if (p_instance_ctrl->is_lost_rx_packet)
+            for (uint32_t i = 0; i < p_extend->rx_queue_num; i++)
             {
-                r_rmac_get_rx_queue(p_instance_ctrl, p_args->queue_index);
-                r_rmac_set_rx_queue(p_instance_ctrl, p_args->queue_index);
-                p_instance_ctrl->rx_running_queue_index = RMAC_INVALID_QUEUE_INDEX;
-                p_instance_ctrl->is_lost_rx_packet      = false;
+                if (p_args->queue_index == p_extend->p_rx_queue_list[i].index)
+                {
+                    lost_queue_index = i;
+                    break;
+                }
             }
 
-            if ((RMAC_INVALID_QUEUE_INDEX != p_instance_ctrl->rx_running_queue_index) &&
-                (p_args->queue_index == p_extend->p_rx_queue_list[p_instance_ctrl->rx_running_queue_index].index))
+            if (RMAC_INVALID_QUEUE_INDEX != lost_queue_index)
             {
-                p_instance_ctrl->is_lost_rx_packet = true;
+                next_queue_index = lost_queue_index;
+                RMAC_INCREMENT_DESCRIPTOR_QUEUE_INDEX(next_queue_index, p_extend->rx_queue_num);
+
+                p_instance_ctrl->rx_lost_queue_index = lost_queue_index;
+                p_instance_ctrl->rx_recover_pending  = true;
+
+                if (next_queue_index != p_instance_ctrl->rx_running_queue_index)
+                {
+                    if (FSP_SUCCESS == R_LAYER3_SWITCH_StartDescriptorQueue(
+                        p_extend->p_ether_switch->p_ctrl,
+                        p_extend->p_rx_queue_list[next_queue_index].index))
+                    {
+                        p_instance_ctrl->rx_running_queue_index = next_queue_index;
+                    }
+                }
             }
+
+            p_instance_ctrl->is_lost_rx_packet = false;
 
             break;
         }
