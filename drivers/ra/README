@@ -217,3 +217,8 @@ Patch List:
    * Update BSP_FEATURE_IIC_FAST_MODE_PLUS_CHANNELS_MASK for RA6M5
       Impacted files:
          drivers/ra/fsp/src/bsp/mcu/ra6m5/bsp_feature.h
+
+   * Fix RMAC issue to recover the lost queue from thread context and avoid expensive descriptor
+     drain/refill work in the interrupt path
+         drivers/ra/fsp/src/r_rmac/r_rmac.c
+         drivers/ra/fsp/inc/instances/r_rmac.h
