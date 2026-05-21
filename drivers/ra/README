@@ -213,3 +213,7 @@ Patch List:
       Impacted files:
          drivers/ra/fsp/src/r_layer3_switch/r_layer3_switch.c
          zephyr/ra/ra_cfg/fsp_cfg/r_layer3_switch_cfg.h
+
+   * Update BSP_FEATURE_IIC_FAST_MODE_PLUS_CHANNELS_MASK for RA6M5
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/ra6m5/bsp_feature.h
