@@ -362,7 +362,7 @@
 #define BSP_FEATURE_IIC_B_CHECK_SCILV_BEFORE_MASTER_WRITE_TX_DATA (0UL)             // SCL status needs to be checked before writing the transmission data in master mode.
 #define BSP_FEATURE_IIC_B_FAST_MODE_PLUS_CHANNELS_MASK            (0x00UL)          // Mask of channels which support "Fast Mode Plus": up to 1 Mbps bit rates.
 #define BSP_FEATURE_IIC_B_VALID_CHANNEL_MASK                      (0x00UL)          // Mask of available IIC_B or compatible I3C channels.
-#define BSP_FEATURE_IIC_FAST_MODE_PLUS_CHANNELS_MASK              (1UL)             // Mask of channels which support "Fast Mode Plus": up to 1 Mbps bit rates.
+#define BSP_FEATURE_IIC_FAST_MODE_PLUS_CHANNELS_MASK              (3UL)             // Mask of channels which support "Fast Mode Plus": up to 1 Mbps bit rates.
 #define BSP_FEATURE_IIC_HAS_CLOCK                                 (0UL)             // Indicates there is a separate IIC clock.
 #define BSP_FEATURE_IIC_VALID_CHANNEL_MASK                        (0x07UL)          // Mask of available IIC channels.
 
