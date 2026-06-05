@@ -1,8 +1,8 @@
 /*
-* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
-*
-* SPDX-License-Identifier: BSD-3-Clause
-*/
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 
 /***********************************************************************************************************************
  * Includes
@@ -123,24 +123,11 @@ typedef __PACKED_STRUCT st_pipe_state
     };
 } pipe_state_t;
 
-typedef struct st_usbh_dev0
-{
-    uint8_t hub_addr;
-    uint8_t hub_port;
-    __PACKED_STRUCT
-    {
-        uint8_t          speed        : 4; /* packed speed to save footprint */
-        volatile uint8_t enumerating  : 1; /* enumeration is in progress, false if not connected or all interfaces are configured */
-        uint8_t          USB_RESERVED : 3;
-    } usbh_dev0_info;
-} usbh_dev0_t;
-
 typedef struct st_uhc_data
 {
     pipe_state_t pipe[USB_PIPE_COUNT_MAX];
     uint8_t      ep[USB_DEVICE_COUNT_MAX][USB_DIR_COUNT_MAX][USB_EP_COUNT_MAX];
     uint8_t      ctl_mps[USB_DEVICE_COUNT_MAX]; /* EP0 max packet size for each device */
-    usbh_dev0_t  dev0;
 } uhc_data_t;
 
 /***********************************************************************************************************************
@@ -513,8 +500,6 @@ fsp_err_t R_USBH_GetDeviceSpeed (usb_ctrl_t * const p_api_ctrl, usb_speed_t * p_
         }
     }
 
-    g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = *p_speed;
-
     return FSP_SUCCESS;
 }
 
@@ -798,11 +783,23 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
  *
  * @param p_api_ctrl    [in]
  * @param dev_addr      [in]
+ * @param speed         [in] Speed of the target device
+ * @param mxps0         [in] Max packet size of the default control pipe
+ * @param hub_addr      [in] Device address of the upstream high-speed hub acting as the
+ *                           transaction translator, or 0 if the device is on the root port.
+ *                           Used to configure split transactions for FS/LS devices.
+ * @param hub_port      [in] Port number on @p hub_addr the device is attached to (1-based),
+ *                           or 0 if the device is on the root port.
  *
  * @retval FSP_SUCCESS on success
  * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
  */
-fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr)
+fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl,
+                           uint8_t            dev_addr,
+                           usb_speed_t        speed,
+                           uint8_t            mxps0,
+                           uint8_t            hub_addr,
+                           uint8_t            hub_port)
 {
     usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
 
@@ -835,40 +832,87 @@ fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr)
     FSP_HARDWARE_REGISTER_WAIT((*p_dcpctr & R_USB_DCPCTR_PBUSY_Msk), 0);
 
     /* Default mps = 64 */
-    *p_dcpmaxp = ((dev_addr << R_USB_DCPMAXP_DEVSEL_Pos) & R_USB_DCPMAXP_DEVSEL_Msk) | USB_DCPMAXP_MXPS_DEFAULT;
+    *p_dcpmaxp = ((dev_addr << R_USB_DCPMAXP_DEVSEL_Pos) & R_USB_DCPMAXP_DEVSEL_Msk) |
+                 ((mxps0 << R_USB_DCPMAXP_MXPS_Pos) & R_USB_DCPMAXP_MXPS_Msk);
 
-    switch (g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed)
+    uint16_t usbspd;
+
+    switch (speed)
     {
         case USB_SPEED_LS:
         {
-            *p_devadd = USB_DEVADD_USBSPD_LS << R_USB_DEVADD_USBSPD_Pos;
+            usbspd = USB_DEVADD_USBSPD_LS;
             break;
         }
 
         case USB_SPEED_FS:
         {
-            *p_devadd = USB_DEVADD_USBSPD_FS << R_USB_DEVADD_USBSPD_Pos;
+            usbspd = USB_DEVADD_USBSPD_FS;
             break;
         }
 
 #ifdef USB_HIGH_SPEED_MODULE
         case USB_SPEED_HS:
         {
-            *p_devadd = USB_IS_USBHS(p_ctrl->module_number) ?
-                        (USB_DEVADD_USBSPD_HS << R_USB_DEVADD_USBSPD_Pos) :
-                        (USB_DEVADD_USBSPD_NOT_USE << R_USB_DEVADD_USBSPD_Pos);
-            break;
+            if (USB_IS_USBHS(p_ctrl->module_number))
+            {
+                usbspd = USB_DEVADD_USBSPD_HS;
+                break;
+            }
+
+            __fallthrough;
         }
 #endif
 
         default:
         {
             *p_devadd = USB_DEVADD_USBSPD_NOT_USE << R_USB_DEVADD_USBSPD_Pos;
-            break;
+
+            return FSP_ERR_INVALID_ARGUMENT;
         }
     }
 
-    g_uhc_data[p_ctrl->module_number].ctl_mps[dev_addr] = USB_DCPMAXP_MXPS_DEFAULT;
+    uint16_t devadd_val = usbspd << R_USB_DEVADD_USBSPD_Pos;
+
+#ifdef USB_HIGH_SPEED_MODULE
+    /*
+     * Split transaction: a Full-/Low-speed device located behind a high-speed hub must
+     * have its upstream hub address (transaction translator) and hub port programmed so
+     * the controller performs SSPLIT/CSPLIT automatically. The UPPHUB/HUBPORT fields only
+     * exist on the high-speed module. A zero hub address means the device is on the root
+     * port and no split transaction is required.
+     */
+    if (USB_IS_USBHS(p_ctrl->module_number) && (0 != hub_addr) &&
+        ((USB_SPEED_FS == speed) || (USB_SPEED_LS == speed)))
+    {
+        devadd_val |= ((hub_addr << R_USB_DEVADD_UPPHUB_Pos) & R_USB_DEVADD_UPPHUB_Msk) |
+                      ((hub_port << R_USB_DEVADD_HUBPORT_Pos) & R_USB_DEVADD_HUBPORT_Msk);
+    }
+#else
+    FSP_PARAMETER_NOT_USED(hub_addr);
+    FSP_PARAMETER_NOT_USED(hub_port);
+#endif
+
+    *p_devadd = devadd_val;
+
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        if (speed != USB_SPEED_HS)
+        {
+            R_USB_HS0->SOFCFG |= R_USB_SOFCFG_TRNENSEL_Msk;
+        }
+    }
+    else
+#endif
+    {
+        if (speed != USB_SPEED_FS)
+        {
+            R_USB_FS0->SOFCFG |= R_USB_SOFCFG_TRNENSEL_Msk;
+        }
+    }
+
+    g_uhc_data[p_ctrl->module_number].ctl_mps[dev_addr] = mxps0;
 
     return FSP_SUCCESS;
 }

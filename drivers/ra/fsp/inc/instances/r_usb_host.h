@@ -42,7 +42,12 @@ typedef struct st_usbh_instance_ctrl
  **********************************************************************************************************************/
 fsp_err_t R_USBH_Open(usb_ctrl_t * const p_api_ctrl, usb_cfg_t const * const p_cfg);
 fsp_err_t R_USBH_GetDeviceSpeed(usb_ctrl_t * const p_api_ctrl, usb_speed_t * p_speed);
-fsp_err_t R_USBH_PortOpen(usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr);
+fsp_err_t R_USBH_PortOpen(usb_ctrl_t * const p_api_ctrl,
+                          uint8_t            dev_addr,
+                          usb_speed_t        speed,
+                          uint8_t            mxps0,
+                          uint8_t            hub_addr,
+                          uint8_t            hub_port);
 fsp_err_t R_USBH_PortStatusGet(usb_ctrl_t * const p_api_ctrl, usb_status_t * p_status);
 fsp_err_t R_USBH_PortReset(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_DeviceRelease(usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr);
