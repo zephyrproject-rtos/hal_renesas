@@ -802,7 +802,7 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
  * @retval FSP_SUCCESS on success
  * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
  */
-fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr)
+fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_speed_t speed)
 {
     usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
 
@@ -837,34 +837,62 @@ fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr)
     /* Default mps = 64 */
     *p_dcpmaxp = ((dev_addr << R_USB_DCPMAXP_DEVSEL_Pos) & R_USB_DCPMAXP_DEVSEL_Msk) | USB_DCPMAXP_MXPS_DEFAULT;
 
-    switch (g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed)
+    switch (speed)
     {
         case USB_SPEED_LS:
         {
             *p_devadd = USB_DEVADD_USBSPD_LS << R_USB_DEVADD_USBSPD_Pos;
+            g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = USB_SPEED_LS;
             break;
         }
 
         case USB_SPEED_FS:
         {
             *p_devadd = USB_DEVADD_USBSPD_FS << R_USB_DEVADD_USBSPD_Pos;
+            g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = USB_SPEED_FS;
             break;
         }
 
 #ifdef USB_HIGH_SPEED_MODULE
         case USB_SPEED_HS:
         {
-            *p_devadd = USB_IS_USBHS(p_ctrl->module_number) ?
-                        (USB_DEVADD_USBSPD_HS << R_USB_DEVADD_USBSPD_Pos) :
-                        (USB_DEVADD_USBSPD_NOT_USE << R_USB_DEVADD_USBSPD_Pos);
-            break;
+            if (USB_IS_USBHS(p_ctrl->module_number))
+            {
+                *p_devadd = USB_DEVADD_USBSPD_HS << R_USB_DEVADD_USBSPD_Pos;
+                g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = USB_SPEED_HS;
+                break;
+            }
+            __fallthrough;
         }
 #endif
 
         default:
         {
             *p_devadd = USB_DEVADD_USBSPD_NOT_USE << R_USB_DEVADD_USBSPD_Pos;
+            g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = USB_SPEED_INVALID;
             break;
+        }
+    }
+
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        if (speed != USB_SPEED_HS)
+        {
+            R_USB_HS0->SOFCFG |= R_USB_SOFCFG_TRNENSEL_Msk;
+            R_USB_HS0->SYSCFG_b.HSE = 0;
+        }
+        else
+        {
+            R_USB_HS0->SYSCFG_b.HSE = 1;
+        }
+    }
+     else
+#endif
+    {
+        if (speed != USB_SPEED_FS)
+        {
+            R_USB_FS0->SOFCFG |= R_USB_SOFCFG_TRNENSEL_Msk;
         }
     }
 
