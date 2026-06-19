@@ -12,6 +12,9 @@
 #if SCI_B_I2C_CFG_DTC_ENABLE
  #include "r_dtc.h"
 #endif
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+ #include "r_dmac.h"
+#endif
 
 /**********************************************************************************************************************
  * Macro definitions
@@ -74,12 +77,12 @@ typedef enum e_sci_b_i2c_transfer_dir_option
     SCI_B_I2C_TRANSFER_DIR_READ  = 0x1
 } sci_b_i2c_transfer_dir_t;
 
-/* DTC TXI/RXI enumeration */
-typedef enum e_sci_b_i2c_dtc_interrupt_trigger
+/* Transfer TXI/RXI enumeration */
+typedef enum e_sci_b_i2c_transfer_interrupt_trigger
 {
-    SCI_B_I2C_DTC_INTERRUPT_TRIGGER_TXI = 0x0,
-    SCI_B_I2C_DTC_INTERRUPT_TRIGGER_RXI = 0x1
-} sci_b_i2c_dtc_interrupt_trigger_t;
+    SCI_B_I2C_TRANSFER_INTERRUPT_TRIGGER_TXI = 0x0,
+    SCI_B_I2C_TRANSFER_INTERRUPT_TRIGGER_RXI = 0x1
+} sci_b_i2c_transfer_interrupt_trigger_t;
 
 #if defined(__ARMCC_VERSION) || defined(__ICCARM__)
 typedef void (BSP_CMSE_NONSECURE_CALL * sci_b_i2c_prv_ns_callback)(i2c_master_callback_args_t * p_args);
@@ -115,15 +118,22 @@ static void sci_b_i2c_txi_handler(sci_b_i2c_instance_ctrl_t * const p_ctrl);
 static void sci_b_i2c_txi_process_nack(sci_b_i2c_instance_ctrl_t * const p_ctrl);
 static void sci_b_i2c_issue_restart_or_stop(sci_b_i2c_instance_ctrl_t * const p_ctrl);
 
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
 #if SCI_B_I2C_CFG_DTC_ENABLE
 void             sci_b_i2c_rxi_isr(void);
+#endif
 static fsp_err_t sci_b_i2c_transfer_open(sci_b_i2c_instance_ctrl_t * p_ctrl, i2c_master_cfg_t const * const p_cfg);
 static fsp_err_t sci_b_i2c_transfer_configure(sci_b_i2c_instance_ctrl_t       * p_ctrl,
                                               transfer_instance_t const       * p_transfer,
-                                              sci_b_i2c_dtc_interrupt_trigger_t trigger);
+                                              sci_b_i2c_transfer_interrupt_trigger_t trigger);
 static void sci_b_i2c_reconfigure_interrupts_for_transfer(sci_b_i2c_instance_ctrl_t * const p_ctrl);
 static void sci_b_i2c_enable_transfer_support_tx(sci_b_i2c_instance_ctrl_t * const p_ctrl);
-
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+void sci_b_i2c_rx_dmac_callback(sci_b_i2c_instance_ctrl_t * const p_ctrl);
+void sci_b_i2c_tx_dmac_callback(sci_b_i2c_instance_ctrl_t * const p_ctrl);
+static void sci_b_i2c_route_event_dmac(sci_b_i2c_instance_ctrl_t * const p_ctrl);
+static void sci_b_i2c_route_event_cpu(sci_b_i2c_instance_ctrl_t * const p_ctrl);
+#endif
 #endif
 
 /**********************************************************************************************************************
@@ -192,15 +202,17 @@ fsp_err_t R_SCI_B_I2C_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_cfg
         FSP_ASSERT(pextend->clock_settings.mddr_value >= SCI_B_I2C_PRV_MDDR_REG_MIN);
     }
 
- #if SCI_B_I2C_CFG_DTC_ENABLE
+ #if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
     if (NULL != p_cfg->p_transfer_rx)
     {
+  #if SCI_B_I2C_CFG_DTC_ENABLE
         FSP_ASSERT(p_cfg->rxi_irq >= (IRQn_Type) 0);
+  #endif
         FSP_ASSERT(p_cfg->p_transfer_tx != NULL);
     }
  #endif
 #endif
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
     fsp_err_t err = FSP_SUCCESS;
 #endif
 
@@ -214,7 +226,7 @@ fsp_err_t R_SCI_B_I2C_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_cfg
     p_ctrl->p_context         = p_cfg->p_context;
     p_ctrl->p_callback_memory = NULL;
 
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
 
     /* Open transfer interfaces if available
      * In case of Read operations both p_transfer_tx and p_transfer_rx are used.
@@ -228,6 +240,12 @@ fsp_err_t R_SCI_B_I2C_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_cfg
      */
     err = sci_b_i2c_transfer_open(p_ctrl, p_cfg);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+#endif
+
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+    /* Save DMAC activation source info */
+    p_ctrl->routed_event = R_ICU->IELSR_b[p_ctrl->p_cfg->txi_irq].IELS;
+    sci_b_i2c_route_event_cpu(p_ctrl);
 #endif
 
     R_BSP_MODULE_START(FSP_IP_SCI, p_cfg->channel);
@@ -471,7 +489,7 @@ fsp_err_t R_SCI_B_I2C_Close (i2c_master_ctrl_t * const p_api_ctrl)
     /* The device is now considered closed */
     p_ctrl->open = 0U;
 
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
     {
         p_ctrl->p_cfg->p_transfer_rx->p_api->close(p_ctrl->p_cfg->p_transfer_rx->p_ctrl);
@@ -521,10 +539,10 @@ static fsp_err_t sci_b_i2c_read_write (i2c_master_ctrl_t * const p_api_ctrl,
     FSP_ERROR_RETURN((p_ctrl->open == SCI_B_I2C_OPEN), FSP_ERR_NOT_OPEN);
     FSP_ASSERT(((sci_b_i2c_instance_ctrl_t *) p_api_ctrl)->p_callback != NULL);
 
- #if SCI_B_I2C_CFG_DTC_ENABLE
+ #if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
 
-    /* DTC on RX could actually receive 65535+3 = 65538 bytes as 3 bytes are handled separately.
-     * Forcing to 65535 to keep TX and RX uniform with respect to max transaction length via DTC.
+    /* DTC/DMAC on RX could actually receive 65535+3 = 65538 bytes as 3 bytes are handled separately.
+     * Forcing to 65535 to keep TX and RX uniform with respect to max transaction length via DTC/DMAC.
      */
     FSP_ERROR_RETURN((bytes <= UINT16_MAX), FSP_ERR_INVALID_SIZE);
  #endif
@@ -591,16 +609,16 @@ void sci_b_i2c_notify (sci_b_i2c_instance_ctrl_t * const p_ctrl, i2c_master_even
     p_args->p_context = p_ctrl->p_context;
     p_args->event     = event;
 
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
 
-    /* Stop any DTC assisted transfer for tx */
+    /* Stop any DTC/DMAC assisted transfer for tx */
     const transfer_instance_t * p_transfer_tx = p_ctrl->p_cfg->p_transfer_tx;
     if ((NULL != p_transfer_tx) && (!p_ctrl->read))
     {
         p_transfer_tx->p_api->disable(p_transfer_tx->p_ctrl);
     }
 
-    /* Stop any DTC assisted transfer for rx */
+    /* Stop any DTC/DMAC assisted transfer for rx */
     const transfer_instance_t * p_transfer_rx = p_ctrl->p_cfg->p_transfer_rx;
     if ((NULL != p_transfer_rx) && (p_ctrl->read))
     {
@@ -748,7 +766,7 @@ static void sci_b_i2c_open_hw_master (sci_b_i2c_instance_ctrl_t * const p_ctrl, 
 
     p_ctrl->p_reg->ICFCLR = R_SCI_B0_ICFCLR_IICSTIFC_Msk;
 
-    /* Enable interrupts (Note that when DTC is not used, data is read in the Transmit IRQ). */
+    /* Enable interrupts (Note that when DTC/DMAC is not used, data is read in the Transmit IRQ). */
     R_BSP_IrqCfgEnable(p_cfg->txi_irq, p_cfg->ipl, p_ctrl);
     R_BSP_IrqCfgEnable(p_cfg->tei_irq, p_cfg->ipl, p_ctrl);
 #if SCI_B_I2C_CFG_DTC_ENABLE
@@ -798,7 +816,7 @@ static void sci_b_i2c_run_hw_master (sci_b_i2c_instance_ctrl_t * const p_ctrl)
      * in the SCI section of the relevant hardware manual.) */
     FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CESR, (R_SCI_B0_CESR_TIST_Msk | R_SCI_B0_CESR_RIST_Msk));
 
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
     sci_b_i2c_reconfigure_interrupts_for_transfer(p_ctrl);
 #endif
 
@@ -816,7 +834,7 @@ static void sci_b_i2c_run_hw_master (sci_b_i2c_instance_ctrl_t * const p_ctrl)
         /* Clear for next transfer */
         p_ctrl->restarted = false;
 
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
 
         /* Enable transfer support for tx if this is the last address byte */
         if (1U == p_ctrl->addr_total)
@@ -838,6 +856,103 @@ static void sci_b_i2c_run_hw_master (sci_b_i2c_instance_ctrl_t * const p_ctrl)
         p_ctrl->addr_loaded++;
     }
 }
+
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+/*******************************************************************************************************************//**
+ * Route TXI event to DMAC only (clear IELSR, set DELSR).
+ * Required by RA8P1 ICU section 14.5.5: the same ELC event source cannot be mapped
+ * simultaneously in both an IELSR and a DELSR register.
+ *
+ * @param[in]     p_ctrl     Pointer to I2C instance control block
+ **********************************************************************************************************************/
+static void sci_b_i2c_route_event_dmac (sci_b_i2c_instance_ctrl_t * const p_ctrl)
+{
+    const transfer_instance_t * p_transfer_tx = p_ctrl->p_cfg->p_transfer_tx;
+
+    /* Clear IELSR to route TXI to DMAC */
+    R_ICU->IELSR[p_ctrl->p_cfg->txi_irq] = ELC_EVENT_NONE;
+
+    /* Set DELSR to route TXI to DMAC */
+    if (NULL != p_transfer_tx)
+    {
+        dmac_instance_ctrl_t * p_dmac_ctrl = (dmac_instance_ctrl_t *) p_transfer_tx->p_ctrl;
+        dmac_extended_cfg_t  * p_extend    = (dmac_extended_cfg_t *) p_dmac_ctrl->p_cfg->p_extend;
+
+        p_dmac_ctrl->p_reg->DMCNT = 0;
+ #if !BSP_FEATURE_DMAC_HAS_DELSR
+        R_ICU->DELSR[p_extend->channel] = p_ctrl->routed_event;
+ #else
+        R_DMA->DELSR[p_extend->channel] = p_ctrl->routed_event;
+ #endif
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Route TXI event back to CPU (clear DELSR, restore original IELSR).
+ * Required by RA8P1 ICU section 14.5.5: the same ELC event source cannot be mapped
+ * simultaneously in both an IELSR and a DELSR register.
+ *
+ * @param[in]     p_ctrl     Pointer to I2C instance control block
+ **********************************************************************************************************************/
+static void sci_b_i2c_route_event_cpu (sci_b_i2c_instance_ctrl_t * const p_ctrl)
+{
+    const transfer_instance_t * p_transfer_tx = p_ctrl->p_cfg->p_transfer_tx;
+    bool irq_on_late = false;
+
+    /* Clear DELSR on TX DMAC channel, disable DMCNT and save IRQ status */
+    if (NULL != p_transfer_tx)
+    {
+        dmac_instance_ctrl_t * p_dmac_ctrl = (dmac_instance_ctrl_t *) p_transfer_tx->p_ctrl;
+        dmac_extended_cfg_t  * p_extend    = (dmac_extended_cfg_t *) p_dmac_ctrl->p_cfg->p_extend;
+
+        p_dmac_ctrl->p_reg->DMCNT = 0;
+
+ #if !BSP_FEATURE_DMAC_HAS_DELSR
+        irq_on_late = R_ICU->DELSR_b[p_extend->channel].IR;
+        R_ICU->DELSR[p_extend->channel] = ELC_EVENT_NONE;
+ #else
+        irq_on_late = R_DMA->DELSR_b[p_extend->channel].IR;
+        R_DMA->DELSR[p_extend->channel] = ELC_EVENT_NONE;
+ #endif
+    }
+
+    /* Restore the original IELSR value to route TXI back to NVIC/CPU */
+    if (0U != p_ctrl->routed_event)
+    {
+        R_ICU->IELSR[p_ctrl->p_cfg->txi_irq] = p_ctrl->routed_event;
+    }
+
+    if (irq_on_late)
+    {
+        /* The TXI event may occur after it has been routed to the CPU, causing the interrupt to be missed.
+         * To avoid this missing, force the TXI interrupt into the pending state if the event occurs after routing. */
+        NVIC_SetPendingIRQ(p_ctrl->p_cfg->txi_irq);
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Callback that must be called after a RX DMAC transfer completes.
+ *
+ * @param[in]     p_ctrl     Pointer to I2C instance control block
+ **********************************************************************************************************************/
+void sci_b_i2c_rx_dmac_callback (sci_b_i2c_instance_ctrl_t * const p_ctrl)
+{
+    /* RX DMAC callback is invoked once the DMAC supported Read transfer is completed. Nothing to do here. */
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+}
+
+/*******************************************************************************************************************//**
+ * Callback that must be called after a TX DMAC transfer completes.
+ *
+ * @param[in]     p_ctrl     Pointer to I2C instance control block
+ **********************************************************************************************************************/
+void sci_b_i2c_tx_dmac_callback (sci_b_i2c_instance_ctrl_t * const p_ctrl)
+{
+    /* Restore TXI routing to CPU */
+    sci_b_i2c_route_event_cpu(p_ctrl);
+}
+
+#endif
 
 /******************************************************************************************************************//**
  * ISR for ACK/RXI interrupt
@@ -928,7 +1043,7 @@ static void sci_b_i2c_txi_handler (sci_b_i2c_instance_ctrl_t * const p_ctrl)
             /* Transmit the LSB of the address */
             else
             {
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
                 sci_b_i2c_enable_transfer_support_tx(p_ctrl);
 #endif
 
@@ -1027,7 +1142,7 @@ static void sci_b_i2c_tei_handler (sci_b_i2c_instance_ctrl_t * const p_ctrl)
     }
 }
 
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
 
 /*******************************************************************************************************************//**
  * Configures SCI I2C related transfer drivers (if enabled).
@@ -1045,13 +1160,13 @@ static fsp_err_t sci_b_i2c_transfer_open (sci_b_i2c_instance_ctrl_t * const p_ct
 
     if (NULL != p_cfg->p_transfer_rx)
     {
-        err = sci_b_i2c_transfer_configure(p_ctrl, p_cfg->p_transfer_rx, SCI_B_I2C_DTC_INTERRUPT_TRIGGER_RXI);
+        err = sci_b_i2c_transfer_configure(p_ctrl, p_cfg->p_transfer_rx, SCI_B_I2C_TRANSFER_INTERRUPT_TRIGGER_RXI);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     }
 
     if (NULL != p_cfg->p_transfer_tx)
     {
-        err = sci_b_i2c_transfer_configure(p_ctrl, p_cfg->p_transfer_tx, SCI_B_I2C_DTC_INTERRUPT_TRIGGER_TXI);
+        err = sci_b_i2c_transfer_configure(p_ctrl, p_cfg->p_transfer_tx, SCI_B_I2C_TRANSFER_INTERRUPT_TRIGGER_TXI);
         if (FSP_SUCCESS != err)
         {
             if (NULL != p_cfg->p_transfer_rx)
@@ -1067,9 +1182,9 @@ static fsp_err_t sci_b_i2c_transfer_open (sci_b_i2c_instance_ctrl_t * const p_ct
 }
 
 /*******************************************************************************************************************//**
- * Configures  DTC
+ * Configures  DTC/DMAC
  * @param[in]     p_ctrl                     Pointer to I2C specific control structure
- * @param[in]     p_transfer                 Pointer to DTC instance structure
+ * @param[in]     p_transfer                 Pointer to DTC/DMAC instance structure
  * @param[in]     trigger                    TXI or RXI to be set as trigger
  *
  * @retval        FSP_SUCCESS                Transfer interface is configured with valid parameters.
@@ -1077,7 +1192,7 @@ static fsp_err_t sci_b_i2c_transfer_open (sci_b_i2c_instance_ctrl_t * const p_ct
  **********************************************************************************************************************/
 static fsp_err_t sci_b_i2c_transfer_configure (sci_b_i2c_instance_ctrl_t       * p_ctrl,
                                                transfer_instance_t const       * p_transfer,
-                                               sci_b_i2c_dtc_interrupt_trigger_t trigger)
+                                               sci_b_i2c_transfer_interrupt_trigger_t trigger)
 {
     fsp_err_t err;
 
@@ -1089,19 +1204,33 @@ static fsp_err_t sci_b_i2c_transfer_configure (sci_b_i2c_instance_ctrl_t       *
     FSP_ASSERT(NULL != p_transfer->p_cfg->p_info);
  #endif
     transfer_info_t * p_cfg = p_transfer->p_cfg->p_info;
-    if (SCI_B_I2C_DTC_INTERRUPT_TRIGGER_RXI == trigger)
+    if (SCI_B_I2C_TRANSFER_INTERRUPT_TRIGGER_RXI == trigger)
     {
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+        p_cfg->transfer_settings_word_b.mode           = TRANSFER_MODE_NORMAL;
+        p_cfg->transfer_settings_word_b.src_addr_mode  = TRANSFER_ADDR_MODE_FIXED;
+        p_cfg->transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED;
+        p_cfg->transfer_settings_word_b.size           = TRANSFER_SIZE_1_BYTE;
+#else
         p_cfg->transfer_settings_word = SCI_B_I2C_PRV_DTC_RX_FOR_READ_TRANSFER_SETTINGS;
+#endif
         p_cfg->p_src = (void *) (&(p_ctrl->p_reg->RDR));
     }
     else
     {
-        /* In case of read operation using DTC, the TXI interrupt will trigger the DTC to write 0xFF into TDR (See figure
-         * "Example flow of master reception in simple IIC mode with transmission interrupts and
-         * reception interrupts (ICR.IICINTM = 1)" in the SCI section of the relevant hardware manual.) */
+        /* In case of read operation using DTC/DMAC, the TXI interrupt will trigger the DTC/DMAC to write 0xFF
+         * into TDR (See figure "Example flow of master reception in simple IIC mode with transmission interrupts
+         * and reception interrupts (ICR.IICINTM = 1)" in the SCI section of the relevant hardware manual.) */
 
         /* In case of Write operation this will be reconfigured */
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+        p_cfg->transfer_settings_word_b.mode           = TRANSFER_MODE_NORMAL;
+        p_cfg->transfer_settings_word_b.src_addr_mode  = TRANSFER_ADDR_MODE_FIXED;
+        p_cfg->transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED;
+        p_cfg->transfer_settings_word_b.size           = TRANSFER_SIZE_1_BYTE;
+#else
         p_cfg->transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_READ_TRANSFER_SETTINGS;
+#endif
         p_cfg->p_dest                 = (void *) (&(p_ctrl->p_reg->TDR));
     }
 
@@ -1137,13 +1266,23 @@ static void sci_b_i2c_reconfigure_interrupts_for_transfer (sci_b_i2c_instance_ct
         if (p_ctrl->read)
         {
             /* Re-adjust address modes */
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+            p_info->transfer_settings_word_b.src_addr_mode  = TRANSFER_ADDR_MODE_FIXED;
+            p_info->transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED;
+#else
             p_info->transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_READ_TRANSFER_SETTINGS;
+#endif
             p_info->p_src = (void *) &g_dummy_write_data_for_read_op;
         }
         else                           /* This is a write operation */
         {
             /* Re-adjust address modes */
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+            p_info->transfer_settings_word_b.src_addr_mode  = TRANSFER_ADDR_MODE_INCREMENTED;
+            p_info->transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED;
+#else
             p_info->transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_WRITE_TRANSFER_SETTINGS;
+#endif
         }
 
         /* Set the interrupt source to RXI/TXI */
@@ -1158,7 +1297,7 @@ static void sci_b_i2c_reconfigure_interrupts_for_transfer (sci_b_i2c_instance_ct
 }
 
 /*******************************************************************************************************************//**
- * Enables the dtc transfer interface for the transmit operation
+ * Enables the transfer interface for the transmit operation
  *
  * @param[in]       p_ctrl  Pointer to transfer control block
  **********************************************************************************************************************/
@@ -1171,9 +1310,21 @@ static void sci_b_i2c_enable_transfer_support_tx (sci_b_i2c_instance_ctrl_t * co
         /* Enable transfer interface to write to TDR
          * Re-configures the source buffer to the user buffer as this is a Write operation.
          */
+#if SCI_B_I2C_CFG_DMAC_ENABLE
+        transfer_info_t * p_info = p_transfer_tx->p_cfg->p_info;
+        p_info->p_src  = (void *) p_ctrl->p_buff;
+        p_info->length = p_ctrl->remain;
+        /* Clear IELS BEFORE reconfigure so there is no window where
+         * both IELSR and DELSR route the same TXI event simultaneously.
+         * Required by RA8P1 ICU section 14.5.5. */
+        sci_b_i2c_route_event_dmac(p_ctrl);
+
+        p_transfer_tx->p_api->reconfigure(p_transfer_tx->p_ctrl, p_info);
+#else
         p_transfer_tx->p_api->reset(p_transfer_tx->p_ctrl, (void *) (p_ctrl->p_buff), NULL,
                                     (uint16_t) (p_ctrl->remain));
 
+#endif
         p_ctrl->remain = 0U;
         p_ctrl->loaded = p_ctrl->total;
 
@@ -1210,7 +1361,7 @@ static void sci_b_i2c_txi_send_data (sci_b_i2c_instance_ctrl_t * const p_ctrl)
         if (true == p_ctrl->do_dummy_read)
         {
             p_ctrl->do_dummy_read = false;
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
 
             /* If transfer interface is available, use it.
              * Enable the transfer interfaces if the number of bytes to be read is greater than 2.
@@ -1224,6 +1375,26 @@ static void sci_b_i2c_txi_send_data (sci_b_i2c_instance_ctrl_t * const p_ctrl)
                     (R_SCI_B0_CCR0_TE_Msk | R_SCI_B0_CCR0_RE_Msk | R_SCI_B0_CCR0_TEIE_Msk | R_SCI_B0_CCR0_TIE_Msk |
                      R_SCI_B0_CCR0_RIE_Msk);
 
+ #if SCI_B_I2C_CFG_DMAC_ENABLE
+                transfer_instance_t const * p_transfer = p_ctrl->p_cfg->p_transfer_rx;
+                transfer_info_t           * p_info     = p_transfer->p_cfg->p_info;
+                p_info->p_dest = (void *) p_ctrl->p_buff;
+                p_info->length = p_ctrl->total - 2U;
+                /* Clear IELS BEFORE reconfigure so there is no window where
+                 * both IELSR and DELSR route the same TXI event simultaneously.
+                 * Required by RA8P1 ICU section 14.5.5. */
+                sci_b_i2c_route_event_dmac(p_ctrl);
+
+                /* Enable transfer interface for reading data from RDR */
+                p_transfer->p_api->reconfigure(p_transfer->p_ctrl, p_info);
+
+                p_transfer     = p_ctrl->p_cfg->p_transfer_tx;
+                p_info         = p_transfer->p_cfg->p_info;
+                p_info->length = p_ctrl->total - 2U;
+
+                /* Enable transfer interface to do dummy write into TDR */
+                p_transfer->p_api->reconfigure(p_transfer->p_ctrl, p_info);
+ #else
                 /* Enable transfer interface for reading data from RDR */
                 p_ctrl->p_cfg->p_transfer_rx->p_api->reset(p_ctrl->p_cfg->p_transfer_rx->p_ctrl, NULL,
                                                            (void *) (p_ctrl->p_buff), (uint16_t) (p_ctrl->total - 2U));
@@ -1234,7 +1405,8 @@ static void sci_b_i2c_txi_send_data (sci_b_i2c_instance_ctrl_t * const p_ctrl)
                                                            NULL,
                                                            (uint16_t) (p_ctrl->total - 2U));
 
-                /* Update the tracker variables */
+ #endif
+                 /* Update the tracker variables */
                 p_ctrl->remain = 2U;
                 p_ctrl->loaded = p_ctrl->total - 2U;
 
@@ -1290,7 +1462,7 @@ static void sci_b_i2c_tei_send_address (sci_b_i2c_instance_ctrl_t * const p_ctrl
     /* This is the first address byte */
     if (0U == p_ctrl->addr_loaded)
     {
-#if SCI_B_I2C_CFG_DTC_ENABLE
+#if SCI_B_I2C_CFG_DTC_ENABLE || SCI_B_I2C_CFG_DMAC_ENABLE
 
         /* Enable transfer support for tx if this is the last address byte */
         if (1U == p_ctrl->addr_total)
