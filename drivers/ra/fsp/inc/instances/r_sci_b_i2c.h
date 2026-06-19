@@ -78,6 +78,7 @@ typedef struct st_sci_b_i2c_instance_ctrl
     volatile bool do_dummy_read;        // Tracks whether a dummy read is issued on the first RX */
     volatile bool activation_on_rxi;    // Tracks whether the transfer is activated on RXI interrupt */
     volatile bool activation_on_txi;    // Tracks whether the transfer is activated on TXI interrupt */
+    volatile uint16_t routed_event;     // Saved routed event when using DMAC */
 
     /* Pointer to callback and optional working memory */
     void (* p_callback)(i2c_master_callback_args_t *);

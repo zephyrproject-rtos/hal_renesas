@@ -17,6 +17,11 @@ extern "C" {
 #else
 #define SCI_B_I2C_CFG_DTC_ENABLE (0)
 #endif
+#if CONFIG_I2C_RENESAS_RA_SCI_B_DMAC
+#define SCI_B_I2C_CFG_DMAC_ENABLE (1)
+#else
+#define SCI_B_I2C_CFG_DMAC_ENABLE (0)
+#endif
 #define SCI_B_I2C_CFG_ADDR_MODE_10_BIT_ENABLE (1)
 
 #ifdef __cplusplus
