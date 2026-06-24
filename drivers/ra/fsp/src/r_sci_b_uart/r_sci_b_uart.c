@@ -31,8 +31,8 @@
 /* The bit rate setting field is of 8-bits, so the maximum value is 255. */
 #define SCI_B_UART_BRR_MAX                     (255U)
 
-/* No limit to the number of bytes to read or write if DTC is not used. */
-#define SCI_B_UART_MAX_READ_WRITE_NO_DTC       (0xFFFFFFFFU)
+/* No limit to the number of bytes to read or write if DTC/DMAC is not used. */
+#define SCI_B_UART_MAX_READ_WRITE_NO_DTC_DMAC  (0xFFFFFFFFU)
 
 /* Mask off invalid data bits in 9-bit mode. */
 #define SCI_B_UART_ALIGN_2_BYTES               (0x1U)
@@ -79,7 +79,10 @@
 #define SCI_B_REG_SIZE                         (R_SCI1_BASE - R_SCI0_BASE)
 
 #define SCI_B_UART_INVALID_16BIT_PARAM         (0xFFFFU)
-#define SCI_B_UART_DTC_MAX_TRANSFER            (0x10000U)
+
+/* Per RA8P1 manual: both DTC (CRA) and DMAC (DMCRA) use a 16-bit transfer counter in normal mode,
+ * so per-call transfer length is limited to 0x10000 */
+#define SCI_B_UART_DTC_DMAC_MAX_TRANSFER       (0x10000U)
 
 /* SCI FCR register bit masks */
 #define SCI_B_UART_FCR_TRIGGER_MASK            (0xF)
@@ -157,7 +160,7 @@ static fsp_err_t r_sci_b_read_write_param_check(sci_b_uart_instance_ctrl_t const
 
 static void r_sci_b_uart_config_set(sci_b_uart_instance_ctrl_t * const p_ctrl, uart_cfg_t const * const p_cfg);
 
-#if SCI_B_UART_CFG_DTC_SUPPORTED
+#if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 static fsp_err_t r_sci_b_uart_transfer_configure(sci_b_uart_instance_ctrl_t * const p_ctrl,
                                                  transfer_instance_t const        * p_transfer,
                                                  uint32_t                         * p_transfer_reg,
@@ -166,6 +169,13 @@ static fsp_err_t r_sci_b_uart_transfer_configure(sci_b_uart_instance_ctrl_t * co
 static fsp_err_t r_sci_b_uart_transfer_open(sci_b_uart_instance_ctrl_t * const p_ctrl, uart_cfg_t const * const p_cfg);
 
 static void r_sci_b_uart_transfer_close(sci_b_uart_instance_ctrl_t * p_ctrl);
+
+#endif
+
+#if SCI_B_UART_CFG_DMAC_SUPPORTED
+void sci_b_uart_rx_dmac_callback(sci_b_uart_instance_ctrl_t * const p_ctrl);
+
+void sci_b_uart_tx_dmac_callback(sci_b_uart_instance_ctrl_t * const p_ctrl);
 
 #endif
 
@@ -296,8 +306,6 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
             FSP_ERR_INVALID_ARGUMENT);
     }
 
-    FSP_ASSERT(p_cfg->rxi_irq >= 0);
-    FSP_ASSERT(p_cfg->txi_irq >= 0);
     FSP_ASSERT(p_cfg->tei_irq >= 0);
     FSP_ASSERT(p_cfg->eri_irq >= 0);
 #endif
@@ -331,7 +339,7 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
     /* Configure the interrupts. */
     r_sci_b_irqs_cfg(p_ctrl, p_cfg);
 
-#if SCI_B_UART_CFG_DTC_SUPPORTED
+#if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 
     /* Configure the transfer interface for transmission and reception if provided. */
     fsp_err_t err = r_sci_b_uart_transfer_open(p_ctrl, p_cfg);
@@ -379,7 +387,12 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
 
     /* If reception is enabled at build time, enable reception. */
     ccr0 |= R_SCI_B0_CCR0_RE_Msk;
-    R_BSP_IrqEnable(p_ctrl->p_cfg->rxi_irq);
+
+    if (0 <= p_ctrl->p_cfg->rxi_irq)
+    {
+        R_BSP_IrqEnable(p_ctrl->p_cfg->rxi_irq);
+    }
+
     R_BSP_IrqEnable(p_ctrl->p_cfg->eri_irq);
 
     ccr0 |= R_SCI_B0_CCR0_RIE_Msk;
@@ -388,7 +401,11 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
 #if (SCI_B_UART_CFG_TX_ENABLE)
 
     /* NOTE: Transmitter and its interrupt are enabled in R_SCI_B_UART_Write(). */
-    R_BSP_IrqEnable(p_ctrl->p_cfg->txi_irq);
+    if (0 <= p_ctrl->p_cfg->txi_irq)
+    {
+        R_BSP_IrqEnable(p_ctrl->p_cfg->txi_irq);
+    }
+
     R_BSP_IrqEnable(p_ctrl->p_cfg->tei_irq);
 
     ccr0 |= R_SCI_B0_CCR0_TE_Msk;
@@ -446,7 +463,11 @@ fsp_err_t R_SCI_B_UART_Close (uart_ctrl_t * const p_api_ctrl)
     FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CESR_b.TIST, 0U);
 
     /* If transmission is enabled at build time, disable transmission irqs. */
-    R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
+    if (0 <= p_ctrl->p_cfg->txi_irq)
+    {
+        R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
+    }
+
     R_BSP_IrqDisable(p_ctrl->p_cfg->tei_irq);
 #endif
 
@@ -454,11 +475,15 @@ fsp_err_t R_SCI_B_UART_Close (uart_ctrl_t * const p_api_ctrl)
     p_ctrl->p_reg->CCR0 &= (uint32_t) ~(R_SCI_B0_CCR0_RIE_Msk);
 
     /* If reception is enabled at build time, disable reception irqs. */
-    R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
+    if (0 <= p_ctrl->p_cfg->rxi_irq)
+    {
+        R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
+    }
+
     R_BSP_IrqDisable(p_ctrl->p_cfg->eri_irq);
 #endif
 
-#if SCI_B_UART_CFG_DTC_SUPPORTED
+#if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 
     /* Close the lower level transfer instances. */
     r_sci_b_uart_transfer_close(p_ctrl);
@@ -502,7 +527,7 @@ fsp_err_t R_SCI_B_UART_Read (uart_ctrl_t * const p_api_ctrl, uint8_t * const p_d
     FSP_ERROR_RETURN(0U == p_ctrl->rx_dest_bytes, FSP_ERR_IN_USE);
  #endif
 
- #if SCI_B_UART_CFG_DTC_SUPPORTED
+ #if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 
     /* Configure transfer instance to receive the requested number of bytes if transfer is used for reception. */
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
@@ -511,7 +536,7 @@ fsp_err_t R_SCI_B_UART_Read (uart_ctrl_t * const p_api_ctrl, uint8_t * const p_d
   #if (SCI_B_UART_CFG_PARAM_CHECKING_ENABLE)
 
         /* Check that the number of transfers is within the 16-bit limit. */
-        FSP_ASSERT(size <= SCI_B_UART_DTC_MAX_TRANSFER);
+        FSP_ASSERT(size <= SCI_B_UART_DTC_DMAC_MAX_TRANSFER);
   #endif
         err =
             p_ctrl->p_cfg->p_transfer_rx->p_api->reset(p_ctrl->p_cfg->p_transfer_rx->p_ctrl, NULL, (void *) p_dest,
@@ -555,7 +580,7 @@ fsp_err_t R_SCI_B_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * co
 {
 #if (SCI_B_UART_CFG_TX_ENABLE)
     sci_b_uart_instance_ctrl_t * p_ctrl = (sci_b_uart_instance_ctrl_t *) p_api_ctrl;
- #if SCI_B_UART_CFG_PARAM_CHECKING_ENABLE || SCI_B_UART_CFG_DTC_SUPPORTED
+ #if SCI_B_UART_CFG_PARAM_CHECKING_ENABLE || SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
     fsp_err_t err = FSP_SUCCESS;
  #endif
 
@@ -584,7 +609,7 @@ fsp_err_t R_SCI_B_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * co
     p_ctrl->tx_src_bytes = bytes;
     p_ctrl->p_tx_src     = p_src;
 
- #if SCI_B_UART_CFG_DTC_SUPPORTED
+ #if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 
     /* If a transfer instance is used for transmission, reset the transfer instance to transmit the requested
      * data. */
@@ -596,7 +621,7 @@ fsp_err_t R_SCI_B_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * co
   #if (SCI_B_UART_CFG_PARAM_CHECKING_ENABLE)
 
         /* Check that the number of transfers is within the 16-bit limit. */
-        FSP_ASSERT(num_transfers <= SCI_B_UART_DTC_MAX_TRANSFER);
+        FSP_ASSERT(num_transfers <= SCI_B_UART_DTC_DMAC_MAX_TRANSFER);
   #endif
 
         err = p_ctrl->p_cfg->p_transfer_tx->p_api->reset(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
@@ -725,7 +750,7 @@ fsp_err_t R_SCI_B_UART_BaudSet (uart_ctrl_t * const p_api_ctrl, void const * con
  **********************************************************************************************************************/
 fsp_err_t R_SCI_B_UART_InfoGet (uart_ctrl_t * const p_api_ctrl, uart_info_t * const p_info)
 {
-#if SCI_B_UART_CFG_PARAM_CHECKING_ENABLE || SCI_B_UART_CFG_DTC_SUPPORTED
+#if SCI_B_UART_CFG_PARAM_CHECKING_ENABLE || SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
     sci_b_uart_instance_ctrl_t * p_ctrl = (sci_b_uart_instance_ctrl_t *) p_api_ctrl;
 #else
     FSP_PARAMETER_NOT_USED(p_api_ctrl);
@@ -737,16 +762,16 @@ fsp_err_t R_SCI_B_UART_InfoGet (uart_ctrl_t * const p_api_ctrl, uart_info_t * co
     FSP_ERROR_RETURN(SCI_B_UART_OPEN == p_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
 
-    p_info->read_bytes_max  = SCI_B_UART_MAX_READ_WRITE_NO_DTC;
-    p_info->write_bytes_max = SCI_B_UART_MAX_READ_WRITE_NO_DTC;
+    p_info->read_bytes_max  = SCI_B_UART_MAX_READ_WRITE_NO_DTC_DMAC;
+    p_info->write_bytes_max = SCI_B_UART_MAX_READ_WRITE_NO_DTC_DMAC;
 
 #if (SCI_B_UART_CFG_RX_ENABLE)
 
     /* Store number of bytes that can be read at a time. */
- #if SCI_B_UART_CFG_DTC_SUPPORTED
+ #if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
     {
-        p_info->read_bytes_max = SCI_B_UART_DTC_MAX_TRANSFER;
+        p_info->read_bytes_max = SCI_B_UART_DTC_DMAC_MAX_TRANSFER;
     }
  #endif
 #endif
@@ -754,10 +779,10 @@ fsp_err_t R_SCI_B_UART_InfoGet (uart_ctrl_t * const p_api_ctrl, uart_info_t * co
 #if (SCI_B_UART_CFG_TX_ENABLE)
 
     /* Store number of bytes that can be written at a time. */
- #if SCI_B_UART_CFG_DTC_SUPPORTED
+ #if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
     if (NULL != p_ctrl->p_cfg->p_transfer_tx)
     {
-        p_info->write_bytes_max = SCI_B_UART_DTC_MAX_TRANSFER;
+        p_info->write_bytes_max = SCI_B_UART_DTC_DMAC_MAX_TRANSFER;
     }
  #endif
 #endif
@@ -809,7 +834,7 @@ fsp_err_t R_SCI_B_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communi
          * Enable Status Register" description in the SCI section of the relevant hardware manual. */
         FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CESR_b.TIST, 0U);
 
- #if SCI_B_UART_CFG_DTC_SUPPORTED
+ #if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
         if (NULL != p_ctrl->p_cfg->p_transfer_tx)
         {
             err = p_ctrl->p_cfg->p_transfer_tx->p_api->disable(p_ctrl->p_cfg->p_transfer_tx->p_ctrl);
@@ -834,7 +859,7 @@ fsp_err_t R_SCI_B_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communi
         err = FSP_SUCCESS;
 
         p_ctrl->rx_dest_bytes = 0U;
- #if SCI_B_UART_CFG_DTC_SUPPORTED
+ #if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
         if (NULL != p_ctrl->p_cfg->p_transfer_rx)
         {
             err = p_ctrl->p_cfg->p_transfer_rx->p_api->disable(p_ctrl->p_cfg->p_transfer_rx->p_ctrl);
@@ -880,7 +905,7 @@ fsp_err_t R_SCI_B_UART_ReadStop (uart_ctrl_t * const p_api_ctrl, uint32_t * rema
 #if (SCI_B_UART_CFG_RX_ENABLE)
     *remaining_bytes      = p_ctrl->rx_dest_bytes;
     p_ctrl->rx_dest_bytes = 0U;
- #if SCI_B_UART_CFG_DTC_SUPPORTED
+ #if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
     {
         fsp_err_t err = p_ctrl->p_cfg->p_transfer_rx->p_api->disable(p_ctrl->p_cfg->p_transfer_rx->p_ctrl);
@@ -1133,7 +1158,7 @@ static fsp_err_t r_sci_b_read_write_param_check (sci_b_uart_instance_ctrl_t cons
 }
 
 #endif
-#if SCI_B_UART_CFG_DTC_SUPPORTED
+#if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 
 /*******************************************************************************************************************//**
  * Subroutine to apply common UART transfer settings.
@@ -1177,7 +1202,7 @@ static fsp_err_t r_sci_b_uart_transfer_configure (sci_b_uart_instance_ctrl_t * c
 
 #endif
 
-#if SCI_B_UART_CFG_DTC_SUPPORTED
+#if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 
 /*******************************************************************************************************************//**
  * Configures UART related transfer drivers (if enabled).
@@ -1232,6 +1257,43 @@ static fsp_err_t r_sci_b_uart_transfer_open (sci_b_uart_instance_ctrl_t * const 
  #endif
 
     return err;
+}
+
+#endif
+
+#if SCI_B_UART_CFG_DMAC_SUPPORTED
+/*******************************************************************************************************************//**
+ * Callback that must be called after a RX DMAC transfer completes.
+ *
+ * @param[in]     p_ctrl     Pointer to UART instance control block
+ **********************************************************************************************************************/
+void sci_b_uart_rx_dmac_callback (sci_b_uart_instance_ctrl_t * const p_ctrl)
+{
+    p_ctrl->rx_dest_bytes = 0;
+
+    p_ctrl->p_rx_dest = NULL;
+
+    /* If a callback was provided, call it with the argument */
+    if (NULL != p_ctrl->p_callback)
+    {
+        /* Call callback */
+        r_sci_b_uart_call_callback((sci_b_uart_instance_ctrl_t *) p_ctrl, 0U, UART_EVENT_RX_COMPLETE);
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Callback that must be called after a TX DMAC transfer completes.
+ *
+ * @param[in]     p_ctrl     Pointer to UART instance control block
+ **********************************************************************************************************************/
+void sci_b_uart_tx_dmac_callback (sci_b_uart_instance_ctrl_t * const p_ctrl)
+{
+    /* Enable the transmit end interrupt once all data has been transmitted
+     * and disable the transmit interrupt. */
+    uint32_t ccr0_temp = p_ctrl->p_reg->CCR0;
+    ccr0_temp          |= R_SCI_B0_CCR0_TEIE_Msk;
+    ccr0_temp          &= (uint32_t) ~(R_SCI_B0_CCR0_TIE_Msk);
+    p_ctrl->p_reg->CCR0 = ccr0_temp;
 }
 
 #endif
@@ -1341,9 +1403,9 @@ static void r_sci_b_uart_fifo_cfg (sci_b_uart_instance_ctrl_t * const p_ctrl)
         p_ctrl->p_reg->FCR = (uint32_t) (SCI_B_UART_FCR_RESET_TX_RX);
 
  #if SCI_B_UART_CFG_RX_ENABLE
-  #if SCI_B_UART_CFG_DTC_SUPPORTED
+  #if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 
-        /* If DTC is used keep the receive trigger at the default level of 0. */
+        /* If DTC/DMAC is used keep the receive trigger at the default level of 0. */
         if (NULL == p_ctrl->p_cfg->p_transfer_rx)
   #endif
         {
@@ -1397,15 +1459,23 @@ static void r_sci_b_irqs_cfg (sci_b_uart_instance_ctrl_t * const p_ctrl, uart_cf
 
     /* ERI is optional. */
     r_sci_b_irq_cfg(p_ctrl, p_cfg->eri_ipl, p_cfg->eri_irq);
-    r_sci_b_irq_cfg(p_ctrl, p_cfg->rxi_ipl, p_cfg->rxi_irq);
+
+    if (0 <= p_cfg->rxi_irq)
+    {
+        r_sci_b_irq_cfg(p_ctrl, p_cfg->rxi_ipl, p_cfg->rxi_irq);
+    }
 #endif
 #if (SCI_B_UART_CFG_TX_ENABLE)
-    r_sci_b_irq_cfg(p_ctrl, p_cfg->txi_ipl, p_cfg->txi_irq);
+    if (0 <= p_cfg->txi_irq)
+    {
+        r_sci_b_irq_cfg(p_ctrl, p_cfg->txi_ipl, p_cfg->txi_irq);
+    }
+
     r_sci_b_irq_cfg(p_ctrl, p_cfg->tei_ipl, p_cfg->tei_irq);
 #endif
 }
 
-#if SCI_B_UART_CFG_DTC_SUPPORTED
+#if SCI_B_UART_CFG_DTC_SUPPORTED || SCI_B_UART_CFG_DMAC_SUPPORTED
 
 /*******************************************************************************************************************//**
  * Closes transfer interfaces.
