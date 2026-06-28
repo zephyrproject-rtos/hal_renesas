@@ -1283,10 +1283,9 @@ static inline fsp_err_t process_pipe_xfer (usbd_instance_ctrl_t * const p_ctrl,
             /* ZLP */
             *d0fifosel = num;
 
-            if ((*d0fifoctr & R_USB_CFIFOCTR_BVAL_Msk) != 0)
-            {
-                *d0fifoctr = R_USB_CFIFOCTR_BVAL_Msk;
-            }
+            pipe_wait_for_ready(p_ctrl, num);
+
+            *d0fifoctr = R_USB_CFIFOCTR_BVAL_Msk;
 
             *d0fifosel = 0;
 
