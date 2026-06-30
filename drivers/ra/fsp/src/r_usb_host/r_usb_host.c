@@ -1,8 +1,8 @@
 /*
-* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
-*
-* SPDX-License-Identifier: BSD-3-Clause
-*/
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 
 /***********************************************************************************************************************
  * Includes
@@ -123,52 +123,46 @@ typedef __PACKED_STRUCT st_pipe_state
     };
 } pipe_state_t;
 
-typedef struct st_usbh_dev0
-{
-    uint8_t hub_addr;
-    uint8_t hub_port;
-    __PACKED_STRUCT
-    {
-        uint8_t          speed        : 4; /* packed speed to save footprint */
-        volatile uint8_t enumerating  : 1; /* enumeration is in progress, false if not connected or all interfaces are configured */
-        uint8_t          USB_RESERVED : 3;
-    } usbh_dev0_info;
-} usbh_dev0_t;
-
 typedef struct st_uhc_data
 {
     pipe_state_t pipe[USB_PIPE_COUNT_MAX];
     uint8_t      ep[USB_DEVICE_COUNT_MAX][USB_DIR_COUNT_MAX][USB_EP_COUNT_MAX];
     uint8_t      ctl_mps[USB_DEVICE_COUNT_MAX]; /* EP0 max packet size for each device */
-    usbh_dev0_t  dev0;
 } uhc_data_t;
 
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
+
+/* Build an endpoint address (number + direction bit) from a number and direction. */
 static inline uint8_t r_usbh_edpt_addr (uint8_t num, uint8_t dir)
 {
     return (uint8_t) (num | (dir ? USB_DIR_IN_MASK : 0));
 }
 
+/* Extract the endpoint number (without the direction bit) from an endpoint address. */
 static inline uint8_t r_usbh_edpt_number (uint8_t addr)
 {
     return (uint8_t) (addr & (~USB_DIR_IN_MASK));
 }
 
+/* Extract the transfer direction (IN/OUT) from an endpoint address. */
 static inline usb_dir_t r_usbh_edpt_dir (uint8_t addr)
 {
     return (addr & USB_DIR_IN_MASK) ? USB_DIR_IN : USB_DIR_OUT;
 }
 
+/* Return the max packet size (in bytes) encoded in an endpoint descriptor. */
 static inline uint16_t r_usbh_edpt_packet_size (usb_desc_endpoint_t const * desc_ep)
 {
     return (desc_ep->wMaxPacketSize) & 0x7FF;
 }
 
-static void fifo_set_mbw (volatile void * p_fifo, uint32_t mbw)
+/* Set the FIFO access width (MBW: 8/16/32-bit) for the FIFO that @p p_fifo points at. */
+static void fifo_set_mbw (volatile void * p_fifo, uint32_t mbw, uint8_t num)
 {
     volatile uint16_t * p_fifosel;
+    volatile uint16_t * p_fifoctr;
 
     switch ((uintptr_t) p_fifo)
     {
@@ -176,36 +170,42 @@ static void fifo_set_mbw (volatile void * p_fifo, uint32_t mbw)
         case ((uintptr_t) &R_USB_HS0->CFIFO):
         {
             p_fifosel = &R_USB_HS0->CFIFOSEL;
+            p_fifoctr = &R_USB_HS0->CFIFOCTR;
             break;
         }
 
         case ((uintptr_t) &R_USB_HS0->D0FIFO):
         {
             p_fifosel = &R_USB_HS0->D0FIFOSEL;
+            p_fifoctr = &R_USB_HS0->D0FIFOCTR;
             break;
         }
 
         case ((uintptr_t) &R_USB_HS0->D1FIFO):
         {
             p_fifosel = &R_USB_HS0->D1FIFOSEL;
+            p_fifoctr = &R_USB_HS0->D1FIFOCTR;
             break;
         }
 #endif /* USB_HIGH_SPEED_MODULE */
         case ((uintptr_t) &R_USB_FS0->CFIFO):
         {
             p_fifosel = &R_USB_FS0->CFIFOSEL;
+            p_fifoctr = &R_USB_FS0->CFIFOCTR;
             break;
         }
 
         case ((uintptr_t) &R_USB_FS0->D0FIFO):
         {
             p_fifosel = &R_USB_FS0->D0FIFOSEL;
+            p_fifoctr = &R_USB_FS0->D0FIFOCTR;
             break;
         }
 
         case ((uintptr_t) &R_USB_FS0->D1FIFO):
         {
             p_fifosel = &R_USB_FS0->D1FIFOSEL;
+            p_fifoctr = &R_USB_FS0->D1FIFOCTR;
             break;
         }
 
@@ -215,7 +215,66 @@ static void fifo_set_mbw (volatile void * p_fifo, uint32_t mbw)
         }
     }
 
-    *p_fifosel = (*p_fifosel & ~R_USB_CFIFOSEL_MBW_Msk) | (mbw << R_USB_CFIFOSEL_MBW_Pos);
+    /* Read current MBW setting */
+    uint16_t current_mbw = (*p_fifosel & R_USB_CFIFOSEL_MBW_Msk) >> R_USB_CFIFOSEL_MBW_Pos;
+
+    /* If MBW is already set correctly, no need to change */
+    if (current_mbw == mbw)
+    {
+        return;
+    }
+
+    /* Step 1: Clear CURPIPE to release FIFO (only for DxFIFO) */
+    if ((p_fifo != (volatile void *) &R_USB_FS0->CFIFO)
+#ifdef USB_HIGH_SPEED_MODULE
+        && (p_fifo != (volatile void *) &R_USB_HS0->CFIFO)
+#endif
+        )
+    {
+        uint16_t reg_val = *p_fifosel;
+        reg_val   &= ~R_USB_CFIFOSEL_CURPIPE_Msk;
+        *p_fifosel = reg_val;
+
+        /* Step 2: Wait for CURPIPE to be cleared */
+        FSP_HARDWARE_REGISTER_WAIT((*p_fifosel & R_USB_CFIFOSEL_CURPIPE_Msk), 0);
+    }
+
+    /* Step 3: Set new MBW value */
+    uint16_t reg_val = *p_fifosel;
+    reg_val   &= ~R_USB_CFIFOSEL_MBW_Msk;
+    reg_val   |= (mbw << R_USB_CFIFOSEL_MBW_Pos);
+    *p_fifosel = reg_val;
+
+    /* Step 4: Wait for MBW to take effect - verify the register value */
+    FSP_HARDWARE_REGISTER_WAIT((*p_fifosel & R_USB_CFIFOSEL_MBW_Msk) >> R_USB_CFIFOSEL_MBW_Pos, mbw);
+
+    /* Step 5: Additional NOP delay for hardware data arrangement reconfiguration */
+    for (volatile int i = 0; i < 10; i++)
+    {
+        __asm volatile ("nop");
+    }
+
+    /* Step 6: Restore CURPIPE if needed (only for DxFIFO) */
+    if ((p_fifo != (volatile void *) &R_USB_FS0->CFIFO)
+#ifdef USB_HIGH_SPEED_MODULE
+        && (p_fifo != (volatile void *) &R_USB_HS0->CFIFO)
+#endif
+        )
+    {
+        if (num != 0)
+        {
+            reg_val    = *p_fifosel;
+            reg_val   &= ~R_USB_CFIFOSEL_CURPIPE_Msk;
+            reg_val   |= (num & R_USB_CFIFOSEL_CURPIPE_Msk);
+            *p_fifosel = reg_val;
+
+            /* Wait for CURPIPE to be set */
+            FSP_HARDWARE_REGISTER_WAIT((*p_fifosel & R_USB_CFIFOSEL_CURPIPE_Msk), (num & R_USB_CFIFOSEL_CURPIPE_Msk));
+
+            /* Wait for FIFO ready */
+            FSP_HARDWARE_REGISTER_WAIT((*p_fifoctr & R_USB_CFIFOCTR_FRDY_Msk), R_USB_CFIFOCTR_FRDY_Msk);
+        }
+    }
 }
 
 static volatile uint16_t * r_usbh_get_pipectr(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
@@ -249,12 +308,14 @@ static void r_usbh_pipe_write_packet(usbh_instance_ctrl_t * const p_ctrl,
                                      void                       * p_buf,
                                      volatile void              * p_fifo,
                                      uint32_t                     len,
-                                     uint32_t                     access_bytes);
+                                     uint32_t                     access_bytes,
+                                     uint8_t                      num);
 static void r_usbh_pipe_read_packet(usbh_instance_ctrl_t * const p_ctrl,
                                     void                       * p_buf,
                                     volatile void              * p_fifo,
                                     uint32_t                     len,
-                                    uint32_t                     access_bytes);
+                                    uint32_t                     access_bytes,
+                                    uint8_t                      num);
 static uint16_t    r_usbh_edpt_max_packet_size(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static uint16_t    r_usbh_edpt0_max_packet_size(usbh_instance_ctrl_t * const p_ctrl);
 static inline void r_usbh_interrupt_configure(usbh_instance_ctrl_t * p_ctrl);
@@ -273,14 +334,20 @@ uhc_data_t g_uhc_data[USB_NUM_USBIP];
  **********************************************************************************************************************/
 
 /**
- * @brief Start USB module, configure correct operate mode and default pipe0
+ * @brief Start the USB module, select the host operating mode and configure the default control pipe.
  *
- * @param p_api_ctrl    [in]
- * @param p_cfg         [in]
+ * Powers on the selected USB IP, performs the host-mode hardware initialization, configures and enables
+ * the USB interrupts and clears the per-module host bookkeeping. The control block keeps a pointer to
+ * @p p_cfg, so the configuration must remain valid for the lifetime of the instance.
  *
- * @retval FSP_SUCCESS          on success
- * @retval FSP_ERR_UNSUPPORTED  if USB module just support FS only
- * @retval FSP_ERR_ALREADY_OPEN if USB module has opened
+ * @param[in,out] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[in]     p_cfg         Pointer to the USB host configuration (::usb_cfg_t).
+ *
+ * @retval FSP_SUCCESS                    Module started successfully.
+ * @retval FSP_ERR_ASSERTION             @p p_api_ctrl or @p p_cfg was NULL.
+ * @retval FSP_ERR_ALREADY_OPEN          The control block has already been opened.
+ * @retval FSP_ERR_IP_CHANNEL_NOT_PRESENT The requested module number does not exist on this MCU.
+ * @retval FSP_ERR_USB_BUSY              The USB module clock is already in use.
  */
 fsp_err_t R_USBH_Open (usb_ctrl_t * const p_api_ctrl, usb_cfg_t const * const p_cfg)
 {
@@ -323,7 +390,18 @@ fsp_err_t R_USBH_Open (usb_ctrl_t * const p_api_ctrl, usb_cfg_t const * const p_
 
     /* Setting interrupt */
     r_usbh_interrupt_configure(p_ctrl);
-    r_usbh_interrupt_enable(p_ctrl);
+
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->hs_irq, p_ctrl->p_cfg->hsipl, p_ctrl);
+    }
+    else
+#endif
+    {
+        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->irq, p_ctrl->p_cfg->ipl, p_ctrl);
+        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->irq_r, p_ctrl->p_cfg->ipl_r, p_ctrl);
+    }
 
     memset(&g_uhc_data[p_ctrl->module_number], 0, sizeof(uhc_data_t));
 
@@ -333,11 +411,17 @@ fsp_err_t R_USBH_Open (usb_ctrl_t * const p_api_ctrl, usb_cfg_t const * const p_
 }
 
 /**
- * @brief Get port status
+ * @brief Read the root-port/bus status flags.
  *
- * @param p_api_ctrl    [in]
+ * Samples the INTSTS1 register and maps the hardware bits to the driver status flags
+ * (USB_STATUS_OVRCR, USB_STATUS_EOFERR, attach and USB_STATUS_DETACH).
  *
- * @retval status
+ * @param[in]  p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[out] p_status      Destination for the decoded status flags (::usb_status_t).
+ *
+ * @retval FSP_SUCCESS          Status read successfully.
+ * @retval FSP_ERR_ASSERTION    @p p_api_ctrl or @p p_status was NULL.
+ * @retval FSP_ERR_NOT_OPEN     The driver has not been opened.
  */
 fsp_err_t R_USBH_PortStatusGet (usb_ctrl_t * const p_api_ctrl, usb_status_t * p_status)
 {
@@ -391,12 +475,16 @@ fsp_err_t R_USBH_PortStatusGet (usb_ctrl_t * const p_api_ctrl, usb_status_t * p_
 }
 
 /**
- * @brief Reset port
+ * @brief Drive a USB bus reset on the root port.
  *
- * @param p_api_ctrl    [in]
+ * Sets the default control pipe to NAK, asserts the bus reset signal for ~20 ms, then de-asserts it and
+ * re-enables the bus (UACT). Module interrupts are briefly disabled while the bus configuration changes.
  *
- * @retval FSP_SUCCESS          on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ *
+ * @retval FSP_SUCCESS          Bus reset completed.
+ * @retval FSP_ERR_ASSERTION    @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN     The driver has not been opened.
  */
 fsp_err_t R_USBH_PortReset (usb_ctrl_t * const p_api_ctrl)
 {
@@ -429,6 +517,10 @@ fsp_err_t R_USBH_PortReset (usb_ctrl_t * const p_api_ctrl)
     /* Disable the USB module interrupt before changing the USB bus configuration */
     r_usbh_interrupt_disable(p_ctrl);
 
+    /* Enable high-speed operation */
+    /* TODO: it should be only enable by checking CHIRP signal after reset */
+    R_USB_HS0->SYSCFG |= R_USB_SYSCFG_HSE_Msk;
+
     /* Disable the USB Bus by clearing the UACT bit */
     *p_reg_dvstctr0 &= ~R_USB_DVSTCTR0_UACT_Msk;
 
@@ -442,7 +534,7 @@ fsp_err_t R_USBH_PortReset (usb_ctrl_t * const p_api_ctrl)
 
     /* Assert USB bus reset signal */
     *p_reg_dvstctr0 |= R_USB_DVSTCTR0_USBRST_Msk;
-    R_BSP_SoftwareDelay(20, BSP_DELAY_UNITS_MILLISECONDS);
+    R_BSP_SoftwareDelay(50, BSP_DELAY_UNITS_MILLISECONDS);
 
     /* Deassert USB bus reset signal */
     *p_reg_dvstctr0 &= ~R_USB_DVSTCTR0_USBRST_Msk;
@@ -454,13 +546,17 @@ fsp_err_t R_USBH_PortReset (usb_ctrl_t * const p_api_ctrl)
 }
 
 /**
- * @brief Get usb device speed
+ * @brief Get the speed of the device connected to the root port.
  *
- * @param p_api_ctrl    [in]
- * @param p_speed       [out]
+ * Reads the RHST field of DVSTCTR0 and translates it to ::usb_speed_t. If no valid speed can be
+ * determined (or HS is reported on a module that does not support it) ::USB_SPEED_INVALID is returned.
  *
- * @retval FSP_SUCCESS          on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in]  p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[out] p_speed       Destination for the detected device speed (::usb_speed_t).
+ *
+ * @retval FSP_SUCCESS          Speed read successfully.
+ * @retval FSP_ERR_ASSERTION    @p p_api_ctrl or @p p_speed was NULL.
+ * @retval FSP_ERR_NOT_OPEN     The driver has not been opened.
  */
 fsp_err_t R_USBH_GetDeviceSpeed (usb_ctrl_t * const p_api_ctrl, usb_speed_t * p_speed)
 {
@@ -513,18 +609,24 @@ fsp_err_t R_USBH_GetDeviceSpeed (usb_ctrl_t * const p_api_ctrl, usb_speed_t * p_
         }
     }
 
-    g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = *p_speed;
-
     return FSP_SUCCESS;
 }
 
 /**
- * @brief Release usb device
+ * @brief Release a device address and free all of its pipes.
  *
- * @param p_api_ctrl    [in]
+ * If @p dev_addr is currently registered, every pipe bound to it is closed, its endpoint map and control
+ * max-packet-size entry are cleared and the device address slot is released. Call this when a device is
+ * detached or its address is to be reused.
  *
- * @retval FSP_SUCCESS          on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[in] dev_addr      Device address to release (1..USB_DEVICE_COUNT_MAX-1).
+ *
+ * @retval FSP_SUCCESS              Device released.
+ * @retval FSP_ERR_ASSERTION       @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN        The driver has not been opened.
+ * @retval FSP_ERR_INVALID_ARGUMENT @p dev_addr is out of range.
+ * @retval FSP_ERR_ABORTED         @p dev_addr is not currently registered.
  */
 fsp_err_t R_USBH_DeviceRelease (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr)
 {
@@ -547,14 +649,21 @@ fsp_err_t R_USBH_DeviceRelease (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr)
 }
 
 /**
- * @brief Setup send
+ * @brief Send an 8-byte SETUP packet on the default control pipe.
  *
- * @param p_api_ctrl    [in]
- * @param dev_addr      [in]
- * @param setup_packet  [in]
+ * Programs the device address and control max packet size, sets the data-stage direction from the
+ * bmRequestType byte, loads the setup packet into the USBREQ/USBVAL/USBINDX/USBLENG registers and issues
+ * the setup request (SUREQ). Completion of the setup stage is reported through the user callback.
  *
- * @retval FSP_SUCCESS          on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[in] dev_addr      Target device address (0..USB_DEVICE_COUNT_MAX-1).
+ * @param[in] setup_packet  8-byte USB SETUP packet to transmit.
+ *
+ * @retval FSP_SUCCESS              Setup request issued.
+ * @retval FSP_ERR_ASSERTION       @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN        The driver has not been opened.
+ * @retval FSP_ERR_INVALID_ARGUMENT @p dev_addr is out of range.
+ * @retval FSP_ERR_USB_FAILED      A previous setup request is still in progress.
  */
 fsp_err_t R_USBH_SetupSend (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uint8_t const setup_packet[8])
 {
@@ -628,14 +737,7 @@ fsp_err_t R_USBH_SetupSend (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uin
     *p_reg_usbindx = p_packet[2];
     *p_reg_usbleng = p_packet[3];
 
-#ifdef USB_HIGH_SPEED_MODULE
-    uint16_t intsts1_mask = USB_IS_USBHS(p_ctrl->module_number) ?
-                            USB_HS_INTSTS1_CLEAN_MASK :
-                            USB_FS_INTSTS1_CLEAN_MASK;
-#else
-    uint16_t intsts1_mask = USB_FS_INTSTS1_CLEAN_MASK;
-#endif
-    *p_reg_intsts1  = (~(R_USB_INTSTS1_SIGN_Msk | R_USB_INTSTS1_SACK_Msk)) & intsts1_mask;
+    *p_reg_intsts1 &= ~(R_USB_INTSTS1_SIGN_Msk | R_USB_INTSTS1_SACK_Msk);
     *p_reg_intenb1 |= (R_USB_INTENB1_SIGNE_Msk | R_USB_INTENB1_SACKE_Msk);
     *p_reg_dcpctr  |= R_USB_DCPCTR_SUREQ_Msk;
 
@@ -643,17 +745,31 @@ fsp_err_t R_USBH_SetupSend (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uin
 }
 
 /**
- * @brief Open an endpoint
+ * @brief Open an endpoint and bind it to a hardware pipe.
  *
- * @param p_api_ctrl    [in]
- * @param dev_addr      [in]
- * @param ep_desc       [in]
- * @param p_api_ctrl    [in]
+ * Allocates a free pipe suitable for the transfer type described by @p p_ep_desc (bulk, interrupt or
+ * isochronous), configures its direction, endpoint number, max packet size and (for periodic endpoints)
+ * polling interval, and enables its interrupts. The pipe is recorded in the device's endpoint map for
+ * later transfers. High-bandwidth isochronous endpoints are not supported.
  *
- * @retval FSP_SUCCESS          on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[in] dev_addr      Device address that owns the endpoint (1..USB_DEVICE_COUNT_MAX-1).
+ * @param[in] p_ep_desc     Standard USB endpoint descriptor for the endpoint to open.
+ *
+ * @retval FSP_SUCCESS              Endpoint opened.
+ * @retval FSP_ERR_ASSERTION       @p p_api_ctrl or @p p_ep_desc was NULL.
+ * @retval FSP_ERR_NOT_OPEN        The driver has not been opened.
+ * @retval FSP_ERR_INVALID_ARGUMENT @p dev_addr is out of range, or the descriptor requests an
+ *                                  unsupported (e.g. high-bandwidth) isochronous configuration.
+ * @retval FSP_ERR_USB_BUSY        No free pipe is available for this transfer type.
  */
-fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_desc_endpoint_t const * p_ep_desc)
+
+#define R_USB_PIPEBUF_FIXED    (0x7C08) /* Fixed Pipe Buffer configurations */
+
+fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const          p_api_ctrl,
+                           uint8_t                     dev_addr,
+                           usb_desc_endpoint_t const * p_ep_desc,
+                           uint8_t                   * pipe_num)
 {
     usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
 
@@ -769,14 +885,20 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     }
 
     /* PIPE Configuration */
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        R_USB_HS0->PIPEBUF = R_USB_PIPEBUF_FIXED;
+    }
+#endif
+
     *p_reg_pipesel  = num;
-    *p_reg_pipemaxp = ((dev_addr << R_USB_PIPEMAXP_DEVSEL_Pos) & R_USB_PIPEMAXP_DEVSEL_Msk) |
-                      (mps);
-    *p_reg_pipecfg = pipe_cfg;
+    *p_reg_pipemaxp = (dev_addr << R_USB_PIPEMAXP_DEVSEL_Pos) | (mps);
+    *p_reg_pipecfg  = pipe_cfg;
 
     if ((xfer == USB_XFER_INTERRUPT) || (xfer == USB_XFER_ISOCHRONOUS))
     {
-        *p_reg_pipeperi = ((interval - 1) << R_USB_PIPEPERI_IITV_Pos);
+        *p_reg_pipeperi = (interval << R_USB_PIPEPERI_IITV_Pos);
     }
 
     *p_reg_brdysts = R_USB_BRDYSTS_PIPEBRDY_Msk ^ USB_SETBIT(num);
@@ -790,19 +912,40 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     *p_reg_nrdyenb |= USB_SETBIT(num);
     *p_reg_bempenb |= USB_SETBIT(num);
 
+    /* Return configured pipe */
+    *pipe_num = num;
+
     return FSP_SUCCESS;
 }
 
 /**
- * @brief Open a USB port to start communicate with USB device
+ * @brief Register a device address and bind it to the default control pipe.
  *
- * @param p_api_ctrl    [in]
- * @param dev_addr      [in]
+ * Programs the device's address, control-endpoint max packet size and bus speed into the controller so
+ * that control transfers can be addressed to it. On the high-speed module a Full-/Low-speed device located
+ * behind a high-speed hub is additionally configured for split transactions using @p hub_addr / @p hub_port.
  *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[in] dev_addr      Device address to register (0..USB_DEVICE_COUNT_MAX-1).
+ * @param[in] speed         Speed of the target device (::usb_speed_t).
+ * @param[in] mxps0         Max packet size of the default control pipe (endpoint 0).
+ * @param[in] hub_addr      Device address of the upstream high-speed hub acting as the
+ *                          transaction translator, or 0 if the device is on the root port.
+ *                          Used to configure split transactions for FS/LS devices.
+ * @param[in] hub_port      Port number on @p hub_addr the device is attached to (1-based),
+ *                          or 0 if the device is on the root port.
+ *
+ * @retval FSP_SUCCESS              Device registered.
+ * @retval FSP_ERR_ASSERTION       @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN        The driver has not been opened.
+ * @retval FSP_ERR_INVALID_ARGUMENT @p dev_addr is out of range or @p speed is not supported by the module.
  */
-fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_speed_t speed)
+fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl,
+                           uint8_t            dev_addr,
+                           usb_speed_t        speed,
+                           uint8_t            mxps0,
+                           uint8_t            hub_addr,
+                           uint8_t            hub_port)
 {
     usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
 
@@ -834,22 +977,23 @@ fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     *p_dcpctr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
     FSP_HARDWARE_REGISTER_WAIT((*p_dcpctr & R_USB_DCPCTR_PBUSY_Msk), 0);
 
-    /* Default mps = 64 */
-    *p_dcpmaxp = ((dev_addr << R_USB_DCPMAXP_DEVSEL_Pos) & R_USB_DCPMAXP_DEVSEL_Msk) | USB_DCPMAXP_MXPS_DEFAULT;
+    /* Set MPS for DCP */
+    *p_dcpmaxp = ((dev_addr << R_USB_DCPMAXP_DEVSEL_Pos) & R_USB_DCPMAXP_DEVSEL_Msk) |
+                 ((mxps0 << R_USB_DCPMAXP_MXPS_Pos) & R_USB_DCPMAXP_MXPS_Msk);
+
+    uint16_t usbspd;
 
     switch (speed)
     {
         case USB_SPEED_LS:
         {
-            *p_devadd = USB_DEVADD_USBSPD_LS << R_USB_DEVADD_USBSPD_Pos;
-            g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = USB_SPEED_LS;
+            usbspd = USB_DEVADD_USBSPD_LS;
             break;
         }
 
         case USB_SPEED_FS:
         {
-            *p_devadd = USB_DEVADD_USBSPD_FS << R_USB_DEVADD_USBSPD_Pos;
-            g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = USB_SPEED_FS;
+            usbspd = USB_DEVADD_USBSPD_FS;
             break;
         }
 
@@ -858,10 +1002,10 @@ fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
         {
             if (USB_IS_USBHS(p_ctrl->module_number))
             {
-                *p_devadd = USB_DEVADD_USBSPD_HS << R_USB_DEVADD_USBSPD_Pos;
-                g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = USB_SPEED_HS;
+                usbspd = USB_DEVADD_USBSPD_HS;
                 break;
             }
+
             __fallthrough;
         }
 #endif
@@ -869,10 +1013,33 @@ fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
         default:
         {
             *p_devadd = USB_DEVADD_USBSPD_NOT_USE << R_USB_DEVADD_USBSPD_Pos;
-            g_uhc_data[p_ctrl->module_number].dev0.usbh_dev0_info.speed = USB_SPEED_INVALID;
-            break;
+
+            return FSP_ERR_INVALID_ARGUMENT;
         }
     }
+
+    uint16_t devadd_val = usbspd << R_USB_DEVADD_USBSPD_Pos;
+
+#ifdef USB_HIGH_SPEED_MODULE
+    /*
+     * Split transaction: a Full-/Low-speed device located behind a high-speed hub must
+     * have its upstream hub address (transaction translator) and hub port programmed so
+     * the controller performs SSPLIT/CSPLIT automatically. The UPPHUB/HUBPORT fields only
+     * exist on the high-speed module. A zero hub address means the device is on the root
+     * port and no split transaction is required.
+     */
+    if (USB_IS_USBHS(p_ctrl->module_number) && (0 != hub_addr) &&
+        ((USB_SPEED_FS == speed) || (USB_SPEED_LS == speed)))
+    {
+        devadd_val |= ((hub_addr << R_USB_DEVADD_UPPHUB_Pos) & R_USB_DEVADD_UPPHUB_Msk) |
+                      ((hub_port << R_USB_DEVADD_HUBPORT_Pos) & R_USB_DEVADD_HUBPORT_Msk);
+    }
+#else
+    FSP_PARAMETER_NOT_USED(hub_addr);
+    FSP_PARAMETER_NOT_USED(hub_port);
+#endif
+
+    *p_devadd = devadd_val;
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
@@ -880,14 +1047,9 @@ fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
         if (speed != USB_SPEED_HS)
         {
             R_USB_HS0->SOFCFG |= R_USB_SOFCFG_TRNENSEL_Msk;
-            R_USB_HS0->SYSCFG_b.HSE = 0;
-        }
-        else
-        {
-            R_USB_HS0->SYSCFG_b.HSE = 1;
         }
     }
-     else
+    else
 #endif
     {
         if (speed != USB_SPEED_FS)
@@ -896,18 +1058,22 @@ fsp_err_t R_USBH_PortOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
         }
     }
 
-    g_uhc_data[p_ctrl->module_number].ctl_mps[dev_addr] = USB_DCPMAXP_MXPS_DEFAULT;
+    g_uhc_data[p_ctrl->module_number].ctl_mps[dev_addr] = mxps0;
 
     return FSP_SUCCESS;
 }
 
 /**
- * @brief Resume bus
+ * @brief Resume the bus from the suspended state.
  *
- * @param p_api_ctrl       [in]
+ * Drives resume signaling for ~3 ms, then clears it and re-enables bus activity (UACT), allowing
+ * settling time before returning.
  *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ *
+ * @retval FSP_SUCCESS          Bus resumed.
+ * @retval FSP_ERR_ASSERTION    @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN     The driver has not been opened.
  */
 fsp_err_t R_USBH_BusResume (usb_ctrl_t * const p_api_ctrl)
 {
@@ -944,12 +1110,15 @@ fsp_err_t R_USBH_BusResume (usb_ctrl_t * const p_api_ctrl)
 }
 
 /**
- * @brief Suspend bus
+ * @brief Suspend the bus.
  *
- * @param p_api_ctrl    [in]
+ * Stops bus activity by clearing the UACT and RESUME bits in DVSTCTR0.
  *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ *
+ * @retval FSP_SUCCESS          Bus suspended.
+ * @retval FSP_ERR_ASSERTION    @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN     The driver has not been opened.
  */
 fsp_err_t R_USBH_BusSuspend (usb_ctrl_t * const p_api_ctrl)
 {
@@ -979,12 +1148,16 @@ fsp_err_t R_USBH_BusSuspend (usb_ctrl_t * const p_api_ctrl)
 }
 
 /**
- * @brief Close usb host
+ * @brief Close the USB host driver.
  *
- * @param p_api_ctrl    [in]
+ * Clears the module registers and stops (powers down) the USB IP. After this call the control block
+ * must be re-opened with R_USBH_Open() before it can be used again.
  *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ *
+ * @retval FSP_SUCCESS          Driver closed.
+ * @retval FSP_ERR_ASSERTION    @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN     The driver has not been opened.
  */
 fsp_err_t R_USBH_Close (usb_ctrl_t * const p_api_ctrl)
 {
@@ -1001,17 +1174,24 @@ fsp_err_t R_USBH_Close (usb_ctrl_t * const p_api_ctrl)
 }
 
 /**
- * @brief Start a transfer
+ * @brief Start a data transfer on a previously opened endpoint.
  *
- * @param p_api_ctrl    [in]
- * @param dev_addr      [in]
- * @param ep_addr       [in]
- * @param buffer        [in]
- * @param buflen        [in]
+ * Queues a transfer on the pipe bound to @p ep_addr. Endpoint 0 uses the default control pipe; all other
+ * endpoints must have been opened with R_USBH_EdptOpen(). The call returns once the transfer has been
+ * started; the actual completion (or error) is delivered later through the user callback as a
+ * ::USBH_EVENT_XFER_COMPLETE event. Module interrupts are masked while the transfer is being set up.
  *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN      if USB host has not been opened
- * @retval FSP_ERR_WRITE_FAILED  if failed
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[in] dev_addr      Target device address (0..USB_DEVICE_COUNT_MAX-1).
+ * @param[in] ep_addr       Endpoint address, including the direction bit (bit 7).
+ * @param[in] p_buffer      Data buffer to transmit (OUT) or receive into (IN). May be NULL for a ZLP.
+ * @param[in] buflen        Number of bytes to transfer; 0 sends/receives a zero-length packet.
+ *
+ * @retval FSP_SUCCESS              Transfer started.
+ * @retval FSP_ERR_ASSERTION       @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN        The driver has not been opened.
+ * @retval FSP_ERR_INVALID_ARGUMENT @p dev_addr is out of range.
+ * @retval FSP_ERR_WRITE_FAILED    The transfer could not be started.
  */
 fsp_err_t R_USBH_XferStart (usb_ctrl_t * const p_api_ctrl,
                             uint8_t            dev_addr,
@@ -1040,12 +1220,16 @@ fsp_err_t R_USBH_XferStart (usb_ctrl_t * const p_api_ctrl,
 }
 
 /**
- * @brief Connect to the USB data bus
+ * @brief Connect the controller to the USB data bus.
  *
- * @param p_api_ctrl        [in]
+ * Enables the host D+/D- pull-down resistors (DRPD), disables the device pull-up (DPRPU), programs the
+ * bus-wait cycles and finally enables the USB operation (USBE), allowing devices to be detected.
  *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ *
+ * @retval FSP_SUCCESS          Controller connected to the bus.
+ * @retval FSP_ERR_ASSERTION    @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN     The driver has not been opened.
  */
 fsp_err_t R_USBH_Enable (usb_ctrl_t * const p_api_ctrl)
 {
@@ -1093,12 +1277,16 @@ fsp_err_t R_USBH_Enable (usb_ctrl_t * const p_api_ctrl)
 }
 
 /**
- * @brief Disconnect to the USB data bus
+ * @brief Disconnect the controller from the USB data bus.
  *
- * @param p_api_ctrl        [in]
+ * Clears the pull-down/pull-up control bits and disables USB operation (USBE), electrically
+ * removing the controller from the bus.
  *
- * @retval FSP_SUCCESS on success
- * @retval FSP_ERR_NOT_OPEN     if USB host has not been opened
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ *
+ * @retval FSP_SUCCESS          Controller disconnected from the bus.
+ * @retval FSP_ERR_ASSERTION    @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN     The driver has not been opened.
  */
 fsp_err_t R_USBH_Disable (usb_ctrl_t * const p_api_ctrl)
 {
@@ -1128,6 +1316,23 @@ fsp_err_t R_USBH_Disable (usb_ctrl_t * const p_api_ctrl)
     return FSP_SUCCESS;
 }
 
+/**
+ * @brief Abort an in-progress transfer on an endpoint.
+ *
+ * Stops any transfer pending on @p ep_addr. For endpoint 0 the control transfer is terminated and the
+ * control FIFO is cleared; for other endpoints the bound pipe is set to NAK, its interrupts are disabled,
+ * the FIFO port is released and the transaction counter is cleared. No completion event is generated for
+ * the aborted transfer. Module interrupts are masked for the duration of the operation.
+ *
+ * @param[in] p_api_ctrl    Pointer to the USB host control block (::usbh_instance_ctrl_t).
+ * @param[in] dev_addr      Device address that owns the endpoint (1..USB_DEVICE_COUNT_MAX-1).
+ * @param[in] ep_addr       Endpoint address, including the direction bit (bit 7).
+ *
+ * @retval FSP_SUCCESS              Transfer aborted.
+ * @retval FSP_ERR_ASSERTION       @p p_api_ctrl was NULL.
+ * @retval FSP_ERR_NOT_OPEN        The driver has not been opened.
+ * @retval FSP_ERR_INVALID_ARGUMENT @p dev_addr / @p ep_addr is out of range, or no pipe is bound to it.
+ */
 fsp_err_t R_USBH_XferAbort (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uint8_t ep_addr)
 {
     usbh_instance_ctrl_t * p_ctrl = (usbh_instance_ctrl_t *) p_api_ctrl;
@@ -1169,6 +1374,8 @@ fsp_err_t R_USBH_XferAbort (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uin
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
+
+/* Release the selected USB IP from the module-stop (low-power) state and supply it clock/power. */
 static fsp_err_t r_usbh_hw_module_start (usbh_instance_ctrl_t * const p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -1191,6 +1398,8 @@ static fsp_err_t r_usbh_hw_module_start (usbh_instance_ctrl_t * const p_ctrl)
     return FSP_SUCCESS;
 }
 
+/* Reset all host registers (control, interrupt enables/status, pipes and device addresses) to a known
+ * idle state and remove the controller from the bus. */
 static fsp_err_t r_usbh_module_register_clear (usbh_instance_ctrl_t * const p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -1255,6 +1464,7 @@ static fsp_err_t r_usbh_module_register_clear (usbh_instance_ctrl_t * const p_ct
     return FSP_SUCCESS;
 }
 
+/* Clear the host registers and put the selected USB IP back into the module-stop (low-power) state. */
 static fsp_err_t r_usbh_hw_module_stop (usbh_instance_ctrl_t * const p_ctrl)
 {
     r_usbh_module_register_clear(p_ctrl);
@@ -1279,14 +1489,13 @@ static fsp_err_t r_usbh_hw_module_stop (usbh_instance_ctrl_t * const p_ctrl)
     return FSP_SUCCESS;
 }
 
+/* Bring the USB IP up in host mode: configure the PHY/PLL (HS) or clock (FS), enable VBUS, switch to
+ * host controller mode (DCFM) and set up the default control pipe. */
 static void r_usbh_hw_init (usbh_instance_ctrl_t * const p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        R_USB_HS0->SYSCFG = p_ctrl->p_cfg->high_speed ?
-                            (R_USB_HS0->SYSCFG | R_USB_SYSCFG_HSE_Msk) :
-                            (R_USB_HS0->SYSCFG & ~R_USB_SYSCFG_HSE_Msk);
         R_USB_HS0->PHYSET  = R_USB_PHYSET_DIRPD_Msk | R_USB_PHYSET_PLLRESET_Msk;
         R_USB_HS0->PHYSET |= USB_PHYSET_REPSEL_16_SEC << R_USB_PHYSET_REPSEL_Pos;
 
@@ -1338,6 +1547,7 @@ static void r_usbh_hw_init (usbh_instance_ctrl_t * const p_ctrl)
     }
 }
 
+/* Return the non-zero DEVADD speed/hub bits for @p addr, or 0 if the address is not currently registered. */
 static uint16_t r_usbh_chk_dev_addr (usbh_instance_ctrl_t * p_ctrl, uint16_t addr)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -1354,6 +1564,8 @@ static uint16_t r_usbh_chk_dev_addr (usbh_instance_ctrl_t * p_ctrl, uint16_t add
     }
 }
 
+/* Program the bus speed for device address @p addr in the DEVADD register (and reset the default control
+ * pipe max packet size when addr 0 is configured). */
 void r_usbh_set_dev_addr (usbh_instance_ctrl_t * p_ctrl, uint16_t addr, uint16_t speed)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -1380,6 +1592,8 @@ void r_usbh_set_dev_addr (usbh_instance_ctrl_t * p_ctrl, uint16_t addr, uint16_t
     }
 }
 
+/* Tear down every pipe owned by @p dev_addr: stop it, disable its interrupts, clear its configuration and
+ * the endpoint map entry, then release the device address. */
 static void r_usbh_device_release (usbh_instance_ctrl_t * p_ctrl, uint8_t dev_addr)
 {
     volatile uint16_t * p_nrdyend;
@@ -1436,6 +1650,8 @@ static void r_usbh_device_release (usbh_instance_ctrl_t * p_ctrl, uint8_t dev_ad
     r_usbh_set_dev_addr(p_ctrl, dev_addr, 0);
 }
 
+/* Find a free hardware pipe within the index range reserved for @p xfer_type. Returns the pipe number,
+ * or 0 if none is available. */
 static uint32_t r_usbh_find_pipe (usbh_instance_ctrl_t * const p_ctrl, uint8_t xfer_type)
 {
     const uint8_t pipe_idx_arr[4][2] =
@@ -1460,6 +1676,7 @@ static uint32_t r_usbh_find_pipe (usbh_instance_ctrl_t * const p_ctrl, uint8_t x
     return 0;
 }
 
+/* Return a pointer to the PIPECTR register for pipe @p num (DCPCTR for pipe 0). */
 static volatile uint16_t * r_usbh_get_pipectr (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -1474,7 +1691,7 @@ static volatile uint16_t * r_usbh_get_pipectr (usbh_instance_ctrl_t * const p_ct
     }
 }
 
-/* Helper to send USB transfer event */
+/* Invoke the user callback with a ::USBH_EVENT_XFER_COMPLETE event describing the finished transfer. */
 static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * const p_ctrl,
                                                       uint8_t                      dev_addr,
                                                       uint8_t                      ep_addr,
@@ -1520,7 +1737,8 @@ static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * con
     }
 }
 
-static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * const p_ctrl)
+/* Invoke the user callback with a ::USBH_EVENT_DEVICE_ATTACH event. */
+static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * const p_ctrl, usb_speed_t speed)
 {
     usbh_callback_arg_t   args;
     usbh_callback_arg_t * p_args = p_ctrl->p_callback_memory;
@@ -1537,8 +1755,7 @@ static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * con
     }
     else
     {
-        /* Save current arguments on the stack in case this is a nested interrupt.
-         */
+        /* Save current arguments on the stack in case this is a nested interrupt. */
         args = *p_args;
     }
 
@@ -1549,7 +1766,8 @@ static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * con
         .attach   =
         {
             .hub_addr = 0,
-            .hub_port = 0
+            .hub_port = 0,
+            .speed    = speed
         }
     };
 
@@ -1559,6 +1777,8 @@ static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * con
     }
 }
 
+/* Return a pointer to the transaction-counter (PIPETRE) register for pipe @p num, or NULL if the pipe
+ * does not have one. */
 static volatile usb_reg_pipetre_t * r_usbh_get_pipetre (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
     if ((USB_PIPETR_INDEX_BEGIN <= num) && (num <= USB_PIPETR_INDEX_END))
@@ -1578,6 +1798,7 @@ static volatile usb_reg_pipetre_t * r_usbh_get_pipetre (usbh_instance_ctrl_t * c
     return NULL;
 }
 
+/* Return the max packet size currently programmed for the default control pipe (endpoint 0). */
 static uint16_t r_usbh_edpt0_max_packet_size (usbh_instance_ctrl_t * const p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -1594,6 +1815,7 @@ static uint16_t r_usbh_edpt0_max_packet_size (usbh_instance_ctrl_t * const p_ctr
     }
 }
 
+/* Return the max packet size programmed for pipe @p num (selects the pipe via PIPESEL). */
 static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -1601,7 +1823,7 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
     {
         R_USB_HS0->PIPESEL = num;
 
-        return (uint16_t) (R_USB_HS0->PIPEMAXP >> R_USB_HS0_PIPEMAXP_MXPS_Pos);
+        return (uint16_t) (R_USB_HS0->PIPEMAXP & 0x3FF);
     }
     else
 #endif
@@ -1612,6 +1834,7 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
     }
 }
 
+/* Block until the D0FIFO is selected for pipe @p num and reports ready (FRDY) for access. */
 static inline void r_usbh_pipe_wait_for_ready (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -1634,17 +1857,21 @@ static inline void r_usbh_pipe_wait_for_ready (usbh_instance_ctrl_t * const p_ct
     }
 }
 
+/* Write @p len bytes from @p p_buf into the FIFO at @p p_fifo, using the widest access (32/16/8-bit)
+ * allowed by buffer alignment, remaining length and @p access_bytes. */
 static void r_usbh_pipe_write_packet (usbh_instance_ctrl_t * const p_ctrl,
                                       void                       * p_buf,
                                       volatile void              * p_fifo,
                                       uint32_t                     len,
-                                      uint32_t                     access_bytes)
+                                      uint32_t                     access_bytes,
+                                      uint8_t                      num)
 {
 #ifdef USB_HIGH_SPEED_MODULE
-    const bool          is_usbhs = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
     volatile uint32_t * p_fifo32 = (volatile uint32_t *) p_fifo;
-    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (is_usbhs ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
-    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (is_usbhs ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (access_bytes ==
+                                                          4 ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
+    volatile uint8_t * p_fifo8 = (volatile uint8_t *) (access_bytes ==
+                                                       4 ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
 #else
     volatile uint16_t * p_fifo16 = (volatile uint16_t *) (p_fifo);
     volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (p_fifo);
@@ -1652,10 +1879,8 @@ static void r_usbh_pipe_write_packet (usbh_instance_ctrl_t * const p_ctrl,
     uint8_t * p_addr = p_buf;
 
 #ifdef USB_HIGH_SPEED_MODULE
-    if (!((uintptr_t) p_addr & 0x3) && (len >= 4) && (access_bytes == 4))
+    if ((access_bytes == 4) && ((uintptr_t) p_addr % 4 == 0))
     {
-        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_32_BIT);
-
         while (len >= 4)
         {
             *p_fifo32 = *(uint32_t *) p_addr;
@@ -1665,41 +1890,45 @@ static void r_usbh_pipe_write_packet (usbh_instance_ctrl_t * const p_ctrl,
     }
 #endif
 
-    if (!((uintptr_t) p_addr & 0x1) && (len >= 2) && (access_bytes >= 2))
+    while (len >= 2 && (uintptr_t) p_addr % 2 == 0)
     {
-        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT);
-
-        while (len >= 2)
+        if (access_bytes != 2)
         {
-            *p_fifo16 = *(uint16_t *) p_addr;
-            p_addr   += 2;
-            len      -= 2;
+            fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT, num);
         }
+
+        *p_fifo16 = *(uint16_t *) p_addr;
+        p_addr   += 2;
+        len      -= 2;
     }
 
     if (len)
     {
-        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT);
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT, num);
+    }
 
-        while (len--)
-        {
-            *p_fifo8 = *p_addr;
-            ++p_addr;
-        }
+    while (len--)
+    {
+        *p_fifo8 = *p_addr;
+        ++p_addr;
     }
 }
 
+/* Read @p len bytes from the FIFO at @p p_fifo into @p p_buf, using the widest access (32/16/8-bit)
+ * allowed by buffer alignment, remaining length and @p access_bytes. */
 static void r_usbh_pipe_read_packet (usbh_instance_ctrl_t * const p_ctrl,
                                      void                       * p_buf,
                                      volatile void              * p_fifo,
                                      uint32_t                     len,
-                                     uint32_t                     access_bytes)
+                                     uint32_t                     access_bytes,
+                                     uint8_t                      num)
 {
 #ifdef USB_HIGH_SPEED_MODULE
-    const bool          is_usbhs = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
     volatile uint32_t * p_fifo32 = (volatile uint32_t *) p_fifo;
-    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (is_usbhs ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
-    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (is_usbhs ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
+    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (access_bytes ==
+                                                          4 ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
+    volatile uint8_t * p_fifo8 = (volatile uint8_t *) (access_bytes ==
+                                                       4 ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
 #else
     volatile uint16_t * p_fifo16 = (volatile uint16_t *) (p_fifo);
     volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (p_fifo);
@@ -1707,10 +1936,8 @@ static void r_usbh_pipe_read_packet (usbh_instance_ctrl_t * const p_ctrl,
     uint8_t * p_data = (uint8_t *) p_buf;
 
 #ifdef USB_HIGH_SPEED_MODULE
-    if (!((uintptr_t) p_data & 0x3) && (len >= 4) && (access_bytes == 4))
+    if ((access_bytes == 4) && ((uintptr_t) p_data % 4 == 0))
     {
-        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_32_BIT);
-
         while (len >= 4)
         {
             *(uint32_t *) p_data = *p_fifo32;
@@ -1720,30 +1947,32 @@ static void r_usbh_pipe_read_packet (usbh_instance_ctrl_t * const p_ctrl,
     }
 #endif
 
-    if (!((uintptr_t) p_data & 0x1) && (len >= 2) && (access_bytes >= 2))
+    while (len >= 2 && (uintptr_t) p_data % 2 == 0)
     {
-        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT);
-
-        while (len >= 2)
+        if (access_bytes != 2)
         {
-            *(uint16_t *) p_data = *p_fifo16;
-            p_data              += 2;
-            len -= 2;
+            fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT, num);
         }
+
+        *(uint16_t *) p_data = *p_fifo16;
+        p_data              += 2;
+        len -= 2;
     }
 
     if (len)
     {
-        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT);
+        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT, num);
+    }
 
-        while (len--)
-        {
-            *p_data = *p_fifo8;
-            ++p_data;
-        }
+    while (len--)
+    {
+        *p_data = *p_fifo8;
+        ++p_data;
     }
 }
 
+/* Read one IN packet of the control data stage from the CFIFO. Returns true when the whole transfer is
+ * complete (short packet received or all bytes read), false when more packets are expected. */
 static bool r_usbh_pipe0_xfer_in (usbh_instance_ctrl_t * const p_ctrl)
 {
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[0];
@@ -1783,7 +2012,11 @@ static bool r_usbh_pipe0_xfer_in (usbh_instance_ctrl_t * const p_ctrl)
     if (len)
     {
         *p_dcpctr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
-        r_usbh_pipe_read_packet(p_ctrl, p_buf, p_cfifo, len, access_bytes);
+
+        /* Wait for pipe to be idle before reading */
+        FSP_HARDWARE_REGISTER_WAIT((*p_dcpctr & R_USB_DCPCTR_PBUSY_Msk), 0);
+
+        r_usbh_pipe_read_packet(p_ctrl, p_buf, p_cfifo, len, access_bytes, 0);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1805,6 +2038,8 @@ static bool r_usbh_pipe0_xfer_in (usbh_instance_ctrl_t * const p_ctrl)
     return false;
 }
 
+/* Write one OUT packet of the control data stage into the CFIFO. Returns true when nothing remains to be
+ * sent, false when more packets are still pending. */
 static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
 {
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[0];
@@ -1834,23 +2069,35 @@ static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
     {
         p_cfifoctr = &R_USB_HS0->CFIFOCTR;
         p_cfifo    = (volatile void *) &R_USB_HS0->CFIFO;
+
+        /* Wait for FIFO ready before writing */
+        FSP_HARDWARE_REGISTER_WAIT((R_USB_HS0->CFIFOCTR & R_USB_CFIFOCTR_FRDY_Msk), R_USB_CFIFOCTR_FRDY_Msk);
     }
     else
 #endif
     {
         p_cfifoctr = &R_USB_FS0->CFIFOCTR;
         p_cfifo    = (volatile void *) &R_USB_FS0->CFIFO;
+
+        /* Wait for FIFO ready before writing */
+        FSP_HARDWARE_REGISTER_WAIT((R_USB_FS0->CFIFOCTR & R_USB_CFIFOCTR_FRDY_Msk), R_USB_CFIFOCTR_FRDY_Msk);
     }
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_cfifo, len, access_bytes);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_cfifo, len, access_bytes, 0);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
     if (len < mps)
     {
         *p_cfifoctr = R_USB_CFIFOCTR_BVAL_Msk;
+
+        if (len == 0)
+        {
+            /* Clear FIFO for ZLP */
+            *p_cfifoctr |= R_USB_CFIFOCTR_BCLR_Msk;
+        }
     }
 
     p_pipe->remaining = rem - len;
@@ -1858,6 +2105,8 @@ static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
     return false;
 }
 
+/* Read one IN packet for pipe @p num from the D0FIFO. Returns true when the transfer is complete (short
+ * packet or all bytes received), false when more data is expected. */
 static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[num];
@@ -1889,8 +2138,25 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
         p_reg_d0fifo    = (volatile void *) &R_USB_FS0->D0FIFO;
     }
 
-    *p_reg_d0fifosel = ((access_bytes == 4 ? USB_FIFOSEL_MBW_32_BIT : USB_FIFOSEL_MBW_16_BIT) <<
-                        R_USB_D0FIFOSEL_MBW_Pos) | (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
+    /* Clear CURPIPE first */
+    *p_reg_d0fifosel = 0;
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
+
+    /* Set new pipe with optimal MBW based on access_bytes */
+    uint16_t fifosel_val = (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
+
+#ifdef USB_HIGH_SPEED_MODULE
+    if (access_bytes == 4)
+    {
+        fifosel_val |= (USB_FIFOSEL_MBW_32_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    }
+    else
+#endif
+    {
+        fifosel_val |= (USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    }
+
+    *p_reg_d0fifosel = fifosel_val;
 
     r_usbh_pipe_wait_for_ready(p_ctrl, num);
 
@@ -1899,7 +2165,7 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
 
     if (len)
     {
-        r_usbh_pipe_read_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes);
+        r_usbh_pipe_read_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes, num);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1922,6 +2188,8 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
     return false;
 }
 
+/* Write one OUT packet for pipe @p num into the D0FIFO. Returns true when nothing remains to be sent,
+ * false when more packets are still pending. */
 static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[num];
@@ -1934,8 +2202,6 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
 #else
     const uint32_t access_bytes = 2;
 #endif
-
-    r_usbh_pipe_wait_for_ready(p_ctrl, num);
 
     volatile uint16_t * p_reg_d0fifosel;
     volatile uint16_t * p_reg_d0fifoctr;
@@ -1963,20 +2229,33 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
         return true;
     }
 
+    /* Clear CURPIPE first */
+    *p_reg_d0fifosel = 0;
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
+
+    /* Set new pipe with optimal MBW and ISEL for write direction */
+    uint16_t fifosel_val = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) | R_USB_CFIFOSEL_ISEL_Msk;
+
+#ifdef USB_HIGH_SPEED_MODULE
     if (access_bytes == 4)
     {
-        *p_reg_d0fifosel = USB_FIFOSEL_MBW_32_BIT << R_USB_D0FIFOSEL_MBW_Pos;
+        fifosel_val |= (USB_FIFOSEL_MBW_32_BIT << R_USB_D0FIFOSEL_MBW_Pos);
     }
     else
+#endif
     {
-        *p_reg_d0fifosel = USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos;
+        fifosel_val |= (USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos);
     }
 
-    *p_reg_d0fifosel |= (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
+    *p_reg_d0fifosel = fifosel_val;
+
+    /* Wait for FRDY */
+    /* TODO: move this out of ISR, to avoid a dead-lock */
+    r_usbh_pipe_wait_for_ready(p_ctrl, num);
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes, num);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1992,6 +2271,8 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     return false;
 }
 
+/* Start a transfer (data stage or status stage / ZLP) on the default control pipe: configure the CFIFO
+ * direction and kick off the first OUT packet, leaving IN data to be drained by the BRDY interrupt. */
 static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
                                        uint8_t                      dev_addr,
                                        uint8_t                      ep_addr,
@@ -2035,7 +2316,19 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
         p_reg_usbreq   = &R_USB_FS0->USBREQ;
     }
 
-    uint16_t fifosel = (access_bytes == 4 ? USB_FIFOSEL_MBW_32_BIT : USB_FIFOSEL_MBW_16_BIT) << R_USB_CFIFOSEL_MBW_Pos;
+    /* Configure FIFO with optimal MBW based on module type */
+    uint16_t fifosel = 0;
+
+#ifdef USB_HIGH_SPEED_MODULE
+    if (access_bytes == 4)
+    {
+        fifosel = (USB_FIFOSEL_MBW_32_BIT << R_USB_CFIFOSEL_MBW_Pos);
+    }
+    else
+#endif
+    {
+        fifosel = (USB_FIFOSEL_MBW_16_BIT << R_USB_CFIFOSEL_MBW_Pos);
+    }
 
     /* configure fifo direction and access unit settings */
     if (USB_DIR_OUT == dir)
@@ -2070,6 +2363,22 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
             *p_reg_cfifoctr = R_USB_CFIFOCTR_BVAL_Msk;
         }
 
+        /*
+         * TODO: Problem: SQSET (sequence toggle bit initialization) is only set for zero-length packets,
+         * not for regular data stage transfers.
+         *
+         * Hardware Manual Reference (Page 100, Section 39.2.6.2):
+         *      "Set SQSET to 1 before starting a new control transfer to initialize the DATA toggle to DATA1."
+         * Recommended Fix:
+         *  if (dir != ((*p_reg_dcpcfg & R_USB_DCPCFG_DIR_Msk) >> R_USB_DCPCFG_DIR_Pos))
+         *  {
+         *      *p_reg_dcpctr |= R_USB_DCPCTR_SQSET_Msk;
+         *      *p_reg_dcpcfg  = (dir) ?
+         *                       (*p_reg_dcpcfg & (~R_USB_DCPCFG_DIR_Msk)) :
+         *                       (*p_reg_dcpcfg | R_USB_DCPCFG_DIR_Msk);
+         *  }
+         */
+
         if (dir == ((*p_reg_dcpcfg & R_USB_DCPCFG_DIR_Msk) >> R_USB_DCPCFG_DIR_Pos))
         {
             *p_reg_dcpctr |= R_USB_DCPCTR_SQSET_Msk;
@@ -2084,6 +2393,8 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
     return true;
 }
 
+/* Start a transfer on a non-control pipe. For OUT, write the first packet (or a ZLP); for IN, arm the
+ * transaction counter and set the pipe to BUF so the controller fetches data. */
 static bool r_usbh_process_pipe_xfer (usbh_instance_ctrl_t * const p_ctrl,
                                       uint8_t                      dev_addr,
                                       uint8_t                      ep_addr,
@@ -2129,7 +2440,7 @@ static bool r_usbh_process_pipe_xfer (usbh_instance_ctrl_t * const p_ctrl,
             /* ZLP */
             *p_reg_d0fifosel = num;
             r_usbh_pipe_wait_for_ready(p_ctrl, num);
-            *p_reg_d0fifoctr = R_USB_D0FIFOCTR_BVAL_Msk;
+            *p_reg_d0fifoctr = R_USB_D0FIFOCTR_BVAL_Msk | R_USB_CFIFOCTR_BCLR_Msk;
             *p_reg_d0fifosel = 0;
 
             FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
@@ -2158,6 +2469,7 @@ static bool r_usbh_process_pipe_xfer (usbh_instance_ctrl_t * const p_ctrl,
     return true;
 }
 
+/* Dispatch a transfer to the control-pipe or generic-pipe handler based on the endpoint number. */
 static bool r_usbh_process_edpt_xfer (usbh_instance_ctrl_t * const p_ctrl,
                                       uint8_t                      dev_addr,
                                       uint8_t                      ep_addr,
@@ -2175,6 +2487,7 @@ static bool r_usbh_process_edpt_xfer (usbh_instance_ctrl_t * const p_ctrl,
     }
 }
 
+/* Invoke the user callback with a ::USBH_EVENT_DEVICE_REMOVE event. */
 static inline void r_usbh_event_device_remove_notify (usbh_instance_ctrl_t * const p_ctrl)
 {
     usbh_callback_arg_t   args;
@@ -2213,6 +2526,8 @@ static inline void r_usbh_event_device_remove_notify (usbh_instance_ctrl_t * con
     }
 }
 
+/* Handle the buffer-empty (BEMP) interrupt for the control pipe: push the next OUT packet and, once the
+ * data stage is done, notify the application. */
 static void r_usbh_process_pipe0_bemp (usbh_instance_ctrl_t * const p_ctrl)
 {
     bool completed = r_usbh_pipe0_xfer_out(p_ctrl);
@@ -2228,6 +2543,8 @@ static void r_usbh_process_pipe0_bemp (usbh_instance_ctrl_t * const p_ctrl)
     }
 }
 
+/* Handle the not-ready (NRDY) interrupt for pipe @p num: map the pipe PID (STALL/NAK) to a transfer
+ * result and report it to the application. */
 static void r_usbh_process_pipe_nrdy (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
     usb_xfer_result_t   result;
@@ -2267,6 +2584,8 @@ static void r_usbh_process_pipe_nrdy (usbh_instance_ctrl_t * const p_ctrl, uint3
                                       result);
 }
 
+/* Handle the buffer-ready (BRDY) interrupt for pipe @p num: transfer the next IN/OUT packet and, when the
+ * transfer is complete, report it to the application. */
 static void r_usbh_process_pipe_brdy (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[num];
@@ -2300,50 +2619,51 @@ static void r_usbh_process_pipe_brdy (usbh_instance_ctrl_t * const p_ctrl, uint3
     }
 }
 
+/* Forcibly stop the transfer on pipe @p num: set NAK, disable its interrupts, release the FIFO port and
+ * clear the transaction counter. */
 static void r_usbh_process_terminate_xfer (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
     volatile usb_reg_pipetre_t * p_reg_pipetr  = r_usbh_get_pipetre(p_ctrl, num);
     volatile uint16_t          * p_reg_pipectr = r_usbh_get_pipectr(p_ctrl, num);
-
-    /* Set NAK */
-    if (0 != (*p_reg_pipectr & R_USB_PIPE_CTR_PID_Msk))
-    {
-        *p_reg_pipectr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
-    }
+    volatile uint16_t          * p_reg_d0fifosel;
+    volatile uint16_t          * p_reg_d0fifoctr;
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        /* Disable pipe interrupt */
-        R_USB_HS0->BRDYENB &= (uint16_t) ~(1 << num);
-        R_USB_HS0->NRDYENB &= (uint16_t) ~(1 << num);
-        R_USB_HS0->BEMPENB &= (uint16_t) ~(1 << num);
-
-        /* Clear FIFO port */
-        if (num == R_USB_HS0->D0FIFOSEL_b.CURPIPE)
-        {
-            R_USB_HS0->D0FIFOSEL_b.CURPIPE = 0;
-        }
+        p_reg_d0fifosel = &R_USB_HS0->D0FIFOSEL;
+        p_reg_d0fifoctr = &R_USB_HS0->D0FIFOCTR;
     }
     else
 #endif
     {
-        R_USB_FS0->BRDYENB &= (uint16_t) ~(1 << num);
-        R_USB_FS0->NRDYENB &= (uint16_t) ~(1 << num);
-        R_USB_FS0->BEMPENB &= (uint16_t) ~(1 << num);
-
-        /* Clear FIFO port */
-        if (num == R_USB_FS0->D0FIFOSEL_b.CURPIPE)
-        {
-            R_USB_FS0->D0FIFOSEL_b.CURPIPE = 0;
-        }
+        p_reg_d0fifosel = &R_USB_FS0->D0FIFOSEL;
+        p_reg_d0fifoctr = &R_USB_FS0->D0FIFOCTR;
     }
+
+    /* Set this PIPE to NAK */
+    *p_reg_pipectr &= ~R_USB_PIPE_CTR_PID_Msk;
+
+    /* Clear CURPIPE first */
+    *p_reg_d0fifosel &= ~R_USB_D0FIFOSEL_CURPIPE_Msk;
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
+
+    /* Switch to the pipe that need to terminate xfer */
+    *p_reg_d0fifosel |= (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), num);
+
+    /* Clear buffer and change it to NAK */
+    *p_reg_d0fifoctr = R_USB_CFIFOCTR_BCLR_Msk;
 
     /* Clear transaction counter */
     p_reg_pipetr->TRE &= ~R_USB_PIPE_TR_E_TRENB_Msk;
     p_reg_pipetr->TRE |= R_USB_PIPE_TR_E_TRCLR_Msk;
+
+    *p_reg_d0fifosel &= ~R_USB_D0FIFOSEL_CURPIPE_Msk;
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
 }
 
+/* Forcibly stop the current control transfer: set the default control pipe to NAK and clear the CFIFO. */
 static void r_usbh_process_terminate_control_xfer (usbh_instance_ctrl_t * const p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -2366,6 +2686,7 @@ static void r_usbh_process_terminate_control_xfer (usbh_instance_ctrl_t * const 
     }
 }
 
+/* Enable the host interrupt sources (BRDY/NRDY/BEMP, SACK/SIGN, attach/detach) and clear pending status. */
 static inline void r_usbh_interrupt_configure (usbh_instance_ctrl_t * p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -2373,8 +2694,8 @@ static inline void r_usbh_interrupt_configure (usbh_instance_ctrl_t * p_ctrl)
     {
         R_USB_HS0->INTENB0 = R_USB_INTSTS0_BRDY_Msk | R_USB_INTSTS0_NRDY_Msk |
                              R_USB_INTSTS0_BEMP_Msk;
-        R_USB_HS0->INTENB1 = R_USB_INTSTS1_SACK_Msk | R_USB_INTSTS1_SIGN_Msk |
-                             R_USB_INTSTS1_ATTCH_Msk | R_USB_INTSTS1_DTCH_Msk;
+        R_USB_HS0->INTENB1 = R_USB_INTENB1_SACKE_Msk | R_USB_INTENB1_SIGNE_Msk |
+                             R_USB_INTSTS1_ATTCH_Msk;
         R_USB_HS0->BEMPENB = 1;
         R_USB_HS0->NRDYENB = 1;
         R_USB_HS0->BRDYENB = 1;
@@ -2396,21 +2717,23 @@ static inline void r_usbh_interrupt_configure (usbh_instance_ctrl_t * p_ctrl)
     }
 }
 
+/* Enable and configure the NVIC interrupt(s) for the selected USB module. */
 static inline void r_usbh_interrupt_enable (usbh_instance_ctrl_t * p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->hs_irq, p_ctrl->p_cfg->hsipl, p_ctrl);
+        R_BSP_IrqEnable(p_ctrl->p_cfg->hs_irq);
     }
     else
 #endif
     {
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->irq, p_ctrl->p_cfg->ipl, p_ctrl);
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->irq_r, p_ctrl->p_cfg->ipl_r, p_ctrl);
+        R_BSP_IrqEnable(p_ctrl->p_cfg->irq);
+        R_BSP_IrqEnable(p_ctrl->p_cfg->irq_r);
     }
 }
 
+/* Disable the NVIC interrupt(s) for the selected USB module. */
 static inline void r_usbh_interrupt_disable (usbh_instance_ctrl_t * p_ctrl)
 {
 #ifdef USB_HIGH_SPEED_MODULE
@@ -2429,6 +2752,15 @@ static inline void r_usbh_interrupt_disable (usbh_instance_ctrl_t * p_ctrl)
 /***********************************************************************************************************************
  * Interrupt handler                                                                                                  *
  **********************************************************************************************************************/
+
+/**
+ * @brief USB host interrupt service routine.
+ *
+ * Shared entry point for the USB host interrupts. Reads and clears the INTSTS0/INTSTS1 status, then
+ * dispatches the active sources: setup ACK/error (SACK/SIGN), device attach/detach (ATTCH/DTCH) and the
+ * per-pipe buffer-empty, not-ready and buffer-ready events (BEMP/NRDY/BRDY). Transfer completions and
+ * attach/detach are forwarded to the application through the user callback.
+ */
 void r_usbh_isr (void)
 {
     /* Save context if RTOS is used */
@@ -2484,11 +2816,8 @@ void r_usbh_isr (void)
         p_reg_brdysts  = &R_USB_FS0->BRDYSTS;
     }
 
-    uint16_t status0 = *p_reg_intsts0;
-    uint16_t status1 = *p_reg_intsts1;
-
-    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
-    R_BSP_IrqStatusClear(irq);
+    const uint16_t status0 = *p_reg_intsts0 & *p_reg_intenb0;
+    const uint16_t status1 = *p_reg_intsts1 & *p_reg_intenb1;
 
     /* clear active bits except VALID (don't write 0 to already cleared bits
      * according to the HW manual) */
@@ -2498,8 +2827,8 @@ void r_usbh_isr (void)
     *p_reg_intsts0 &= ~(R_USB_INTSTS0_BRDY_Msk | R_USB_INTSTS0_NRDY_Msk |
                         R_USB_INTSTS0_BEMP_Msk);
 
-    status0 &= *p_reg_intenb0;
-    status1 &= *p_reg_intenb1;
+    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
+    R_BSP_IrqStatusClear(irq);
 
     if (status1 & R_USB_INTSTS1_SACK_Msk)
     {
@@ -2523,15 +2852,48 @@ void r_usbh_isr (void)
 
     if (status1 & R_USB_INTSTS1_ATTCH_Msk)
     {
-        *p_reg_dvstctr0 |= R_USB_DVSTCTR0_UACT_Msk;
-        *p_reg_intenb1  &= ~R_USB_INTSTS1_ATTCH_Msk;
-        *p_reg_intenb1  |= R_USB_INTSTS1_DTCH_Msk;
+        usb_speed_t speed;
 
-        r_usbh_event_device_attach_notify(p_ctrl);
+        /* Enable USB bus */
+        *p_reg_dvstctr0 |= R_USB_DVSTCTR0_UACT_Msk;
+
+        /* Disable ATTCH interrupt */
+        *p_reg_intenb1 &= ~R_USB_INTSTS1_ATTCH_Msk;
+
+        uint16_t lnst = R_USB_HS0->SYSSTS0_b.LNST;
+
+        switch (lnst)
+        {
+            case USB_FS_JSTS:
+            {
+                speed = USB_SPEED_FS;
+                break;
+            }
+
+            case USB_LS_JSTS:
+            {
+                speed = USB_SPEED_LS;
+                break;
+            }
+
+            case USB_SE1:
+            case USB_SE0:
+            default:
+            {
+                speed = USB_SPEED_INVALID;
+                break;
+            }
+        }
+
+        /* Enable DTCH interrupt */
+        *p_reg_intenb1 |= R_USB_INTSTS1_DTCH_Msk;
+
+        r_usbh_event_device_attach_notify(p_ctrl, speed);
     }
     else if (status1 & R_USB_INTSTS1_DTCH_Msk)
     {
         *p_reg_dvstctr0 &= ~R_USB_DVSTCTR0_UACT_Msk;
+
         if (*p_reg_dcpctr & R_USB_DCPCTR_SUREQ_Msk)
         {
             *p_reg_dcpctr |= R_USB_DCPCTR_SUREQCLR_Msk;

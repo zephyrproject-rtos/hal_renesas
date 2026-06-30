@@ -596,4 +596,11 @@
 #define R_USB_DPUSR1R_FS_DPINTE0_Pos       (0UL)        /*!< DPINTE0 (Bit 0)                                       */
 #define R_USB_DPUSR1R_FS_DPINTE0_Msk       (0x1UL)      /*!< DPINTE0 (Bitfield-Mask: 0x01)                         */
 
+#define USB_SE1                            (0x0003U)    /* SE1 */
+#define USB_FS_KSTS                        (0x0002U)    /* Full-Speed K State */
+#define USB_FS_JSTS                        (0x0001U)    /* Full-Speed J State */
+#define USB_LS_JSTS                        (0x0002U)    /* Low-Speed J State */
+#define USB_LS_KSTS                        (0x0001U)    /* Low-Speed K State */
+#define USB_SE0                            (0x0000U)    /* SE0 */
+
 #endif /* R_USB_HOST_DEFINE_H */
