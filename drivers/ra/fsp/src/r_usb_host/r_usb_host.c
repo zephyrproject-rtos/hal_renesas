@@ -522,9 +522,23 @@ fsp_err_t R_USBH_PortReset (usb_ctrl_t * const p_api_ctrl)
     /* Disable the USB module interrupt before changing the USB bus configuration */
     r_usbh_interrupt_disable(p_ctrl);
 
-    /* Enable high-speed operation */
-    /* TODO: it should be only enable by checking CHIRP signal after reset */
-    R_USB_HS0->SYSCFG |= R_USB_SYSCFG_HSE_Msk;
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        const uint16_t lnst = R_USB_HS0->SYSSTS0_b.LNST;
+
+        if (lnst == USB_LS_JSTS)
+        {
+            /* LS device connected: disable high-speed operation*/
+            R_USB_HS0->SYSCFG &= ~R_USB_SYSCFG_HSE_Msk;
+        }
+        else
+        {
+            /* FS/HS device connected: enable high-speed operation */
+            R_USB_HS0->SYSCFG |= R_USB_SYSCFG_HSE_Msk;
+        }
+    }
+#endif
 
     /* Disable the USB Bus by clearing the UACT bit */
     *p_reg_dvstctr0 &= ~R_USB_DVSTCTR0_UACT_Msk;
@@ -539,13 +553,10 @@ fsp_err_t R_USBH_PortReset (usb_ctrl_t * const p_api_ctrl)
 
     /* Assert USB bus reset signal */
     *p_reg_dvstctr0 |= R_USB_DVSTCTR0_USBRST_Msk;
-    R_BSP_SoftwareDelay(50, BSP_DELAY_UNITS_MILLISECONDS);
+    R_BSP_SoftwareDelay(20, BSP_DELAY_UNITS_MILLISECONDS);
 
-    /* Deassert USB bus reset signal */
-    *p_reg_dvstctr0 &= ~R_USB_DVSTCTR0_USBRST_Msk;
-
-    /* Enable the USB bus for host controller operation */
-    *p_reg_dvstctr0 |= R_USB_DVSTCTR0_UACT_Msk;
+    /* Simultaneously deassert USB bus reset signal and enable the USB bus for host controller operation */
+    *p_reg_dvstctr0 = (*p_reg_dvstctr0 & (~R_USB_DVSTCTR0_USBRST_Msk)) | R_USB_DVSTCTR0_UACT_Msk;
 
     return FSP_SUCCESS;
 }
@@ -1754,7 +1765,7 @@ static inline void r_usbh_event_xfer_complete_notify (usbh_instance_ctrl_t * con
 }
 
 /* Invoke the user callback with a ::USBH_EVENT_DEVICE_ATTACH event. */
-static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * const p_ctrl, usb_speed_t speed)
+static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * const p_ctrl)
 {
     usbh_callback_arg_t   args;
     usbh_callback_arg_t * p_args = p_ctrl->p_callback_memory;
@@ -1783,7 +1794,6 @@ static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * con
         {
             .hub_addr = 0,
             .hub_port = 0,
-            .speed    = speed
         }
     };
 
@@ -2928,43 +2938,16 @@ void r_usbh_isr (void)
 
     if (status1 & R_USB_INTSTS1_ATTCH_Msk)
     {
-        usb_speed_t speed;
-
         /* Enable USB bus */
         *p_reg_dvstctr0 |= R_USB_DVSTCTR0_UACT_Msk;
 
         /* Disable ATTCH interrupt */
         *p_reg_intenb1 &= ~R_USB_INTSTS1_ATTCH_Msk;
 
-        uint16_t lnst = R_USB_HS0->SYSSTS0_b.LNST;
-
-        switch (lnst)
-        {
-            case USB_FS_JSTS:
-            {
-                speed = USB_SPEED_FS;
-                break;
-            }
-
-            case USB_LS_JSTS:
-            {
-                speed = USB_SPEED_LS;
-                break;
-            }
-
-            case USB_SE1:
-            case USB_SE0:
-            default:
-            {
-                speed = USB_SPEED_INVALID;
-                break;
-            }
-        }
-
         /* Enable DTCH interrupt */
         *p_reg_intenb1 |= R_USB_INTSTS1_DTCH_Msk;
 
-        r_usbh_event_device_attach_notify(p_ctrl, speed);
+        r_usbh_event_device_attach_notify(p_ctrl);
     }
     else if (status1 & R_USB_INTSTS1_DTCH_Msk)
     {
