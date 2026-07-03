@@ -884,17 +884,24 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const          p_api_ctrl,
         }
     }
 
+    *p_reg_pipesel  = num;
+    *p_reg_pipemaxp = (dev_addr << R_USB_PIPEMAXP_DEVSEL_Pos) | (mps);
+    *p_reg_pipecfg  = pipe_cfg;
+
     /* PIPE Configuration */
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        R_USB_HS0->PIPEBUF = R_USB_PIPEBUF_FIXED;
+        if (dir == USB_DIR_IN)
+        {
+            R_USB_HS0->PIPEBUF = (0x1F << R_USB_HS0_PIPEBUF_BUFSIZE_Pos) | (0x04);
+        }
+        else
+        {
+            R_USB_HS0->PIPEBUF = (0x1F << R_USB_HS0_PIPEBUF_BUFSIZE_Pos) | (0x44);
+        }
     }
 #endif
-
-    *p_reg_pipesel  = num;
-    *p_reg_pipemaxp = (dev_addr << R_USB_PIPEMAXP_DEVSEL_Pos) | (mps);
-    *p_reg_pipecfg  = pipe_cfg;
 
     if ((xfer == USB_XFER_INTERRUPT) || (xfer == USB_XFER_ISOCHRONOUS))
     {
@@ -1837,23 +1844,48 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
 /* Block until the D0FIFO is selected for pipe @p num and reports ready (FRDY) for access. */
 static inline void r_usbh_pipe_wait_for_ready (usbh_instance_ctrl_t * const p_ctrl, uint32_t num)
 {
+    pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[num];
+    const uint32_t dir    = r_usbh_edpt_dir(p_pipe->ep);
+
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        FSP_HARDWARE_REGISTER_WAIT((R_USB_HS0->D0FIFOSEL & R_USB_D0FIFOSEL_CURPIPE_Msk) >>
-                                   R_USB_D0FIFOSEL_CURPIPE_Pos,
-                                   num);
-        FSP_HARDWARE_REGISTER_WAIT((R_USB_HS0->D0FIFOCTR & R_USB_D0FIFOCTR_FRDY_Msk),
-                                   R_USB_D0FIFOCTR_FRDY_Msk);
+        if (dir == USB_DIR_IN)
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_USB_HS0->D0FIFOSEL & R_USB_D0FIFOSEL_CURPIPE_Msk) >>
+                                       R_USB_D0FIFOSEL_CURPIPE_Pos,
+                                       num);
+            FSP_HARDWARE_REGISTER_WAIT((R_USB_HS0->D0FIFOCTR & R_USB_D0FIFOCTR_FRDY_Msk),
+                                       R_USB_D0FIFOCTR_FRDY_Msk);
+        }
+        else
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_USB_HS0->D1FIFOSEL & R_USB_D1FIFOSEL_CURPIPE_Msk) >>
+                                       R_USB_D1FIFOSEL_CURPIPE_Pos,
+                                       num);
+            FSP_HARDWARE_REGISTER_WAIT((R_USB_HS0->D1FIFOCTR & R_USB_D1FIFOCTR_FRDY_Msk),
+                                       R_USB_D1FIFOCTR_FRDY_Msk);
+        }
     }
     else
 #endif
     {
-        FSP_HARDWARE_REGISTER_WAIT((R_USB_FS0->D0FIFOSEL & R_USB_D0FIFOSEL_CURPIPE_Msk) >>
-                                   R_USB_D0FIFOSEL_CURPIPE_Pos,
-                                   num);
-        FSP_HARDWARE_REGISTER_WAIT((R_USB_FS0->D0FIFOCTR & R_USB_D0FIFOCTR_FRDY_Msk),
-                                   R_USB_D0FIFOCTR_FRDY_Msk);
+        if (dir == USB_DIR_IN)
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_USB_FS0->D0FIFOSEL & R_USB_D0FIFOSEL_CURPIPE_Msk) >>
+                                       R_USB_D0FIFOSEL_CURPIPE_Pos,
+                                       num);
+            FSP_HARDWARE_REGISTER_WAIT((R_USB_FS0->D0FIFOCTR & R_USB_D0FIFOCTR_FRDY_Msk),
+                                       R_USB_D0FIFOCTR_FRDY_Msk);
+        }
+        else
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_USB_FS0->D1FIFOSEL & R_USB_D1FIFOSEL_CURPIPE_Msk) >>
+                                       R_USB_D1FIFOSEL_CURPIPE_Pos,
+                                       num);
+            FSP_HARDWARE_REGISTER_WAIT((R_USB_FS0->D1FIFOCTR & R_USB_D1FIFOCTR_FRDY_Msk),
+                                       R_USB_D1FIFOCTR_FRDY_Msk);
+        }
     }
 }
 
@@ -2203,23 +2235,23 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     const uint32_t access_bytes = 2;
 #endif
 
-    volatile uint16_t * p_reg_d0fifosel;
-    volatile uint16_t * p_reg_d0fifoctr;
-    volatile void     * p_reg_d0fifo;
+    volatile uint16_t * p_reg_dxfifosel;
+    volatile uint16_t * p_reg_dxfifoctr;
+    volatile void     * p_reg_dxfifo;
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        p_reg_d0fifosel = &R_USB_HS0->D0FIFOSEL;
-        p_reg_d0fifoctr = &R_USB_HS0->D0FIFOCTR;
-        p_reg_d0fifo    = (volatile void *) &R_USB_HS0->D0FIFO;
+        p_reg_dxfifosel = &R_USB_HS0->D1FIFOSEL;
+        p_reg_dxfifoctr = &R_USB_HS0->D1FIFOCTR;
+        p_reg_dxfifo    = (volatile void *) &R_USB_HS0->D1FIFO;
     }
     else
 #endif
     {
-        p_reg_d0fifosel = &R_USB_FS0->D0FIFOSEL;
-        p_reg_d0fifoctr = &R_USB_FS0->D0FIFOCTR;
-        p_reg_d0fifo    = (volatile void *) &R_USB_FS0->D0FIFO;
+        p_reg_dxfifosel = &R_USB_FS0->D0FIFOSEL;
+        p_reg_dxfifoctr = &R_USB_FS0->D0FIFOCTR;
+        p_reg_dxfifo    = (volatile void *) &R_USB_FS0->D0FIFO;
     }
 
     if (!rem)
@@ -2230,8 +2262,8 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     }
 
     /* Clear CURPIPE first */
-    *p_reg_d0fifosel = 0;
-    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
+    *p_reg_dxfifosel = 0;
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_dxfifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
 
     /* Set new pipe with optimal MBW and ISEL for write direction */
     uint16_t fifosel_val = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) | R_USB_CFIFOSEL_ISEL_Msk;
@@ -2247,7 +2279,7 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
         fifosel_val |= (USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos);
     }
 
-    *p_reg_d0fifosel = fifosel_val;
+    *p_reg_dxfifosel = fifosel_val;
 
     /* Wait for FRDY */
     /* TODO: move this out of ISR, to avoid a dead-lock */
@@ -2255,17 +2287,17 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_reg_d0fifo, len, access_bytes, num);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_reg_dxfifo, len, access_bytes, num);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
     if (len < mps)
     {
-        *p_reg_d0fifoctr = R_USB_D0FIFOCTR_BVAL_Msk;
+        *p_reg_dxfifoctr = R_USB_D0FIFOCTR_BVAL_Msk;
     }
 
-    *p_reg_d0fifosel = 0;
-    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
+    *p_reg_dxfifosel = 0;
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_dxfifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
     p_pipe->remaining = rem - len;
 
     return false;
@@ -2407,20 +2439,37 @@ static bool r_usbh_process_pipe_xfer (usbh_instance_ctrl_t * const p_ctrl,
 
     FSP_ASSERT(num);
 
-    volatile uint16_t * p_reg_d0fifosel;
-    volatile uint16_t * p_reg_d0fifoctr;
+    volatile uint16_t * p_reg_dxfifosel;
+    volatile uint16_t * p_reg_dxfifoctr;
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        p_reg_d0fifosel = &R_USB_HS0->D0FIFOSEL;
-        p_reg_d0fifoctr = &R_USB_HS0->D0FIFOCTR;
+        if (dir == USB_DIR_IN)
+        {
+            p_reg_dxfifosel = &R_USB_HS0->D0FIFOSEL;
+            p_reg_dxfifoctr = &R_USB_HS0->D0FIFOCTR;
+        }
+        else
+        {
+            /* OUT */
+            p_reg_dxfifosel = &R_USB_HS0->D1FIFOSEL;
+            p_reg_dxfifoctr = &R_USB_HS0->D1FIFOCTR;
+        }
     }
     else
 #endif
     {
-        p_reg_d0fifosel = &R_USB_FS0->D0FIFOSEL;
-        p_reg_d0fifoctr = &R_USB_FS0->D0FIFOCTR;
+        if (dir == USB_DIR_IN)
+        {
+            p_reg_dxfifosel = &R_USB_FS0->D0FIFOSEL;
+            p_reg_dxfifoctr = &R_USB_FS0->D0FIFOCTR;
+        }
+        else
+        {
+            p_reg_dxfifosel = &R_USB_FS0->D1FIFOSEL;
+            p_reg_dxfifoctr = &R_USB_FS0->D1FIFOCTR;
+        }
     }
 
     pipe_state_t * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[num];
@@ -2438,12 +2487,12 @@ static bool r_usbh_process_pipe_xfer (usbh_instance_ctrl_t * const p_ctrl,
         else
         {
             /* ZLP */
-            *p_reg_d0fifosel = num;
+            *p_reg_dxfifosel = num;
             r_usbh_pipe_wait_for_ready(p_ctrl, num);
-            *p_reg_d0fifoctr = R_USB_D0FIFOCTR_BVAL_Msk | R_USB_CFIFOCTR_BCLR_Msk;
-            *p_reg_d0fifosel = 0;
+            *p_reg_dxfifoctr = R_USB_D0FIFOCTR_BVAL_Msk | R_USB_CFIFOCTR_BCLR_Msk;
+            *p_reg_dxfifosel = 0;
 
-            FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
+            FSP_HARDWARE_REGISTER_WAIT((*p_reg_dxfifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
         }
     }
     else
@@ -2625,42 +2674,60 @@ static void r_usbh_process_terminate_xfer (usbh_instance_ctrl_t * const p_ctrl, 
 {
     volatile usb_reg_pipetre_t * p_reg_pipetr  = r_usbh_get_pipetre(p_ctrl, num);
     volatile uint16_t          * p_reg_pipectr = r_usbh_get_pipectr(p_ctrl, num);
-    volatile uint16_t          * p_reg_d0fifosel;
-    volatile uint16_t          * p_reg_d0fifoctr;
+    volatile uint16_t          * p_reg_dxfifosel;
+    volatile uint16_t          * p_reg_dxfifoctr;
+    pipe_state_t               * p_pipe = &g_uhc_data[p_ctrl->module_number].pipe[num];
+    const uint32_t               dir    = r_usbh_edpt_dir(p_pipe->ep);
 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        p_reg_d0fifosel = &R_USB_HS0->D0FIFOSEL;
-        p_reg_d0fifoctr = &R_USB_HS0->D0FIFOCTR;
+        if (dir == USB_DIR_IN)
+        {
+            p_reg_dxfifosel = &R_USB_HS0->D0FIFOSEL;
+            p_reg_dxfifoctr = &R_USB_HS0->D0FIFOCTR;
+        }
+        else
+        {
+            p_reg_dxfifosel = &R_USB_HS0->D1FIFOSEL;
+            p_reg_dxfifoctr = &R_USB_HS0->D1FIFOCTR;
+        }
     }
     else
 #endif
     {
-        p_reg_d0fifosel = &R_USB_FS0->D0FIFOSEL;
-        p_reg_d0fifoctr = &R_USB_FS0->D0FIFOCTR;
+        if (dir == USB_DIR_IN)
+        {
+            p_reg_dxfifosel = &R_USB_FS0->D0FIFOSEL;
+            p_reg_dxfifoctr = &R_USB_FS0->D0FIFOCTR;
+        }
+        else
+        {
+            p_reg_dxfifosel = &R_USB_FS0->D1FIFOSEL;
+            p_reg_dxfifoctr = &R_USB_FS0->D1FIFOCTR;
+        }
     }
 
     /* Set this PIPE to NAK */
     *p_reg_pipectr &= ~R_USB_PIPE_CTR_PID_Msk;
 
     /* Clear CURPIPE first */
-    *p_reg_d0fifosel &= ~R_USB_D0FIFOSEL_CURPIPE_Msk;
-    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
+    *p_reg_dxfifosel &= ~R_USB_D0FIFOSEL_CURPIPE_Msk;
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_dxfifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
 
     /* Switch to the pipe that need to terminate xfer */
-    *p_reg_d0fifosel |= (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
-    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), num);
+    *p_reg_dxfifosel |= (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_dxfifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), num);
 
     /* Clear buffer and change it to NAK */
-    *p_reg_d0fifoctr = R_USB_CFIFOCTR_BCLR_Msk;
+    *p_reg_dxfifoctr = R_USB_CFIFOCTR_BCLR_Msk;
 
     /* Clear transaction counter */
     p_reg_pipetr->TRE &= ~R_USB_PIPE_TR_E_TRENB_Msk;
     p_reg_pipetr->TRE |= R_USB_PIPE_TR_E_TRCLR_Msk;
 
-    *p_reg_d0fifosel &= ~R_USB_D0FIFOSEL_CURPIPE_Msk;
-    FSP_HARDWARE_REGISTER_WAIT((*p_reg_d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
+    *p_reg_dxfifosel &= ~R_USB_D0FIFOSEL_CURPIPE_Msk;
+    FSP_HARDWARE_REGISTER_WAIT((*p_reg_dxfifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
 }
 
 /* Forcibly stop the current control transfer: set the default control pipe to NAK and clear the CFIFO. */
