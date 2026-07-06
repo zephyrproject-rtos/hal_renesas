@@ -36,6 +36,11 @@
 #define USB_FS_DEVADD_NUM_MAX         (5U)
 #define USB_PIPETR_INDEX_BEGIN        (1U)
 #define USB_PIPETR_INDEX_END          (5U)
+#define USB_HS_BUF_BYTE_PER_BLOCK     (64U)
+#define USB_HS_PIPEBUF_BUFSIZE(mps)                                                                \
+        USB_MIN((((mps) + USB_HS_BUF_BYTE_PER_BLOCK - 1) / USB_HS_BUF_BYTE_PER_BLOCK - 1), 0x1FU)
+#define USB_HS_PIPEBUF(mps, bufnmb)                                                                \
+        ((uint16_t) ((USB_HS_PIPEBUF_BUFSIZE(mps) << R_USB_HS0_PIPEBUF_BUFSIZE_Pos) | (bufnmb)))
 
 /* USB Bus status value*/
 #define USB_STATUS_ATTACH             (1 << 0)
@@ -764,8 +769,6 @@ fsp_err_t R_USBH_SetupSend (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uin
  * @retval FSP_ERR_USB_BUSY        No free pipe is available for this transfer type.
  */
 
-#define R_USB_PIPEBUF_FIXED    (0x7C08) /* Fixed Pipe Buffer configurations */
-
 fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const          p_api_ctrl,
                            uint8_t                     dev_addr,
                            usb_desc_endpoint_t const * p_ep_desc,
@@ -892,14 +895,20 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const          p_api_ctrl,
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        if (dir == USB_DIR_IN)
+        /* Static allocation of FIFO buffer for each pipe.
+         * Assuming the maximum mps (PIPEMAXP.MXPS) and double buffer mode (PIPECFG.DBLB) */
+        const uint16_t pipebuf[USB_PIPE_COUNT_MAX] =
         {
-            R_USB_HS0->PIPEBUF = (0x1F << R_USB_HS0_PIPEBUF_BUFSIZE_Pos) | (0x04);
-        }
-        else
-        {
-            R_USB_HS0->PIPEBUF = (0x1F << R_USB_HS0_PIPEBUF_BUFSIZE_Pos) | (0x44);
-        }
+            0U,                              /* pipe 0: DCP, not configured here */
+            USB_HS_PIPEBUF(1024U, 0x08U),    /* pipe 1: ISO  Mps=1024B needs 32 blocks, BUFNMB=0x08 end=0x28 */
+            USB_HS_PIPEBUF(1024U, 0x28U),    /* pipe 2: ISO  Mps=1024B needs 32 blocks, BUFNMB=0x28 end=0x48 */
+            USB_HS_PIPEBUF(512U,  0x48U),    /* pipe 3: Bulk Mps=512B needs 16 blocks,  BUFNMB=0x48 end=0x58 */
+            USB_HS_PIPEBUF(512U,  0x58U),    /* pipe 4: Bulk Mps=512B needs 16 blocks,  BUFNMB=0x58 end=0x68 */
+            USB_HS_PIPEBUF(512U,  0x68U),    /* pipe 5: Bulk Mps=512B needs 16 blocks,  BUFNMB=0x68 end=0x78 */
+            0U, 0U, 0U, 0U,                  /* pipes 6-9: only set BUFSIZE to 0, BUFNMB is disabled */
+        };
+
+        R_USB_HS0->PIPEBUF = pipebuf[num];
     }
 #endif
 
