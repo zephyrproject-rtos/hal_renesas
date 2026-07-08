@@ -31,9 +31,13 @@
 #define USB_EP_COUNT_MAX              (15U)
 #define USB_DIR_COUNT_MAX             (2U)
 #define USB_PIPE_COUNT_MAX            (10U)
-#define USB_DEVICE_COUNT_MAX          (5U)
 #define USB_HS_DEVADD_NUM_MAX         (10U)
 #define USB_FS_DEVADD_NUM_MAX         (5U)
+#ifdef USB_HIGH_SPEED_MODULE
+#define USB_DEVICE_COUNT_MAX          USB_HS_DEVADD_NUM_MAX
+#else
+#define USB_DEVICE_COUNT_MAX          USB_FS_DEVADD_NUM_MAX
+#endif
 #define USB_PIPETR_INDEX_BEGIN        (1U)
 #define USB_PIPETR_INDEX_END          (5U)
 #define USB_HS_BUF_BYTE_PER_BLOCK     (64U)
