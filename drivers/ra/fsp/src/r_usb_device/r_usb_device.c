@@ -24,6 +24,9 @@
  #error "Cannot determine endianness"
 #endif
 
+/* USB util */
+#define USB_MIN(_x, _y)    (((_x) < (_y)) ? (_x) : (_y))
+
 #define USBD_OPEN             (0x55534244) /* USBD in ASCII */
 
 #define USB_EP_DIR_Msk        (0x80UL)
@@ -39,6 +42,11 @@
 #define USB_GET_EP_ADDR(idx, dir)    ((idx & USB_EP_IDX_Msk) | (dir & USB_EP_DIR_Msk))
 
 #define USB_PIPECFG_DIR_IDX(dir)     ((dir == USB_EP_IN_DIR) ? 1 : 0)
+#define USB_HS_BUF_BYTE_PER_BLOCK     (64U)
+#define USB_HS_PIPEBUF_BUFSIZE(mps)                                                                \
+        USB_MIN((((mps) + USB_HS_BUF_BYTE_PER_BLOCK - 1) / USB_HS_BUF_BYTE_PER_BLOCK - 1), 0x1FU)
+#define USB_HS_PIPEBUF(mps, bufnmb)                                                                \
+        ((uint16_t) ((USB_HS_PIPEBUF_BUFSIZE(mps) << R_USB_HS0_PIPEBUF_BUFSIZE_Pos) | (bufnmb)))
 
 #define USB_HIGHSPEED_MPS_Msk           (0x7ffUL)
 #define USB_FULLSPEED_MPS_Msk           (0x1ffUL)
@@ -50,8 +58,7 @@
 
 #define USB_REQUEST_TYPE_SET_ADDRESS    (0x0500)
 
-/* TODO: BUFNMB should be changed depending on the allocation scheme */
-#define R_USB_PIPEBUF_FIXED             (0x7C08) /* Fixed Pipe Buffer configurations */
+#define USB_PIPE_COUNT_MAX              (10U)
 
 /***********************************************************************************************************************
  * Private constants
@@ -336,8 +343,21 @@ fsp_err_t R_USBD_EdptOpen (usbd_ctrl_t * const p_api_ctrl, usbd_desc_endpoint_t 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->p_cfg->module_number))
     {
-        R_USB_HS0->PIPEBUF  = R_USB_PIPEBUF_FIXED;
+        /* Static allocation of FIFO buffer for each pipe
+         * Assuming the maximum mps (PIPEMAXP.MXPS) and double buffer mode (PIPECFG.DBLB) */
+        const uint16_t pipebuf[USB_PIPE_COUNT_MAX] =
+        {
+            0U,                              /* pipe 0: DCP, not configured here */
+            USB_HS_PIPEBUF(1024U, 0x08U),    /* pipe 1: ISO  Mps=1024B needs 32 blocks, BUFNMB=0x08 end=0x28 */
+            USB_HS_PIPEBUF(1024U, 0x28U),    /* pipe 2: ISO  Mps=1024B needs 32 blocks, BUFNMB=0x28 end=0x48 */
+            USB_HS_PIPEBUF(1024U, 0x48U),    /* pipe 3: Bulk Mps=1024B needs 32 blocks, BUFNMB=0x48 end=0x68 */
+            USB_HS_PIPEBUF(512U,  0x68U),    /* pipe 4: Bulk Mps=512B needs 16 blocks,  BUFNMB=0x68 end=0x78 */
+            USB_HS_PIPEBUF(512U,  0x78U),    /* pipe 5: Bulk Mps=512B needs 16 blocks,  BUFNMB=0x78 end=0x88 */
+            0U, 0U, 0U, 0U,                  /* pipes 6-9: only set BUFSIZE to 0, BUFNMB is disabled */
+        };
+
         R_USB_HS0->PIPESEL  = num;
+        R_USB_HS0->PIPEBUF = pipebuf[num];
         R_USB_HS0->PIPEMAXP = get_edpt_packet_size(p_ctrl, p_ep_desc);
     }
     else
