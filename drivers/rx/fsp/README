@@ -39,3 +39,9 @@ Patch List:
    Impacted files:
       drivers/rx/fsp/src/bsp/mcu/all/bsp_common.h
       drivers/rx/fsp/src/bsp/mcu/all/bsp_mcu_api.h
+
+   * Modify to use ".noinit" instead of ".ram_noinit" for `BSP_SECTION_NOINIT`
+     so it matches Zephyr's default linker script and avoids an orphan section
+     warning
+   Impacted files:
+      drivers/rx/fsp/src/bsp/mcu/all/bsp_compiler_support.h
