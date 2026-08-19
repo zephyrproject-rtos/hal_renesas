@@ -30,3 +30,5 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_LVD
     portable/src/rp_lvd/rp_lvd.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_SPI
     portable/src/rp_sci_spi/rp_sci_spi.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ULPT
+    portable/src/rp_ulpt/rp_ulpt.c)

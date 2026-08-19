@@ -121,6 +121,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_B_LIN
 	fsp/src/r_sci_b_lin/r_sci_b_lin.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SAU_UART
 	fsp/src/r_sau_uart/r_sau_uart.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ULPT
+	fsp/src/r_ulpt/r_ulpt.c)
 
 if (CONFIG_USE_RA_FSP_DRW)
 	zephyr_include_directories(fsp/src/r_drw)
