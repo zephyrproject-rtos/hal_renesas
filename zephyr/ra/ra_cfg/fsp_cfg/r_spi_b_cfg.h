@@ -11,7 +11,7 @@
         #endif
 
 #define SPI_B_CFG_PARAM_CHECKING_ENABLE (1)
-#if CONFIG_SPI_B_RA_DTC
+#if defined(CONFIG_SPI_B_RA_DTC) || defined(CONFIG_SPI_B_DMAC)
 #define SPI_B_CFG_DMA_SUPPORT_ENABLE (1)
 #else
 #define SPI_B_CFG_DMA_SUPPORT_ENABLE (0)
