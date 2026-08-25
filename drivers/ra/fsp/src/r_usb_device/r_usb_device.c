@@ -986,7 +986,10 @@ static inline bool pipe_xfer_in (usbd_instance_ctrl_t * const p_ctrl, uint8_t nu
         pipe->buf = (uint8_t *) buf + len;
     }
 
-    *d0fifoctr = R_USB_D0FIFOCTR_BVAL_Msk;
+    if (len < mps)
+    {
+        *d0fifoctr = R_USB_D0FIFOCTR_BVAL_Msk;
+    }
 
     *d0fifosel = 0;
 
