@@ -22,8 +22,6 @@
 #include "../../inc/api/fsp_common_api.h"
 #include "bsp_compiler_support.h"
 
-#include "bsp_linker_info.h"
-
 /* BSP module includes */
 #include "../../src/bsp/mcu/all/bsp_sdram.h"
 #if BSP_CFG_DCACHE_ENABLED
