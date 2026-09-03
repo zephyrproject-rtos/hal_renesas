@@ -32,3 +32,10 @@ License:
 
 License Link:
    https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Remove the inclusion of bsp_linker_info.h since it is not used by Zephyr
+   Impacted files:
+      drivers/rx/fsp/src/bsp/mcu/all/bsp_common.h
+      drivers/rx/fsp/src/bsp/mcu/all/bsp_mcu_api.h
