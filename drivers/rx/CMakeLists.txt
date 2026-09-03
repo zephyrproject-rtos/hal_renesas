@@ -208,4 +208,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 			fsp/src/bsp/cmsis/Device/RENESAS/Include/R5K574M
 		)
 	endif()
+
+	if(CONFIG_SOC_SERIES_RX74N)
+		zephyr_include_directories(
+			fsp/src/bsp/cmsis/Device/RENESAS/Include/R5K574N
+		)
+	endif()
 endif()
