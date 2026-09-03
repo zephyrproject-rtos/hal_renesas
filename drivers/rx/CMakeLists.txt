@@ -214,4 +214,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 			fsp/src/bsp/cmsis/Device/RENESAS/Include/R5K574N
 		)
 	endif()
+
+	if(CONFIG_USE_RX_FSP_SCI_B_UART)
+		zephyr_library_sources(
+			fsp/src/r_sci_b_uart/r_sci_b_uart.c
+		)
+	endif()
 endif()
