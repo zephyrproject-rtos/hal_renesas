@@ -22,8 +22,6 @@
                                                                         ? &(p_instance_ctrl)->p_reg->AGT32.CTRL \
                                                                         : &(p_instance_ctrl)->p_reg->AGT16.CTRL))
 
-#define AGT_PRV_AGTCR_STATUS_FLAGS    (0xF0U)
-
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -166,7 +164,7 @@ void agtcmai_isr (void)
     agt_prv_reg_ctrl_ptr_t p_reg_ctrl      = AGT_PRV_CTRL_PTR(p_instance_ctrl);
 
     /* Clear flags in AGTCR. */
-    p_reg_ctrl->AGTCR &= ~AGT_PRV_AGTCR_STATUS_FLAGS;
+    p_reg_ctrl->AGTCR &= ~R_AGTX0_AGT16_CTRL_AGTCR_TCMAF_Msk;
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
@@ -187,7 +185,7 @@ void agtcmbi_isr (void)
     agt_prv_reg_ctrl_ptr_t p_reg_ctrl      = AGT_PRV_CTRL_PTR(p_instance_ctrl);
 
     /* Clear flags in AGTCR. */
-    p_reg_ctrl->AGTCR &= ~AGT_PRV_AGTCR_STATUS_FLAGS;
+    p_reg_ctrl->AGTCR &= ~R_AGTX0_AGT16_CTRL_AGTCR_TCMBF_Msk;
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
