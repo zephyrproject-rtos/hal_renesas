@@ -222,3 +222,16 @@ Patch List:
      drain/refill work in the interrupt path
          drivers/ra/fsp/src/r_rmac/r_rmac.c
          drivers/ra/fsp/inc/instances/r_rmac.h
+
+   * Add DMAC transfer support for SCI B I2C and SCI B UART, alongside the existing DTC support.
+     For SCI B I2C this includes routing the TXI event between the CPU and the DMAC as required
+     by the ICU.
+     For SCI B UART, rxi_irq/txi_irq can now be omitted when DMAC handles that direction.
+      Impacted files:
+         drivers/ra/fsp/inc/instances/r_sci_b_i2c.h
+         drivers/ra/fsp/src/r_sci_b_i2c/r_sci_b_i2c.c
+         drivers/ra/fsp/src/r_sci_b_uart/r_sci_b_uart.c
+         zephyr/ra/ra_cfg/fsp_cfg/r_sci_b_i2c_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/r_sci_b_spi_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/r_sci_b_uart_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/r_spi_b_cfg.h
