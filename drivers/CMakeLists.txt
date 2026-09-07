@@ -8,3 +8,4 @@ if(CONFIG_HAS_RENESAS_RX_RDP OR CONFIG_HAS_RENESAS_RX_FSP)
 endif()
 
 zephyr_include_directories_ifdef(CONFIG_LV_USE_DRAW_DAVE2D tes/dave2d/inc)
+add_subdirectory_ifdef(CONFIG_SOC_SERIES_RA6B1 ra_wireless)

@@ -1,0 +1,87 @@
+int erase_headers;
+
+void InitTarget(void)
+{
+  JLINK_CORESIGHT_Configure("");
+  JLINK_ExecCommand("CORESIGHT_SetIndexAHBAPToUse = 0");
+}
+
+int SetupTarget(void)
+{
+  JLINK_ExecCommand("SetResetType = 2");
+  erase_headers = @ERASE_HEADERS@;
+
+  return 0;
+}
+
+void Disable_VC_CORERESET(void)
+{
+  int DEMCR;
+
+  // Read the current value of the Debug Exception and Monitor Control Register (DEMCR)
+  DEMCR = JLINK_MEM_ReadU32(0xE000EDFC);
+
+  // Disable VC_CORERESET (Debug trap on core reset) in the DEMCR register (bit 0)
+  // to prevent the debugger from getting stuck at the Reset Handler when Vector
+  // Catch is enabled, even though no breakpoint is set.
+  DEMCR &= ~(1 << 0);
+  JLINK_MEM_WriteU32(0xE000EDFC, DEMCR);
+}
+
+int BeforeResetTarget(void)
+{
+  if (erase_headers == 1)
+  {
+    erase_headers = 0;
+    // Switch to Sector Erase mode
+    JLINK_MEM_WriteU32(0x40600100, 4);
+    JLINK_SYS_Sleep(100);
+    // Erase sector 2 @ 0x04002000 - 0x04002FFF
+    JLINK_MEM_WriteU32(0x24002000, 0xFFFFFFFF);
+    JLINK_SYS_Sleep(100);
+    // Switch to Standby mode
+    JLINK_MEM_WriteU32(0x40600100, 1);
+    JLINK_SYS_Sleep(100);
+  }
+
+  if (MAIN_ResetType == 2)
+  {
+    // Write the magic words to indicate that a debugger is attached.
+    JLINK_MEM_WriteU32(0x23010000, 0xDEADBEEF);
+    JLINK_MEM_WriteU32(0x23010004, 0xDEADBEEF);
+    JLINK_MEM_WriteU32(0x23010008, 0xDEADBEEF);
+    JLINK_MEM_WriteU32(0x2301000C, 0xDEAD10CC);
+  }
+  return 0;
+}
+
+int AfterResetTarget(void)
+{
+  if (MAIN_ResetType == 2)
+  {
+    JLINK_SYS_Sleep(200);
+    JLINK_ExecCommand("SetResetType = 0");
+
+    Disable_VC_CORERESET();
+
+    // WORKAROUND to prevent watchdog expiration at system startup [TO BE REVERSED once the issue is resolved]
+    // When executing code from NVM, the watchdog timer expires due to the delay of the 0.5 sec at startup occurring
+    // upon detecting the pattern [0xDEADBEEF - 0xDEADBEEF - 0xDEADBEEF - 0xDEAD10CC] within the memory range
+    // 0x23010000 - 0x2301000C. The problem is under investigation.
+    JLINK_MEM_WriteU32(0x40700100, 0x00000004);
+    JLINK_ExecCommand("EnableLowPowerHandlingMode");
+    JLINK_ExecCommand("SetRTTSearchRanges 0x23000000 0x60000");
+  }
+
+  return 0;
+}
+
+int HandleAfterFlashProg(void)
+{
+  // Set reset strategy for subsequent resets to HW reset.
+  //
+  JLINK_SYS_Report("-- Configure Reset Strategy To 2 --");
+  JLINK_ExecCommand("SetResetType = 2");
+
+  return 0;
+}
