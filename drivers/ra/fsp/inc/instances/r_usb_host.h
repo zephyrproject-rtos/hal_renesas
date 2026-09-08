@@ -42,7 +42,12 @@ typedef struct st_usbh_instance_ctrl
  **********************************************************************************************************************/
 fsp_err_t R_USBH_Open(usb_ctrl_t * const p_api_ctrl, usb_cfg_t const * const p_cfg);
 fsp_err_t R_USBH_GetDeviceSpeed(usb_ctrl_t * const p_api_ctrl, usb_speed_t * p_speed);
-fsp_err_t R_USBH_PortOpen(usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr);
+fsp_err_t R_USBH_PortOpen(usb_ctrl_t * const p_api_ctrl,
+                          uint8_t            dev_addr,
+                          usb_speed_t        speed,
+                          uint8_t            mxps0,
+                          uint8_t            hub_addr,
+                          uint8_t            hub_port);
 fsp_err_t R_USBH_PortStatusGet(usb_ctrl_t * const p_api_ctrl, usb_status_t * p_status);
 fsp_err_t R_USBH_PortReset(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_DeviceRelease(usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr);
@@ -54,12 +59,11 @@ fsp_err_t R_USBH_XferStart(usb_ctrl_t * const p_api_ctrl,
                            uint8_t          * buffer,
                            uint16_t           buflen);
 fsp_err_t R_USBH_Close(usb_ctrl_t * const p_ctrl);
-fsp_err_t R_USBH_SOFEnable(usb_ctrl_t * const p_api_ctrl);
-fsp_err_t R_USBH_SOFDisable(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_BusResume(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_BusSuspend(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_Enable(usb_ctrl_t * const p_api_ctrl);
 fsp_err_t R_USBH_Disable(usb_ctrl_t * const p_api_ctrl);
+fsp_err_t R_USBH_XferAbort(usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, uint8_t ep_addr);
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

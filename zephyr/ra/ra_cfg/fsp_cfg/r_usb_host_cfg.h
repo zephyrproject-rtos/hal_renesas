@@ -30,7 +30,11 @@ extern "C" {
 #define USBH_CFG_PHYSET_CLKSEL            (-1)
 #endif
 
-#define USBH_CFG_BUS_WAIT_CYCLES          (DT_PROP_OR(DT_NODELABEL(usbhs), bus_wait_cycles, 9) - 2)
+/*
+ * Fixed wait cycles as 15 (max)
+ * TODO: Update to reflected to CPU frequency (higher frequency require more wait cycles)
+ */
+#define USBH_CFG_BUS_WAIT_CYCLES          (15)
 
 #ifdef __cplusplus
 }
