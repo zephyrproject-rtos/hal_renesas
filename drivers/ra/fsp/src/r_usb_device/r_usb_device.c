@@ -50,9 +50,6 @@
 
 #define USB_REQUEST_TYPE_SET_ADDRESS    (0x0500)
 
-/* TODO: BUFNMB should be changed depending on the allocation scheme */
-#define R_USB_PIPEBUF_FIXED             (0x7C08) /* Fixed Pipe Buffer configurations */
-
 /***********************************************************************************************************************
  * Private constants
  **********************************************************************************************************************/
@@ -336,7 +333,23 @@ fsp_err_t R_USBD_EdptOpen (usbd_ctrl_t * const p_api_ctrl, usbd_desc_endpoint_t 
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->p_cfg->module_number))
     {
-        R_USB_HS0->PIPEBUF  = R_USB_PIPEBUF_FIXED;
+        if (num == 0) {
+            R_USB_HS0->PIPEBUF = 0x0C00; /* 256 bytes, fixed */
+        } else if (num >= 1 && num <= 3) {
+            if (xfer == USB_XFER_TYPE_INT) {
+                R_USB_HS0->PIPEBUF  = 0x7C00 | (0x8 + ((num - 1) * 0x20)); /* 2KB */
+            } else {
+                R_USB_HS0->PIPEBUF  = 0x3C00 | (0x8 + ((num - 1) * 0x20)); /* 1KB, double buffered */
+            }
+        } else if (num >= 4 && num <= 5) {
+            if (xfer == USB_XFER_TYPE_INT) {
+                R_USB_HS0->PIPEBUF  = 0x3C00 | (0x68 + ((num - 4) * 0x10)); /* 1KB */
+            } else {
+                R_USB_HS0->PIPEBUF  = 0x1C00 | (0x68 + ((num - 4) * 0x10)); /* 512 bytes, double buffered */
+            }
+        } else {
+            R_USB_HS0->PIPEBUF = 0x0000 | (num - 2); /* 64 bytes, fixed */
+        }
         R_USB_HS0->PIPESEL  = num;
         R_USB_HS0->PIPEMAXP = get_edpt_packet_size(p_ctrl, p_ep_desc);
     }
