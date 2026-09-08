@@ -729,9 +729,8 @@ flash_err_t flash_write(uint32_t src_start_address,
  * Arguments    : none
  * Return Value : none
  ***********************************************************************************************************************/
-R_BSP_PRAGMA_STATIC_INTERRUPT(Excep_FCU_FRDYI,VECT(FCU,FRDYI))
 FLASH_PE_MODE_SECTION
-R_BSP_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
+void Excep_FCU_FRDYI(void)
 {
 #if (FLASH_CFG_CODE_FLASH_ENABLE == 1)
     uint32_t    size_boundary;
