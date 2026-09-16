@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright The Zephyr Project Contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# REUSE.toml — REUSE Specification 3.3 bulk annotations for binary blobs
+# https://reuse.software/spec-3.3/
+#
+# This file provides SPDX license and copyright metadata for west-fetched
+# binary blobs (zephyr/blobs/), which cannot carry in-file SPDX tags.
+# License text is taken from the blob license-path in zephyr/module.yml.
+# Paths below do not overlap (REUSE combines overlapping annotations with AND).
+# In-file tags always take precedence over entries below (REUSE spec §3.3).
+#
+# Licenses referenced here must have their full text under LICENSES/.
+
+version = 1
+
+# ---------------------------------------------------------------------------
+# Binary blobs — Apache-2.0 (CMAC: zephyr/blobs/license.txt)
+# ---------------------------------------------------------------------------
+[[annotations]]
+path = [
+  "zephyr/blobs/smartbond/**",
+  "zephyr/blobs/license.txt",
+]
+SPDX-FileCopyrightText = "Copyright (c) Renesas Electronics Corporation and/or its affiliates"
+SPDX-License-Identifier = "Apache-2.0"
+
+# ---------------------------------------------------------------------------
+# Binary blobs — Renesas Open License v1.0 (D/AVE 2D)
+# ---------------------------------------------------------------------------
+[[annotations]]
+path = [
+  "zephyr/blobs/dave2d/**",
+  "zephyr/blobs/renesas_open_license.txt",
+]
+SPDX-FileCopyrightText = "Copyright (c) 2020 - 2025, Renesas Electronics Corporation and/or its affiliates"
+SPDX-License-Identifier = "LicenseRef-Renesas-Open-License"
