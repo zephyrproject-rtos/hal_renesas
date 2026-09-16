@@ -86,9 +86,9 @@ extern flash_err_t flash_get_status (void);
 extern flash_err_t flash_erase(uint32_t block_address, uint32_t num_blocks);
 extern flash_err_t flash_blankcheck(uint32_t start_address, uint32_t num_bytes, flash_res_t *result);
 extern flash_err_t flash_write(uint32_t src_start_address, uint32_t dest_start_address, uint32_t num_bytes);
-
+void Excep_FCU_FRDYI(void);
 
 #endif // FLASH_HAS_FCU
-#endif // RX_FLASH_FCU_HEADER_FILE 
+#endif // RX_FLASH_FCU_HEADER_FILE
 
 /* end of file */

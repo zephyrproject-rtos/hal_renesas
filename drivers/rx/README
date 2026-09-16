@@ -46,6 +46,8 @@ Patch List:
    Impacted files:
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.c
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.h
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_fcu.c
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_fcu.h
 
    * Fix build warnings in Flash driver
    Impacted files:
