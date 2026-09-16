@@ -132,12 +132,6 @@ Patch List:
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8T1AH.h
          drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7FA8E1AF.h
 
-   * Keep OSPI_B at fsp 5.8.0 since it need big change for OSPI driver in zephyr
-      Impacted files:
-         drivers/ra/fsp/src/r_ospi_b/r_ospi_b.c
-         drivers/ra/fsp/inc/api/r_spi_flash_api.h
-         drivers/ra/fsp/inc/instances/r_ospi_b.h
-
    * Remove redundant value in OSIS allocation
       Impacted files:
          zephyr/ra/ra_cfg/fsp_cfg/bsp/ra2a1/bsp_mcu_ofs_cfg.h
