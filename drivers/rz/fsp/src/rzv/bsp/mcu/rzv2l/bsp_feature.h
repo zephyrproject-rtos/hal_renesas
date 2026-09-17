@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -28,14 +28,16 @@
  **********************************************************************************************************************/
 
 /* ADC_C-Related Definitions */
-#define BSP_FEATURE_ADC_NUM_CALIBRATION_DATA                   (2U)
-#define BSP_FEATURE_ADC_C_VALID_CHANNEL_MASK                   (0xFF)
-#define BSP_FEATURE_ADC_C_NUM_CHANNELS                         (8U)
-#define BSP_FEATURE_ADC_C_SAMPLE_STATE_COUNT_MIN               (6U)
-#define BSP_FEATURE_ADC_C_SAMPLE_STATE_COUNT_MAX               (2800U)
-#define BSP_FEATURE_ADC_C_CONVERSION_TIME                      (14U)
-#define BSP_FEATURE_ADC_C_HAS_ADIVC                            (1U)
-#define BSP_FEATURE_ADC_C_TSU_CONTROL_AVAILABLE                (0U)
+#define BSP_FEATURE_ADC_C_UNIT_VALID_CONVERSION_RESULT_REGISTER_MASKS \
+    BSP_FEATURE_ADC_C_UNIT_0_VALID_CONVERSION_RESULT_REGISTER_MASK
+#define BSP_FEATURE_ADC_C_UNIT_0_VALID_CONVERSION_RESULT_REGISTER_MASK    (0xFFU)
+#define BSP_FEATURE_ADC_C_SAMPLE_STATE_COUNT_MIN                          (6U)
+#define BSP_FEATURE_ADC_C_SAMPLE_STATE_COUNT_MAX                          (2800U)
+#define BSP_FEATURE_ADC_C_CONVERSION_TIME                                 (14U)
+#define BSP_FEATURE_ADC_C_HAS_ADIVC                                       (1U)
+#define BSP_FEATURE_ADC_C_TSU_CONTROL_AVAILABLE                           (0U)
+#define BSP_FEATURE_ADC_C_VALID_UNIT_MASK                                 (0x1U)
+#define BSP_FEATURE_ADC_C_TSUMODE_TSUEN_SETTING                           (0U)
 
 /* BSP Capabilities Definitions */
 #define BSP_FEATURE_BSP_ACCESS_CONTROL_SET_SUPPORT             (0U)
@@ -101,6 +103,7 @@
 /* DMAC-Related Definitions */
 #define BSP_FEATURE_DMAC_MAX_CHANNEL                           (16U)
 #define BSP_FEATURE_DMAC_MAX_UNIT                              (2U)
+#define BSP_FEATURE_DMAC_B_64BIT_SYSTEM                        (0U)
 
 /* GPT-Related Definitions */
 #define BSP_FEATURE_GPT_VALID_CHANNEL_MASK                     (0xFFU)
@@ -178,7 +181,7 @@
 
 /* SCIF-Related Definitions */
 #define BSP_FEATURE_SCIF_MAX_CHANNEL                           (5U)
-#define BSP_FEATURE_SCIF_CHANNELS                              (0x1FU)
+#define BSP_FEATURE_SCIF_CHANNELS_MASK                         (0x1FU)
 #define BSP_FEATURE_SCIF_CHANNELS_HAS_RTSCTS                   (0x07U)
 #define BSP_FEATURE_SCIF_RTSCTS_SUPPORT                        (1)
 #define BSP_FEATURE_SCIF_CLOCK                                 (FSP_PRIV_CLOCK_P0CLK)
@@ -186,6 +189,9 @@
 /* MTU3-Related Definitions */
 #define BSP_FEATURE_MTU3_VALID_CHANNEL_MASK                    (0x01FF)
 #define BSP_FEATURE_MTU3_MAX_CHANNELS                          (9U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_STEP_SIZE               (2U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_VALUE_7_9_VALID         (0U)
+#define BSP_FEATURE_MTU3_CLOCK_SOURCE                          (FSP_PRIV_CLOCK_P0CLK)
 
 /* Startup Process-Related Definitions */
 #define BSP_FEATURE_REQUIRE_DATA_REGION_COPY                   (1U)

@@ -6,7 +6,15 @@
 
 #ifndef R_SPI_B_CFG_H_
 #define R_SPI_B_CFG_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define SPI_B_CFG_PARAM_CHECKING_ENABLE (BSP_CFG_PARAM_CHECKING_ENABLE)
-#define SPI_B_DMAC_SUPPORT_ENABLE CONFIG_SPI_RENESAS_RZ_DMA
+#define SPI_B_CFG_DMA_SUPPORT_ENABLE (CONFIG_SPI_RENESAS_RZ_DMA)
 #define SPI_B_TRANSMIT_FROM_RXI_ISR (0)
+
+#ifdef __cplusplus
+}
+#endif
 #endif /* R_SPI_B_CFG_H_ */

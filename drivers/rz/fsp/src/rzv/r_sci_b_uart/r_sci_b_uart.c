@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -75,9 +75,6 @@
 
 /* SCI FFCLR register bit masks */
 #define SCI_B_UART_FFCLR_CLEAR_ALL_MASK        (0x00000001U)
-
-/* SCI chanel size */
-#define SCI_B_REG_SIZE                         (R_SCI1_BASE - R_SCI0_BASE)
 
 #define SCI_B_UART_INVALID_16BIT_PARAM         (0xFFFFU)
 #define SCI_B_UART_DTC_MAX_TRANSFER            (0x10000U)
@@ -259,10 +256,19 @@ const uart_api_t g_uart_on_sci_b =
     .communicationAbort = R_SCI_B_UART_Abort,
     .callbackSet        = R_SCI_B_UART_CallbackSet,
     .readStop           = R_SCI_B_UART_ReadStop,
+    .receiveSuspend     = R_SCI_B_UART_ReceiveSuspend,
+    .receiveResume      = R_SCI_B_UART_ReceiveResume,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZV
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup SCI_B_UART
+ * @addtogroup RZV_SCI_B_UART
  * @{
  **********************************************************************************************************************/
 
@@ -276,12 +282,12 @@ const uart_api_t g_uart_on_sci_b =
  *
  * @retval  FSP_SUCCESS                    Channel opened successfully.
  * @retval  FSP_ERR_ASSERTION              Pointer to UART control block or configuration structure is NULL.
- * @retval  FSP_ERR_IP_CHANNEL_NOT_PRESENT The requested channel does not exist on this MCU.
+ * @retval  FSP_ERR_IP_CHANNEL_NOT_PRESENT The requested channel does not exist on this MPU.
  * @retval  FSP_ERR_INVALID_ARGUMENT       Flow control is enabled but flow control pin is not defined.
  * @retval  FSP_ERR_ALREADY_OPEN           Control block has already been opened or channel is being used by another
  *                                         instance. Call close() then open() to reconfigure.
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZV_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::open
  **********************************************************************************************************************/
@@ -297,10 +303,12 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
 
     FSP_ASSERT(p_cfg->p_extend);
     FSP_ASSERT(((sci_b_uart_extended_cfg_t *) p_cfg->p_extend)->p_baud_setting);
+    sci_b_uart_extended_cfg_t * p_extend = (sci_b_uart_extended_cfg_t *) p_cfg->p_extend;
+    FSP_ASSERT(NULL != p_extend->p_reg);
     FSP_ERROR_RETURN(SCI_B_UART_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
 
     /* Make sure this channel exists. */
-    FSP_ERROR_RETURN(BSP_FEATURE_SCI_CHANNELS & (1U << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
+    FSP_ERROR_RETURN(BSP_FEATURE_SCI_CHANNELS_MASK & (1U << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 
     if (((sci_b_uart_extended_cfg_t *) p_cfg->p_extend)->flow_control == SCI_B_UART_FLOW_CONTROL_CTSRTS)
     {
@@ -323,9 +331,11 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
     FSP_ASSERT(p_cfg->txi_irq >= 0);
     FSP_ASSERT(p_cfg->tei_irq >= 0);
     FSP_ASSERT(p_cfg->eri_irq >= 0);
+#else
+    sci_b_uart_extended_cfg_t * p_extend = (sci_b_uart_extended_cfg_t *) p_cfg->p_extend;
 #endif
 
-    p_ctrl->p_reg = (R_SCI_B0_Type *) (R_SCI0_BASE + (SCI_B_REG_SIZE * p_cfg->channel));
+    p_ctrl->p_reg = (R_SCI_B0_Type *) p_extend->p_reg;
 
     p_ctrl->fifo_depth = 0U;
 #if SCI_B_UART_CFG_FIFO_SUPPORT
@@ -343,7 +353,6 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
     p_ctrl->p_callback        = p_cfg->p_callback;
     p_ctrl->p_context         = p_cfg->p_context;
     p_ctrl->p_callback_memory = NULL;
-    sci_b_uart_extended_cfg_t * p_extend = (sci_b_uart_extended_cfg_t *) p_cfg->p_extend;
 
     p_ctrl->data_bytes = 1U;
     if (UART_DATA_BITS_9 == p_cfg->data_bits)
@@ -506,7 +515,7 @@ fsp_err_t R_SCI_B_UART_Close (uart_ctrl_t * const p_api_ctrl)
  * @retval  FSP_ERR_IN_USE               A previous read operation is still in progress.
  * @retval  FSP_ERR_UNSUPPORTED          SCI_B_UART_CFG_RX_ENABLE is set to 0
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZV_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::reset
  *
@@ -576,7 +585,7 @@ fsp_err_t R_SCI_B_UART_Read (uart_ctrl_t * const p_api_ctrl, uint8_t * const p_d
  * @retval  FSP_ERR_IN_USE               A UART transmission is in progress
  * @retval  FSP_ERR_UNSUPPORTED          SCI_B_UART_CFG_TX_ENABLE is set to 0
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZV_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::reset
  *
@@ -671,7 +680,7 @@ fsp_err_t R_SCI_B_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * co
  **********************************************************************************************************************/
 fsp_err_t R_SCI_B_UART_CallbackSet (uart_ctrl_t * const          p_api_ctrl,
                                     void (                     * p_callback)(uart_callback_args_t *),
-                                    void const * const           p_context,
+                                    void * const                 p_context,
                                     uart_callback_args_t * const p_callback_memory)
 {
     sci_b_uart_instance_ctrl_t * p_ctrl = (sci_b_uart_instance_ctrl_t *) p_api_ctrl;
@@ -814,7 +823,7 @@ fsp_err_t R_SCI_B_UART_InfoGet (uart_ctrl_t * const p_api_ctrl, uart_info_t * co
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  * @retval  FSP_ERR_UNSUPPORTED          The requested Abort direction is unsupported.
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZV_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::disable
  **********************************************************************************************************************/
@@ -902,7 +911,7 @@ fsp_err_t R_SCI_B_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communi
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  * @retval  FSP_ERR_UNSUPPORTED          The requested Abort direction is unsupported.
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZV_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::disable
  **********************************************************************************************************************/
@@ -997,8 +1006,8 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
     {
         for (uint32_t i = 0U; i < SCI_B_UART_NUM_DIVISORS_ASYNC; i++)
         {
-            /* if select_16_base_clk_cycles == true:  Skip this calculation for divisors that are not acheivable with 16 base clk cycles per bit.
-             *  if select_16_base_clk_cycles == false: Skip this calculation for divisors that are only acheivable without 16 base clk cycles per bit.
+            /* if select_16_base_clk_cycles == true:  Skip this calculation for divisors that are not achievable with 16 base clk cycles per bit.
+             * if select_16_base_clk_cycles == false: Skip this calculation for divisors that are only achievable without 16 base clk cycles per bit.
              */
             if (((uint8_t) select_16_base_clk_cycles) ^ (g_async_baud[i].abcs | g_async_baud[i].abcse))
             {
@@ -1103,8 +1112,38 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
 }
 
 /*******************************************************************************************************************//**
+ * Suspend Reception
+ *
+ * @retval     FSP_ERR_UNSUPPORTED       Functionality not supported by this driver instance
+ **********************************************************************************************************************/
+fsp_err_t R_SCI_B_UART_ReceiveSuspend (uart_ctrl_t * const p_api_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Resume Reception
+ *
+ * @retval     FSP_ERR_UNSUPPORTED       Functionality not supported by this driver instance
+ **********************************************************************************************************************/
+fsp_err_t R_SCI_B_UART_ReceiveResume (uart_ctrl_t * const p_api_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
  * @} (end addtogroup SCI_B_UART)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -1214,7 +1253,7 @@ static fsp_err_t r_sci_b_uart_transfer_configure (sci_b_uart_instance_ctrl_t * c
  * @retval        FSP_SUCCESS        UART transfer drivers successfully configured
  * @retval        FSP_ERR_ASSERTION  Invalid pointer or required interrupt not enabled in vector table
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZV_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::open
  **********************************************************************************************************************/

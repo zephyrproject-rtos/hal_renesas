@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -24,8 +24,15 @@
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup ADC_E
+ * @addtogroup RZV_ADC_E
  * @{
  **********************************************************************************************************************/
 
@@ -147,9 +154,9 @@ typedef enum e_adc_e_compare_cfg
     ADC_E_COMPARE_CFG_EVENT_OUTPUT_OR  = 0,
     ADC_E_COMPARE_CFG_EVENT_OUTPUT_XOR = 1,
     ADC_E_COMPARE_CFG_EVENT_OUTPUT_AND = 2,
-    ADC_E_COMPARE_CFG_A_ENABLE         = R_ADC_E_ADCMPCR_CMPAE_Msk | R_ADC_E_ADCMPCR_CMPAIE_Msk,
-    ADC_E_COMPARE_CFG_B_ENABLE         = R_ADC_E_ADCMPCR_CMPBE_Msk | R_ADC_E_ADCMPCR_CMPBIE_Msk,
-    ADC_E_COMPARE_CFG_WINDOW_ENABLE    = R_ADC_E_ADCMPCR_WCMPE_Msk,
+    ADC_E_COMPARE_CFG_A_ENABLE         = R_ADC_E0_ADCMPCR_CMPAE_Msk | R_ADC_E0_ADCMPCR_CMPAIE_Msk,
+    ADC_E_COMPARE_CFG_B_ENABLE         = R_ADC_E0_ADCMPCR_CMPBE_Msk | R_ADC_E0_ADCMPCR_CMPBIE_Msk,
+    ADC_E_COMPARE_CFG_WINDOW_ENABLE    = R_ADC_E0_ADCMPCR_WCMPE_Msk,
 } adc_e_compare_cfg_t;
 
 /** ADC Window B channel */
@@ -170,7 +177,7 @@ typedef enum e_adc_e_window_b_channel
 typedef enum e_adc_e_window_b_mode
 {
     ADC_E_WINDOW_B_MODE_LESS_THAN_OR_OUTSIDE   = 0,
-    ADC_E_WINDOW_B_MODE_GREATER_THAN_OR_INSIDE = R_ADC_E_ADCMPBNSR_CMPLB_Msk,
+    ADC_E_WINDOW_B_MODE_GREATER_THAN_OR_INSIDE = R_ADC_E0_ADCMPBNSR_CMPLB_Msk,
 } adc_e_window_b_mode_t;
 
 /** AD event link control definitions. */
@@ -183,7 +190,7 @@ typedef enum e_adc_e_elc
 } adc_e_elc_t;
 
 /** Extended configuration structure for ADC. */
-typedef struct st_adc_e_extended_cfg
+struct st_adc_e_extended_cfg
 {
     adc_e_add_t            add_average_count;           ///< Add or average samples
     adc_e_clear_t          clearing;                    ///< Clear after read
@@ -198,10 +205,14 @@ typedef struct st_adc_e_extended_cfg
     IRQn_Type              window_b_irq;                ///< IRQ number for Window Compare B interrupts
     uint8_t                window_a_ipl;                ///< Priority for Window Compare A interrupts
     uint8_t                window_b_ipl;                ///< Priority for Window Compare B interrupts
-} adc_e_extended_cfg_t;
+    void                 * p_reg;                       ///< Register base address for specified channel
+};
+
+/** Extended configuration structure for ADC. Please refer to the struct st_adc_e_extended_cfg. */
+typedef struct st_adc_e_extended_cfg adc_e_extended_cfg_t;
 
 /** ADC Window Compare configuration */
-typedef struct st_adc_e_window_cfg
+struct st_adc_e_window_cfg
 {
     uint32_t                 compare_mask;       ///< Channel mask to compare with Window A
     uint32_t                 compare_mode_mask;  ///< Per-channel condition mask for Window A
@@ -212,10 +223,13 @@ typedef struct st_adc_e_window_cfg
     uint16_t                 compare_b_ref_high; ///< Window A upper reference value
     adc_e_window_b_channel_t compare_b_channel;  ///< Window B channel
     adc_e_window_b_mode_t    compare_b_mode;     ///< Window B condition setting
-} adc_e_window_cfg_t;
+};
+
+/** ADC Window Compare configuration. Please refer to the struct st_adc_e_window_cfg. */
+typedef struct st_adc_e_window_cfg adc_e_window_cfg_t;
 
 /** ADC channel(s) configuration       */
-typedef struct st_adc_e_channel_cfg
+struct st_adc_e_channel_cfg
 {
     uint32_t            scan_mask;           ///< Channels/bits: bit 0 is ch0; bit 15 is ch15.
     uint32_t            scan_mask_group_b;   ///< Valid for group modes.
@@ -223,14 +237,17 @@ typedef struct st_adc_e_channel_cfg
     uint32_t            add_mask;            ///< Valid if add enabled in Open().
     adc_e_window_cfg_t * p_window_cfg;       ///< Pointer to Window Compare configuration
     adc_e_grpa_t        priority_group_a;    ///< Valid for group modes.
-} adc_e_channel_cfg_t;
+};
+
+/** ADC channel(s) configuration. Please refer to the struct st_adc_e_channel_cfg. */
+typedef struct st_adc_e_channel_cfg adc_e_channel_cfg_t;
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** ADC instance control block. DO NOT INITIALIZE.  Initialized in @ref adc_api_t::open(). */
-typedef struct
+struct st_adc_e_instance_ctrl
 {
     R_ADC_E0_Type     * p_reg;                  // Base register for this unit
     adc_cfg_t const   * p_cfg;
@@ -245,8 +262,11 @@ typedef struct
     adc_callback_args_t * p_callback_memory;    // Pointer to non-secure memory that can be used to pass arguments to a callback in non-secure memory.
 
     /* Pointer to context to be passed into callback function */
-    void const * p_context;
-} adc_e_instance_ctrl_t;
+    void * p_context;
+};
+
+/** ADC instance control block. DO NOT INITIALIZE.  Initialized in @ref adc_api_t::open(). Please refer to the struct st_adc_e_instance_ctrl. */
+typedef struct st_adc_e_instance_ctrl adc_e_instance_ctrl_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -274,13 +294,19 @@ fsp_err_t R_ADC_E_Close(adc_ctrl_t * p_ctrl);
 fsp_err_t R_ADC_E_OffsetSet(adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, int32_t offset);
 fsp_err_t R_ADC_E_Calibrate(adc_ctrl_t * const p_ctrl, void const * p_extend);
 fsp_err_t R_ADC_E_CallbackSet(adc_ctrl_t * const          p_api_ctrl,
-                            void (                    * p_callback)(adc_callback_args_t *),
-                            void const * const          p_context,
-                            adc_callback_args_t * const p_callback_memory);
+                              void (                    * p_callback)(adc_callback_args_t *),
+                              void * const                p_context,
+                              adc_callback_args_t * const p_callback_memory);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup ADC_E)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
