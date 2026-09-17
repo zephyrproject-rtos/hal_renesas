@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -64,8 +64,8 @@ typedef enum e_timer_event
 /** Timer variant types. */
 typedef enum e_timer_variant
 {
-    TIMER_VARIANT_32_BIT,               ///< 32-bit timer
-    TIMER_VARIANT_16_BIT                ///< 16-bit timer
+    TIMER_VARIANT_32_BIT,              ///< 32-bit timer
+    TIMER_VARIANT_16_BIT               ///< 16-bit timer
 } timer_variant_t;
 
 /** Options for storing compare match value */
@@ -85,7 +85,7 @@ typedef enum e_timer_compare_match
 typedef struct st_timer_callback_args
 {
     /** Placeholder for user data.  Set in @ref timer_api_t::open function in @ref timer_cfg_t. */
-    void const  * p_context;
+    void        * p_context;
     timer_event_t event;               ///< The event can be used to identify what caused the callback.
 
     /** Most recent capture, only valid if event is TIMER_EVENT_CAPTURE_A or TIMER_EVENT_CAPTURE_B. */
@@ -100,7 +100,8 @@ typedef void timer_ctrl_t;
 typedef enum e_timer_state
 {
     TIMER_STATE_STOPPED  = 0,          ///< Timer is stopped
-    TIMER_STATE_COUNTING = 1           ///< Timer is running
+    TIMER_STATE_COUNTING = 1,          ///< Timer is running
+    TIMER_STATE_UNKNOWN  = 2           ///< Timer state could not be defined
 } timer_state_t;
 #ifndef BSP_OVERRIDE_TIMER_MODE_T
 
@@ -191,7 +192,7 @@ typedef struct st_timer_cfg
     void (* p_callback)(timer_callback_args_t * p_args);
 
     /** Placeholder for user data.  Passed to the user callback in @ref timer_callback_args_t. */
-    void const * p_context;
+    void       * p_context;
     void const * p_extend;             ///< Extension parameter for hardware specific settings.
 } timer_cfg_t;
 
@@ -288,7 +289,7 @@ typedef struct st_timer_api
      *                                       Callback arguments allocated here are only valid during the callback.
      */
     fsp_err_t (* callbackSet)(timer_ctrl_t * const p_ctrl, void (* p_callback)(timer_callback_args_t *),
-                              void const * const p_context, timer_callback_args_t * const p_callback_memory);
+                              void * const p_context, timer_callback_args_t * const p_callback_memory);
 
     /** Allows driver to be reconfigured and may reduce power consumption.
      *

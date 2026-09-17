@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -50,9 +50,9 @@ typedef enum e_mhu_send_type
 typedef struct st_mhu_callback_args
 {
     /** Placeholder for user data.  Set in @ref mhu_api_t::open function in @ref mhu_cfg_t. */
-    void const * p_context;
-    uint32_t     channel;              ///< Channel where the receive interrupt occurred.
-    uint32_t     msg;                  ///< 32-bit received data.
+    void   * p_context;
+    uint32_t channel;                  ///< Channel where the receive interrupt occurred.
+    uint32_t msg;                      ///< 32-bit received data.
 } mhu_callback_args_t;
 
 /** MHU configuration block */
@@ -69,7 +69,7 @@ typedef struct st_mhu_cfg
     void const * p_shared_memory;                      ///< Pointer to 64-bit send/receive data buffer.
 
     /** Placeholder for user data.  Passed to the user callback in @ref mhu_callback_args_t. */
-    void const * p_context;
+    void       * p_context;
     void const * p_extend;             ///< Extension parameter for hardware specific settings
 } mhu_cfg_t;
 
@@ -104,7 +104,7 @@ typedef struct st_mhu_api
      *                                       Callback arguments allocated here are only valid during the callback.
      */
     fsp_err_t (* callbackSet)(mhu_ctrl_t * const p_ctrl, void (* p_callback)(mhu_callback_args_t *),
-                              void const * const p_context, mhu_callback_args_t * const p_callback_memory);
+                              void * const p_context, mhu_callback_args_t * const p_callback_memory);
 
     /** Closes the driver and releases the MHU device.
      *
