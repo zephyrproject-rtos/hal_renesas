@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -42,13 +42,26 @@ extern fsp_vector_t g_vector_table[BSP_ICU_VECTOR_MAX_ENTRIES];
 uint32_t            g_interrupt_nesting_count;
 static uint32_t     route;
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZA_BSP_MCU
  *
  * @{
  **********************************************************************************************************************/
 
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /*******************************************************************************************************************//**
  * Initialize interrupt controller.

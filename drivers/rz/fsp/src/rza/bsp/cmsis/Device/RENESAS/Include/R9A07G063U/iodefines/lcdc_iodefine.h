@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -1179,39 +1179,7 @@ typedef struct
             uint32_t               : 16;
         } FCP_VCR_b;
     };
-    union
-    {
-        __IOM uint32_t FCP_CFG0;
-        struct
-        {
-            uint32_t               : 1;
-            __IOM uint32_t FCPVSEL : 1;
-            uint32_t               : 30;
-        } FCP_CFG0_b;
-    };
-    __IM uint8_t RESERVED28[8];
-    union
-    {
-        __IOM uint32_t FCP_RST;
-        struct
-        {
-            __IOM uint32_t SOFTRST : 1;
-            uint32_t               : 3;
-            __IOM uint32_t MODRST  : 1;
-            uint32_t               : 27;
-        } FCP_RST_b;
-    };
-    __IM uint8_t RESERVED29[4];
-    union
-    {
-        __IM uint32_t FCP_STA;
-        struct
-        {
-            __IM uint32_t ACT : 1;
-            uint32_t          : 31;
-        } FCP_STA_b;
-    };
-    __IM uint8_t RESERVED30[65508];
+    __IM uint8_t RESERVED28[65532];
     union
     {
         __IOM uint32_t DU_MCR0;
@@ -1434,30 +1402,33 @@ typedef struct
             uint32_t           : 3;
         } DU_DITR4_b;
     };
+    __IM uint8_t RESERVED29[28];
     union
     {
-        __IOM uint32_t DU_DITR5;
+        __IOM uint32_t DU_MCR1;
         struct
         {
             __IOM uint16_t L;
             __IOM uint16_t H;
-        } DU_DITR5_hword;
+        } DU_MCR1_hword;
         struct
         {
             __IOM uint8_t LL;
             __IOM uint8_t LH;
             __IOM uint8_t HL;
             __IOM uint8_t HH;
-        } DU_DITR5_byte;
+        } DU_MCR1_byte;
         struct
         {
-            __IOM uint32_t VSFT : 13;
-            uint32_t            : 3;
-            __IOM uint32_t HSFT : 13;
-            uint32_t            : 3;
-        } DU_DITR5_b;
+            __IOM uint8_t OPMD       : 2;
+            uint8_t                  : 6;
+            uint8_t                  : 8;
+            __IOM uint8_t PB_AUTOCLR : 1;
+            uint8_t                  : 7;
+            uint8_t                  : 8;
+        } DU_MCR1_b;
     };
-    __IM uint8_t RESERVED31[36];
+    __IM uint8_t RESERVED30[8];
     union
     {
         __IOM uint32_t DU_PBCR0;
@@ -1481,6 +1452,51 @@ typedef struct
             uint8_t              : 8;
             uint8_t              : 8;
         } DU_PBCR0_b;
+    };
+    union
+    {
+        __IOM uint32_t DU_PBCR1;
+        struct
+        {
+            __IOM uint16_t L;
+            __IOM uint16_t H;
+        } DU_PBCR1_hword;
+        struct
+        {
+            __IOM uint8_t LL;
+            __IOM uint8_t LH;
+            __IOM uint8_t HL;
+            __IOM uint8_t HH;
+        } DU_PBCR1_byte;
+        struct
+        {
+            __IOM uint8_t PB_RUFOP : 1;
+            uint8_t                : 7;
+            uint8_t                : 8;
+            uint8_t                : 8;
+            uint8_t                : 8;
+        } DU_PBCR1_b;
+    };
+    union
+    {
+        __IOM uint32_t DU_PBCR2;
+        struct
+        {
+            __IOM uint16_t L;
+            __IOM uint16_t H;
+        } DU_PBCR2_hword;
+        struct
+        {
+            __IOM uint8_t LL;
+            __IOM uint8_t LH;
+            __IOM uint8_t HL;
+            __IOM uint8_t HH;
+        } DU_PBCR2_byte;
+        struct
+        {
+            __IOM uint32_t PB_RUFDAT : 24;
+            uint32_t                 : 8;
+        } DU_PBCR2_b;
     };
 } R_LCDC_Type;
 

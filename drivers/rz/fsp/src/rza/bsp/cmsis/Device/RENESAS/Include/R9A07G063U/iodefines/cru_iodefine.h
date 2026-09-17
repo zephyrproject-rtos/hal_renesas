@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -316,16 +316,7 @@ typedef struct
             __IOM uint32_t FIFORPNTR_UV : 8;
         } AMnFIFOPNTR_b;
     };
-    __IM uint8_t RESERVED4[4];
-    union
-    {
-        __IOM uint32_t AMnAXIBID;
-        struct
-        {
-            __IOM uint32_t BIDCHK : 1;
-            uint32_t              : 31;
-        } AMnAXIBID_b;
-    };
+    __IM uint8_t RESERVED4[8];
     union
     {
         __IOM uint32_t AMnAXISTP;
@@ -546,23 +537,14 @@ typedef struct
             uint32_t                  : 11;
         } AMnSDFIFOPNTR_b;
     };
-    __IM uint8_t RESERVED7[4];
-    union
-    {
-        __IOM uint32_t AMnSDAXIBID;
-        struct
-        {
-            __IOM uint32_t SDBIDCHK : 1;
-            uint32_t                : 31;
-        } AMnSDAXIBID_b;
-    };
+    __IM uint8_t RESERVED7[8];
     union
     {
         __IOM uint32_t AMnSDAXISTP;
         struct
         {
-            __IOM uint32_t SDAXI_STOP : 1;
-            uint32_t                  : 31;
+            __IOM uint32_t SDAXISTOP : 1;
+            uint32_t                 : 31;
         } AMnSDAXISTP_b;
     };
     union
@@ -570,8 +552,8 @@ typedef struct
         __IM uint32_t AMnSDAXISTPACK;
         struct
         {
-            __IM uint32_t SDAXI_STOP_ACK : 1;
-            uint32_t                     : 31;
+            __IM uint32_t SDAXISTOPACK : 1;
+            uint32_t                   : 31;
         } AMnSDAXISTPACK_b;
     };
     __IM uint8_t RESERVED8[4];
@@ -598,7 +580,7 @@ typedef struct
         __IOM uint32_t ICnMC;
         struct
         {
-            __IOM uint32_t ICTHR    : 1;
+            uint32_t                : 1;
             __IOM uint32_t DECTHR   : 1;
             __IOM uint32_t CLPTHR   : 1;
             __IOM uint32_t DEMTHR   : 1;
@@ -609,7 +591,7 @@ typedef struct
             uint32_t                : 4;
             __IOM uint32_t CLP      : 2;
             __IOM uint32_t IBINSEL  : 1;
-            __IOM uint32_t DES0     : 1;
+            uint32_t                : 1;
             __IOM uint32_t INF      : 6;
             __IOM uint32_t VCSEL    : 2;
             __IOM uint32_t RAWSTTYP : 2;
@@ -753,22 +735,7 @@ typedef struct
             uint32_t              : 23;
         } ICnSTIC2_b;
     };
-    __IM uint8_t RESERVED10[8];
-    union
-    {
-        __IOM uint32_t ICnPIFC;
-        struct
-        {
-            __IOM uint32_t PINF  : 4;
-            uint32_t             : 4;
-            __IOM uint32_t ITL   : 3;
-            uint32_t             : 1;
-            __IOM uint32_t EC    : 1;
-            __IOM uint32_t VSPOL : 1;
-            __IOM uint32_t ENPOL : 1;
-            uint32_t             : 17;
-        } ICnPIFC_b;
-    };
+    __IM uint8_t RESERVED10[12];
     union
     {
         __IM uint32_t ICnMS;
@@ -912,8 +879,7 @@ typedef struct
             __IOM uint32_t YCLCEN : 1;
             uint32_t              : 7;
             __IOM uint32_t YCLSFT : 5;
-            uint32_t              : 2;
-            __IOM uint32_t YEXPEN : 1;
+            uint32_t              : 3;
         } ICnYCCR3_b;
     };
     union
@@ -946,8 +912,7 @@ typedef struct
             __IOM uint32_t CBCLCEN : 1;
             uint32_t               : 7;
             __IOM uint32_t CBCLSFT : 5;
-            uint32_t               : 2;
-            __IOM uint32_t CBEXPEN : 1;
+            uint32_t               : 3;
         } ICnCBCCR3_b;
     };
     union
@@ -980,8 +945,7 @@ typedef struct
             __IOM uint32_t CRCLCEN : 1;
             uint32_t               : 7;
             __IOM uint32_t CRCLSFT : 5;
-            uint32_t               : 2;
-            __IOM uint32_t CREXPEN : 1;
+            uint32_t               : 3;
         } ICnCRCCR3_b;
     };
     __IM uint8_t RESERVED11[12];
@@ -1874,8 +1838,7 @@ typedef struct
             __IOM uint32_t EN_BGR          : 1;
             __IOM uint32_t EN_LDO1200      : 1;
             uint32_t                       : 14;
-            __IOM uint32_t CAL_EN_HSRX_OFS : 1;
-            uint32_t                       : 15;
+            uint32_t                       : 16;
         } CSIDPHYCTRL0_b;
     };
     union

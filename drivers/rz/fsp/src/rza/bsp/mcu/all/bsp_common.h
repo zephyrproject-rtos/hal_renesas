@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -27,8 +27,15 @@ FSP_HEADER
 
 #include "bsp_cfg.h"
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZA_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -68,7 +75,9 @@ FSP_HEADER
     return err;
 #endif
 
-/** This function is called before returning an error code. To stop on a runtime error, define fsp_error_log in
+/** 
+ * @anchor RZA_FSP_ERROR_LOG
+ * This function is called before returning an error code. To stop on a runtime error, define fsp_error_log in
  * user code and do required debugging (breakpoints, stack dump, etc) in this function.*/
 #if (1 == BSP_CFG_ERROR_LOG)
 
@@ -276,7 +285,7 @@ __STATIC_INLINE fsp_err_t R_FSP_CurrentIrqGet (void)
 }
 
 /*******************************************************************************************************************//**
- * Get unique ID is not supported for this RZ MCU.
+ * Get unique ID is not supported for this RZ MPU.
  *
  * @return  A pointer to the unique identifier structure
  **********************************************************************************************************************/
@@ -310,6 +319,12 @@ void fsp_error_log(fsp_err_t err, const char * file, int32_t line);
 #endif
 
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

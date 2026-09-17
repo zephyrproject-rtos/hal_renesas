@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -129,12 +129,8 @@
 #define R_SPIBSC_SMENR_CDB_Pos            (30UL)
 #define R_SPIBSC_SMRDR0_RDATA0_Msk        (0xFFFFFFFFUL)
 #define R_SPIBSC_SMRDR0_RDATA0_Pos        (0UL)
-#define R_SPIBSC_SMRDR1_RDATA1_Msk        (0xFFFFFFFFUL)
-#define R_SPIBSC_SMRDR1_RDATA1_Pos        (0UL)
 #define R_SPIBSC_SMWDR0_WDATA0_Msk        (0xFFFFFFFFUL)
 #define R_SPIBSC_SMWDR0_WDATA0_Pos        (0UL)
-#define R_SPIBSC_SMWDR1_WDATA1_Msk        (0xFFFFFFFFUL)
-#define R_SPIBSC_SMWDR1_WDATA1_Pos        (0UL)
 #define R_SPIBSC_CMNSR_TEND_Msk           (0x00000001UL)
 #define R_SPIBSC_CMNSR_TEND_Pos           (0UL)
 #define R_SPIBSC_CMNSR_SSLF_Msk           (0x00000002UL)
@@ -147,6 +143,8 @@
 #define R_SPIBSC_DRDRENR_OPDRE_Pos        (4UL)
 #define R_SPIBSC_DRDRENR_ADDRE_Msk        (0x00000100UL)
 #define R_SPIBSC_DRDRENR_ADDRE_Pos        (8UL)
+#define R_SPIBSC_DRDRENR_HYPE_Msk         (0x00007000UL)
+#define R_SPIBSC_DRDRENR_HYPE_Pos         (12UL)
 #define R_SPIBSC_SMDMCR_DMCYC_Msk         (0x0000001FUL)
 #define R_SPIBSC_SMDMCR_DMCYC_Pos         (0UL)
 #define R_SPIBSC_SMDRENR_SPIDRE_Msk       (0x00000001UL)

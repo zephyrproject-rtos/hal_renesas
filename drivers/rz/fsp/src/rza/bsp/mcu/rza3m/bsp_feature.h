@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -27,7 +27,7 @@
  * Private global variables and functions
  **********************************************************************************************************************/
 
-#define BSP_FEATURE_BSP_HAS_MMU_SUPPORT                (0)
+#define BSP_FEATURE_BSP_HAS_MMU_SUPPORT                (0U)
 
 #define BSP_FEATURE_BSP_HAS_MIPI_DSI                   (1U)
 
@@ -98,6 +98,9 @@
 #define BSP_FEATURE_MTU3_VALID_CHANNEL_MASK            (0x01FF)
 #define BSP_FEATURE_MTU3_MAX_CHANNELS                  (9U)
 #define BSP_FEATURE_MTU3_UVW_MAX_CHANNELS              (3U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_STEP_SIZE       (2U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_VALUE_7_9_VALID (0U)
+#define BSP_FEATURE_MTU3_CLOCK_SOURCE                  (FSP_PRIV_CLOCK_P0CLK)
 
 #define BSP_FEATURE_RIIC_MAX_CHANNELS                  (2U)
 

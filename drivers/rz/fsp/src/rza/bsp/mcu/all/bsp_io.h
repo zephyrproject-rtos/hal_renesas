@@ -1,16 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @defgroup BSP_IO BSP I/O access
- * @ingroup RENESAS_COMMON
- * @brief This module provides basic read/write access to port pins.
- *
- * @{
- **********************************************************************************************************************/
 
 #ifndef BSP_IO_H
 #define BSP_IO_H
@@ -45,6 +37,21 @@ FSP_HEADER
 
 #define BSP_IO_PRV_SD_POC_REG_BASE    (&R_GPIO->SD_CH0_POC)
 #define BSP_IO_PRV_SD_REG_BASE        (&R_GPIO->SD_ch0)
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @defgroup RZA_BSP_IO BSP I/O access
+ * @ingroup RZA_RENESAS_COMMON
+ * @brief This module provides basic read/write access to port pins.
+ *
+ * @{
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -741,6 +748,12 @@ __STATIC_INLINE void R_BSP_XSPIOutputEnableCfg (void)
 }
 
 /** @} (end addtogroup BSP_IO) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

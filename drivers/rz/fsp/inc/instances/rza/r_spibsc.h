@@ -1,13 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup SPIBSC
- * @{
- **********************************************************************************************************************/
 
 #ifndef R_SPIBSC_H
 #define R_SPIBSC_H
@@ -22,28 +17,47 @@
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZA
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZA_SPIBSC
+ * @{
+ **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
-/* Delay settings. */
-typedef struct st_spibsc_delay
+/** Delay settings. */
+struct st_spibsc_delay
 {
     uint8_t slch : 3;                  ///< SLCH (Select to Clock Delay) cycles
     uint8_t clsh : 3;                  ///< CLSH (Clock Low to Deselect Delay) cycles
     uint8_t shsl : 3;                  ///< SHSL (Deselect to Select Delay) cycles
-} spibsc_delay_t;
+};
 
-/* Extended configuration. */
-typedef struct st_spibsc_extended_cfg
+/** Delay settings. Please refer to the struct st_spibsc_delay. */
+typedef struct st_spibsc_delay spibsc_delay_t;
+
+/** Extended configuration. */
+struct st_spibsc_extended_cfg
 {
     spibsc_delay_t delay;              ///< Delay setting
     uint8_t        io_fix_mask;        ///< Enable to fixture IOn signal level during idle state (bit mapped)
     uint8_t        io_fix_value;       ///< Value to fixture IOn signal level during idle state (bit mapped)
-} spibsc_extended_cfg_t;
+    void         * p_reg;              ///< Register base address for specified channel
+};
 
-/** Instance control block. DO NOT INITIALIZE.  Initialization occurs when @ref spi_flash_api_t::open is called */
-typedef struct st_spibsc_instance_ctrl
+/** Extended configuration. Please refer to the struct st_spibsc_extended_cfg. */
+typedef struct st_spibsc_extended_cfg spibsc_extended_cfg_t;
+
+/** Instance control block. DO NOT INITIALIZE.  Initialization occurs when @ref RZA::spi_flash_api_t::open is called */
+struct st_spibsc_instance_ctrl
 {
     spi_flash_cfg_t             cfg;                  // Copy of configuration
     spibsc_extended_cfg_t       ext;                  // Copy of extended configuration
@@ -51,7 +65,10 @@ typedef struct st_spibsc_instance_ctrl
     uint32_t        open;                             // Whether or not driver is open
     bool            is_xip_enabled;                   // The driver enables XIP (omitting cmd) mode
     R_SPIBSC_Type * p_reg;                            // Controller register base address
-} spibsc_instance_ctrl_t;
+};
+
+/** Instance control block. DO NOT INITIALIZE.  Initialization occurs when @ref RZA::spi_flash_api_t::open is called. Please refer to the struct st_spibsc_instance_ctrl. */
+typedef struct st_spibsc_instance_ctrl spibsc_instance_ctrl_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -91,11 +108,17 @@ fsp_err_t R_SPIBSC_DirectTransfer(spi_flash_ctrl_t                  * p_api_ctrl
     SPIBSC_CFG_CODE_SECTION);
 fsp_err_t R_SPIBSC_AutoCalibrate(spi_flash_ctrl_t * p_api_ctrl);
 
+/*******************************************************************************************************************//**
+ * @} (end defgroup SPIBSC)
+ **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
+
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 
 #endif
-
-/*******************************************************************************************************************//**
- * @} (end defgroup SPIBSC)
- **********************************************************************************************************************/

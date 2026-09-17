@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -142,8 +142,15 @@ static void r_ioport_event_config(const ioport_extend_cfg_t * p_extend_cfg_data)
  * Private global variables
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup IOPORT
+ * @addtogroup RZA_IOPORT
  * @{
  **********************************************************************************************************************/
 
@@ -167,6 +174,9 @@ fsp_err_t R_IOPORT_Open (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p_cf
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data || 0 == p_cfg->number_of_pins);
     FSP_ERROR_RETURN(IOPORT_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
+ #if BSP_FEATURE_BSP_HAS_ELC
+    FSP_ASSERT(NULL != p_cfg->p_extend);
+ #endif
 #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
@@ -227,6 +237,9 @@ fsp_err_t R_IOPORT_PinsCfg (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p
     FSP_ERROR_RETURN(IOPORT_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data);
+ #if BSP_FEATURE_BSP_HAS_ELC
+    FSP_ASSERT(NULL != p_cfg->p_extend);
+ #endif
 #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
@@ -719,6 +732,12 @@ fsp_err_t R_IOPORT_PinEventOutputWrite (ioport_ctrl_t * const p_ctrl, bsp_io_por
 /*******************************************************************************************************************//**
  * @} (end addtogroup IOPORT)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions

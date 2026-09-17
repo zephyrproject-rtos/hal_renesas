@@ -1,13 +1,10 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-/*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
- * @{
- **********************************************************************************************************************/
+
 
 #ifndef BSP_COMPILER_SUPPORT_H
  #define BSP_COMPILER_SUPPORT_H
@@ -19,6 +16,18 @@
  #ifdef __cplusplus
 extern "C" {
  #endif
+ 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZA_BSP_MCU
+ * @{
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -105,6 +114,12 @@ extern "C" {
  **********************************************************************************************************************/
 
 /** @} (end of addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
  #ifdef __cplusplus
 }

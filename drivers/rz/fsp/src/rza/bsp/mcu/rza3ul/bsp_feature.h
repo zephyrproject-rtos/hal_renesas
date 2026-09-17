@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -28,9 +28,11 @@
  **********************************************************************************************************************/
 
 /* ADC-Related Definitions */
-#define BSP_FEATURE_ADC_VALID_CHANNEL_MASK             (0xF)
-#define BSP_FEATURE_ADC_NUM_CALIBRATION_DATA           (2U)
-#define BSP_FEATURE_ADC_NUM_CHANNELS                   (2U)
+#define BSP_FEATURE_ADC_NUM_CALIBRATION_DATA                            (2U)
+#define BSP_FEATURE_ADC_UNIT_VALID_CONVERSION_RESULT_REGISTER_MASKS \
+    BSP_FEATURE_ADC_UNIT_0_VALID_CONVERSION_RESULT_REGISTER_MASK
+#define BSP_FEATURE_ADC_UNIT_0_VALID_CONVERSION_RESULT_REGISTER_MASK    (0xFFU)
+#define BSP_FEATURE_ADC_VALID_UNIT_MASK                                 (0x1U)
 
 /* BSP Capabilities Definitions */
 #define BSP_FEATURE_BSP_SUPPORT_PLL5_CONFIG            (0U)
@@ -122,6 +124,9 @@
 #define BSP_FEATURE_MTU3_VALID_CHANNEL_MASK            (0x01FF)
 #define BSP_FEATURE_MTU3_MAX_CHANNELS                  (9U)
 #define BSP_FEATURE_MTU3_UVW_MAX_CHANNELS              (3U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_STEP_SIZE       (2U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_VALUE_7_9_VALID (0U)
+#define BSP_FEATURE_MTU3_CLOCK_SOURCE                  (FSP_PRIV_CLOCK_P0CLK)
 
 /* RIIC-Related Definitions */
 #define BSP_FEATURE_RIIC_MAX_CHANNELS                  (4U)

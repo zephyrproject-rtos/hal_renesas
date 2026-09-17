@@ -1,20 +1,27 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-/* Ensure Renesas MCU variation definitions are included to ensure MCU
+/* Ensure Renesas MPU variation definitions are included to ensure MPU
  * specific register variations are handled correctly. */
 #ifndef BSP_FEATURE_H
  #error "INTERNAL ERROR: bsp_feature.h must be included before renesas.h."
 #endif
 
-/** @addtogroup Renesas
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
+/** @addtogroup RZA_Renesas
  * @{
  */
 
-/** @addtogroup RZA
+/** @addtogroup RZA_RZA
  * @{
  */
 
@@ -25,7 +32,7 @@
 extern "C" {
  #endif
 
-/** @addtogroup Configuration_of_CMSIS
+/** @addtogroup RZA_Configuration_of_CMSIS
  * @{
  */
 
@@ -92,7 +99,7 @@ extern "C" {
 /* ================                              Device Specific Cluster Section                              ================ */
 /* =========================================================================================================================== */
 
-/** @addtogroup Device_Peripheral_clusters
+/** @addtogroup RZA_Device_Peripheral_clusters
  * @{
  */
 
@@ -104,7 +111,7 @@ extern "C" {
   #if __has_include("renesas_internal.h")
    #include "renesas_internal.h"
   #else
-   #error "Unsupported MCU"
+   #error "Unsupported MPU"
   #endif
  #endif
 
@@ -135,7 +142,7 @@ extern "C" {
 /* ================                                 Pos/Mask Cluster Section                                  ================ */
 /* =========================================================================================================================== */
 
-/** @addtogroup PosMask_clusters
+/** @addtogroup RZA_PosMask_clusters
  * @{
  */
 
@@ -150,3 +157,9 @@ extern "C" {
 /** @} */ /* End of group RZA */
 
 /** @} */ /* End of group Renesas */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif

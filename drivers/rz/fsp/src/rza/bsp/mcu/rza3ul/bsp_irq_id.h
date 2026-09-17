@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -17,6 +17,18 @@
  * Macro definitions
  *********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
+/**********************************************************************************************************************
+ * @addtogroup RZA_BSP_MPU_RZA3UL
+ * @{
+ *********************************************************************************************************************/
+
 /**********************************************************************************************************************
  * Typedef definitions
  *********************************************************************************************************************/
@@ -27,11 +39,6 @@
 
 /**********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
- *********************************************************************************************************************/
-
-/**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZA3UL
- * @{
  *********************************************************************************************************************/
 
 typedef enum IRQn
@@ -293,7 +300,7 @@ typedef enum IRQn
     MTU8_TGIC_PLS_IRQn          = 242, /* Interrupt ID:242, tgi8c_pls_n */
     MTU8_TGID_PLS_IRQn          = 243, /* Interrupt ID:243, tgi8d_pls_n */
     MTU8_TCIV_PLS_IRQn          = 244, /* Interrupt ID:244, tci8v_pls_n */
-    MTU8_TCIU_PLS_IRQn          = 245, /* Interrupt ID:245, tci8u_pls_n */
+                                       /* Interrupt ID:245, Reserved */
     POE3_OEI1_IRQn              = 246, /* Interrupt ID:246, poe_oei1_n */
     POE3_OEI2_IRQn              = 247, /* Interrupt ID:247, poe_oei2_n */
     POE3_OEI3_IRQn              = 248, /* Interrupt ID:248, poe_oei3_n */
@@ -427,7 +434,7 @@ typedef enum IRQn
                                        /* Interrupt ID:376, Reserved */
                                        /* Interrupt ID:377, Reserved */
                                        /* Interrupt ID:378, Reserved */
-    ADC_INTAD_IRQn          = 379,     /* Interrupt ID:379, INTAD */
+    ADC0_INTAD_IRQn         = 379,     /* Interrupt ID:379, ADC0_INTAD */
     RIIC0_RI_IRQn           = 380,     /* Interrupt ID:380, ri_p */
     RIIC0_TI_IRQn           = 381,     /* Interrupt ID:381, ti_p */
     RIIC0_TEI_IRQn          = 382,     /* Interrupt ID:382, tei_p */
@@ -563,5 +570,11 @@ typedef enum IRQn
 } IRQn_Type;
 
 /** @} (end addtogroup BSP_MPU_RZA3UL) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 #endif                                 /* BSP_IRQ_ID_H */

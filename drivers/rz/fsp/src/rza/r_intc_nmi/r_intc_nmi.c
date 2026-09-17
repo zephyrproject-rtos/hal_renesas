@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -50,8 +50,15 @@ const external_irq_api_t g_external_irq_on_intc_nmi =
     .close       = R_INTC_NMI_ExternalIrqClose,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup INTC_NMI
+ * @addtogroup RZA_INTC_NMI
  * @{
  **********************************************************************************************************************/
 
@@ -112,11 +119,11 @@ fsp_err_t R_INTC_NMI_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, ex
     FSP_PARAMETER_NOT_USED(nscr);
 
     /* Clear the NSTAT bit after changing the trigger setting to the edge type.
-     * Reference section "Precaution when Changing Interrupt Settings" of the user's manual. */
+     * Reference section "Precaution when Changing Interrupt Settings" of the hardware manual. */
     R_INTC_IA55->NSCR_b.NSTAT = 0;
 
     /* Dummy read the NSCR to prevent the interrupt cause that have been cleared from being accidentally accepted.
-     * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */
+     * Reference section "Clear Timing of Interrupt Cause" of the hardware manual. */
     nscr = R_INTC_IA55->NSCR;
     FSP_PARAMETER_NOT_USED(nscr);
 
@@ -191,7 +198,7 @@ fsp_err_t R_INTC_NMI_ExternalIrqDisable (external_irq_ctrl_t * const p_api_ctrl)
 fsp_err_t R_INTC_NMI_ExternalIrqCallbackSet (external_irq_ctrl_t * const p_api_ctrl,
                                              void (                    * p_callback)(
                                                  external_irq_callback_args_t *),
-                                             void const * const                   p_context,
+                                             void * const                         p_context,
                                              external_irq_callback_args_t * const p_callback_memory)
 {
     intc_nmi_instance_ctrl_t * p_ctrl = p_api_ctrl;
@@ -264,6 +271,12 @@ fsp_err_t R_INTC_NMI_ExternalIrqClose (external_irq_ctrl_t * const p_api_ctrl)
  * @} (end addtogroup INTC_NMI)
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
  * INTC_NMI External Interrupt ISR.
  **********************************************************************************************************************/
@@ -283,7 +296,7 @@ void r_intc_nmi_isr (IRQn_Type const irq)
     R_INTC_IA55->NSCR_b.NSTAT = 0;
 
     /* Dummy read the NSCR to prevent the interrupt cause that should have been cleared from being accidentally
-     * accepted again. Reference section "Clear Timing of Interrupt Cause" of the user's manual. */
+     * accepted again. Reference section "Clear Timing of Interrupt Cause" of the hardware manual. */
     nscr = R_INTC_IA55->NSCR;
     FSP_PARAMETER_NOT_USED(nscr);
 
