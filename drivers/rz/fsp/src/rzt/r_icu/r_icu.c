@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -61,8 +61,15 @@ const external_irq_api_t g_external_irq_on_icu =
     .close       = R_ICU_ExternalIrqClose,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZT
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup ICU
+ * @addtogroup RZT_ICU
  * @{
  **********************************************************************************************************************/
 
@@ -273,7 +280,7 @@ fsp_err_t R_ICU_ExternalIrqDisable (external_irq_ctrl_t * const p_ctrl)
 fsp_err_t R_ICU_ExternalIrqCallbackSet (external_irq_ctrl_t * const p_ctrl,
                                         void (                    * p_callback)(
                                             external_irq_callback_args_t *),
-                                        void const * const                   p_context,
+                                        void * const                         p_context,
                                         external_irq_callback_args_t * const p_callback_memory)
 {
     icu_instance_ctrl_t * p_instance_ctrl = p_ctrl;
@@ -325,6 +332,12 @@ fsp_err_t R_ICU_ExternalIrqClose (external_irq_ctrl_t * const p_ctrl)
 /*******************************************************************************************************************//**
  * @} (end addtogroup ICU)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /*******************************************************************************************************************//**
  * ICU External Interrupt ISR.

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -17,34 +17,43 @@
  **********************************************************************************************************************/
 
 /* "PORT" in ASCII, used to determine if the module is open */
-#define IOPORT_OPEN                (0x504F5254U)
-#define IOPORT_CLOSED              (0x00000000U)
+#define IOPORT_OPEN                     (0x504F5254U)
+#define IOPORT_CLOSED                   (0x00000000U)
 
 /* Shift to get port in bsp_io_port_t and bsp_io_port_pin_t enums. */
-#define IOPORT_PRV_PORT_OFFSET     (8U)
+#define IOPORT_PRV_PORT_OFFSET          (8U)
 
-#define IOPORT_PRV_PORT_BITS       (0xFF00U)
-#define IOPORT_PRV_PIN_BITS        (0x00FFU)
+#define IOPORT_PRV_PORT_BITS            (0xFF00U)
+#define IOPORT_PRV_PIN_BITS             (0x00FFU)
 
-#define IOPORT_PRV_8BIT_MASK       (0x00FFU)
+#define IOPORT_PRV_8BIT_MASK            (0x00FFU)
 
 /* Added definitions */
-#define IOPORT_PIN_NUM_MUX         (8U)
-#define IOPORT_REGION_SEL_SAFE     (0U)
-#define IOPORT_REGION_SEL_NSAFE    (1U)
-#define IOPORT_RSEL_MASK           (0x01U)
-#define IOPORT_PM_BIT_MASK         (0x0003U)
+#define IOPORT_PIN_NUM_MUX              (8U)
+#define IOPORT_REGION_SEL_SAFE          (0U)
+#define IOPORT_REGION_SEL_NSAFE         (1U)
+#define IOPORT_RSEL_MASK                (0x01U)
+#define IOPORT_PM_BIT_MASK              (0x0003U)
 
 #if BSP_FEATURE_IOPORT_PIN_PFC_TYPE == 3
- #define IOPORT_PFC_BIT_MASK       (0x0000003FU)
+ #define IOPORT_PFC_BIT_MASK            (0x0000003FU)
 #else
- #define IOPORT_PFC_BIT_MASK       (0x0000000FU)
+ #define IOPORT_PFC_BIT_MASK            (0x0000000FU)
 #endif
 
-#define IOPORT_DRTCL_BIT_MASK      (0x000000FFU)
-#define IOPORT_ELC_PEL_MASK        (0x80)
-#define IOOPRT_ELC_PGC_MASK        (0x88)
-#define IOPORT_ELC_PEL_PSM_HIGH    (0x20)
+#define IOPORT_DRTCL_BIT_MASK           (0x000000FFU)
+#define IOPORT_ELC_PEL_MASK             (0x80)
+#define IOOPRT_ELC_PGC_MASK             (0x88)
+#define IOPORT_ELC_PEL_PSM_HIGH         (0x20)
+
+#if BSP_FEATURE_IOPORT_IRQ_SEL_TYPE == 2
+ #define IOPORT_PRV_PSEL_PORT_OFFSET    (4U)
+ #define IOPORT_PSEL_IRQ_MASK_ODD       (0x03FF0000U)
+ #define IOPORT_PSEL_IRQ_MASK_EVEN      (0x000003FFU)
+ #define IOPORT_PSEL_IRQ_ODD_OFFSET     (16U)
+ #define IOPORT_NS_PSEL_MAX_IRQ         (13U)
+ #define IOPORT_S_PSEL_MAX_IRQ          (15U)
+#endif
 
 /* Switch IOPORT register region either safety or non safety */
 #if BSP_FEATURE_IOPORT_HAS_NONSAFETY_DEDICATED_PORT
@@ -57,6 +66,20 @@
  * Typedef definitions
  **********************************************************************************************************************/
 #if BSP_FEATURE_IOPORT_PIN_PFC_TYPE == 3
+ #if BSP_FEATURE_IOPORT_IRQ_SEL_TYPE == 2
+typedef struct st_ioport_cfg_data
+{
+    uint32_t p_reg      : 1;
+    uint32_t pm_reg     : 2;
+    uint32_t pmc_reg    : 1;
+    uint32_t pfc_reg    : 6;
+    uint32_t drct_reg   : 6;
+    uint32_t rsel_reg   : 1;
+    uint32_t irq_num    : 5;
+    uint32_t irq_enable : 1;
+    uint32_t reserved   : 9;
+} ioport_cfg_data_t;
+ #else
 typedef struct st_ioport_cfg_data
 {
     uint32_t p_reg    : 1;
@@ -67,6 +90,7 @@ typedef struct st_ioport_cfg_data
     uint32_t rsel_reg : 1;
     uint32_t reserved : 15;
 } ioport_cfg_data_t;
+ #endif
 #else
 typedef struct st_ioport_cfg_data
 {
@@ -97,6 +121,11 @@ static void r_ioport_pin_set_non_safety(R_PORT_NS_COMMON_Type * p_ioport_regs,
 
 #endif
 
+#if BSP_FEATURE_IOPORT_IRQ_SEL_TYPE == 2
+static void r_ioport_pin_set_psel_irq(bsp_io_port_pin_t pin, ioport_cfg_data_t * p_cfg_data);
+
+#endif
+
 /***********************************************************************************************************************
  * Private global variables
  **********************************************************************************************************************/
@@ -123,8 +152,15 @@ const ioport_api_t g_ioport_on_ioport =
     .portWrite            = R_IOPORT_PortWrite,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZT
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup IOPORT
+ * @addtogroup RZT_IOPORT
  * @{
  **********************************************************************************************************************/
 
@@ -146,8 +182,9 @@ fsp_err_t R_IOPORT_Open (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p_cf
 #if (1 == IOPORT_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_cfg);
-    FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data);
+    FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data || 0 == p_cfg->number_of_pins);
     FSP_ERROR_RETURN(IOPORT_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
+    FSP_ASSERT(NULL != p_cfg->p_extend);
 #endif
 
     /* Set driver status to open */
@@ -207,6 +244,7 @@ fsp_err_t R_IOPORT_PinsCfg (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p
     FSP_ERROR_RETURN(IOPORT_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data);
+    FSP_ASSERT(NULL != p_cfg->p_extend);
 #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
@@ -353,7 +391,7 @@ fsp_err_t R_IOPORT_PortRead (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, i
  * @retval FSP_SUCCESS                  Port written to
  * @retval FSP_ERR_INVALID_ARGUMENT     The port and/or mask not valid
  * @retval FSP_ERR_NOT_OPEN             The module has not been opened
- * @retval FSP_ERR_ASSERTION            NULL pointerd
+ * @retval FSP_ERR_ASSERTION            NULL pointer
  *
  * @note This function is re-entrant for different ports. This function makes use of the Pm register to atomically
  * modify the levels on the specified pins on a port.
@@ -435,8 +473,8 @@ fsp_err_t R_IOPORT_PortWrite (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, 
  *
  * @retval FSP_SUCCESS                  Pin written to
  * @retval FSP_ERR_INVALID_ARGUMENT     The pin and/or level not valid
- * @retval FSP_ERR_NOT_OPEN             The module has not been opene
- * @retval FSP_ERR_ASSERTION            NULL pointerd
+ * @retval FSP_ERR_NOT_OPEN             The module has not been opened
+ * @retval FSP_ERR_ASSERTION            NULL pointer
  *
  * @note This function is re-entrant for different pins. This function makes use of the Pm register to atomically
  * modify the level on the specified pin on a port.
@@ -864,6 +902,11 @@ fsp_err_t R_IOPORT_PinEventOutputWrite (ioport_ctrl_t * const p_ctrl, bsp_io_por
 /*******************************************************************************************************************//**
  * @} (end addtogroup IOPORT)
  **********************************************************************************************************************/
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -937,6 +980,13 @@ static void r_ioport_pin_set (bsp_io_port_pin_t pin, ioport_cfg_data_t * p_cfg_d
         R_PORT_COMMON_Type * p_ioport_regs = IOPORT_PRV_PORT_ADDRESS(IOPORT_REGION_SEL_SAFE);
         r_ioport_pin_set_safety(p_ioport_regs, pin, p_cfg_data);
     }
+
+#if BSP_FEATURE_IOPORT_IRQ_SEL_TYPE == 2
+    if (1 == (p_cfg_data->irq_enable))
+    {
+        r_ioport_pin_set_psel_irq(pin, p_cfg_data);
+    }
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -1046,6 +1096,58 @@ static void r_ioport_pin_set_safety (R_PORT_COMMON_Type * p_ioport_regs,
         }
     }
 }
+
+#if BSP_FEATURE_IOPORT_IRQ_SEL_TYPE == 2
+
+/*******************************************************************************************************************//**
+ * Writes pin number to Port Select IRQ register
+ *
+ * @param[in]    pin           Pin to write parameter data for
+ * @param[in]    p_cfg_data    Value to be written to the multiple registers
+ *
+ **********************************************************************************************************************/
+static void r_ioport_pin_set_psel_irq (bsp_io_port_pin_t pin, ioport_cfg_data_t * p_cfg_data)
+{
+    /* Get port and pin number */
+    uint32_t port     = (IOPORT_PRV_PORT_BITS & (ioport_size_t) pin) >> IOPORT_PRV_PORT_OFFSET;
+    uint32_t pin_num  = (IOPORT_PRV_PIN_BITS & (ioport_size_t) pin);
+    uint32_t psel_val = port << IOPORT_PRV_PSEL_PORT_OFFSET | pin_num;
+
+    uint32_t irq_num       = p_cfg_data->irq_num;
+    uint32_t psel_val_mask = 0;
+
+    /* Modify psel_val for register description */
+    if ((irq_num & 0x01) == 0x01)
+    {
+        psel_val      = psel_val << IOPORT_PSEL_IRQ_ODD_OFFSET;
+        psel_val_mask = IOPORT_PSEL_IRQ_MASK_ODD;
+    }
+    else
+    {
+        psel_val_mask = IOPORT_PSEL_IRQ_MASK_EVEN;
+    }
+
+    if (irq_num <= IOPORT_NS_PSEL_MAX_IRQ)
+    {
+        /* Set NS_PORT_SEL_IRQn (IRQ0 - IRQ13) */
+        uint32_t reg_num = irq_num >> 1;
+        R_ICU_NS->NS_PORT_SEL_IRQ[reg_num] &= ~psel_val_mask;
+        R_ICU_NS->NS_PORT_SEL_IRQ[reg_num] |= psel_val;
+    }
+    else if (irq_num <= IOPORT_S_PSEL_MAX_IRQ)
+    {
+        /* Set S_PORT_SEL_IRQn (IRQ14 - IRQ15) */
+        R_ICU_S->S_PORT_SEL_IRQ &= ~psel_val_mask;
+        R_ICU_S->S_PORT_SEL_IRQ |= psel_val;
+    }
+    else
+    {
+        /* Set S_PORT_SEL_SEI */
+        R_ICU_S->S_PORT_SEL_SEI = psel_val;
+    }
+}
+
+#endif
 
 #if BSP_FEATURE_IOPORT_HAS_NONSAFETY_DEDICATED_PORT
 

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -96,6 +96,9 @@ typedef enum e_bsp_irq_gpt_selected_event
     BSP_IRQ_GPT_SELECTED_EVENT_TGIC8     = 0xB, ///< MTU3 TGIC8 event source
     BSP_IRQ_GPT_SELECTED_EVENT_TGID8     = 0xC, ///< MTU3 TGID8 event source
     BSP_IRQ_GPT_SELECTED_EVENT_TCIV8     = 0xD, ///< MTU3 TCIV8 event source
+ #if (1 == BSP_FEATURE_GPT_PERIOD_COUNT_SUPPORTED)
+    BSP_IRQ_GPT_SELECTED_EVENT_GPT_PCF   = 0xE, ///< GPT_PCF event source
+ #endif
 } bsp_irq_gpt_selected_event_t;
 
 #endif
@@ -119,8 +122,13 @@ typedef enum e_bsp_irq_gpt_combined_event
     BSP_IRQ_GPT_COMBINED_EVENT_MTU3_2    = 0xB, ///< MTU3 event source 2
     BSP_IRQ_GPT_COMBINED_EVENT_MTU3_3    = 0xC, ///< MTU3 event source 3
     BSP_IRQ_GPT_COMBINED_EVENT_MTU3_4    = 0xD, ///< MTU3 event source 4
+ #if (1 == BSP_FEATURE_GPT_PERIOD_COUNT_SUPPORTED)
+    BSP_IRQ_GPT_COMBINED_EVENT_GPT_PCF  = 0xE,  ///< GPT_PCF event source
+    BSP_IRQ_GPT_COMBINED_EVENT_RESERVED = 0xF,  ///< Reserved bit
+ #else
     BSP_IRQ_GPT_COMBINED_EVENT_RESERVED1 = 0xE, ///< Reserved bit
     BSP_IRQ_GPT_COMBINED_EVENT_RESERVED2 = 0xF, ///< Reserved bit
+ #endif
 } bsp_irq_gpt_combined_event_t;
 
 #endif
@@ -152,8 +160,15 @@ void     bsp_irq_gpt_combined_interrupt_handler(void);
  * Inline Functions
  **********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZT
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZT_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -627,8 +642,8 @@ __STATIC_INLINE void R_BSP_IrqGptCombinedStatusClear (IRQn_Type irq, bsp_irq_gpt
 
 /*******************************************************************************************************************//**
  * @internal
- * @addtogroup BSP_MCU_PRV Internal BSP Documentation
- * @ingroup RENESAS_INTERNAL
+ * @addtogroup RZT_BSP_MCU_PRV
+ * @ingroup RZT_RENESAS_INTERNAL
  * @{
  **********************************************************************************************************************/
 
@@ -636,6 +651,11 @@ __STATIC_INLINE void R_BSP_IrqGptCombinedStatusClear (IRQn_Type irq, bsp_irq_gpt
 void bsp_irq_cfg(void);                // Used internally by BSP
 
 /** @} (end addtogroup BSP_MCU_PRV) */
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

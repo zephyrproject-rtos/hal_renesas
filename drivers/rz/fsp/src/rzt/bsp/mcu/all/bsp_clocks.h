@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -43,6 +43,30 @@ FSP_HEADER
 #define BSP_CLOCKS_XSPI1_CLOCK_DIV1_75_0_MHZ                    (0x43) // xSPI1 base clock 600MHz and xSPI1 clock 75.0 MHz.
 #define BSP_CLOCKS_XSPI1_CLOCK_DIV1_37_5_MHZ                    (0x44) // xSPI1 base clock 600MHz and xSPI1 clock 37.5 MHz.
 
+#if (3U == BSP_FEATURE_CGC_SCKCR_TYPE)
+
+/* SDHI0 clock options. */
+ #define BSP_CLOCKS_SDHI0CLKSEL_PLL4             (0)    // PLL4 divider clock.
+ #define BSP_CLOCKS_SDHI0CLKSEL_PLL1             (1)    // PLL1 divider clock.
+
+/* SDHI1 clock options. */
+ #define BSP_CLOCKS_SDHI1CLKSEL_PLL4             (0)    // PLL4 divider clock.
+ #define BSP_CLOCKS_SDHI1CLKSEL_PLL1             (1)    // PLL1 divider clock.
+
+/* NANDC clock options. */
+ #define BSP_CLOCKS_NANDC_CLOCK_400_0_MHZ        (0x00) // NANDC clock 400.0MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_200_0_MHZ        (0x01) // NANDC clock 200.0MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_50_0_MHZ         (0x02) // NANDC clock 50.0MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_40_0_MHZ         (0x03) // NANDC clock 40.0MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_33_3_MHZ         (0x04) // NANDC clock 33.3MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_28_6_MHZ         (0x05) // NANDC clock 28.6MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_20_0_MHZ         (0x06) // NANDC clock 20.0MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_12_5_MHZ         (0x07) // NANDC clock 12.5MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_10_0_MHZ         (0x08) // NANDC clock 10.0MHz.
+ #define BSP_CLOCKS_NANDC_CLOCK_8_0_MHZ          (0x09) // NANDC clock 8.0MHz.
+
+#endif
+
 /* CKIO clock options. */
 #if (1U == BSP_FEATURE_CGC_CKIO_CLOCK_FREQ_TYPE)
  #define BSP_CLOCKS_CKIO_ICLK_DIV2                              (0)    // CKIO clock 100.0 MHz  (when SCKCR2.DIVSELSUB = 0),
@@ -67,6 +91,16 @@ FSP_HEADER
  #define BSP_CLOCKS_CKIO_41_7_MHZ                               (4)    // CKIO clock 41.7 MHz.
  #define BSP_CLOCKS_CKIO_35_7_MHZ                               (5)    // CKIO clock 35.7 MHz.
  #define BSP_CLOCKS_CKIO_31_25_MHZ                              (6)    // CKIO clock 31.25 MHz.
+
+#elif (3U == BSP_FEATURE_CGC_CKIO_CLOCK_FREQ_TYPE)
+ #define BSP_CLOCKS_CKIO_100_0_MHZ                            (0) // CKIO clock 100.0 MHz.
+ #define BSP_CLOCKS_CKIO_66_7_MHZ                             (1) // CKIO clock 66.7 MHz.
+ #define BSP_CLOCKS_CKIO_50_0_MHZ                             (2) // CKIO clock 50.0 MHz.
+ #define BSP_CLOCKS_CKIO_40_0_MHZ                             (3) // CKIO clock 40.0 MHz.
+ #define BSP_CLOCKS_CKIO_33_3_MHZ                             (4) // CKIO clock 33.3 MHz.
+ #define BSP_CLOCKS_CKIO_28_6_MHZ                             (5) // CKIO clock 28.6 MHz.
+ #define BSP_CLOCKS_CKIO_25_0_MHZ                             (6) // CKIO clock 25.0 MHz.
+
 #endif
 
 /* CANFD clock options. */
@@ -104,6 +138,18 @@ FSP_HEADER
 #define BSP_CLOCKS_LCDCDIVSEL_DIV_30                            (0x0E) // Divide LCDC source clock by 30.
 #define BSP_CLOCKS_LCDCDIVSEL_DIV_32                            (0x0F) // Divide LCDC source clock by 32.
 
+/* ETH clock options. */
+#define BSP_CLOCKS_ETH0REFCLKSEL_PLL3                         (0)    // PLL3 divider clock.
+#define BSP_CLOCKS_ETH0REFCLKSEL_MAINOSC                      (1)    // Main clock oscillator.
+#define BSP_CLOCKS_ETH1REFCLKSEL_PLL3                         (0)    // PLL3 divider clock.
+#define BSP_CLOCKS_ETH1REFCLKSEL_MAINOSC                      (1)    // Main clock oscillator.
+#define BSP_CLOCKS_ETH2REFCLKSEL_PLL3                         (0)    // PLL3 divider clock.
+#define BSP_CLOCKS_ETH2REFCLKSEL_MAINOSC                      (1)    // Main clock oscillator.
+#define BSP_CLOCKS_ETH3REFCLKSEL_PLL3                         (0)    // PLL3 divider clock.
+#define BSP_CLOCKS_ETH3REFCLKSEL_MAINOSC                      (1)    // Main clock oscillator.
+#define BSP_CLOCKS_ETH4REFCLKSEL_PLL3                         (0)    // PLL3 divider clock.
+#define BSP_CLOCKS_ETH4REFCLKSEL_MAINOSC                      (1)    // Main clock oscillator.
+
 /* SPI clock options. */
 #if (1U == BSP_FEATURE_CGC_PCLKSPI_CLOCK_FREQ_TYPE)
  #define BSP_CLOCKS_SPI0_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0)    // SPI0 asynchronous serial clock 75.0 MHz.
@@ -132,6 +178,20 @@ FSP_HEADER
  #define BSP_CLOCKS_SPI3_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SPI3 asynchronous serial clock 80.0 MHz.
  #define BSP_CLOCKS_SPI3_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SPI3 asynchronous serial clock 96.0 MHz.
  #define BSP_CLOCKS_SPI3_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ      (0x03) // SPI3 asynchronous serial clock 100.0 MHz.
+
+#elif (3U == BSP_FEATURE_CGC_PCLKSPI_CLOCK_FREQ_TYPE)
+ #define BSP_CLOCKS_SPI0_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SPI0 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SPI0_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SPI0 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SPI0_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SPI0 asynchronous serial clock 96.0 MHz.
+ #define BSP_CLOCKS_SPI1_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SPI1 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SPI1_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SPI1 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SPI1_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SPI1 asynchronous serial clock 96.0 MHz.
+ #define BSP_CLOCKS_SPI2_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SPI2 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SPI2_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SPI2 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SPI2_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SPI2 asynchronous serial clock 96.0 MHz.
+ #define BSP_CLOCKS_SPI3_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SPI3 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SPI3_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SPI3 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SPI3_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SPI3 asynchronous serial clock 96.0 MHz.
 #endif
 
 /* SCI clock options. */
@@ -173,58 +233,115 @@ FSP_HEADER
  #define BSP_CLOCKS_SCI5_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SCI5 asynchronous serial clock 80.0 MHz.
  #define BSP_CLOCKS_SCI5_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SCI5 asynchronous serial clock 96.0 MHz.
  #define BSP_CLOCKS_SCI5_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ      (0x03) // SCI5 asynchronous serial clock 100.0 MHz.
+#elif (3U == BSP_FEATURE_CGC_PCLKSCI_CLOCK_FREQ_TYPE)
+ #define BSP_CLOCKS_SCI0_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SCI0 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SCI0_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SCI0 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SCI0_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SCI0 asynchronous serial clock 96.0 MHz.
+ #define BSP_CLOCKS_SCI1_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SCI1 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SCI1_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SCI1 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SCI1_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SCI1 asynchronous serial clock 96.0 MHz.
+ #define BSP_CLOCKS_SCI2_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SCI2 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SCI2_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SCI2 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SCI2_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SCI2 asynchronous serial clock 96.0 MHz.
+ #define BSP_CLOCKS_SCI3_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SCI3 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SCI3_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SCI3 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SCI3_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SCI3 asynchronous serial clock 96.0 MHz.
+ #define BSP_CLOCKS_SCI4_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SCI4 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SCI4_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SCI4 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SCI4_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SCI4 asynchronous serial clock 96.0 MHz.
+ #define BSP_CLOCKS_SCI5_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ       (0x00) // SCI5 asynchronous serial clock 75.0 MHz.
+ #define BSP_CLOCKS_SCI5_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ       (0x01) // SCI5 asynchronous serial clock 80.0 MHz.
+ #define BSP_CLOCKS_SCI5_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ       (0x02) // SCI5 asynchronous serial clock 96.0 MHz.
 #endif
 
 /* SCIE clock options. */
 #if (1U == BSP_FEATURE_SCIE_SUPPORTED)
- #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE0 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE0 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE0 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE0 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE1 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE1 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE1 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE1 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE2 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE2 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE2 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE2 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE3 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE3 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE3 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE3 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE4 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE4 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE4 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE4 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE5 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE5 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE5 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE5 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE6 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE6 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE6 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE6 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE7 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE7 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE7 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE7 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE8_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE8 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE8_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE8 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE8_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE8 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE8_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE8 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE9_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE9 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE9_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE9 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE9_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE9 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE9_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE9 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE10_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ     (0x00) // SCIE10 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE10_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ     (0x01) // SCIE10 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE10_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ     (0x02) // SCIE10 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE10_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ    (0x03) // SCIE10 asynchronous serial clock 100.0 MHz.
- #define BSP_CLOCKS_SCIE11_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ     (0x00) // SCIE11 asynchronous serial clock 75.0 MHz.
- #define BSP_CLOCKS_SCIE11_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ     (0x01) // SCIE11 asynchronous serial clock 80.0 MHz.
- #define BSP_CLOCKS_SCIE11_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ     (0x02) // SCIE11 asynchronous serial clock 96.0 MHz.
- #define BSP_CLOCKS_SCIE11_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ    (0x03) // SCIE11 asynchronous serial clock 100.0 MHz.
+ #if (8U == BSP_FEATURE_SCIE_CHANNEL)
+  #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE0 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE0 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE0 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE1 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE1 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE1 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE2 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE2 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE2 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE3 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE3 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE3 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE4 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE4 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE4 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE5 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE5 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE5 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE6 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE6 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE6 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE7 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE7 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE7 asynchronous serial clock 96.0 MHz.
+ #elif (12U == BSP_FEATURE_SCIE_CHANNEL)
+  #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE0 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE0 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE0 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE0_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE0 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE1 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE1 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE1 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE1_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE1 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE2 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE2 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE2 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE2_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE2 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE3 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE3 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE3 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE3_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE3 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE4 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE4 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE4 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE4_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE4 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE5 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE5 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE5 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE5_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE5 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE6 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE6 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE6 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE6_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE6 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE7 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE7 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE7 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE7_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE7 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE8_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE8 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE8_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE8 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE8_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE8 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE8_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE8 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE9_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ      (0x00) // SCIE9 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE9_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ      (0x01) // SCIE9 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE9_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ      (0x02) // SCIE9 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE9_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ     (0x03) // SCIE9 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE10_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ     (0x00) // SCIE10 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE10_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ     (0x01) // SCIE10 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE10_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ     (0x02) // SCIE10 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE10_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ    (0x03) // SCIE10 asynchronous serial clock 100.0 MHz.
+  #define BSP_CLOCKS_SCIE11_ASYNCHRONOUS_SERIAL_CLOCK_75_MHZ     (0x00) // SCIE11 asynchronous serial clock 75.0 MHz.
+  #define BSP_CLOCKS_SCIE11_ASYNCHRONOUS_SERIAL_CLOCK_80_MHZ     (0x01) // SCIE11 asynchronous serial clock 80.0 MHz.
+  #define BSP_CLOCKS_SCIE11_ASYNCHRONOUS_SERIAL_CLOCK_96_MHZ     (0x02) // SCIE11 asynchronous serial clock 96.0 MHz.
+  #define BSP_CLOCKS_SCIE11_ASYNCHRONOUS_SERIAL_CLOCK_100_MHZ    (0x03) // SCIE11 asynchronous serial clock 100.0 MHz.
+ #endif
+#endif
+
+#if (3U == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_CLOCKS_DDRDIVSEL_DDRCLKSEL_12_5_KHZ                 (0x0) // DDRSS clock 12.5kHz.
+ #define BSP_CLOCKS_DDRDIVSEL_DDRCLKSEL_800_MHZ                  (0x1) // PLL2 divider clock and DDRSS clock 800.0MHz.
+ #define BSP_CLOCKS_DDRDIVSEL_DDRCLKSEL_400_MHZ                  (0x3) // PLL2 divider clock and DDRSS clock 400.0MHz.
+ #define BSP_CLOCKS_DDRDIVSEL_DDRCLKSEL_200_MHZ                  (0x5) // PLL2 divider clock and DDRSS clock 200.0MHz.
+ #define BSP_CLOCKS_DDRDIVSEL_DDRCLKSEL_100_MHZ                  (0x7) // PLL2 divider clock and DDRSS clock 100.0MHz.
+ #define BSP_CLOCKS_DDRDIVSEL_DDRCLKSEL_50_MHZ                   (0x9) // PLL2 divider clock and DDRSS clock 50.0MHz.
+ #define BSP_CLOCKS_DDRDIVSEL_DDRCLKSEL_25_MHZ                   (0xB) // PLL2 divider clock and DDRSS clock 25.0MHz.
+
 #endif
 
 #if (1U == BSP_FEATURE_CGC_SCKCR_TYPE)
@@ -281,6 +398,27 @@ FSP_HEADER
  #define BSP_CLOCKS_CA55SCLK_500_MHZ           (0) // CA55 SCU clock 500 MHz.
  #define BSP_CLOCKS_CA55SCLK_1000_MHZ          (1) // CA55 SCU clock 1000 MHz.
 
+#elif (3U == BSP_FEATURE_CGC_SCKCR_TYPE)
+
+/* CR52 CPU0 clock options. */
+ #define BSP_CLOCKS_CR52CPU0_400_MHZ           (0)    // CPU0 clock 400 MHz.
+ #define BSP_CLOCKS_CR52CPU0_800_MHZ           (1)    // CPU0 clock 800 MHz.
+
+/* CR52 CPU1 clock options. */
+ #define BSP_CLOCKS_CR52CPU1_400_MHZ           (0)    // CPU1 clock 400 MHz.
+ #define BSP_CLOCKS_CR52CPU1_800_MHZ           (1)    // CPU1 clock 800 MHz.
+
+/* CA55 core0 clock options. */
+ #define BSP_CLOCKS_CA55CORE0_600_MHZ          (0)    // CA55 core0 clock 600 MHz.
+ #define BSP_CLOCKS_CA55CORE0_1200_MHZ         (1)    // CA55 core0 clock 1200 MHz.
+
+/* CA55 core1 clock options. */
+ #define BSP_CLOCKS_CA55CORE1_600_MHZ          (0)    // CA55 core1 clock 600 MHz.
+ #define BSP_CLOCKS_CA55CORE1_1200_MHZ         (1)    // CA55 core1 clock 1200 MHz.
+
+/* CA55 SCU CLOCK options. */
+ #define BSP_CLOCKS_CA55SCLK_500_MHZ           (0)    // CA55 SCU clock 500 MHz.
+ #define BSP_CLOCKS_CA55SCLK_1000_MHZ          (1)    // CA55 SCU clock 1000 MHz.
 #endif
 
 /* LOCO enable options. */
@@ -485,6 +623,101 @@ FSP_HEADER
                                                   BSP_PRV_SCKCR4_SCIE10ASYNCSEL_MASK) |          \
                                                  BSP_PRV_SCKCR4_SCIE11ASYNCSEL_MASK) |           \
                                                 BSP_PRV_SCKCR4_ENCOUTCLK_MASK)
+#elif (3U == BSP_FEATURE_CGC_SCKCR_TYPE)
+
+/* Create a mask of valid bits in SCKCR. */
+ #define BSP_PRV_SCKCR_FSELXSPI0_MASK          (7U << 0)
+ #define BSP_PRV_SCKCR_DIVSELXSPI0_MASK        (1U << 6)
+ #define BSP_PRV_SCKCR_FSELXSPI1_MASK          (7U << 8)
+ #define BSP_PRV_SCKCR_DIVSELXSPI1_MASK        (1U << 14)
+ #define BSP_PRV_SCKCR_CKIO_MASK               (7U << 16)
+ #define BSP_PRV_SCKCR_FSELCANFD_MASK          (1U << 20)
+ #define BSP_PRV_SCKCR_CLMASEL_MASK            (1U << 22)
+ #define BSP_PRV_SCKCR_MASK                    ((((((BSP_PRV_SCKCR_FSELXSPI0_MASK |    \
+                                                     BSP_PRV_SCKCR_DIVSELXSPI0_MASK) | \
+                                                    BSP_PRV_SCKCR_FSELXSPI1_MASK) |    \
+                                                   BSP_PRV_SCKCR_DIVSELXSPI1_MASK) |   \
+                                                  BSP_PRV_SCKCR_CKIO_MASK) |           \
+                                                 BSP_PRV_SCKCR_FSELCANFD_MASK) |       \
+                                                BSP_PRV_SCKCR_CLMASEL_MASK)
+ #define BSP_PRV_SCKCR_DIVSELXSPI_MASK         (BSP_PRV_SCKCR_DIVSELXSPI0_MASK | \
+                                                BSP_PRV_SCKCR_DIVSELXSPI1_MASK)
+
+/* Create a mask of valid bits in SCKCR2. */
+ #define BSP_PRV_SCKCR2_CR52CPU0_MASK          (3U << 0)
+ #define BSP_PRV_SCKCR2_CR52CPU1_MASK          (3U << 2)
+ #define BSP_PRV_SCKCR2_CA55CORE0_MASK         (1U << 8)
+ #define BSP_PRV_SCKCR2_CA55CORE1_MASK         (1U << 9)
+ #define BSP_PRV_SCKCR2_CA55SCLK_MASK          (1U << 12)
+ #define BSP_PRV_SCKCR2_SPI3ASYNCSEL_MASK      (3U << 16)
+ #define BSP_PRV_SCKCR2_SCI5ASYNCSEL_MASK      (3U << 18)
+ #define BSP_PRV_SCKCR2_MASK                   ((((((BSP_PRV_SCKCR2_CR52CPU0_MASK |  \
+                                                     BSP_PRV_SCKCR2_CR52CPU1_MASK) | \
+                                                    BSP_PRV_SCKCR2_CA55CORE0_MASK) | \
+                                                   BSP_PRV_SCKCR2_CA55CORE1_MASK) |  \
+                                                  BSP_PRV_SCKCR2_CA55SCLK_MASK) |    \
+                                                 BSP_PRV_SCKCR2_SPI3ASYNCSEL_MASK) | \
+                                                BSP_PRV_SCKCR2_SCI5ASYNCSEL_MASK)
+
+/* Create a mask of valid bits in SCKCR3. */
+ #define BSP_PRV_SCKCR3_SPI0ASYNCSEL_MASK      (3U << 0)
+ #define BSP_PRV_SCKCR3_SPI1ASYNCSEL_MASK      (3U << 2)
+ #define BSP_PRV_SCKCR3_SPI2ASYNCSEL_MASK      (3U << 4)
+ #define BSP_PRV_SCKCR3_SCI0ASYNCSEL_MASK      (3U << 6)
+ #define BSP_PRV_SCKCR3_SCI1ASYNCSEL_MASK      (3U << 8)
+ #define BSP_PRV_SCKCR3_SCI2ASYNCSEL_MASK      (3U << 10)
+ #define BSP_PRV_SCKCR3_SCI3ASYNCSEL_MASK      (3U << 12)
+ #define BSP_PRV_SCKCR3_SCI4ASYNCSEL_MASK      (3U << 14)
+ #define BSP_PRV_SCKCR3_ETH0REFCLKSEL_MASK     (1U << 24)
+ #define BSP_PRV_SCKCR3_ETH1REFCLKSEL_MASK     (1U << 25)
+ #define BSP_PRV_SCKCR3_ETH2REFCLKSEL_MASK     (1U << 26)
+ #define BSP_PRV_SCKCR3_ETH3REFCLKSEL_MASK     (1U << 27)
+ #define BSP_PRV_SCKCR3_ETH4REFCLKSEL_MASK     (1U << 28)
+ #define BSP_PRV_SCKCR3_MASK                   (((((((((((((BSP_PRV_SCKCR3_SPI0ASYNCSEL_MASK) | \
+                                                           BSP_PRV_SCKCR3_SPI1ASYNCSEL_MASK) |  \
+                                                          BSP_PRV_SCKCR3_SPI2ASYNCSEL_MASK) |   \
+                                                         BSP_PRV_SCKCR3_SCI0ASYNCSEL_MASK) |    \
+                                                        BSP_PRV_SCKCR3_SCI1ASYNCSEL_MASK) |     \
+                                                       BSP_PRV_SCKCR3_SCI2ASYNCSEL_MASK) |      \
+                                                      BSP_PRV_SCKCR3_SCI3ASYNCSEL_MASK) |       \
+                                                     BSP_PRV_SCKCR3_SCI4ASYNCSEL_MASK) |        \
+                                                    BSP_PRV_SCKCR3_ETH0REFCLKSEL_MASK) |        \
+                                                   BSP_PRV_SCKCR3_ETH1REFCLKSEL_MASK) |         \
+                                                  BSP_PRV_SCKCR3_ETH2REFCLKSEL_MASK) |          \
+                                                 BSP_PRV_SCKCR3_ETH3REFCLKSEL_MASK) |           \
+                                                BSP_PRV_SCKCR3_ETH4REFCLKSEL_MASK)
+
+/* Create a mask of valid bits in SCKCR4. */
+ #define BSP_PRV_SCKCR4_SCIE0ASYNCSEL_MASK     (3U << 0)
+ #define BSP_PRV_SCKCR4_SCIE1ASYNCSEL_MASK     (3U << 2)
+ #define BSP_PRV_SCKCR4_SCIE2ASYNCSEL_MASK     (3U << 4)
+ #define BSP_PRV_SCKCR4_SCIE3ASYNCSEL_MASK     (3U << 6)
+ #define BSP_PRV_SCKCR4_SCIE4ASYNCSEL_MASK     (3U << 8)
+ #define BSP_PRV_SCKCR4_SCIE5ASYNCSEL_MASK     (3U << 10)
+ #define BSP_PRV_SCKCR4_SCIE6ASYNCSEL_MASK     (3U << 12)
+ #define BSP_PRV_SCKCR4_SCIE7ASYNCSEL_MASK     (3U << 14)
+ #define BSP_PRV_SCKCR4_ENCOUTCLK_MASK         (1U << 24)
+ #define BSP_PRV_SCKCR4_DDRCLKSEL_MASK         (1U << 28)
+ #define BSP_PRV_SCKCR4_DDRDIVSEL_MASK         (7U << 29)
+ #define BSP_PRV_SCKCR4_MASK                   (((((((((((BSP_PRV_SCKCR4_SCIE0ASYNCSEL_MASK) | \
+                                                         BSP_PRV_SCKCR4_SCIE1ASYNCSEL_MASK) |  \
+                                                        BSP_PRV_SCKCR4_SCIE2ASYNCSEL_MASK) |   \
+                                                       BSP_PRV_SCKCR4_SCIE3ASYNCSEL_MASK) |    \
+                                                      BSP_PRV_SCKCR4_SCIE4ASYNCSEL_MASK) |     \
+                                                     BSP_PRV_SCKCR4_SCIE5ASYNCSEL_MASK) |      \
+                                                    BSP_PRV_SCKCR4_SCIE6ASYNCSEL_MASK) |       \
+                                                   BSP_PRV_SCKCR4_SCIE7ASYNCSEL_MASK) |        \
+                                                  BSP_PRV_SCKCR4_ENCOUTCLK_MASK) |             \
+                                                 BSP_PRV_SCKCR4_DDRCLKSEL_MASK) |              \
+                                                BSP_PRV_SCKCR4_DDRDIVSEL_MASK)
+
+/* Create a mask of valid bits in SCKCR5. */
+ #define BSP_PRV_SCKCR5_NANDCCLKSEL_MASK       (15U << 0)
+ #define BSP_PRV_SCKCR5_SDHI0CLKSEL_MASK       (1U << 8)
+ #define BSP_PRV_SCKCR5_SDHI1CLKSEL_MASK       (1U << 10)
+ #define BSP_PRV_SCKCR5_MASK                   (((BSP_PRV_SCKCR5_NANDCCLKSEL_MASK) | \
+                                                 BSP_PRV_SCKCR5_SDHI0CLKSEL_MASK) |  \
+                                                BSP_PRV_SCKCR5_SDHI1CLKSEL_MASK)
 
 #endif
 
@@ -505,7 +738,7 @@ void bsp_clock_init(void);             // Used internally by BSP
 
 /* Used internally by CGC */
 
-void bsp_prv_clock_set(uint32_t sckcr, uint32_t sckcr2, uint32_t sckcr3, uint32_t sckcr4);
+void bsp_prv_clock_set(uint32_t sckcr, uint32_t sckcr2, uint32_t sckcr3, uint32_t sckcr4, uint32_t sckcr5);
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

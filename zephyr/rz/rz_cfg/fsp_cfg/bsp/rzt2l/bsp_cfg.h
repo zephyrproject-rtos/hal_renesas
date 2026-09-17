@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -32,4 +32,6 @@
  #define BSP_CFG_MULTIPLEX_INTERRUPT_ENABLE
  #define BSP_CFG_MULTIPLEX_INTERRUPT_DISABLE
 #endif
+
+#define BSP_CFG_PROTRCT_REG_POLLING_COUNT (0xFFFFFFFF)
 #endif /* BSP_CFG_H_ */

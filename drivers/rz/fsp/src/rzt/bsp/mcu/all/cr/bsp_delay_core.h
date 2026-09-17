@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -28,10 +28,6 @@ FSP_HEADER
  * the requested number of loops is at least 1 since r_bsp_software_delay_loop cannot be called with a loop count
  * of 0. */
 #define BSP_DELAY_LOOPS_CALCULATE(cycles)    (((cycles) / BSP_DELAY_LOOP_CYCLES) + 1U)
-
-/***********************************************************************************************************************
- * Typedef definitions
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Exported global variables

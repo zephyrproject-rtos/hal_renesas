@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -121,8 +121,15 @@ const wdt_api_t g_wdt_on_wdt =
     .callbackSet = R_WDT_CallbackSet,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZT
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup WDT WDT
+ * @addtogroup RZT_WDT
  * @{
  **********************************************************************************************************************/
 
@@ -150,28 +157,18 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
     err = r_wdt_parameter_checking(p_instance_ctrl, p_cfg);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
+    wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_cfg->p_extend;
+
+#if WDT_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(p_extend);
+    FSP_ASSERT(p_extend->p_reg);
+#endif
+
     /* Register callback. */
     p_instance_ctrl->p_callback = p_cfg->p_callback;
     p_instance_ctrl->p_context  = p_cfg->p_context;
 
-#ifdef BSP_CFG_CORE_CR52
- #if (0 == BSP_CFG_CORE_CR52)
-    p_instance_ctrl->p_reg = R_WDT0;
- #elif (1 == BSP_CFG_CORE_CR52)
-    p_instance_ctrl->p_reg = R_WDT1;
- #endif
-#endif
-#ifdef BSP_CFG_CORE_CA55
- #if (0 == BSP_CFG_CORE_CA55)
-    p_instance_ctrl->p_reg = R_WDT2;
- #elif (1 == BSP_CFG_CORE_CA55)
-    p_instance_ctrl->p_reg = R_WDT3;
- #elif (2 == BSP_CFG_CORE_CA55)
-    p_instance_ctrl->p_reg = R_WDT4;
- #elif (3 == BSP_CFG_CORE_CA55)
-    p_instance_ctrl->p_reg = R_WDT5;
- #endif
-#endif
+    p_instance_ctrl->p_reg = (R_WDT0_Type *) p_extend->p_reg;
 
     /* Error notification to ICU is permitted. */
     p_instance_ctrl->p_reg->WDTRCR_b.RSTIRQS = 0;
@@ -360,7 +357,7 @@ fsp_err_t R_WDT_CounterGet (wdt_ctrl_t * const p_ctrl, uint32_t * const p_count)
  **********************************************************************************************************************/
 fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl,
                              void (                    * p_callback)(wdt_callback_args_t *),
-                             void const * const          p_context,
+                             void * const                p_context,
                              wdt_callback_args_t * const p_callback_memory)
 {
     wdt_instance_ctrl_t * p_instance_ctrl = (wdt_instance_ctrl_t *) p_ctrl;
@@ -382,6 +379,12 @@ fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl,
 /*******************************************************************************************************************//**
  * @} (end addtogroup WDT)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
