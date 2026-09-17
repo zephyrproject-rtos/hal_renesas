@@ -1,11 +1,15 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
+#ifdef __cplusplus
+            extern "C" {
+            #endif
+
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_cfg.h"
 #include "bsp_mcu_device_memory_cfg.h"
@@ -17,4 +21,8 @@
 #define BSP_GLOBAL_SYSTEM_COUNTER_CLOCK_HZ  (25000000)
 #define BSP_CORTEX_VECTOR_TABLE_ENTRIES (32)
 #define BSP_VECTOR_TABLE_MAX_ENTRIES (448)
+
+#ifdef __cplusplus
+            }
+            #endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */

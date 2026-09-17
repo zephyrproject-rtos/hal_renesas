@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -123,8 +123,15 @@ const ioport_api_t g_ioport_on_ioport =
     .portWrite            = R_IOPORT_PortWrite,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup IOPORT
+ * @addtogroup RZN_IOPORT
  * @{
  **********************************************************************************************************************/
 
@@ -146,8 +153,9 @@ fsp_err_t R_IOPORT_Open (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p_cf
 #if (1 == IOPORT_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_cfg);
-    FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data);
+    FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data || 0 == p_cfg->number_of_pins);
     FSP_ERROR_RETURN(IOPORT_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
+    FSP_ASSERT(NULL != p_cfg->p_extend);
 #endif
 
     /* Set driver status to open */
@@ -207,6 +215,7 @@ fsp_err_t R_IOPORT_PinsCfg (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p
     FSP_ERROR_RETURN(IOPORT_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data);
+    FSP_ASSERT(NULL != p_cfg->p_extend);
 #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
@@ -353,7 +362,7 @@ fsp_err_t R_IOPORT_PortRead (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, i
  * @retval FSP_SUCCESS                  Port written to
  * @retval FSP_ERR_INVALID_ARGUMENT     The port and/or mask not valid
  * @retval FSP_ERR_NOT_OPEN             The module has not been opened
- * @retval FSP_ERR_ASSERTION            NULL pointerd
+ * @retval FSP_ERR_ASSERTION            NULL pointer
  *
  * @note This function is re-entrant for different ports. This function makes use of the Pm register to atomically
  * modify the levels on the specified pins on a port.
@@ -435,8 +444,8 @@ fsp_err_t R_IOPORT_PortWrite (ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, 
  *
  * @retval FSP_SUCCESS                  Pin written to
  * @retval FSP_ERR_INVALID_ARGUMENT     The pin and/or level not valid
- * @retval FSP_ERR_NOT_OPEN             The module has not been opene
- * @retval FSP_ERR_ASSERTION            NULL pointerd
+ * @retval FSP_ERR_NOT_OPEN             The module has not been opened
+ * @retval FSP_ERR_ASSERTION            NULL pointer
  *
  * @note This function is re-entrant for different pins. This function makes use of the Pm register to atomically
  * modify the level on the specified pin on a port.
@@ -864,6 +873,12 @@ fsp_err_t R_IOPORT_PinEventOutputWrite (ioport_ctrl_t * const p_ctrl, bsp_io_por
 /*******************************************************************************************************************//**
  * @} (end addtogroup IOPORT)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions

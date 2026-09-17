@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -21,17 +21,20 @@
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Macro definitions
- **********************************************************************************************************************/
-
-/***********************************************************************************************************************
- * Typedef definitions
  **********************************************************************************************************************/
 
 /** Available delay units for R_BSP_SoftwareDelay(). These are ultimately used to calculate a total # of microseconds */
@@ -43,6 +46,12 @@ typedef enum
 } bsp_delay_units_t;
 
 /** @} (end addtogroup BSP_MCU) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /***********************************************************************************************************************
  * Exported global variables

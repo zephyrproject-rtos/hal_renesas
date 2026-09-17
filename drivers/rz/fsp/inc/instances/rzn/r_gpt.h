@@ -1,16 +1,11 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #ifndef R_GPT_H
 #define R_GPT_H
-
-/*******************************************************************************************************************//**
- * @addtogroup GPT
- * @{
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes
@@ -47,6 +42,18 @@ FSP_HEADER
 #define GPT_PHASE_COUNTING_MODE_51_UP     (0x0000C000U)
 #define GPT_PHASE_COUNTING_MODE_51_DN     (0x00000000U)
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZN_GPT
+ * @{
+ **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -54,10 +61,20 @@ FSP_HEADER
 /** Input/Output pins, used to select which duty cycle to update in R_GPT_DutyCycleSet(). */
 typedef enum e_gpt_io_pin
 {
-    GPT_IO_PIN_GTIOCA            = 0,  ///< GTIOCA
-    GPT_IO_PIN_GTIOCB            = 1,  ///< GTIOCB
-    GPT_IO_PIN_GTIOCA_AND_GTIOCB = 2,  ///< GTIOCA and GTIOCB
+    GPT_IO_PIN_GTIOCA                 = 0, ///< GTIOCA
+    GPT_IO_PIN_GTIOCB                 = 1, ///< GTIOCB
+    GPT_IO_PIN_GTIOCA_AND_GTIOCB      = 2, ///< GTIOCA and GTIOCB
+    GPT_IO_PIN_TROUGH                 = 4, ///< Used in @ref R_GPT_DutyCycleSet when Triangle-wave PWM Mode 3 is selected.
+    GPT_IO_PIN_CREST                  = 8, ///< Used in @ref R_GPT_DutyCycleSet when Triangle-wave PWM Mode 3 is selected.
+    GPT_IO_PIN_ONE_SHOT_LEADING_EDGE  = 4, ///< Used in @ref R_GPT_DutyCycleSet to set GTCCRC and GTCCRE registers when One-Shot Pulse mode is selected.
+    GPT_IO_PIN_ONE_SHOT_TRAILING_EDGE = 8, ///< Used in @ref R_GPT_DutyCycleSet to set GTCCRD and GTCCRF registers when One-Shot Pulse mode is selected.
 } gpt_io_pin_t;
+
+/** Forced buffer push operation used in One-Shot Pulse mode with R_GPT_DutyCycleSet(). */
+typedef enum e_gpt_buffer_force_push
+{
+    GPT_BUFFER_FORCE_PUSH = 64,        ///< Used in @ref R_GPT_DutyCycleSet to force push the data from GTCCRn registers to temporary buffer A or B when One-Shot Pulse mode is selected.
+} gpt_buffer_force_push_t;
 
 /** Level of GPT pin */
 typedef enum e_gpt_pin_level
@@ -231,11 +248,50 @@ typedef enum e_gpt_source
 } gpt_source_t;
 
 /** Configurations for output pins. */
-typedef struct s_gpt_output_pin
+struct st_gpt_output_pin
 {
     bool            output_enabled;    ///< Set to true to enable output, false to disable output
-    gpt_pin_level_t stop_level;        ///< Select a stop level from ::gpt_pin_level_t
-} gpt_output_pin_t;
+    gpt_pin_level_t stop_level;        ///< Select a stop level from RZN::gpt_pin_level_t
+};
+
+/** Configurations for output pins. Please refer to the struct st_gpt_output_pin. */
+typedef struct st_gpt_output_pin gpt_output_pin_t;
+
+/** Custom GTIOR settings used for configuring GTIOCxA and GTIOCxB pins. */
+struct st_gpt_gtior_setting
+{
+    union
+    {
+        uint32_t gtior;
+        struct
+        {
+            /* Settings for GTIOCxA pin. */
+            uint32_t gtioa  : 5;       ///< GTIOCA Pin Function Select.
+            uint32_t        : 1;       // Reserved
+            uint32_t oadflt : 1;       ///< GTIOCA Pin Output Value Setting at the Count Stop.
+            uint32_t oahld  : 1;       ///< GTIOCA Pin Output Setting at the Start/Stop Count.
+            uint32_t oae    : 1;       ///< GTIOCA Pin Output Enable
+            uint32_t oadf   : 2;       ///< GTIOCA Pin Disable Value Setting.
+            uint32_t        : 2;       /// Reserved
+            uint32_t nfaen  : 1;       ///< Noise Filter A Enable.
+            uint32_t nfcsa  : 2;       ///< Noise Filter A Sampling Clock Select.
+
+            /* Settings for GTIOCxB pin. */
+            uint32_t gtiob  : 5;       ///< GTIOCB Pin Function Select.
+            uint32_t        : 1;       // Reserved
+            uint32_t obdflt : 1;       ///< GTIOCB Pin Output Value Setting at the Count Stop.
+            uint32_t obhld  : 1;       ///< GTIOCB Pin Output Setting at the Start/Stop Count.
+            uint32_t obe    : 1;       ///< GTIOCB Pin Output Enable
+            uint32_t obdf   : 2;       ///< GTIOCB Pin Disable Value Setting.
+            uint32_t        : 2;       // Reserved
+            uint32_t nfben  : 1;       ///< Noise Filter B Enable.
+            uint32_t nfcsb  : 2;       ///< Noise Filter B Sampling Clock Select.
+        } gtior_b;
+    };
+};
+
+/** Custom GTIOR settings used for configuring GTIOCxA and GTIOCxB pins. Please refer to the struct st_gpt_gtior_setting. */
+typedef struct st_gpt_gtior_setting gpt_gtior_setting_t;
 
 /** Input capture signal noise filter (debounce) setting. Only available for input signals GTIOCxA and GTIOCxB.
  *   The noise filter samples the external signal at intervals of the PCLK divided by one of the values.
@@ -384,8 +440,8 @@ typedef enum e_gpt_input_signal_select
 } gpt_input_signal_select_t;
 #endif
 
-/** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref timer_api_t::open is called. */
-typedef struct st_gpt_instance_ctrl
+/** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref RZN::timer_api_t::open is called. */
+struct st_gpt_instance_ctrl
 {
     uint32_t            open;                     // Whether or not channel is open
     const timer_cfg_t * p_cfg;                    // Pointer to initial configurations
@@ -402,11 +458,14 @@ typedef struct st_gpt_instance_ctrl
 
     void (* p_callback)(timer_callback_args_t *); // Pointer to callback
     timer_callback_args_t * p_callback_memory;    // Pointer to optional callback argument memory
-    void const            * p_context;            // Pointer to context to be passed into callback function
-} gpt_instance_ctrl_t;
+    void * p_context;                             // Pointer to context to be passed into callback function
+};
+
+/** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref RZN::timer_api_t::open is called. Please refer to the struct st_gpt_instance_ctrl. */
+typedef struct st_gpt_instance_ctrl gpt_instance_ctrl_t;
 
 /** GPT extension for advanced PWM features. */
-typedef struct st_gpt_extended_pwm_cfg
+struct st_gpt_extended_pwm_cfg
 {
     uint8_t                     trough_ipl;                 ///< Trough interrupt priority
     IRQn_Type                   trough_irq;                 ///< Trough interrupt
@@ -430,10 +489,13 @@ typedef struct st_gpt_extended_pwm_cfg
     gpt_interrupt_skip_select_t interrupt_skip_func_adc_b;  ///< Extended Skipping Function Select(GTEITL2.EADTBL)
     gpt_gtioc_disable_t         gtioca_disable_setting;     ///< Select how to configure GTIOCA when output is disabled
     gpt_gtioc_disable_t         gtiocb_disable_setting;     ///< Select how to configure GTIOCB when output is disabled
-} gpt_extended_pwm_cfg_t;
+};
+
+/** GPT extension for advanced PWM features. Please refer to the struct st_gpt_extended_pwm_cfg. */
+typedef struct st_gpt_extended_pwm_cfg gpt_extended_pwm_cfg_t;
 
 /** GPT extension configures the output pins for GPT. */
-typedef struct st_gpt_extended_cfg
+struct st_gpt_extended_cfg
 {
     gpt_output_pin_t gtioca;           ///< Configuration for GPT I/O pin A
     gpt_output_pin_t gtiocb;           ///< Configuration for GPT I/O pin B
@@ -465,6 +527,8 @@ typedef struct st_gpt_extended_cfg
 #endif
     IRQn_Type capture_a_irq;                    ///< Capture A interrupt
     IRQn_Type capture_b_irq;                    ///< Capture B interrupt
+    uint32_t  compare_match_value[2];                  ///< Storing compare match value for channels
+    uint8_t   compare_match_status;                    ///< Storing the compare match register status
     IRQn_Type dead_time_irq;                    ///< Dead time error interrupt
 
     gpt_extended_pwm_cfg_t const * p_pwm_cfg;   ///< Advanced PWM features, optional
@@ -473,8 +537,12 @@ typedef struct st_gpt_extended_cfg
     uint8_t cycle_end_source_select;            ///< Cycle end interrupt source select
     uint8_t dead_time_error_source_select;      ///< Dead time error interrupt source select
     uint8_t trough_source_select;               ///< Trough interrupt source select
+    gpt_gtior_setting_t gtior_setting;                 ///< Custom GTIOR settings used for configuring GTIOCxA and GTIOCxB pins.
     void  * p_reg;                              ///< Register base address for specified channel
-} gpt_extended_cfg_t;
+};
+
+/** GPT extension configures the output pins for GPT. Please refer to the struct st_gpt_extended_cfg. */
+typedef struct st_gpt_extended_cfg gpt_extended_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -497,6 +565,9 @@ fsp_err_t R_GPT_Enable(timer_ctrl_t * const p_ctrl);
 fsp_err_t R_GPT_Disable(timer_ctrl_t * const p_ctrl);
 fsp_err_t R_GPT_PeriodSet(timer_ctrl_t * const p_ctrl, uint32_t const period_counts);
 fsp_err_t R_GPT_DutyCycleSet(timer_ctrl_t * const p_ctrl, uint32_t const duty_cycle_counts, uint32_t const pin);
+fsp_err_t R_GPT_CompareMatchSet(timer_ctrl_t * const        p_ctrl,
+                                uint32_t const              compare_match_value,
+                                timer_compare_match_t const match_channel);
 fsp_err_t R_GPT_InfoGet(timer_ctrl_t * const p_ctrl, timer_info_t * const p_info);
 fsp_err_t R_GPT_StatusGet(timer_ctrl_t * const p_ctrl, timer_status_t * const p_status);
 fsp_err_t R_GPT_CounterSet(timer_ctrl_t * const p_ctrl, uint32_t counter);
@@ -507,13 +578,18 @@ fsp_err_t R_GPT_AdcTriggerSet(timer_ctrl_t * const    p_ctrl,
                               uint32_t                compare_match_value);
 fsp_err_t R_GPT_CallbackSet(timer_ctrl_t * const          p_ctrl,
                             void (                      * p_callback)(timer_callback_args_t *),
-                            void const * const            p_context,
+                            void * const                  p_context,
                             timer_callback_args_t * const p_callback_memory);
 fsp_err_t R_GPT_Close(timer_ctrl_t * const p_ctrl);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup GPT)
  **********************************************************************************************************************/
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

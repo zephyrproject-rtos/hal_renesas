@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -53,6 +53,18 @@ BUILD_ASSERT(BSP_CFG_MAIN_CLOCK_HZ == 25000000, "The main clock must be 25MHz!")
 #define BSP_CFG_SCI3ASYNCCLK 	DT_ENUM_IDX(DT_NODELABEL(sci3asyncclk), clock_frequency) /* SCI3ASYNCCLK */
 #define BSP_CFG_SCI4ASYNCCLK 	DT_ENUM_IDX(DT_NODELABEL(sci4asyncclk), clock_frequency) /* SCI4ASYNCCLK */
 #define BSP_CFG_SCI5ASYNCCLK 	DT_ENUM_IDX(DT_NODELABEL(sci5asyncclk), clock_frequency) /* SCI5ASYNCCLK */
+#define BSP_CFG_SCIE0ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE1ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE2ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE3ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE4ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE5ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE6ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE7ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE8ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE9ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE10ASYNCCLK (0) /* N/A */
+#define BSP_CFG_SCIE11ASYNCCLK (0) /* N/A */
 #define BSP_CFG_SPI0ASYNCCLK 	DT_ENUM_IDX(DT_NODELABEL(spi0asyncclk), clock_frequency) /* SPI0ASYNCCLK */
 #define BSP_CFG_SPI1ASYNCCLK 	DT_ENUM_IDX(DT_NODELABEL(spi1asyncclk), clock_frequency) /* SPI1ASYNCCLK */
 #define BSP_CFG_SPI2ASYNCCLK 	DT_ENUM_IDX(DT_NODELABEL(spi2asyncclk), clock_frequency) /* SPI2ASYNCCLK */

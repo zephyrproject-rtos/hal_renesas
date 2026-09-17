@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -28,8 +28,15 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -40,44 +47,57 @@ FSP_HEADER
 /** Available modules. */
 typedef enum e_fsp_ip
 {
-    FSP_IP_CGC     = 1,                ///< Clock Generation Circuit
-    FSP_IP_CLMA    = 2,                ///< Clock Monitor Circuit
-    FSP_IP_MSTP    = 3,                ///< Module Stop
-    FSP_IP_ICU     = 4,                ///< Interrupt Control Unit
-    FSP_IP_BSC     = 5,                ///< Bus State Contoller
-    FSP_IP_CKIO    = 6,                ///< CKIO
-    FSP_IP_DMAC    = 7,                ///< DMA Controller
-    FSP_IP_ELC     = 8,                ///< Event Link Controller
-    FSP_IP_IOPORT  = 9,                ///< I/O Ports
-    FSP_IP_MTU3    = 10,               ///< Multi-Function Timer Pulse Unit
-    FSP_IP_POE3    = 11,               ///< Port Output Enable for MTU3
-    FSP_IP_GPT     = 12,               ///< General PWM Timer
-    FSP_IP_POEG    = 13,               ///< Port Output Enable for GPT
-    FSP_IP_TFU     = 14,               ///< Arithmetic Unit for Trigonometric Functions
-    FSP_IP_CMT     = 15,               ///< Compare Match Timer
-    FSP_IP_CMTW    = 16,               ///< Compare Match Timer W
-    FSP_IP_WDT     = 17,               ///< Watch Dog Timer
-    FSP_IP_RTC     = 18,               ///< Real Time Clock
-    FSP_IP_ETHSS   = 19,               ///< Ethernet Subsystem
-    FSP_IP_GMAC    = 20,               ///< Ethernet MAC
-    FSP_IP_ETHSW   = 21,               ///< Ethernet Switch
-    FSP_IP_ESC     = 22,               ///< EtherCAT Slave Controller
-    FSP_IP_USBHS   = 23,               ///< USB High Speed
-    FSP_IP_SCI     = 24,               ///< Serial Communications Interface
-    FSP_IP_IIC     = 25,               ///< I2C Bus Interface
-    FSP_IP_CANFD   = 26,               ///< Controller Area Network with Flexible Data Rate
-    FSP_IP_SPI     = 27,               ///< Serial Peripheral Interface
-    FSP_IP_XSPI    = 28,               ///< expanded Serial Peripheral Interface
-    FSP_IP_CRC     = 29,               ///< Cyclic Redundancy Check Calculator
-    FSP_IP_BSCAN   = 30,               ///< Boundary Scan
-    FSP_IP_DSMIF   = 31,               ///< Delta Sigma Interface
-    FSP_IP_ADC12   = 32,               ///< 12-Bit A/D Converter
-    FSP_IP_TSU     = 33,               ///< Temperature Sensor
-    FSP_IP_DOC     = 34,               ///< Data Operation Circuit
-    FSP_IP_SYSRAM  = 35,               ///< System SRAM
-    FSP_IP_ENCIF   = 36,               ///< Encoder Interface
-    FSP_IP_SHOSTIF = 37,               ///< Serial Host Interface
-    FSP_IP_PHOSTIF = 38,               ///< Parallel Host Interface
+    FSP_IP_CGC           = 1,          ///< Clock Generation Circuit
+    FSP_IP_CLMA          = 2,          ///< Clock Monitor Circuit
+    FSP_IP_MSTP          = 3,          ///< Module Stop
+    FSP_IP_ICU           = 4,          ///< Interrupt Control Unit
+    FSP_IP_BSC           = 5,          ///< Bus State Controller
+    FSP_IP_CKIO          = 6,          ///< CKIO
+    FSP_IP_DMAC          = 7,          ///< DMA Controller
+    FSP_IP_ELC           = 8,          ///< Event Link Controller
+    FSP_IP_IOPORT        = 9,          ///< I/O Ports
+    FSP_IP_MTU3          = 10,         ///< Multi-Function Timer Pulse Unit
+    FSP_IP_POE3          = 11,         ///< Port Output Enable for MTU3
+    FSP_IP_GPT           = 12,         ///< General PWM Timer
+    FSP_IP_POEG          = 13,         ///< Port Output Enable for GPT
+    FSP_IP_TFU           = 14,         ///< Arithmetic Unit for Trigonometric Functions
+    FSP_IP_CMT           = 15,         ///< Compare Match Timer
+    FSP_IP_CMTW          = 16,         ///< Compare Match Timer W
+    FSP_IP_WDT           = 17,         ///< Watch Dog Timer
+    FSP_IP_RTC           = 18,         ///< Real Time Clock
+    FSP_IP_ETHSS         = 19,         ///< Ethernet Subsystem
+    FSP_IP_GMAC          = 20,         ///< Ethernet MAC
+    FSP_IP_ETHSW         = 21,         ///< Ethernet Switch
+    FSP_IP_ESC           = 22,         ///< EtherCAT Slave Controller
+    FSP_IP_USBHS         = 23,         ///< USB High Speed
+    FSP_IP_SCI           = 24,         ///< Serial Communications Interface
+    FSP_IP_IIC           = 25,         ///< I2C Bus Interface
+    FSP_IP_CANFD         = 26,         ///< Controller Area Network with Flexible Data Rate
+    FSP_IP_SPI           = 27,         ///< Serial Peripheral Interface
+    FSP_IP_XSPI          = 28,         ///< expanded Serial Peripheral Interface
+    FSP_IP_CRC           = 29,         ///< Cyclic Redundancy Check Calculator
+    FSP_IP_BSCAN         = 30,         ///< Boundary Scan
+    FSP_IP_DSMIF         = 31,         ///< Delta Sigma Interface
+    FSP_IP_ADC12         = 32,         ///< 12-Bit A/D Converter
+    FSP_IP_TSU           = 33,         ///< Temperature Sensor
+    FSP_IP_DOC           = 34,         ///< Data Operation Circuit
+    FSP_IP_SYSRAM        = 35,         ///< System SRAM
+    FSP_IP_SHOSTIF       = 36,            ///< Serial Host Interface
+    FSP_IP_PHOSTIF       = 37,            ///< Parallel Host Interface
+    FSP_IP_AFMT          = 38,         ///< A-Format
+    FSP_IP_HDSL          = 39,         ///< HIPERFACE DSL
+    FSP_IP_BISS          = 40,         ///< BiSS-C
+    FSP_IP_ENDAT         = 41,         ///< EnDat 2.2
+    FSP_IP_SCIE          = 42,         ///< Serial Communications Interface for encoder interface
+    FSP_IP_TRACECLOCK    = 43,         ///< Trace Clock
+    FSP_IP_ENCOUT        = 44,         ///< Encoder Divided-Output
+    FSP_IP_DDRSS         = 45,         ///< LPDDR4 SDRAM Subsystem
+    FSP_IP_LCDC          = 46,         ///< LCD Controller
+    FSP_IP_PCIE          = 47,         ///< PCI Express 3.0 Interface
+    FSP_IP_SDHI          = 48,         ///< SDMMC Host Interface
+    FSP_IP_CPU1          = 49,         ///< CPU1 Module Stop
+    FSP_IP_CR52          = 50,         ///< Cortex-R52 CPUn Module Stop
+    FSP_IP_CA55          = 51             ///< Cortex-A55 CPUn Module Stop
 } fsp_ip_t;
 
 /** Signals that can be mapped to an interrupt. */
@@ -547,6 +567,12 @@ typedef enum e_fsp_signal
 typedef void (* fsp_vector_t)(void);
 
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

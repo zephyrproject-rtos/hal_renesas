@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -64,12 +64,32 @@ FSP_HEADER
 #define BSP_RESET_MRCTL_BIT30_SHIFT       (0x0000001EU)
 #define BSP_RESET_MRCTL_BIT31_SHIFT       (0x0000001FU)
 
+/* RSTSR0 register bit mask.  */
+#define BSP_RESET_RSTSR0_CLEAR_ALL        (0x00000000U)
+#define BSP_RESET_RSTSR0_TRF_MASK         (0x00000002U)
+#define BSP_RESET_RSTSR0_ERRF_MASK        (0x00000004U)
+#define BSP_RESET_RSTSR0_SWRSF_MASK       (0x00000008U)
+#define BSP_RESET_RSTSR0_SWR0F_MASK       (0x00000010U)
+#define BSP_RESET_RSTSR0_SWR1F_MASK       (0x00000020U)
+#define BSP_RESET_RSTSR0_SWR55C_MASK      (0x00000040U)
+#define BSP_RESET_RSTSR0_SWR550_MASK      (0x00000080U)
+#define BSP_RESET_RSTSR0_SWR551_MASK      (0x00000100U)
+#define BSP_RESET_RSTSR0_SWR552_MASK      (0x00000200U)
+#define BSP_RESET_RSTSR0_SWR553_MASK      (0x00000400U)
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -181,6 +201,11 @@ typedef enum e_bsp_module_reset
 } bsp_module_reset_t;
 
 /** @} (end addtogroup BSP_MCU) */
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Exported global variables
