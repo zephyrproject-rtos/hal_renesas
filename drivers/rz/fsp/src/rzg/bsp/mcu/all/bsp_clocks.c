@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -30,6 +30,7 @@
 #define BSP_PRV_FIXED_DIVISION_RATIO_6       (6UL)
 #define BSP_PRV_FIXED_DIVISION_RATIO_7       (7UL)
 #define BSP_PRV_FIXED_DIVISION_RATIO_8       (8UL)
+#define BSP_PRV_FIXED_DIVISION_RATIO_10      (10UL)
 #define BSP_PRV_FIXED_DIVISION_RATIO_1000    (1000UL)
 
 /***********************************************************************************************************************
@@ -58,10 +59,17 @@ static void bsp_prv_clock_frequency_calculation(fsp_priv_clock_t clock);
 void        bsp_prv_clock_selector_set(fsp_priv_clock_selector_t selector, uint32_t clock_sel);
 void        bsp_prv_clock_divider_set(fsp_priv_clock_divider_t divider, uint32_t clock_div);
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
  * @internal
- * @addtogroup BSP_MCU_PRV Internal BSP Documentation
- * @ingroup RENESAS_INTERNAL
+ * @addtogroup RZG_BSP_MCU_PRV Internal BSP Documentation
+ * @ingroup RZG_RENESAS_INTERNAL
  * @{
  **********************************************************************************************************************/
 
@@ -114,6 +122,18 @@ static void bsp_clock_freq_var_init (void)
 #if defined(BSP_CFG_CLOCK_I7CLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_I7CLK] = BSP_CFG_CLOCK_I7CLK_HZ;
 #endif
+#if defined(BSP_CFG_CLOCK_IC0CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_IC0CLK] = BSP_CFG_CLOCK_IC0CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_IC1CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_IC1CLK] = BSP_CFG_CLOCK_IC1CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_IC2CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_IC2CLK] = BSP_CFG_CLOCK_IC2CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_IC3CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_IC3CLK] = BSP_CFG_CLOCK_IC3CLK_HZ;
+#endif
 #if defined(BSP_CFG_CLOCK_GCLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_GCLK] = BSP_CFG_CLOCK_GCLK_HZ;
 #endif
@@ -161,6 +181,9 @@ static void bsp_clock_freq_var_init (void)
 #endif
 #if defined(BSP_CFG_CLOCK_M5CLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_M5CLK] = BSP_CFG_CLOCK_M5CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_M6CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_M6CLK] = BSP_CFG_CLOCK_M6CLK_HZ;
 #endif
 #if defined(BSP_CFG_CLOCK_HPCLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_HPCLK] = BSP_CFG_CLOCK_HPCLK_HZ;
@@ -210,6 +233,30 @@ static void bsp_clock_freq_var_init (void)
 #if defined(BSP_CFG_CLOCK_P12CLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_P12CLK] = BSP_CFG_CLOCK_P12CLK_HZ;
 #endif
+#if defined(BSP_CFG_CLOCK_P13CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_P13CLK] = BSP_CFG_CLOCK_P13CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_P14CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_P14CLK] = BSP_CFG_CLOCK_P14CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_P15CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_P15CLK] = BSP_CFG_CLOCK_P15CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_P16CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_P16CLK] = BSP_CFG_CLOCK_P16CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_P17CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_P17CLK] = BSP_CFG_CLOCK_P17CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_P18CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_P18CLK] = BSP_CFG_CLOCK_P18CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_P19CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_P19CLK] = BSP_CFG_CLOCK_P19CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_P20CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_P20CLK] = BSP_CFG_CLOCK_P20CLK_HZ;
+#endif
 #if defined(BSP_CFG_CLOCK_ADCCLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_ADCCLK] = BSP_CFG_CLOCK_ADCCLK_HZ;
 #endif
@@ -231,6 +278,36 @@ static void bsp_clock_freq_var_init (void)
 #if defined(BSP_CFG_CLOCK_ETHRX1CLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_ETHRX1CLK] = BSP_CFG_CLOCK_ETHRX1CLK_HZ;
 #endif
+#if defined(BSP_CFG_CLOCK_ETHTX01CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHTX01CLK] = BSP_CFG_CLOCK_ETHTX01CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHRX01CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHRX01CLK] = BSP_CFG_CLOCK_ETHRX01CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHRM0CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHRM0CLK] = BSP_CFG_CLOCK_ETHRM0CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHTX02CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHTX02CLK] = BSP_CFG_CLOCK_ETHTX02CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHRX02CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHRX02CLK] = BSP_CFG_CLOCK_ETHRX02CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHTX11CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHTX11CLK] = BSP_CFG_CLOCK_ETHTX11CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHRX11CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHRX11CLK] = BSP_CFG_CLOCK_ETHRX11CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHRM1CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHRM1CLK] = BSP_CFG_CLOCK_ETHRM1CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHTX12CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHTX12CLK] = BSP_CFG_CLOCK_ETHTX12CLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_ETHRX12CLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_ETHRX12CLK] = BSP_CFG_CLOCK_ETHRX12CLK_HZ;
+#endif
 #if defined(BSP_CFG_CLOCK_GPUCLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_GPUCLK] = BSP_CFG_CLOCK_GPUCLK_HZ;
 #endif
@@ -245,6 +322,9 @@ static void bsp_clock_freq_var_init (void)
 #endif
 #if defined(BSP_CFG_CLOCK_NPUCLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_NPUCLK] = BSP_CFG_CLOCK_NPUCLK_HZ;
+#endif
+#if defined(BSP_CFG_CLOCK_BCLK_HZ)
+    g_clock_freq[FSP_PRIV_CLOCK_BCLK] = BSP_CFG_CLOCK_BCLK_HZ;
 #endif
 #if defined(BSP_CFG_CLOCK_OSCCLK_HZ)
     g_clock_freq[FSP_PRIV_CLOCK_OSCCLK] = BSP_CFG_CLOCK_OSCCLK_HZ;
@@ -304,6 +384,17 @@ void bsp_clock_freq_init_cfg (void)
         FSP_HARDWARE_REGISTER_WAIT(((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
                                     R_CPG->CPG_PLL6_MON),
                                    (R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk));
+    }
+ #endif
+ #if defined(BSP_CFG_CLOCK_PLL7_HZ)
+    uint32_t pll7_mon = (R_CPG_CPG_PLL7_MON_PLL7_LOCK_Msk | R_CPG_CPG_PLL7_MON_PLL7_RESETB_Msk) &
+                        R_CPG->CPG_PLL7_MON;
+    if (!pll7_mon)
+    {
+        R_CPG->CPG_PLL7_STBY = (uint32_t) (R_CPG_CPG_PLL7_STBY_RESETB_WEN_Msk | R_CPG_CPG_PLL7_STBY_RESETB_Msk);
+        FSP_HARDWARE_REGISTER_WAIT(((R_CPG_CPG_PLL7_MON_PLL7_LOCK_Msk | R_CPG_CPG_PLL7_MON_PLL7_RESETB_Msk) &
+                                    R_CPG->CPG_PLL7_MON),
+                                   (R_CPG_CPG_PLL7_MON_PLL7_LOCK_Msk | R_CPG_CPG_PLL7_MON_PLL7_RESETB_Msk));
     }
  #endif
 
@@ -402,6 +493,73 @@ void bsp_clock_freq_init_cfg (void)
     R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI2, BSP_CFG_SEL_SDHI2_SET_SOURCE);
  #endif
 
+ #if defined(BSP_CFG_SEL_PLL4_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_PLL4, BSP_CFG_SEL_PLL4_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_BSC_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_BSC, BSP_CFG_SEL_BSC_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_XSPI_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_XSPI, BSP_CFG_SEL_XSPI_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_DSI_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_DSI, BSP_CFG_SEL_DSI_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_GE3D_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_GE3D, BSP_CFG_SEL_GE3D_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH0A_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_TX, BSP_CFG_SEL_ETH0A_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH0B_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RX, BSP_CFG_SEL_ETH0B_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH0C_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RM, BSP_CFG_SEL_ETH0C_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH0D_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_TX_I, BSP_CFG_SEL_ETH0D_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH0E_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_RX_I, BSP_CFG_SEL_ETH0E_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH1A_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_TX, BSP_CFG_SEL_ETH1A_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH1B_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RX, BSP_CFG_SEL_ETH1B_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH1C_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RM, BSP_CFG_SEL_ETH1C_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH1D_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_TX_I, BSP_CFG_SEL_ETH1D_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_ETH1E_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_RX_I, BSP_CFG_SEL_ETH1E_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_RSCI0_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI0, BSP_CFG_SEL_RSCI0_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_RSCI1_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI1, BSP_CFG_SEL_RSCI1_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_RSCI2_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI2, BSP_CFG_SEL_RSCI2_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_RSCI3_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI3, BSP_CFG_SEL_RSCI3_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_RSPI0_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI0, BSP_CFG_SEL_RSPI0_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_RSPI1_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI1, BSP_CFG_SEL_RSPI1_SET_SOURCE);
+ #endif
+ #if defined(BSP_CFG_SEL_RSPI2_SET_SOURCE)
+    R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI2, BSP_CFG_SEL_RSPI2_SET_SOURCE);
+ #endif
+
  #if defined(BSP_CFG_SSEL0_SELCTL0_SOURCE)
     R_BSP_ClockSelectorSet(FSP_PRIV_CLOCK_SELECTOR_SMUX2_CA55_SCLK1, BSP_CFG_SSEL0_SELCTL0_SOURCE);
  #endif
@@ -462,6 +620,94 @@ void bsp_clock_freq_init_cfg (void)
  #endif
  #if defined(BSP_CFG_DIVSDHI2_SET_DIV)
     R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI2_SEL, BSP_CFG_DIVSDHI2_SET_DIV);
+ #endif
+
+ #if defined(BSP_CFG_DIV_PLL2_B_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_100, BSP_CFG_DIV_PLL2_B_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL3_A_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_200, BSP_CFG_DIV_PLL3_A_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL3_B_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_100, BSP_CFG_DIV_PLL3_B_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL1_A_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_CA55, BSP_CFG_DIV_PLL1_A_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL2_A_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_200, BSP_CFG_DIV_PLL2_A_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL2_B_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_QSPI, BSP_CFG_DIV_PLL2_B_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_XSPI_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_XSPI, BSP_CFG_DIV_XSPI_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_GE3D_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_GE3D, BSP_CFG_DIV_GE3D_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_DSI_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_CLK266FIXC_DIV16TO128, BSP_CFG_DIV_DSI_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_PDM_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_CLK24_SEL, BSP_CFG_DIV_PDM_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_BSC_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_BSC, BSP_CFG_DIV_BSC_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_CORE0_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE0, BSP_CFG_DIV_CORE0_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_CORE1_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE1, BSP_CFG_DIV_CORE1_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_CORE2_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE2, BSP_CFG_DIV_CORE2_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_CORE3_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE3, BSP_CFG_DIV_CORE3_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_RSCI0_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI0, BSP_CFG_DIV_RSCI0_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_RSCI1_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI1, BSP_CFG_DIV_RSCI1_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_RSCI2_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI2, BSP_CFG_DIV_RSCI2_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_RSCI3_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI3, BSP_CFG_DIV_RSCI3_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_RSPI0_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI0, BSP_CFG_DIV_RSPI0_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_RSPI1_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI1, BSP_CFG_DIV_RSPI1_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_RSPI2_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI2, BSP_CFG_DIV_RSPI2_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_DSI_A_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO32_VCLK, BSP_CFG_DIV_DSI_A_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_DSI_B_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO16_VCLK, BSP_CFG_DIV_DSI_B_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_DSI_C_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO2_LVDS, BSP_CFG_DIV_DSI_C_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_ETH_A_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_TR, BSP_CFG_DIV_ETH_A_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_ETH_B_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_RM, BSP_CFG_DIV_ETH_B_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_ETH_C_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_TR, BSP_CFG_DIV_ETH_C_SET_DIV);
+ #endif
+ #if defined(BSP_CFG_DIV_ETH_D_SET_DIV)
+    R_BSP_ClockDividerSet(FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_RM, BSP_CFG_DIV_ETH_D_SET_DIV);
  #endif
 
  #if defined(BSP_CFG_CDDIV0_DIVCTL0_DIV)
@@ -556,6 +802,15 @@ void bsp_clock_freq_init_cfg (void)
         R_CPG->CPG_PLL6_STBY = (uint32_t) R_CPG_CPG_PLL6_STBY_RESETB_WEN_Msk;
         FSP_HARDWARE_REGISTER_WAIT(((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
                                     R_CPG->CPG_PLL6_MON),
+                                   0U);
+    }
+ #endif
+ #if defined(BSP_CFG_CLOCK_PLL7_HZ)
+    if (!pll7_mon)
+    {
+        R_CPG->CPG_PLL7_STBY = (uint32_t) R_CPG_CPG_PLL7_STBY_RESETB_WEN_Msk;
+        FSP_HARDWARE_REGISTER_WAIT(((R_CPG_CPG_PLL7_MON_PLL7_LOCK_Msk | R_CPG_CPG_PLL7_MON_PLL7_RESETB_Msk) &
+                                    R_CPG->CPG_PLL7_MON),
                                    0U);
     }
  #endif
@@ -1571,6 +1826,398 @@ static void bsp_prv_static_mux_control_pre_setting (fsp_priv_clock_selector_t se
         }
 #endif
 
+#if defined(BSP_CFG_SEL_XSPI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_XSPI:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_XSPI_CLK3_MON_Msk & R_CPG->CPG_CLKMON_XSPI;
+            clock_status[1] = R_CPG_CPG_CLKMON_XSPI_CLK2_MON_Msk & R_CPG->CPG_CLKMON_XSPI;
+
+            /* If XSPI_CLKX2 is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_XSPI = (uint32_t) R_CPG_CPG_CLKON_XSPI_CLK3_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_XSPI_CLK3_MON_Msk & R_CPG->CPG_CLKMON_XSPI), 0U);
+            }
+
+            /* If XSPI_CLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_XSPI = (uint32_t) R_CPG_CPG_CLKON_XSPI_CLK2_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_XSPI_CLK2_MON_Msk & R_CPG->CPG_CLKMON_XSPI), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_DSI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_DSI:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI;
+            clock_status[1] = R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS;
+            clock_status[2] = R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC;
+
+            /* If MIPI_DSI_VCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_MIPI_DSI = (uint32_t) (R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI), 0U);
+            }
+
+            /* If LVDS_CLK_DOT0 is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_LVDS = (uint32_t) (R_CPG_CPG_CLKON_LVDS_CLK1_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS), 0U);
+            }
+
+            /* If LCDC_CLK_D is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[2])
+            {
+                R_CPG->CPG_CLKON_LCDC = (uint32_t) (R_CPG_CPG_CLKON_LCDC_CLK1_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_GE3D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_GE3D:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_GE3D_CLK0_MON_Msk & R_CPG->CPG_CLKMON_GE3D;
+
+            /* If GE3D_CLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_GE3D = (uint32_t) R_CPG_CPG_CLKON_GE3D_CLK0_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_GE3D_CLK0_MON_Msk & R_CPG->CPG_CLKMON_GE3D), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_TX:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH0_TX_I and ETH0_TX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK4_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RX:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH0_RX_I and ETH0_RX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK6_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RM:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+            clock_status[1] = R_CPG_CPG_CLKMON_ETH_CLK10_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH0_TX_I and ETH0_RX_I (RMII Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK12_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            /* If ETH0_RMII_I is supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK10_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK10_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_TX_I:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+            clock_status[1] = R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH0_TX_I and ETH0_RX_I (RMII Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK12_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            /* If ETH0_TX_I and ETH0_TX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK4_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_RX_I:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+            clock_status[1] = R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH0_TX_I and ETH0_RX_I (RMII Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK12_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            /* If ETH0_RX_I and ETH0_RX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK6_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_TX:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH1_TX_I and ETH1_TX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK5_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RX:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH1_RX_I and ETH1_RX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK7_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RM:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+            clock_status[1] = R_CPG_CPG_CLKMON_ETH_CLK11_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH1_TX_I and ETH1_RX_I (RMII Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK13_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            /* If ETH1_RMII_I is supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK11_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK11_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_TX_I:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+            clock_status[1] = R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH1_TX_I and ETH1_RX_I (RMII Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK13_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            /* If ETH1_TX_I and ETH1_TX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK5_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_RX_I:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+            clock_status[1] = R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH1_TX_I and ETH1_RX_I (RMII Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK13_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            /* If ETH1_RX_I and ETH1_RX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK7_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI0_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI0:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_RSCI_CLK8_MON_Msk & R_CPG->CPG_CLKMON_RSCI;
+
+            /* If RSCI0_TCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSCI = (uint32_t) R_CPG_CPG_CLKON_RSCI_CLK8_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSCI_CLK8_MON_Msk & R_CPG->CPG_CLKMON_RSCI), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI1_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI1:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_RSCI_CLK9_MON_Msk & R_CPG->CPG_CLKMON_RSCI;
+
+            /* If RSCI1_TCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSCI = (uint32_t) R_CPG_CPG_CLKON_RSCI_CLK9_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSCI_CLK9_MON_Msk & R_CPG->CPG_CLKMON_RSCI), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI2_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI2:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_RSCI_CLK10_MON_Msk & R_CPG->CPG_CLKMON_RSCI;
+
+            /* If RSCI2_TCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSCI = (uint32_t) R_CPG_CPG_CLKON_RSCI_CLK10_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSCI_CLK10_MON_Msk & R_CPG->CPG_CLKMON_RSCI), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI3_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI3:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_RSCI_CLK11_MON_Msk & R_CPG->CPG_CLKMON_RSCI;
+
+            /* If RSCI3_TCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSCI = (uint32_t) R_CPG_CPG_CLKON_RSCI_CLK11_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSCI_CLK11_MON_Msk & R_CPG->CPG_CLKMON_RSCI), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI0_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI0:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_RSPI_CLK8_MON_Msk & R_CPG->CPG_CLKMON_RSPI;
+
+            /* If RSPI0_TCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSPI = (uint32_t) R_CPG_CPG_CLKON_RSPI_CLK8_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSPI_CLK8_MON_Msk & R_CPG->CPG_CLKMON_RSPI), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI1_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI1:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_RSPI_CLK9_MON_Msk & R_CPG->CPG_CLKMON_RSPI;
+
+            /* If RSPI1_TCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSPI = (uint32_t) R_CPG_CPG_CLKON_RSPI_CLK9_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSPI_CLK9_MON_Msk & R_CPG->CPG_CLKMON_RSPI), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI2_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI2:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_RSPI_CLK10_MON_Msk & R_CPG->CPG_CLKMON_RSPI;
+
+            /* If RSPI2_TCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSPI = (uint32_t) R_CPG_CPG_CLKON_RSPI_CLK10_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSPI_CLK10_MON_Msk & R_CPG->CPG_CLKMON_RSPI), 0U);
+            }
+
+            break;
+        }
+#endif
+
         default:
         {
             FSP_PARAMETER_NOT_USED(clock_status);
@@ -1856,6 +2503,407 @@ static void bsp_prv_static_mux_control_post_setting (fsp_priv_clock_selector_t s
         }
 #endif
 
+#if defined(BSP_CFG_SEL_XSPI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_XSPI:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_XSPI =
+                    (uint32_t) (R_CPG_CPG_CLKON_XSPI_CLK3_ONWEN_Msk | R_CPG_CPG_CLKON_XSPI_CLK3_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_XSPI_CLK3_MON_Msk & R_CPG->CPG_CLKMON_XSPI),
+                                           R_CPG_CPG_CLKMON_XSPI_CLK3_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_XSPI =
+                    (uint32_t) (R_CPG_CPG_CLKON_XSPI_CLK2_ONWEN_Msk | R_CPG_CPG_CLKON_XSPI_CLK2_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_XSPI_CLK2_MON_Msk & R_CPG->CPG_CLKMON_XSPI),
+                                           R_CPG_CPG_CLKMON_XSPI_CLK2_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_DSI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_DSI:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_MIPI_DSI =
+                    (uint32_t) (R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ONWEN_Msk | R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI),
+                                           R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_LVDS =
+                    (uint32_t) (R_CPG_CPG_CLKON_LVDS_CLK1_ONWEN_Msk | R_CPG_CPG_CLKON_LVDS_CLK1_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS),
+                                           R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[2])
+            {
+                R_CPG->CPG_CLKON_LCDC =
+                    (uint32_t) (R_CPG_CPG_CLKON_LCDC_CLK1_ONWEN_Msk | R_CPG_CPG_CLKON_LCDC_CLK1_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC),
+                                           R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_GE3D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_GE3D:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_GE3D =
+                    (uint32_t) (R_CPG_CPG_CLKON_GE3D_CLK0_ONWEN_Msk | R_CPG_CPG_CLKON_GE3D_CLK0_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_GE3D_CLK0_MON_Msk & R_CPG->CPG_CLKMON_GE3D),
+                                           R_CPG_CPG_CLKMON_GE3D_CLK0_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_TX:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK4_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK4_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RX:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK6_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK6_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RM:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK12_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK12_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK10_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK10_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK10_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK10_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_TX_I:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK12_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK12_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK4_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK4_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_RX_I:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK12_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK12_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK6_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK6_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_TX:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK5_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK5_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RX:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK7_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK7_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RM:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK13_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK13_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK11_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK11_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK11_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK11_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_TX_I:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK13_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK13_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK5_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK5_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_RX_I:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK13_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK13_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK7_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK7_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI0_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI0:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSCI =
+                    (uint32_t) (R_CPG_CPG_CLKON_RSCI_CLK8_ONWEN_Msk | R_CPG_CPG_CLKON_RSCI_CLK8_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSCI_CLK8_MON_Msk & R_CPG->CPG_CLKMON_RSCI),
+                                           R_CPG_CPG_CLKMON_RSCI_CLK8_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI1_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI1:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSCI =
+                    (uint32_t) (R_CPG_CPG_CLKON_RSCI_CLK9_ONWEN_Msk | R_CPG_CPG_CLKON_RSCI_CLK9_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSCI_CLK9_MON_Msk & R_CPG->CPG_CLKMON_RSCI),
+                                           R_CPG_CPG_CLKMON_RSCI_CLK9_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI2_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI2:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSCI =
+                    (uint32_t) (R_CPG_CPG_CLKON_RSCI_CLK10_ONWEN_Msk | R_CPG_CPG_CLKON_RSCI_CLK10_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSCI_CLK10_MON_Msk & R_CPG->CPG_CLKMON_RSCI),
+                                           R_CPG_CPG_CLKMON_RSCI_CLK10_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI3_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI3:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSCI =
+                    (uint32_t) (R_CPG_CPG_CLKON_RSCI_CLK11_ONWEN_Msk | R_CPG_CPG_CLKON_RSCI_CLK11_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSCI_CLK11_MON_Msk & R_CPG->CPG_CLKMON_RSCI),
+                                           R_CPG_CPG_CLKMON_RSCI_CLK11_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI0_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI0:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSPI =
+                    (uint32_t) (R_CPG_CPG_CLKON_RSPI_CLK8_ONWEN_Msk | R_CPG_CPG_CLKON_RSPI_CLK8_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSPI_CLK8_MON_Msk & R_CPG->CPG_CLKMON_RSPI),
+                                           R_CPG_CPG_CLKMON_RSPI_CLK8_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI1_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI1:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSPI =
+                    (uint32_t) (R_CPG_CPG_CLKON_RSPI_CLK9_ONWEN_Msk | R_CPG_CPG_CLKON_RSPI_CLK9_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSPI_CLK9_MON_Msk & R_CPG->CPG_CLKMON_RSPI),
+                                           R_CPG_CPG_CLKMON_RSPI_CLK9_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI2_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI2:
+        {
+            /* If the clock was stopped before setting the Static Mux Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_RSPI =
+                    (uint32_t) (R_CPG_CPG_CLKON_RSPI_CLK10_ONWEN_Msk | R_CPG_CPG_CLKON_RSPI_CLK10_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_RSPI_CLK10_MON_Msk & R_CPG->CPG_CLKMON_RSPI),
+                                           R_CPG_CPG_CLKMON_RSPI_CLK10_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
         default:
         {
             FSP_PARAMETER_NOT_USED(clock_status);
@@ -2061,7 +3109,7 @@ static void bsp_prv_static_gear_control_pre_setting (fsp_priv_clock_divider_t di
             /* If LVDS_TOP_CLK_DOT_CH0 is supplied, the clock stops before setting the Static Gear Control Register. */
             if (clock_status[2])
             {
-                R_CPG->CPG_CLKON_14 = (uint32_t) R_CPG_CPG_CLKON_14_CLK15_ONWEN_Msk;
+                R_CPG->CPG_CLKON_26 = (uint32_t) R_CPG_CPG_CLKON_26_CLK2_ONWEN_Msk;
                 FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_10_CLK24_MON_Msk & R_CPG->CPG_CLKMON_10), 0U);
             }
 
@@ -2095,6 +3143,163 @@ static void bsp_prv_static_gear_control_pre_setting (fsp_priv_clock_divider_t di
             {
                 R_CPG->CPG_CLKON_26 = (uint32_t) R_CPG_CPG_CLKON_26_CLK3_ONWEN_Msk;
                 FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_10_CLK25_MON_Msk & R_CPG->CPG_CLKMON_10), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO32_VCLK:
+#endif
+#if defined(BSP_CFG_DIV_DSI_B_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO16_VCLK:
+#endif
+#if defined(BSP_CFG_DIV_DSI_A_SET_DIV) || defined(BSP_CFG_DIV_DSI_B_SET_DIV)
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI;
+            clock_status[1] = R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS;
+            clock_status[2] = R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC;
+
+            /* If MIPI_DSI_VCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_MIPI_DSI = (uint32_t) (R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI), 0U);
+            }
+
+            /* If LVDS_CLK_DOT0 is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_LVDS = (uint32_t) (R_CPG_CPG_CLKON_LVDS_CLK1_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS), 0U);
+            }
+
+            /* If LCDC_CLK_D is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[2])
+            {
+                R_CPG->CPG_CLKON_LCDC = (uint32_t) (R_CPG_CPG_CLKON_LCDC_CLK1_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_C_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO2_LVDS:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI;
+            clock_status[1] = R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS;
+            clock_status[2] = R_CPG_CPG_CLKMON_LVDS_CLK0_MON_Msk & R_CPG->CPG_CLKMON_LVDS;
+            clock_status[3] = R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC;
+
+            /* If MIPI_DSI_VCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_MIPI_DSI = (uint32_t) (R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI), 0U);
+            }
+
+            /* If LVDS_CLK_DOT0 is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_LVDS = (uint32_t) (R_CPG_CPG_CLKON_LVDS_CLK1_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS), 0U);
+            }
+
+            /* If LVDS_PLLCLK is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[2])
+            {
+                R_CPG->CPG_CLKON_LVDS = (uint32_t) (R_CPG_CPG_CLKON_LVDS_CLK0_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LVDS_CLK0_MON_Msk & R_CPG->CPG_CLKMON_LVDS), 0U);
+            }
+
+            /* If LCDC_CLK_D is supplied, the clock stops before setting the Static Mux Control Register. */
+            if (clock_status[3])
+            {
+                R_CPG->CPG_CLKON_LCDC = (uint32_t) (R_CPG_CPG_CLKON_LCDC_CLK1_ONWEN_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_TR:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+            clock_status[1] = R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH0_RX_I and ETH0_RX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK6_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            /* If ETH0_TX_I and ETH0_TX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK4_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_B_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_RM:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH0_TX_I and ETH0_RX_I (RMII Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK12_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_C_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_TR:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+            clock_status[1] = R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH1_RX_I and ETH1_RX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK7_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            /* If ETH1_TX_I and ETH1_TX_180_I (Normal Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK5_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_D_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_RM:
+        {
+            clock_status[0] = R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH;
+
+            /* If ETH1_TX_I and ETH1_RX_I (RMII Mode) are supplied, the clocks stop before setting the Static Mux Control Register. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH = (uint32_t) R_CPG_CPG_CLKON_ETH_CLK13_ONWEN_Msk;
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH), 0U);
             }
 
             break;
@@ -2337,6 +3542,170 @@ static void bsp_prv_static_gear_control_post_setting (fsp_priv_clock_divider_t d
         }
 #endif
 
+#if defined(BSP_CFG_DIV_DSI_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO32_VCLK:
+#endif
+#if defined(BSP_CFG_DIV_DSI_B_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO16_VCLK:
+#endif
+#if defined(BSP_CFG_DIV_DSI_A_SET_DIV) || defined(BSP_CFG_DIV_DSI_B_SET_DIV)
+        {
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_MIPI_DSI =
+                    (uint32_t) (R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ONWEN_Msk | R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI),
+                                           R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_LVDS =
+                    (uint32_t) (R_CPG_CPG_CLKON_LVDS_CLK1_ONWEN_Msk | R_CPG_CPG_CLKON_LVDS_CLK1_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS),
+                                           R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[2])
+            {
+                R_CPG->CPG_CLKON_LCDC =
+                    (uint32_t) (R_CPG_CPG_CLKON_LCDC_CLK1_ONWEN_Msk | R_CPG_CPG_CLKON_LCDC_CLK1_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC),
+                                           R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_C_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO2_LVDS:
+        {
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_MIPI_DSI =
+                    (uint32_t) (R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ONWEN_Msk | R_CPG_CPG_CLKON_MIPI_DSI_CLK4_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk & R_CPG->CPG_CLKMON_MIPI_DSI),
+                                           R_CPG_CPG_CLKMON_MIPI_DSI_CLK4_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_LVDS =
+                    (uint32_t) (R_CPG_CPG_CLKON_LVDS_CLK1_ONWEN_Msk | R_CPG_CPG_CLKON_LVDS_CLK1_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LVDS),
+                                           R_CPG_CPG_CLKMON_LVDS_CLK1_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[2])
+            {
+                R_CPG->CPG_CLKON_LVDS =
+                    (uint32_t) (R_CPG_CPG_CLKON_LVDS_CLK0_ONWEN_Msk | R_CPG_CPG_CLKON_LVDS_CLK0_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LVDS_CLK0_MON_Msk & R_CPG->CPG_CLKMON_LVDS),
+                                           R_CPG_CPG_CLKMON_LVDS_CLK0_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[3])
+            {
+                R_CPG->CPG_CLKON_LCDC =
+                    (uint32_t) (R_CPG_CPG_CLKON_LCDC_CLK1_ONWEN_Msk | R_CPG_CPG_CLKON_LCDC_CLK1_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk & R_CPG->CPG_CLKMON_LCDC),
+                                           R_CPG_CPG_CLKMON_LCDC_CLK1_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_TR:
+        {
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK6_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK6_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK6_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK4_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK4_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK4_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_B_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_RM:
+        {
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK12_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK12_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK12_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_C_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_TR:
+        {
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK7_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK7_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK7_MON_Msk);
+            }
+
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[1])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK5_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK5_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK5_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_D_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_RM:
+        {
+            /* If the clock was stopped before setting the Static Gear Control Register, the clock supply resumes. */
+            if (clock_status[0])
+            {
+                R_CPG->CPG_CLKON_ETH =
+                    (uint32_t) (R_CPG_CPG_CLKON_ETH_CLK13_ONWEN_Msk | R_CPG_CPG_CLKON_ETH_CLK13_ON_Msk);
+                FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk & R_CPG->CPG_CLKMON_ETH),
+                                           R_CPG_CPG_CLKMON_ETH_CLK13_MON_Msk);
+            }
+
+            break;
+        }
+#endif
+
         default:
         {
             FSP_PARAMETER_NOT_USED(clock_status);
@@ -2354,11 +3723,17 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
 {
     switch (clock)
     {
-#if defined(BSP_CFG_DIVPL1_SET_DIV)
+#if defined(BSP_CFG_DIVPL1_SET_DIV) || defined(BSP_CFG_DIV_PLL1_A_SET_DIV)
         case FSP_PRIV_CLOCK_ICLK:
         {
+ #if defined(BSP_CFG_DIVPL1_SET_DIV)
             uint32_t div = (R_CPG_CPG_PL1_DDIV_DIVPL1_SET_Msk & R_CPG->CPG_PL1_DDIV) >>
                            R_CPG_CPG_PL1_DDIV_DIVPL1_SET_Pos;
+ #endif
+ #if defined(BSP_CFG_DIV_PLL1_A_SET_DIV)
+            uint32_t div = (R_CPG_CPG_PL1_DDIV_DIV_PLL1_A_SET_Msk & R_CPG->CPG_PL1_DDIV) >>
+                           R_CPG_CPG_PL1_DDIV_DIV_PLL1_A_SET_Pos;
+ #endif
             g_clock_freq[FSP_PRIV_CLOCK_ICLK] = BSP_CFG_CLOCK_PLL1_HZ >> div;
 
             break;
@@ -2397,11 +3772,17 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
         }
 #endif
 
-#if defined(BSP_CFG_SELPL4_SET_SOURCE)
+#if defined(BSP_CFG_SELPL4_SET_SOURCE) || defined(BSP_CFG_SEL_PLL4_SET_SOURCE)
         case FSP_PRIV_CLOCK_S0CLK:
         {
+ #if defined(BSP_CFG_SELPL4_SET_SOURCE)
             uint32_t sel = (R_CPG_CPG_PLL_DSEL_SELPL4_SET_Msk & R_CPG->CPG_PLL_DSEL) >>
                            R_CPG_CPG_PLL_DSEL_SELPL4_SET_Pos;
+ #endif
+ #if defined(BSP_CFG_SEL_PLL4_SET_SOURCE)
+            uint32_t sel = (R_CPG_CPG_PLL_DSEL_SEL_PLL4_SET_Msk & R_CPG->CPG_PLL_DSEL) >>
+                           R_CPG_CPG_PLL_DSEL_SEL_PLL4_SET_Pos;
+ #endif
             if (BSP_CLOCKS_SOURCE_CLOCK_OSC_0024 == sel)
             {
                 g_clock_freq[FSP_PRIV_CLOCK_S0CLK] = BSP_CFG_CLOCK_OSCCLK_HZ / BSP_PRV_FIXED_DIVISION_RATIO_1000 /
@@ -2483,6 +3864,41 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
         }
 #endif
 
+#if defined(BSP_CFG_SEL_XSPI_SET_SOURCE) && defined(BSP_CFG_DIV_XSPI_SET_DIV)
+        case FSP_PRIV_CLOCK_SPI0CLK:
+        case FSP_PRIV_CLOCK_SPI1CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_XSPI_SSEL_SEL_XSPI_SET_Msk & R_CPG->CPG_XSPI_SSEL) >>
+                           R_CPG_CPG_XSPI_SSEL_SEL_XSPI_SET_Pos;
+            uint32_t div = 2 *
+                           (((R_CPG_CPG_XSPI_DDIV_DIV_XSPI_SET_Msk & R_CPG->CPG_XSPI_DDIV) >>
+                             R_CPG_CPG_XSPI_DDIV_DIV_XSPI_SET_Pos) +
+                            1);
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_XSPI_800 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_SPI0CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) / div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_XSPI_600 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_SPI0CLK] = (BSP_CFG_CLOCK_PLL1_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) / div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_XSPI_522 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_SPI0CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_3) / div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_SPI0CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+            }
+
+            g_clock_freq[FSP_PRIV_CLOCK_SPI1CLK] = g_clock_freq[FSP_PRIV_CLOCK_SPI0CLK] /
+                                                   BSP_PRV_FIXED_DIVISION_RATIO_2;
+
+            break;
+        }
+#endif
+
 #if defined(BSP_CFG_SEL_SDHI0_SET_SOURCE) && defined(BSP_CFG_DIVSDHI0_SET_DIV)
         case FSP_PRIV_CLOCK_SD0CLK:
         {
@@ -2493,7 +3909,17 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
 
             if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_800 == sel)
             {
+ #if defined(BSP_CFG_CLOCK_PLL2_1600_HZ)
                 g_clock_freq[FSP_PRIV_CLOCK_SD0CLK] = (BSP_CFG_CLOCK_PLL2_1600_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >>
+                                                      div;
+ #endif
+ #if defined(BSP_CFG_CLOCK_PLL2_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD0CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+ #endif
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL1_600 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_SD0CLK] = (BSP_CFG_CLOCK_PLL1_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >>
                                                       div;
             }
             else if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 == sel)
@@ -2502,7 +3928,13 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
             }
             else
             {
-                g_clock_freq[FSP_PRIV_CLOCK_SD0CLK] = (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+ #if defined(BSP_CFG_CLOCK_PLL2_1600_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD0CLK] = (BSP_CFG_CLOCK_PLL2_1600_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >>
+                                                      div;
+ #endif
+ #if defined(BSP_CFG_CLOCK_PLL2_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD0CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+ #endif
             }
 
             break;
@@ -2519,7 +3951,17 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
 
             if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_800 == sel)
             {
+ #if defined(BSP_CFG_CLOCK_PLL2_1600_HZ)
                 g_clock_freq[FSP_PRIV_CLOCK_SD1CLK] = (BSP_CFG_CLOCK_PLL2_1600_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >>
+                                                      div;
+ #endif
+ #if defined(BSP_CFG_CLOCK_PLL2_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD1CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+ #endif
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL1_600 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_SD1CLK] = (BSP_CFG_CLOCK_PLL1_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >>
                                                       div;
             }
             else if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 == sel)
@@ -2528,7 +3970,13 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
             }
             else
             {
-                g_clock_freq[FSP_PRIV_CLOCK_SD1CLK] = (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+ #if defined(BSP_CFG_CLOCK_PLL2_1600_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD1CLK] = (BSP_CFG_CLOCK_PLL2_1600_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >>
+                                                      div;
+ #endif
+ #if defined(BSP_CFG_CLOCK_PLL2_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD1CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+ #endif
             }
 
             break;
@@ -2545,7 +3993,17 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
 
             if (BSP_CLOCKS_SOURCE_CLOCK_PLL2_800 == sel)
             {
+ #if defined(BSP_CFG_CLOCK_PLL2_1600_HZ)
                 g_clock_freq[FSP_PRIV_CLOCK_SD2CLK] = (BSP_CFG_CLOCK_PLL2_1600_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >>
+                                                      div;
+ #endif
+ #if defined(BSP_CFG_CLOCK_PLL2_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD2CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+ #endif
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL1_600 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_SD2CLK] = (BSP_CFG_CLOCK_PLL1_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >>
                                                       div;
             }
             else if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 == sel)
@@ -2554,7 +4012,13 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
             }
             else
             {
-                g_clock_freq[FSP_PRIV_CLOCK_SD2CLK] = (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+ #if defined(BSP_CFG_CLOCK_PLL2_1600_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD2CLK] = (BSP_CFG_CLOCK_PLL2_1600_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >>
+                                                      div;
+ #endif
+ #if defined(BSP_CFG_CLOCK_PLL2_HZ)
+                g_clock_freq[FSP_PRIV_CLOCK_SD2CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+ #endif
             }
 
             break;
@@ -2578,6 +4042,24 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
         }
 #endif
 
+#if defined(BSP_CFG_DIV_PLL2_B_SET_DIV)
+        case FSP_PRIV_CLOCK_P0CLK:
+        {
+            uint32_t div = ((R_CPG_CPG_PL2_DDIV_DIV_PLL2_B_SET_Msk & R_CPG->CPG_PL2_DDIV) >>
+                            R_CPG_CPG_PL2_DDIV_DIV_PLL2_B_SET_Pos);
+            if (BSP_CLOCKS_PLL2_100_DIV_256 == div)
+            {
+                div = div + 2;
+            }
+
+            div = div + 3;
+
+            g_clock_freq[FSP_PRIV_CLOCK_P0CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+
+            break;
+        }
+#endif
+
 #if defined(BSP_CFG_DIVPL3A_SET_DIV)
         case FSP_PRIV_CLOCK_P1CLK:
         {
@@ -2590,6 +4072,26 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
 
             g_clock_freq[FSP_PRIV_CLOCK_P1CLK] =
                 (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_PLL3_A_SET_DIV)
+        case FSP_PRIV_CLOCK_P1CLK:
+        case FSP_PRIV_CLOCK_M6CLK:
+        {
+            uint32_t div = ((R_CPG_CPG_PL3_DDIV_DIV_PLL3_A_SET_Msk & R_CPG->CPG_PL3_DDIV) >>
+                            R_CPG_CPG_PL3_DDIV_DIV_PLL3_A_SET_Pos);
+            if (BSP_CLOCKS_PLL3_200_DIV_128 == div)
+            {
+                div = div + 2;
+            }
+
+            div = div + 2;
+
+            g_clock_freq[FSP_PRIV_CLOCK_P1CLK] = (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+            g_clock_freq[FSP_PRIV_CLOCK_M6CLK] = g_clock_freq[FSP_PRIV_CLOCK_P1CLK] / BSP_PRV_FIXED_DIVISION_RATIO_2;
 
             break;
         }
@@ -2612,6 +4114,25 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
         }
 #endif
 
+#if defined(BSP_CFG_DIV_PLL3_B_SET_DIV)
+        case FSP_PRIV_CLOCK_P2CLK:
+        {
+            uint32_t div = ((R_CPG_CPG_PL3_DDIV_DIV_PLL3_B_SET_Msk & R_CPG->CPG_PL3_DDIV) >>
+                            R_CPG_CPG_PL3_DDIV_DIV_PLL3_B_SET_Pos);
+            if (BSP_CLOCKS_PLL3_100_DIV_256 == div)
+            {
+                div = div + 2;
+            }
+
+            div = div + 3;
+
+            g_clock_freq[FSP_PRIV_CLOCK_P2CLK] =
+                (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+
+            break;
+        }
+#endif
+
 #if defined(BSP_CFG_DIVPL3C_SET_DIV)
         case FSP_PRIV_CLOCK_P3CLK:
         {
@@ -2624,6 +4145,24 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
 
             g_clock_freq[FSP_PRIV_CLOCK_P3CLK] =
                 (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_PLL2_A_SET_DIV)
+        case FSP_PRIV_CLOCK_P3CLK:
+        {
+            uint32_t div = ((R_CPG_CPG_PL2_DDIV_DIV_PLL2_A_SET_Msk & R_CPG->CPG_PL2_DDIV) >>
+                            R_CPG_CPG_PL2_DDIV_DIV_PLL2_A_SET_Pos);
+            if (BSP_CLOCKS_PLL2_200_DIV_128 == div)
+            {
+                div = div + 2;
+            }
+
+            div = div + 2;
+
+            g_clock_freq[FSP_PRIV_CLOCK_P3CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
 
             break;
         }
@@ -3050,6 +4589,872 @@ static void bsp_prv_clock_frequency_calculation (fsp_priv_clock_t clock)
         }
 #endif
 
+#if defined(BSP_CFG_DIV_CORE0_SET_DIV)
+        case FSP_PRIV_CLOCK_IC0CLK:
+        {
+            uint32_t div =
+                ((R_CPG_CPG_CA55CORE_DDIV_DIV_CORE0_SET_Msk & R_CPG->CPG_CA55CORE_DDIV) >>
+                 R_CPG_CPG_CA55CORE_DDIV_DIV_CORE0_SET_Pos);
+            g_clock_freq[FSP_PRIV_CLOCK_IC0CLK] = BSP_CFG_CLOCK_PLL1_HZ >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CORE1_SET_DIV)
+        case FSP_PRIV_CLOCK_IC1CLK:
+        {
+            uint32_t div =
+                ((R_CPG_CPG_CA55CORE_DDIV_DIV_CORE1_SET_Msk & R_CPG->CPG_CA55CORE_DDIV) >>
+                 R_CPG_CPG_CA55CORE_DDIV_DIV_CORE1_SET_Pos);
+            g_clock_freq[FSP_PRIV_CLOCK_IC1CLK] = BSP_CFG_CLOCK_PLL1_HZ >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CORE2_SET_DIV)
+        case FSP_PRIV_CLOCK_IC2CLK:
+        {
+            uint32_t div =
+                ((R_CPG_CPG_CA55CORE_DDIV_DIV_CORE2_SET_Msk & R_CPG->CPG_CA55CORE_DDIV) >>
+                 R_CPG_CPG_CA55CORE_DDIV_DIV_CORE2_SET_Pos);
+            g_clock_freq[FSP_PRIV_CLOCK_IC2CLK] = BSP_CFG_CLOCK_PLL1_HZ >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CORE3_SET_DIV)
+        case FSP_PRIV_CLOCK_IC3CLK:
+        {
+            uint32_t div =
+                ((R_CPG_CPG_CA55CORE_DDIV_DIV_CORE3_SET_Msk & R_CPG->CPG_CA55CORE_DDIV) >>
+                 R_CPG_CPG_CA55CORE_DDIV_DIV_CORE3_SET_Pos);
+            g_clock_freq[FSP_PRIV_CLOCK_IC3CLK] = BSP_CFG_CLOCK_PLL1_HZ >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CLKQSPI_SET_DIV)
+        case FSP_PRIV_CLOCK_P7CLK:
+        {
+            uint32_t div = ((R_CPG_CPG_PL2_DDIV_DIV_CLKQSPI_SET_Msk & R_CPG->CPG_PL2_DDIV) >>
+                            R_CPG_CPG_PL2_DDIV_DIV_CLKQSPI_SET_Pos);
+            if (BSP_CLOCKS_PLL2_CLKQSPI_DIV_128 == div)
+            {
+                div = div + 2;
+            }
+
+            div = div + 2;
+
+            g_clock_freq[FSP_PRIV_CLOCK_P7CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI0_SET_SOURCE) && defined(BSP_CFG_DIV_RSCI0_SET_DIV)
+        case FSP_PRIV_CLOCK_P13CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_RSCI_SSEL_SEL_RSCI0_SET_Msk & R_CPG->CPG_RSCI_SSEL) >>
+                           R_CPG_CPG_RSCI_SSEL_SEL_RSCI0_SET_Pos;
+            uint32_t div = ((R_CPG_CPG_RSCI_DDIV_DIV_RSCI0_SET_Msk & R_CPG->CPG_RSCI_DDIV) >>
+                            R_CPG_CPG_RSCI_DDIV_DIV_RSCI0_SET_Pos) + 1;
+            if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_320 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P13CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_266 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P13CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_228 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P13CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_7) >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P13CLK] =
+                    (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI1_SET_SOURCE) && defined(BSP_CFG_DIV_RSCI1_SET_DIV)
+        case FSP_PRIV_CLOCK_P14CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_RSCI_SSEL_SEL_RSCI1_SET_Msk & R_CPG->CPG_RSCI_SSEL) >>
+                           R_CPG_CPG_RSCI_SSEL_SEL_RSCI1_SET_Pos;
+            uint32_t div = ((R_CPG_CPG_RSCI_DDIV_DIV_RSCI1_SET_Msk & R_CPG->CPG_RSCI_DDIV) >>
+                            R_CPG_CPG_RSCI_DDIV_DIV_RSCI1_SET_Pos) + 1;
+            if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_320 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P14CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_266 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P14CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_228 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P14CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_7) >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P14CLK] =
+                    (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI2_SET_SOURCE) && defined(BSP_CFG_DIV_RSCI2_SET_DIV)
+        case FSP_PRIV_CLOCK_P15CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_RSCI_SSEL_SEL_RSCI2_SET_Msk & R_CPG->CPG_RSCI_SSEL) >>
+                           R_CPG_CPG_RSCI_SSEL_SEL_RSCI2_SET_Pos;
+            uint32_t div = ((R_CPG_CPG_RSCI_DDIV_DIV_RSCI2_SET_Msk & R_CPG->CPG_RSCI_DDIV) >>
+                            R_CPG_CPG_RSCI_DDIV_DIV_RSCI2_SET_Pos) + 1;
+            if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_320 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P15CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_266 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P15CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_228 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P15CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_7) >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P15CLK] =
+                    (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI3_SET_SOURCE) && defined(BSP_CFG_DIV_RSCI3_SET_DIV)
+        case FSP_PRIV_CLOCK_P16CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_RSCI_SSEL_SEL_RSCI3_SET_Msk & R_CPG->CPG_RSCI_SSEL) >>
+                           R_CPG_CPG_RSCI_SSEL_SEL_RSCI3_SET_Pos;
+            uint32_t div = ((R_CPG_CPG_RSCI_DDIV_DIV_RSCI3_SET_Msk & R_CPG->CPG_RSCI_DDIV) >>
+                            R_CPG_CPG_RSCI_DDIV_DIV_RSCI3_SET_Pos) + 1;
+            if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_320 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P16CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_266 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P16CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSCI_228 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P16CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_7) >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P16CLK] =
+                    (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI0_SET_SOURCE) && defined(BSP_CFG_DIV_RSPI0_SET_DIV)
+        case FSP_PRIV_CLOCK_P17CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_RSPI_SSEL_SEL_RSPI0_SET_Msk & R_CPG->CPG_RSPI_SSEL) >>
+                           R_CPG_CPG_RSPI_SSEL_SEL_RSPI0_SET_Pos;
+            uint32_t div = (R_CPG_CPG_RSPI_DDIV_DIV_RSPI0_SET_Msk & R_CPG->CPG_RSPI_DDIV) >>
+                           R_CPG_CPG_RSPI_DDIV_DIV_RSPI0_SET_Pos;
+            if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_320 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P17CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_266 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P17CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_228 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P17CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_7) >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P17CLK] =
+                    (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI1_SET_SOURCE) && defined(BSP_CFG_DIV_RSPI1_SET_DIV)
+        case FSP_PRIV_CLOCK_P18CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_RSPI_SSEL_SEL_RSPI1_SET_Msk & R_CPG->CPG_RSPI_SSEL) >>
+                           R_CPG_CPG_RSPI_SSEL_SEL_RSPI1_SET_Pos;
+            uint32_t div = (R_CPG_CPG_RSPI_DDIV_DIV_RSPI1_SET_Msk & R_CPG->CPG_RSPI_DDIV) >>
+                           R_CPG_CPG_RSPI_DDIV_DIV_RSPI1_SET_Pos;
+            if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_320 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P18CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_266 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P18CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_228 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P18CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_7) >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P18CLK] =
+                    (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI2_SET_SOURCE) && defined(BSP_CFG_DIV_RSPI2_SET_DIV)
+        case FSP_PRIV_CLOCK_P19CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_RSPI_SSEL_SEL_RSPI2_SET_Msk & R_CPG->CPG_RSPI_SSEL) >>
+                           R_CPG_CPG_RSPI_SSEL_SEL_RSPI2_SET_Pos;
+            uint32_t div = (R_CPG_CPG_RSPI_DDIV_DIV_RSPI2_SET_Msk & R_CPG->CPG_RSPI_DDIV) >>
+                           R_CPG_CPG_RSPI_DDIV_DIV_RSPI2_SET_Pos;
+            if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_320 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P19CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_266 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P19CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_RSPI_228 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P19CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_7) >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_P19CLK] =
+                    (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_SET_DIV)
+        case FSP_PRIV_CLOCK_M1CLK:
+        {
+            uint32_t div =
+                ((R_CPG_CPG_DSI_DDIV_DIV_DSI_SET_Msk & R_CPG->CPG_DSI_DDIV) >> R_CPG_CPG_DSI_DDIV_DIV_DSI_SET_Pos) + 4;
+            g_clock_freq[FSP_PRIV_CLOCK_M1CLK] = (BSP_CFG_CLOCK_PLL2_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_C_SET_DIV)
+        case FSP_PRIV_CLOCK_M2CLK:
+        {
+            uint32_t div =
+                ((R_CPG_CPG_DSI_SDIV_DIV_DSI_C_SET_Msk & R_CPG->CPG_DSI_SDIV) >> R_CPG_CPG_DSI_SDIV_DIV_DSI_C_SET_Pos);
+            g_clock_freq[FSP_PRIV_CLOCK_M2CLK] = BSP_CFG_CLOCK_PLL7_HZ >> div;
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_A_SET_DIV) && defined(BSP_CFG_DIV_DSI_B_SET_DIV) && defined(BSP_CFG_SEL_DSI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_M3CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_DSI_SSEL_SEL_DSI_SET_Msk & R_CPG->CPG_DSI_SSEL) >>
+                           R_CPG_CPG_DSI_SSEL_SEL_DSI_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_DIV_DSI_DIV1TO2_LVDS_DIV_7 == sel)
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_DSI_SDIV_DIV_DSI_C_SET_Msk & R_CPG->CPG_DSI_SDIV) >>
+                     R_CPG_CPG_DSI_SDIV_DIV_DSI_C_SET_Pos);
+                g_clock_freq[FSP_PRIV_CLOCK_M3CLK] =
+                    (uint32_t) ((BSP_CFG_CLOCK_PLL7_HZ >> div) / BSP_PRV_FIXED_DIVISION_RATIO_7);
+            }
+            else
+            {
+                uint32_t div_a =
+                    ((R_CPG_CPG_DSI_SDIV_DIV_DSI_A_SET_Msk & R_CPG->CPG_DSI_SDIV) >>
+                     R_CPG_CPG_DSI_SDIV_DIV_DSI_A_SET_Pos);
+                uint32_t div_b =
+                    ((R_CPG_CPG_DSI_SDIV_DIV_DSI_B_SET_Msk & R_CPG->CPG_DSI_SDIV) >>
+                     R_CPG_CPG_DSI_SDIV_DIV_DSI_B_SET_Pos) +
+                    1;
+                g_clock_freq[FSP_PRIV_CLOCK_M3CLK] = (uint32_t) ((BSP_CFG_CLOCK_PLL7_HZ >> div_a) / div_b);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV) && defined(BSP_CFG_SEL_ETH0A_SET_SOURCE) &&     \
+        defined(BSP_CFG_SEL_ETH0C_SET_SOURCE) && defined(BSP_CFG_DIV_ETH_B_SET_DIV) && \
+        defined(BSP_CFG_SEL_ETH0D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHTX01CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0D_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH0D_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_NORMAL_MODE == sel)
+            {
+                sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0A_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                      R_CPG_CPG_ETH_SSEL_SEL_ETH0A_SET_Pos;
+
+                if (BSP_CLOCKS_SOURCE_CLOCK_DIV_ETH0_TR == sel)
+                {
+                    uint32_t div =
+                        ((R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                         R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Pos);
+                    if (BSP_CLOCKS_ETH0_TR_DIV_4 == div)
+                    {
+                        div = 4;
+                    }
+                    else if (BSP_CLOCKS_ETH0_TR_DIV_20 == div)
+                    {
+                        div = 20;
+                    }
+                    else
+                    {
+                        div = 200;
+                    }
+
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHTX01CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+                }
+                else
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHTX01CLK] = ETH0_TXC_TX_CLK_IN_HZ;
+                }
+            }
+            else
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_ETH_SDIV_DIV_ETH_B_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                     R_CPG_CPG_ETH_SDIV_DIV_ETH_B_SET_Pos);
+
+                if (BSP_CLOCKS_ETH0_RM_DIV_2 == div)
+                {
+                    div = 2;
+                }
+                else
+                {
+                    div = 20;
+                }
+
+                sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0C_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                      R_CPG_CPG_ETH_SSEL_SEL_ETH0C_SET_Pos;
+
+                if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_DIV_10 == sel)
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHTX01CLK] =
+                        (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_10) / div;
+                }
+                else
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHTX01CLK] = ETH0_RXC_RX_CLK_IN_HZ / div;
+                }
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV) && defined(BSP_CFG_SEL_ETH0B_SET_SOURCE) &&     \
+        defined(BSP_CFG_SEL_ETH0C_SET_SOURCE) && defined(BSP_CFG_DIV_ETH_B_SET_DIV) && \
+        defined(BSP_CFG_SEL_ETH0E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHRX01CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0E_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH0E_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_NORMAL_MODE == sel)
+            {
+                sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0B_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                      R_CPG_CPG_ETH_SSEL_SEL_ETH0B_SET_Pos;
+
+                if (BSP_CLOCKS_SOURCE_CLOCK_DIV_ETH0_TR == sel)
+                {
+                    uint32_t div =
+                        ((R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                         R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Pos);
+                    if (BSP_CLOCKS_ETH0_TR_DIV_4 == div)
+                    {
+                        div = 4;
+                    }
+                    else if (BSP_CLOCKS_ETH0_TR_DIV_20 == div)
+                    {
+                        div = 20;
+                    }
+                    else
+                    {
+                        div = 200;
+                    }
+
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHRX01CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+                }
+                else
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHRX01CLK] = ETH0_RXC_RX_CLK_IN_HZ;
+                }
+            }
+            else
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_ETH_SDIV_DIV_ETH_B_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                     R_CPG_CPG_ETH_SDIV_DIV_ETH_B_SET_Pos);
+
+                if (BSP_CLOCKS_ETH0_RM_DIV_2 == div)
+                {
+                    div = 2;
+                }
+                else
+                {
+                    div = 20;
+                }
+
+                sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0C_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                      R_CPG_CPG_ETH_SSEL_SEL_ETH0C_SET_Pos;
+
+                if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_DIV_10 == sel)
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHRX01CLK] =
+                        (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_10) / div;
+                }
+                else
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHRX01CLK] = ETH0_RXC_RX_CLK_IN_HZ / div;
+                }
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHRM0CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0C_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH0C_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_DIV_10 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_ETHRM0CLK] = (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_10);
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_ETHRM0CLK] = ETH0_RXC_RX_CLK_IN_HZ;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV) && defined(BSP_CFG_SEL_ETH0A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHTX02CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0A_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH0A_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_DIV_ETH0_TR == sel)
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                     R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Pos);
+                if (BSP_CLOCKS_ETH0_TR_DIV_4 == div)
+                {
+                    div = 4;
+                }
+                else if (BSP_CLOCKS_ETH0_TR_DIV_20 == div)
+                {
+                    div = 20;
+                }
+                else
+                {
+                    div = 200;
+                }
+
+                g_clock_freq[FSP_PRIV_CLOCK_ETHTX02CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_ETHTX02CLK] = ETH0_TXC_TX_CLK_IN_HZ;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV) && defined(BSP_CFG_SEL_ETH0B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHRX02CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH0B_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH0B_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_DIV_ETH0_TR == sel)
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                     R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Pos);
+                if (BSP_CLOCKS_ETH0_TR_DIV_4 == div)
+                {
+                    div = 4;
+                }
+                else if (BSP_CLOCKS_ETH0_TR_DIV_20 == div)
+                {
+                    div = 20;
+                }
+                else
+                {
+                    div = 200;
+                }
+
+                g_clock_freq[FSP_PRIV_CLOCK_ETHRX02CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_ETHRX02CLK] = ETH0_RXC_RX_CLK_IN_HZ;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_C_SET_DIV) && defined(BSP_CFG_SEL_ETH1A_SET_SOURCE) &&     \
+        defined(BSP_CFG_SEL_ETH1C_SET_SOURCE) && defined(BSP_CFG_DIV_ETH_D_SET_DIV) && \
+        defined(BSP_CFG_SEL_ETH1D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHTX11CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1D_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH1D_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_NORMAL_MODE == sel)
+            {
+                sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1A_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                      R_CPG_CPG_ETH_SSEL_SEL_ETH1A_SET_Pos;
+
+                if (BSP_CLOCKS_SOURCE_CLOCK_DIV_ETH1_TR == sel)
+                {
+                    uint32_t div =
+                        ((R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                         R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Pos);
+                    if (BSP_CLOCKS_ETH1_TR_DIV_4 == div)
+                    {
+                        div = 4;
+                    }
+                    else if (BSP_CLOCKS_ETH1_TR_DIV_20 == div)
+                    {
+                        div = 20;
+                    }
+                    else
+                    {
+                        div = 200;
+                    }
+
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHTX11CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+                }
+                else
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHTX11CLK] = ETH0_TXC_TX_CLK_IN_HZ;
+                }
+            }
+            else
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_ETH_SDIV_DIV_ETH_D_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                     R_CPG_CPG_ETH_SDIV_DIV_ETH_D_SET_Pos);
+
+                if (BSP_CLOCKS_ETH1_RM_DIV_2 == div)
+                {
+                    div = 2;
+                }
+                else
+                {
+                    div = 20;
+                }
+
+                sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1C_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                      R_CPG_CPG_ETH_SSEL_SEL_ETH1C_SET_Pos;
+
+                if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_DIV_10 == sel)
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHTX11CLK] =
+                        (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_10) / div;
+                }
+                else
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHTX11CLK] = ETH0_RXC_RX_CLK_IN_HZ / div;
+                }
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_C_SET_DIV) && defined(BSP_CFG_SEL_ETH1B_SET_SOURCE) &&     \
+        defined(BSP_CFG_SEL_ETH1C_SET_SOURCE) && defined(BSP_CFG_DIV_ETH_D_SET_DIV) && \
+        defined(BSP_CFG_SEL_ETH1E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHRX11CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1E_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH1E_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_NORMAL_MODE == sel)
+            {
+                sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1B_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                      R_CPG_CPG_ETH_SSEL_SEL_ETH1B_SET_Pos;
+
+                if (BSP_CLOCKS_SOURCE_CLOCK_DIV_ETH1_TR == sel)
+                {
+                    uint32_t div =
+                        ((R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                         R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Pos);
+                    if (BSP_CLOCKS_ETH1_TR_DIV_4 == div)
+                    {
+                        div = 4;
+                    }
+                    else if (BSP_CLOCKS_ETH1_TR_DIV_20 == div)
+                    {
+                        div = 20;
+                    }
+                    else
+                    {
+                        div = 200;
+                    }
+
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHRX11CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+                }
+                else
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHRX11CLK] = ETH0_RXC_RX_CLK_IN_HZ;
+                }
+            }
+            else
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_ETH_SDIV_DIV_ETH_D_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                     R_CPG_CPG_ETH_SDIV_DIV_ETH_D_SET_Pos);
+
+                if (BSP_CLOCKS_ETH1_RM_DIV_2 == div)
+                {
+                    div = 2;
+                }
+                else
+                {
+                    div = 20;
+                }
+
+                sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1C_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                      R_CPG_CPG_ETH_SSEL_SEL_ETH1C_SET_Pos;
+
+                if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_DIV_10 == sel)
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHRX11CLK] =
+                        (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_10) / div;
+                }
+                else
+                {
+                    g_clock_freq[FSP_PRIV_CLOCK_ETHRX11CLK] = ETH0_RXC_RX_CLK_IN_HZ / div;
+                }
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHRM1CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1C_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH1C_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_DIV_10 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_ETHRM1CLK] = (BSP_CFG_CLOCK_PLL6_HZ / BSP_PRV_FIXED_DIVISION_RATIO_10);
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_ETHRM1CLK] = ETH0_RXC_RX_CLK_IN_HZ;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_C_SET_DIV) && defined(BSP_CFG_SEL_ETH1A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHTX12CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1A_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH1A_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_DIV_ETH1_TR == sel)
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                     R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Pos);
+                if (BSP_CLOCKS_ETH1_TR_DIV_4 == div)
+                {
+                    div = 4;
+                }
+                else if (BSP_CLOCKS_ETH1_TR_DIV_20 == div)
+                {
+                    div = 20;
+                }
+                else
+                {
+                    div = 200;
+                }
+
+                g_clock_freq[FSP_PRIV_CLOCK_ETHTX12CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_ETHTX12CLK] = ETH0_TXC_TX_CLK_IN_HZ;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_C_SET_DIV) && defined(BSP_CFG_SEL_ETH1B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_ETHRX12CLK:
+        {
+            uint32_t sel = (R_CPG_CPG_ETH_SSEL_SEL_ETH1B_SET_Msk & R_CPG->CPG_ETH_SSEL) >>
+                           R_CPG_CPG_ETH_SSEL_SEL_ETH1B_SET_Pos;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_DIV_ETH1_TR == sel)
+            {
+                uint32_t div =
+                    ((R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Msk & R_CPG->CPG_ETH_SDIV) >>
+                     R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Pos);
+                if (BSP_CLOCKS_ETH1_TR_DIV_4 == div)
+                {
+                    div = 4;
+                }
+                else if (BSP_CLOCKS_ETH1_TR_DIV_20 == div)
+                {
+                    div = 20;
+                }
+                else
+                {
+                    div = 200;
+                }
+
+                g_clock_freq[FSP_PRIV_CLOCK_ETHRX12CLK] = BSP_CFG_CLOCK_PLL6_HZ / div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_ETHRX12CLK] = ETH0_RXC_RX_CLK_IN_HZ;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_GE3D_SET_SOURCE) && defined(BSP_CFG_DIV_GE3D_SET_DIV)
+        case FSP_PRIV_CLOCK_GCLK:
+        {
+            uint32_t sel = (R_CPG_CPG_GE3D_SSEL_SEL_GE3D_SET_Msk & R_CPG->CPG_GE3D_SSEL) >>
+                           R_CPG_CPG_GE3D_SSEL_SEL_GE3D_SET_Pos;
+            uint32_t div = ((R_CPG_CPG_GE3D_DDIV_DIV_GE3D_SET_Msk & R_CPG->CPG_GE3D_DDIV) >>
+                            R_CPG_CPG_GE3D_DDIV_DIV_GE3D_SET_Pos);
+
+            if (BSP_CLOCKS_GE3D_DIV_32 == div)
+            {
+                div = div + 1;
+            }
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_GE3D_600 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_GCLK] = (BSP_CFG_CLOCK_PLL1_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_GE3D_533 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_GCLK] = (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_3) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_GE3D_500 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_GCLK] = BSP_CFG_CLOCK_PLL6_HZ >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_GCLK] =
+                    (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_2) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_BSC_SET_SOURCE) && defined(BSP_CFG_DIV_BSC_SET_DIV)
+        case FSP_PRIV_CLOCK_BCLK:
+        {
+            uint32_t sel = (R_CPG_CPG_BSC_DSEL_SEL_BSC_SET_Msk & R_CPG->CPG_BSC_DSEL) >>
+                           R_CPG_CPG_BSC_DSEL_SEL_BSC_SET_Pos;
+            uint32_t div = ((R_CPG_CPG_BSC_DDIV_DIV_BSC_SET_Msk & R_CPG->CPG_BSC_DDIV) >>
+                            R_CPG_CPG_BSC_DDIV_DIV_BSC_SET_Pos) + 1;
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_BSC_320 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_BCLK] = (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_BSC_266 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_BCLK] = (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_6) >> div;
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_BSC_228 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_BCLK] = (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_7) >> div;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_BCLK] =
+                    (BSP_CFG_CLOCK_PLL3_HZ / BSP_PRV_FIXED_DIVISION_RATIO_2 / BSP_PRV_FIXED_DIVISION_RATIO_4) >> div;
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_PDM_SET_DIV)
+        case FSP_PRIV_CLOCK_OSCCLK2:
+        {
+            uint32_t sel = ((R_CPG_CPG_PDM_DDIV_DIV_PDM_SET_Msk & R_CPG->CPG_PDM_DDIV) >>
+                            R_CPG_CPG_PDM_DDIV_DIV_PDM_SET_Pos);
+            if (BSP_CLOCKS_CLK24_SEL_3 == sel)
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_OSCCLK2] = BSP_CFG_CLOCK_OSCCLK_HZ / BSP_PRV_FIXED_DIVISION_RATIO_3;
+            }
+            else
+            {
+                g_clock_freq[FSP_PRIV_CLOCK_OSCCLK2] = BSP_CFG_CLOCK_OSCCLK_HZ / BSP_PRV_FIXED_DIVISION_RATIO_5;
+            }
+
+            break;
+        }
+#endif
+
         default:
         {
             break;
@@ -3067,14 +5472,23 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_selector_t selector, uint32_t cl
 {
     switch (selector)
     {
-#if defined(BSP_CFG_SELPL4_SET_SOURCE)
+#if defined(BSP_CFG_SELPL4_SET_SOURCE) || defined(BSP_CFG_SEL_PLL4_SET_SOURCE)
         case FSP_PRIV_CLOCK_SELECTOR_SEL_PLL4:
         {
+ #if defined(BSP_CFG_SELPL4_SET_SOURCE)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SELPL4_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
             R_CPG->CPG_PLL_DSEL = (uint32_t) (R_CPG_CPG_PLL_DSEL_SELPL4_WEN_Msk |
                                               (R_CPG_CPG_PLL_DSEL_SELPL4_SET_Msk &
                                                (clock_sel << R_CPG_CPG_PLL_DSEL_SELPL4_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SELPL4_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+ #endif
+ #if defined(BSP_CFG_SEL_PLL4_SET_SOURCE)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_PLL4_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+            R_CPG->CPG_PLL_DSEL = (uint32_t) (R_CPG_CPG_PLL_DSEL_SEL_PLL4_WEN_Msk |
+                                              (R_CPG_CPG_PLL_DSEL_SEL_PLL4_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_PLL_DSEL_SEL_PLL4_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_PLL4_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_S0CLK);
@@ -3086,11 +5500,20 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_selector_t selector, uint32_t cl
 #if defined(BSP_CFG_SEL_SDHI0_SET_SOURCE)
         case FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI0:
         {
+ #if defined(R_CPG_CPG_CLKSELSTATUS_SELSDHI0_STS_Msk)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SELSDHI0_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
             R_CPG->CPG_SDHI_DSEL = (uint32_t) (R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_WEN_Msk |
                                                (R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_SET_Msk &
                                                 (clock_sel << R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SELSDHI0_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+ #endif
+ #if defined(R_CPG_CPG_CLKSELSTATUS_SEL_SDHI0_STS_Msk)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_SDHI0_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+            R_CPG->CPG_SDHI_DSEL = (uint32_t) (R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_WEN_Msk |
+                                               (R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_SDHI0_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_SD0CLK);
@@ -3102,11 +5525,20 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_selector_t selector, uint32_t cl
 #if defined(BSP_CFG_SEL_SDHI1_SET_SOURCE)
         case FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI1:
         {
+ #if defined(R_CPG_CPG_CLKSELSTATUS_SELSDHI1_STS_Msk)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SELSDHI1_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
             R_CPG->CPG_SDHI_DSEL = (uint32_t) (R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_WEN_Msk |
                                                (R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_SET_Msk &
                                                 (clock_sel << R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SELSDHI1_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+ #endif
+ #if defined(R_CPG_CPG_CLKSELSTATUS_SEL_SDHI1_STS_Msk)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_SDHI1_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+            R_CPG->CPG_SDHI_DSEL = (uint32_t) (R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_WEN_Msk |
+                                               (R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_SDHI1_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_SD1CLK);
@@ -3118,11 +5550,20 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_selector_t selector, uint32_t cl
 #if defined(BSP_CFG_SEL_SDHI2_SET_SOURCE)
         case FSP_PRIV_CLOCK_SELECTOR_SEL_SDHI2:
         {
+ #if defined(R_CPG_CPG_CLKSELSTATUS_SELSDHI1_STS_Msk)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SELSDHI2_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
             R_CPG->CPG_SDHI_DSEL = (uint32_t) (R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_WEN_Msk |
                                                (R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_SET_Msk &
                                                 (clock_sel << R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SELSDHI2_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+ #endif
+ #if defined(R_CPG_CPG_CLKSELSTATUS_SEL_SDHI2_STS_Msk)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_SDHI2_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+            R_CPG->CPG_SDHI_DSEL = (uint32_t) (R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_WEN_Msk |
+                                               (R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_SDHI2_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_SD2CLK);
@@ -3391,6 +5832,430 @@ void bsp_prv_clock_selector_set (fsp_priv_clock_selector_t selector, uint32_t cl
         }
 #endif
 
+#if defined(BSP_CFG_SEL_BSC_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_BSC:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_BSC_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+            R_CPG->CPG_BSC_DSEL = (uint32_t) (R_CPG_CPG_BSC_DSEL_SEL_BSC_WEN_Msk |
+                                              (R_CPG_CPG_BSC_DSEL_SEL_BSC_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_BSC_DSEL_SEL_BSC_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKSELSTATUS_SEL_BSC_STS_Msk & R_CPG->CPG_CLKSELSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_BCLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_XSPI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_XSPI:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_XSPI_SSEL = (uint32_t) (R_CPG_CPG_XSPI_SSEL_SEL_XSPI_WEN_Msk |
+                                               (R_CPG_CPG_XSPI_SSEL_SEL_XSPI_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_XSPI_SSEL_SEL_XSPI_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_SPI0CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_DSI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_DSI:
+        {
+            uint32_t clock_status[3];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_DSI_SSEL = (uint32_t) (R_CPG_CPG_DSI_SSEL_SEL_DSI_WEN_Msk |
+                                              (R_CPG_CPG_DSI_SSEL_SEL_DSI_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_DSI_SSEL_SEL_DSI_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_M3CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_GE3D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_GE3D:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_GE3D_SSEL = (uint32_t) (R_CPG_CPG_GE3D_SSEL_SEL_GE3D_WEN_Msk |
+                                               (R_CPG_CPG_GE3D_SSEL_SEL_GE3D_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_GE3D_SSEL_SEL_GE3D_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_GCLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_TX:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH0A_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH0A_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH0A_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX01CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX02CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RX:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH0B_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH0B_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH0B_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX01CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX02CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RM:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH0C_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH0C_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH0C_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX01CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX01CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRM0CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_TX_I:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH0D_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH0D_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH0D_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX01CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_RX_I:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH0E_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH0E_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH0E_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX01CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_TX:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH1A_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH1A_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH1A_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX11CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX12CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RX:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH1B_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH1B_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH1B_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX11CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX12CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RM:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH1C_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH1C_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH1C_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX11CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX11CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRM1CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_TX_I:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH1D_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH1D_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH1D_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX11CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH1E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_RX_I:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_ETH_SSEL = (uint32_t) (R_CPG_CPG_ETH_SSEL_SEL_ETH1E_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SSEL_SEL_ETH1E_SET_Msk &
+                                               (clock_sel << R_CPG_CPG_ETH_SSEL_SEL_ETH1E_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX11CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI0_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI0:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_RSCI_SSEL = (uint32_t) (R_CPG_CPG_RSCI_SSEL_SEL_RSCI0_WEN_Msk |
+                                               (R_CPG_CPG_RSCI_SSEL_SEL_RSCI0_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_RSCI_SSEL_SEL_RSCI0_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P13CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI1_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI1:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_RSCI_SSEL = (uint32_t) (R_CPG_CPG_RSCI_SSEL_SEL_RSCI1_WEN_Msk |
+                                               (R_CPG_CPG_RSCI_SSEL_SEL_RSCI1_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_RSCI_SSEL_SEL_RSCI1_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P14CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI2_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI2:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_RSCI_SSEL = (uint32_t) (R_CPG_CPG_RSCI_SSEL_SEL_RSCI2_WEN_Msk |
+                                               (R_CPG_CPG_RSCI_SSEL_SEL_RSCI2_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_RSCI_SSEL_SEL_RSCI2_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P15CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI3_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI3:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_RSCI_SSEL = (uint32_t) (R_CPG_CPG_RSCI_SSEL_SEL_RSCI3_WEN_Msk |
+                                               (R_CPG_CPG_RSCI_SSEL_SEL_RSCI3_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_RSCI_SSEL_SEL_RSCI3_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P16CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI0_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI0:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_RSPI_SSEL = (uint32_t) (R_CPG_CPG_RSPI_SSEL_SEL_RSPI0_WEN_Msk |
+                                               (R_CPG_CPG_RSPI_SSEL_SEL_RSPI0_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_RSPI_SSEL_SEL_RSPI0_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P17CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI1_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI1:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_RSPI_SSEL = (uint32_t) (R_CPG_CPG_RSPI_SSEL_SEL_RSPI1_WEN_Msk |
+                                               (R_CPG_CPG_RSPI_SSEL_SEL_RSPI1_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_RSPI_SSEL_SEL_RSPI1_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P18CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSPI2_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI2:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_mux_control_pre_setting(selector, clock_status);
+
+            R_CPG->CPG_RSPI_SSEL = (uint32_t) (R_CPG_CPG_RSPI_SSEL_SEL_RSPI2_WEN_Msk |
+                                               (R_CPG_CPG_RSPI_SSEL_SEL_RSPI2_SET_Msk &
+                                                (clock_sel << R_CPG_CPG_RSPI_SSEL_SEL_RSPI2_SET_Pos)));
+
+            bsp_prv_static_mux_control_post_setting(selector, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P19CLK);
+
+            break;
+        }
+#endif
+
         default:
         {
             FSP_PARAMETER_NOT_USED(clock_sel);
@@ -3414,12 +6279,26 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
     {
 #if defined(BSP_CFG_DIVPL1_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL1:
+#endif
+#if defined(BSP_CFG_DIV_PLL1_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55:
+#endif
+#if defined(BSP_CFG_DIVPL1_SET_DIV) || defined(BSP_CFG_DIV_PLL1_A_SET_DIV)
         {
+ #if defined(BSP_CFG_DIVPL1_SET_DIV)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
             R_CPG->CPG_PL1_DDIV = (uint32_t) (R_CPG_CPG_PL1_DDIV_DIV_PLL1SET_WEN_Msk |
                                               (R_CPG_CPG_PL1_DDIV_DIVPL1_SET_Msk &
                                                (clock_div << R_CPG_CPG_PL1_DDIV_DIVPL1_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL1_A_SET_DIV)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_PL1_DDIV = (uint32_t) (R_CPG_CPG_PL1_DDIV_DIV_PLL1_A_WEN_Msk |
+                                              (R_CPG_CPG_PL1_DDIV_DIV_PLL1_A_SET_Msk &
+                                               (clock_div << R_CPG_CPG_PL1_DDIV_DIV_PLL1_A_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ICLK);
@@ -3428,14 +6307,23 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
         }
 #endif
 
-#if defined(BSP_CFG_DIVPL2B_SET_DIV)
+#if defined(BSP_CFG_DIVPL2B_SET_DIV) || defined(BSP_CFG_DIV_PLL2_B_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_100:
         {
+ #if defined(BSP_CFG_DIVPL2B_SET_DIV)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL2B_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
             R_CPG->CPG_PL2_DDIV = (uint32_t) (R_CPG_CPG_PL2_DDIV_DIV_PLL2_B_WEN_Msk |
                                               (R_CPG_CPG_PL2_DDIV_DIVPL2B_SET_Msk &
                                                (clock_div << R_CPG_CPG_PL2_DDIV_DIVPL2B_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL2B_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL2_B_SET_DIV)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL2B_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_PL2_DDIV = (uint32_t) (R_CPG_CPG_PL2_DDIV_DIV_PLL2_B_WEN_Msk |
+                                              (R_CPG_CPG_PL2_DDIV_DIV_PLL2_B_SET_Msk &
+                                               (clock_div << R_CPG_CPG_PL2_DDIV_DIV_PLL2_B_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL2B_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P0CLK);
@@ -3444,30 +6332,53 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
         }
 #endif
 
-#if defined(BSP_CFG_DIVPL3A_SET_DIV)
+#if defined(BSP_CFG_DIVPL3A_SET_DIV) || defined(BSP_CFG_DIV_PLL3_A_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_200:
         {
+ #if defined(BSP_CFG_DIVPL3A_SET_DIV)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL3A_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
             R_CPG->CPG_PL3_DDIV = (uint32_t) (R_CPG_CPG_PL3_DDIV_DIV_PLL3_A_WEN_Msk |
                                               (R_CPG_CPG_PL3_DDIV_DIVPL3A_SET_Msk &
                                                (clock_div << R_CPG_CPG_PL3_DDIV_DIVPL3A_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL3A_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL3_A_SET_DIV)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL3A_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_PL3_DDIV = (uint32_t) (R_CPG_CPG_PL3_DDIV_DIV_PLL3_A_WEN_Msk |
+                                              (R_CPG_CPG_PL3_DDIV_DIV_PLL3_A_SET_Msk &
+                                               (clock_div << R_CPG_CPG_PL3_DDIV_DIV_PLL3_A_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL3A_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P1CLK);
+ #if defined(BSP_CFG_CLOCK_M6CLK_HZ)
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_M6CLK);
+ #endif
 
             break;
         }
 #endif
 
-#if defined(BSP_CFG_DIVPL3B_SET_DIV)
+#if defined(BSP_CFG_DIVPL3B_SET_DIV) || defined(BSP_CFG_DIV_PLL3_B_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_100:
         {
+ #if defined(BSP_CFG_DIVPL3B_SET_DIV)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL3B_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
             R_CPG->CPG_PL3_DDIV = (uint32_t) (R_CPG_CPG_PL3_DDIV_DIV_PLL3_B_WEN_Msk |
                                               (R_CPG_CPG_PL3_DDIV_DIVPL3B_SET_Msk &
                                                (clock_div << R_CPG_CPG_PL3_DDIV_DIVPL3B_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL3B_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
+ #if defined(BSP_CFG_DIV_PLL3_B_SET_DIV)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL3B_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_PL3_DDIV = (uint32_t) (R_CPG_CPG_PL3_DDIV_DIV_PLL3_B_WEN_Msk |
+                                              (R_CPG_CPG_PL3_DDIV_DIV_PLL3_B_SET_Msk &
+                                               (clock_div << R_CPG_CPG_PL3_DDIV_DIV_PLL3_B_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL3B_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P2CLK);
@@ -3527,11 +6438,20 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
 #if defined(BSP_CFG_DIVSDHI0_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI0_SEL:
         {
+ #if defined(R_CPG_CPG_CLKDIVSTATUS_DIVSDHI0_STS_Msk)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVSDHI0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
             R_CPG->CPG_SDHI_DDIV = (uint32_t) (R_CPG_CPG_SDHI_DDIV_DIVSDHI0_WEN_Msk |
                                                (R_CPG_CPG_SDHI_DDIV_DIVSDHI0_SET_Msk &
                                                 (clock_div << R_CPG_CPG_SDHI_DDIV_DIVSDHI0_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVSDHI0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
+ #if defined(R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI0_STS_Msk)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_SDHI_DDIV = (uint32_t) (R_CPG_CPG_SDHI_DDIV_DIVSDHI0_WEN_Msk |
+                                               (R_CPG_CPG_SDHI_DDIV_DIVSDHI0_SET_Msk &
+                                                (clock_div << R_CPG_CPG_SDHI_DDIV_DIVSDHI0_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_SD0CLK);
@@ -3543,11 +6463,20 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
 #if defined(BSP_CFG_DIVSDHI1_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI1_SEL:
         {
+ #if defined(R_CPG_CPG_CLKDIVSTATUS_DIVSDHI1_STS_Msk)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVSDHI1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
             R_CPG->CPG_SDHI_DDIV = (uint32_t) (R_CPG_CPG_SDHI_DDIV_DIVSDHI1_WEN_Msk |
                                                (R_CPG_CPG_SDHI_DDIV_DIVSDHI1_SET_Msk &
                                                 (clock_div << R_CPG_CPG_SDHI_DDIV_DIVSDHI1_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVSDHI1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
+ #if defined(R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI1_STS_Msk)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_SDHI_DDIV = (uint32_t) (R_CPG_CPG_SDHI_DDIV_DIVSDHI1_WEN_Msk |
+                                               (R_CPG_CPG_SDHI_DDIV_DIVSDHI1_SET_Msk &
+                                                (clock_div << R_CPG_CPG_SDHI_DDIV_DIVSDHI1_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_SD1CLK);
@@ -3559,11 +6488,20 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
 #if defined(BSP_CFG_DIVSDHI2_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI2_SEL:
         {
+ #if defined(R_CPG_CPG_CLKDIVSTATUS_DIVSDHI2_STS_Msk)
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVSDHI2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
             R_CPG->CPG_SDHI_DDIV = (uint32_t) (R_CPG_CPG_SDHI_DDIV_DIVSDHI2_WEN_Msk |
                                                (R_CPG_CPG_SDHI_DDIV_DIVSDHI2_SET_Msk &
                                                 (clock_div << R_CPG_CPG_SDHI_DDIV_DIVSDHI2_SET_Pos)));
             FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVSDHI2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
+ #if defined(R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI2_STS_Msk)
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_SDHI_DDIV = (uint32_t) (R_CPG_CPG_SDHI_DDIV_DIVSDHI2_WEN_Msk |
+                                               (R_CPG_CPG_SDHI_DDIV_DIVSDHI2_SET_Msk &
+                                                (clock_div << R_CPG_CPG_SDHI_DDIV_DIVSDHI2_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_SDHI2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+ #endif
 
             /* Update clock frequency information */
             bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_SD2CLK);
@@ -4036,6 +6974,443 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
         }
 #endif
 
+#if defined(BSP_CFG_DIV_PLL2_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_200:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL2A_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_PL2_DDIV = (uint32_t) (R_CPG_CPG_PL2_DDIV_DIV_PLL2_A_WEN_Msk |
+                                              (R_CPG_CPG_PL2_DDIV_DIV_PLL2_A_SET_Msk &
+                                               (clock_div << R_CPG_CPG_PL2_DDIV_DIV_PLL2_A_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIVPL2A_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P3CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CLKQSPI_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_QSPI:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CLKQSPI_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_PL2_DDIV = (uint32_t) (R_CPG_CPG_PL2_DDIV_DIV_CLKQSPI_WEN_Msk |
+                                              (R_CPG_CPG_PL2_DDIV_DIV_CLKQSPI_SET_Msk &
+                                               (clock_div << R_CPG_CPG_PL2_DDIV_DIV_CLKQSPI_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CLKQSPI_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P7CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_XSPI_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_XSPI:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_XSPI_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_XSPI_DDIV = (uint32_t) (R_CPG_CPG_XSPI_DDIV_DIV_XSPI_WEN_Msk |
+                                               (R_CPG_CPG_XSPI_DDIV_DIV_XSPI_SET_Msk &
+                                                (clock_div << R_CPG_CPG_XSPI_DDIV_DIV_XSPI_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_XSPI_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_SPI0CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_GE3D_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_GE3D:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_GE3D_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_GE3D_DDIV = (uint32_t) (R_CPG_CPG_GE3D_DDIV_DIV_GE3D_WEN_Msk |
+                                               (R_CPG_CPG_GE3D_DDIV_DIV_GE3D_SET_Msk &
+                                                (clock_div << R_CPG_CPG_GE3D_DDIV_DIV_GE3D_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_GE3D_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_GCLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CLK266FIXC_DIV16TO128:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_DSI_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_DSI_DDIV = (uint32_t) (R_CPG_CPG_DSI_DDIV_DIV_DSI_WEN_Msk |
+                                              (R_CPG_CPG_DSI_DDIV_DIV_DSI_SET_Msk &
+                                               (clock_div << R_CPG_CPG_DSI_DDIV_DIV_DSI_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_DSI_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_M1CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_PDM_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CLK24_SEL:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_PDM_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_PDM_DDIV = (uint32_t) (R_CPG_CPG_PDM_DDIV_DIV_PDM_WEN_Msk |
+                                              (R_CPG_CPG_PDM_DDIV_DIV_PDM_SET_Msk &
+                                               (clock_div << R_CPG_CPG_PDM_DDIV_DIV_PDM_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_PDM_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_OSCCLK2);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_BSC_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_BSC:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_BSC_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_BSC_DDIV = (uint32_t) (R_CPG_CPG_BSC_DDIV_DIV_BSC_WEN_Msk |
+                                              (R_CPG_CPG_BSC_DDIV_DIV_BSC_SET_Msk &
+                                               (clock_div << R_CPG_CPG_BSC_DDIV_DIV_BSC_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_BSC_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_BCLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CORE0_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE0:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CA55CORE0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_CA55CORE_DDIV = (uint32_t) (R_CPG_CPG_CA55CORE_DDIV_DIV_CORE0_WEN_Msk |
+                                                   (R_CPG_CPG_CA55CORE_DDIV_DIV_CORE0_SET_Msk &
+                                                    (clock_div << R_CPG_CPG_CA55CORE_DDIV_DIV_CORE0_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CA55CORE0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_IC0CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CORE1_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE1:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CA55CORE1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_CA55CORE_DDIV = (uint32_t) (R_CPG_CPG_CA55CORE_DDIV_DIV_CORE1_WEN_Msk |
+                                                   (R_CPG_CPG_CA55CORE_DDIV_DIV_CORE1_SET_Msk &
+                                                    (clock_div << R_CPG_CPG_CA55CORE_DDIV_DIV_CORE1_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CA55CORE1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_IC1CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CORE2_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE2:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CA55CORE2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_CA55CORE_DDIV = (uint32_t) (R_CPG_CPG_CA55CORE_DDIV_DIV_CORE2_WEN_Msk |
+                                                   (R_CPG_CPG_CA55CORE_DDIV_DIV_CORE2_SET_Msk &
+                                                    (clock_div << R_CPG_CPG_CA55CORE_DDIV_DIV_CORE2_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CA55CORE2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_IC2CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CORE3_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE3:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CA55CORE3_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_CA55CORE_DDIV = (uint32_t) (R_CPG_CPG_CA55CORE_DDIV_DIV_CORE3_WEN_Msk |
+                                                   (R_CPG_CPG_CA55CORE_DDIV_DIV_CORE3_SET_Msk &
+                                                    (clock_div << R_CPG_CPG_CA55CORE_DDIV_DIV_CORE3_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_CA55CORE3_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_IC3CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_RSCI0_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI0:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSCI0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_RSCI_DDIV = (uint32_t) (R_CPG_CPG_RSCI_DDIV_DIV_RSCI0_WEN_Msk |
+                                               (R_CPG_CPG_RSCI_DDIV_DIV_RSCI0_SET_Msk &
+                                                (clock_div << R_CPG_CPG_RSCI_DDIV_DIV_RSCI0_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSCI0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P13CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_RSCI1_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI1:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSCI1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_RSCI_DDIV = (uint32_t) (R_CPG_CPG_RSCI_DDIV_DIV_RSCI1_WEN_Msk |
+                                               (R_CPG_CPG_RSCI_DDIV_DIV_RSCI1_SET_Msk &
+                                                (clock_div << R_CPG_CPG_RSCI_DDIV_DIV_RSCI1_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSCI1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P14CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_RSCI2_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI2:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSCI2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_RSCI_DDIV = (uint32_t) (R_CPG_CPG_RSCI_DDIV_DIV_RSCI2_WEN_Msk |
+                                               (R_CPG_CPG_RSCI_DDIV_DIV_RSCI2_SET_Msk &
+                                                (clock_div << R_CPG_CPG_RSCI_DDIV_DIV_RSCI2_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSCI2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P15CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_RSCI3_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI3:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSCI3_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_RSCI_DDIV = (uint32_t) (R_CPG_CPG_RSCI_DDIV_DIV_RSCI3_WEN_Msk |
+                                               (R_CPG_CPG_RSCI_DDIV_DIV_RSCI3_SET_Msk &
+                                                (clock_div << R_CPG_CPG_RSCI_DDIV_DIV_RSCI3_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSCI3_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P16CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_RSPI0_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI0:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSPI0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_RSPI_DDIV = (uint32_t) (R_CPG_CPG_RSPI_DDIV_DIV_RSPI0_WEN_Msk |
+                                               (R_CPG_CPG_RSPI_DDIV_DIV_RSPI0_SET_Msk &
+                                                (clock_div << R_CPG_CPG_RSPI_DDIV_DIV_RSPI0_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSPI0_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P17CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_RSPI1_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI1:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSPI1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_RSPI_DDIV = (uint32_t) (R_CPG_CPG_RSPI_DDIV_DIV_RSPI1_WEN_Msk |
+                                               (R_CPG_CPG_RSPI_DDIV_DIV_RSPI1_SET_Msk &
+                                                (clock_div << R_CPG_CPG_RSPI_DDIV_DIV_RSPI1_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSPI1_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P18CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_RSPI2_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI2:
+        {
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSPI2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+            R_CPG->CPG_RSPI_DDIV = (uint32_t) (R_CPG_CPG_RSPI_DDIV_DIV_RSPI2_WEN_Msk |
+                                               (R_CPG_CPG_RSPI_DDIV_DIV_RSPI2_SET_Msk &
+                                                (clock_div << R_CPG_CPG_RSPI_DDIV_DIV_RSPI2_SET_Pos)));
+            FSP_HARDWARE_REGISTER_WAIT((R_CPG_CPG_CLKDIVSTATUS_DIV_RSPI2_STS_Msk & R_CPG->CPG_CLKDIVSTATUS), 0U);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_P19CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO32_VCLK:
+        {
+            uint32_t clock_status[3];
+
+            bsp_prv_static_gear_control_pre_setting(divider, clock_status);
+
+            R_CPG->CPG_DSI_SDIV = (uint32_t) (R_CPG_CPG_DSI_SDIV_DIV_DSI_A_WEN_Msk |
+                                              (R_CPG_CPG_DSI_SDIV_DIV_DSI_A_SET_Msk &
+                                               (clock_div << R_CPG_CPG_DSI_SDIV_DIV_DSI_A_SET_Pos)));
+
+            bsp_prv_static_gear_control_post_setting(divider, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_M3CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_B_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO16_VCLK:
+        {
+            uint32_t clock_status[3];
+
+            bsp_prv_static_gear_control_pre_setting(divider, clock_status);
+
+            R_CPG->CPG_DSI_SDIV = (uint32_t) (R_CPG_CPG_DSI_SDIV_DIV_DSI_B_WEN_Msk |
+                                              (R_CPG_CPG_DSI_SDIV_DIV_DSI_B_SET_Msk &
+                                               (clock_div << R_CPG_CPG_DSI_SDIV_DIV_DSI_B_SET_Pos)));
+
+            bsp_prv_static_gear_control_post_setting(divider, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_M3CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_C_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO2_LVDS:
+        {
+            uint32_t clock_status[4];
+
+            bsp_prv_static_gear_control_pre_setting(divider, clock_status);
+
+            R_CPG->CPG_DSI_SDIV = (uint32_t) (R_CPG_CPG_DSI_SDIV_DIV_DSI_C_WEN_Msk |
+                                              (R_CPG_CPG_DSI_SDIV_DIV_DSI_C_SET_Msk &
+                                               (clock_div << R_CPG_CPG_DSI_SDIV_DIV_DSI_C_SET_Pos)));
+
+            bsp_prv_static_gear_control_post_setting(divider, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_M2CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_M3CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_TR:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_gear_control_pre_setting(divider, clock_status);
+
+            R_CPG->CPG_ETH_SDIV = (uint32_t) (R_CPG_CPG_ETH_SDIV_DIV_ETH_A_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Msk &
+                                               (clock_div << R_CPG_CPG_ETH_SDIV_DIV_ETH_A_SET_Pos)));
+
+            bsp_prv_static_gear_control_post_setting(divider, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX01CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX01CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX02CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX02CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_B_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_RM:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_gear_control_pre_setting(divider, clock_status);
+
+            R_CPG->CPG_ETH_SDIV = (uint32_t) (R_CPG_CPG_ETH_SDIV_DIV_ETH_B_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SDIV_DIV_ETH_B_SET_Msk &
+                                               (clock_div << R_CPG_CPG_ETH_SDIV_DIV_ETH_B_SET_Pos)));
+
+            bsp_prv_static_gear_control_post_setting(divider, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX01CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX01CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_C_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_TR:
+        {
+            uint32_t clock_status[2];
+
+            bsp_prv_static_gear_control_pre_setting(divider, clock_status);
+
+            R_CPG->CPG_ETH_SDIV = (uint32_t) (R_CPG_CPG_ETH_SDIV_DIV_ETH_C_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Msk &
+                                               (clock_div << R_CPG_CPG_ETH_SDIV_DIV_ETH_C_SET_Pos)));
+
+            bsp_prv_static_gear_control_post_setting(divider, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX11CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX11CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX12CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX12CLK);
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_D_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_RM:
+        {
+            uint32_t clock_status[1];
+
+            bsp_prv_static_gear_control_pre_setting(divider, clock_status);
+
+            R_CPG->CPG_ETH_SDIV = (uint32_t) (R_CPG_CPG_ETH_SDIV_DIV_ETH_D_WEN_Msk |
+                                              (R_CPG_CPG_ETH_SDIV_DIV_ETH_D_SET_Msk &
+                                               (clock_div << R_CPG_CPG_ETH_SDIV_DIV_ETH_D_SET_Pos)));
+
+            bsp_prv_static_gear_control_post_setting(divider, clock_status);
+
+            /* Update clock frequency information */
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHTX11CLK);
+            bsp_prv_clock_frequency_calculation(FSP_PRIV_CLOCK_ETHRX11CLK);
+
+            break;
+        }
+#endif
+
         default:
         {
             FSP_PARAMETER_NOT_USED(clock_div);
@@ -4050,7 +7425,7 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
 /** @} (end addtogroup BSP_MCU_PRV) */
 
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZG_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -4133,7 +7508,14 @@ fsp_err_t R_BSP_ClockSelectorSet (fsp_priv_clock_selector_t selector, uint32_t c
 #if defined(BSP_CFG_SEL_SDHI0_SET_SOURCE) || defined(BSP_CFG_SEL_SDHI1_SET_SOURCE) || \
         defined(BSP_CFG_SEL_SDHI2_SET_SOURCE)
         {
-            if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 == clock_sel)
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL1_600 == clock_sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                                  R_CPG->CPG_PLL1_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 == clock_sel)
             {
                 FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
                                  ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
@@ -4332,6 +7714,164 @@ fsp_err_t R_BSP_ClockSelectorSet (fsp_priv_clock_selector_t selector, uint32_t c
         }
 #endif
 
+#if defined(BSP_CFG_SEL_BSC_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_BSC:
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) &
+                              R_CPG->CPG_PLL3_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_XSPI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_XSPI:
+        {
+            if (BSP_CLOCKS_SOURCE_CLOCK_XSPI_600 == clock_sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                                  R_CPG->CPG_PLL1_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_XSPI_500 == clock_sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
+                                  R_CPG->CPG_PLL6_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) &
+                                  R_CPG->CPG_PLL2_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_DSI_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_DSI:
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL7_MON_PLL7_LOCK_Msk | R_CPG_CPG_PLL7_MON_PLL7_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL7_MON_PLL7_LOCK_Msk | R_CPG_CPG_PLL7_MON_PLL7_RESETB_Msk) &
+                              R_CPG->CPG_PLL7_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_GE3D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_GE3D:
+        {
+            if (BSP_CLOCKS_SOURCE_CLOCK_GE3D_600 == clock_sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                                  R_CPG->CPG_PLL1_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_GE3D_500 == clock_sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
+                                  R_CPG->CPG_PLL6_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) &
+                                  R_CPG->CPG_PLL3_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_ETH0A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_TX:
+#endif
+#if defined(BSP_CFG_SEL_ETH0B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RX:
+#endif
+#if defined(BSP_CFG_SEL_ETH0C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_RM:
+#endif
+#if defined(BSP_CFG_SEL_ETH0D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_TX_I:
+#endif
+#if defined(BSP_CFG_SEL_ETH0E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH0_CLK_RX_I:
+#endif
+#if defined(BSP_CFG_SEL_ETH1A_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_TX:
+#endif
+#if defined(BSP_CFG_SEL_ETH1B_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RX:
+#endif
+#if defined(BSP_CFG_SEL_ETH1C_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_RM:
+#endif
+#if defined(BSP_CFG_SEL_ETH1D_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_TX_I:
+#endif
+#if defined(BSP_CFG_SEL_ETH1E_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_ETH1_CLK_RX_I:
+#endif
+#if defined(BSP_CFG_SEL_ETH0A_SET_SOURCE) || defined(BSP_CFG_SEL_ETH0B_SET_SOURCE) ||     \
+        defined(BSP_CFG_SEL_ETH0C_SET_SOURCE) || defined(BSP_CFG_SEL_ETH0D_SET_SOURCE) || \
+        defined(BSP_CFG_SEL_ETH0E_SET_SOURCE) || defined(BSP_CFG_SEL_ETH1A_SET_SOURCE) || \
+        defined(BSP_CFG_SEL_ETH1B_SET_SOURCE) || defined(BSP_CFG_SEL_ETH1C_SET_SOURCE) || \
+        defined(BSP_CFG_SEL_ETH1D_SET_SOURCE) || defined(BSP_CFG_SEL_ETH1E_SET_SOURCE)
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
+                              R_CPG->CPG_PLL6_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_SEL_RSCI0_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI0:
+#endif
+#if defined(BSP_CFG_SEL_RSCI1_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI1:
+#endif
+#if defined(BSP_CFG_SEL_RSCI2_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI2:
+#endif
+#if defined(BSP_CFG_SEL_RSCI3_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSCI3:
+#endif
+#if defined(BSP_CFG_SEL_RSPI0_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI0:
+#endif
+#if defined(BSP_CFG_SEL_RSPI1_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI1:
+#endif
+#if defined(BSP_CFG_SEL_RSPI2_SET_SOURCE)
+        case FSP_PRIV_CLOCK_SELECTOR_SEL_RSPI2:
+#endif
+#if defined(BSP_CFG_SEL_RSCI0_SET_SOURCE) || defined(BSP_CFG_SEL_RSCI1_SET_SOURCE) ||     \
+        defined(BSP_CFG_SEL_RSCI2_SET_SOURCE) || defined(BSP_CFG_SEL_RSCI3_SET_SOURCE) || \
+        defined(BSP_CFG_SEL_RSPI0_SET_SOURCE) || defined(BSP_CFG_SEL_RSPI1_SET_SOURCE) || \
+        defined(BSP_CFG_SEL_RSPI2_SET_SOURCE)
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) &
+                              R_CPG->CPG_PLL2_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
         default:
         {
             FSP_ERROR_RETURN(FSP_PRIV_CLOCK_SELECTOR_NUM > selector, FSP_ERR_INVALID_ARGUMENT);
@@ -4368,6 +7908,11 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
     {
 #if defined(BSP_CFG_DIVPL1_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL1:
+#endif
+#if defined(BSP_CFG_DIV_PLL1_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55:
+#endif
+#if defined(BSP_CFG_DIVPL1_SET_DIV) || defined(BSP_CFG_DIV_PLL1_A_SET_DIV)
         {
             FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
                              ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
@@ -4377,7 +7922,7 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
         }
 #endif
 
-#if defined(BSP_CFG_DIVPL2B_SET_DIV)
+#if defined(BSP_CFG_DIVPL2B_SET_DIV) || defined(BSP_CFG_DIV_PLL2_B_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_100:
         {
             FSP_ERROR_RETURN((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) ==
@@ -4388,16 +7933,17 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
         }
 #endif
 
-#if defined(BSP_CFG_DIVPL3A_SET_DIV)
+#if defined(BSP_CFG_DIVPL3A_SET_DIV) || defined(BSP_CFG_DIV_PLL3_A_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_200:
 #endif
-#if defined(BSP_CFG_DIVPL3B_SET_DIV)
+#if defined(BSP_CFG_DIVPL3B_SET_DIV) || defined(BSP_CFG_DIV_PLL3_B_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_100:
 #endif
 #if defined(BSP_CFG_DIVPL3C_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL3_200MCPU:
 #endif
-#if defined(BSP_CFG_DIVPL3A_SET_DIV) || defined(BSP_CFG_DIVPL3B_SET_DIV) || defined(BSP_CFG_DIVPL3C_SET_DIV)
+#if defined(BSP_CFG_DIVPL3A_SET_DIV) || defined(BSP_CFG_DIV_PLL3_A_SET_DIV) || defined(BSP_CFG_DIVPL3B_SET_DIV) || \
+        defined(BSP_CFG_DIV_PLL3_B_SET_DIV) || defined(BSP_CFG_DIVPL3C_SET_DIV)
         {
             FSP_ERROR_RETURN((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) ==
                              ((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) &
@@ -4426,9 +7972,18 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
 #if defined(BSP_CFG_DIVSDHI0_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI0_SEL:
         {
-            if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 ==
-                ((R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_SET_Msk & R_CPG->CPG_SDHI_DSEL) >>
-                 R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_SET_Pos))
+            uint32_t sel =
+                (uint32_t) ((R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_SET_Msk & R_CPG->CPG_SDHI_DSEL) >>
+                            R_CPG_CPG_SDHI_DSEL_SEL_SDHI0_SET_Pos);
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL1_600 == sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                                  R_CPG->CPG_PLL1_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 == sel)
             {
                 FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
                                  ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
@@ -4450,9 +8005,18 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
 #if defined(BSP_CFG_DIVSDHI1_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI1_SEL:
         {
-            if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 ==
-                ((R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_SET_Msk & R_CPG->CPG_SDHI_DSEL) >>
-                 R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_SET_Pos))
+            uint32_t sel =
+                (uint32_t) ((R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_SET_Msk & R_CPG->CPG_SDHI_DSEL) >>
+                            R_CPG_CPG_SDHI_DSEL_SEL_SDHI1_SET_Pos);
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL1_600 == sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                                  R_CPG->CPG_PLL1_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 == sel)
             {
                 FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
                                  ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
@@ -4474,9 +8038,18 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
 #if defined(BSP_CFG_DIVSDHI2_SET_DIV)
         case FSP_PRIV_CLOCK_DIVIDER_DIV_SDHI2_SEL:
         {
-            if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 ==
-                ((R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_SET_Msk & R_CPG->CPG_SDHI_DSEL) >>
-                 R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_SET_Pos))
+            uint32_t sel =
+                (uint32_t) ((R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_SET_Msk & R_CPG->CPG_SDHI_DSEL) >>
+                            R_CPG_CPG_SDHI_DSEL_SEL_SDHI2_SET_Pos);
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_PLL1_600 == sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                                  R_CPG->CPG_PLL1_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_PLL6_500 == sel)
             {
                 FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
                                  ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
@@ -4710,6 +8283,208 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
         }
 #endif
 
+#if defined(BSP_CFG_DIV_PLL2_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_200:
+#endif
+#if defined(BSP_CFG_DIV_CLKQSPI_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_PLL2_QSPI:
+#endif
+#if defined(BSP_CFG_DIV_PLL2_A_SET_DIV) || defined(BSP_CFG_DIV_CLKQSPI_SET_DIV)
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) &
+                              R_CPG->CPG_PLL2_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_XSPI_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_XSPI:
+        {
+            uint32_t sel =
+                (uint32_t) ((R_CPG_CPG_XSPI_SSEL_SEL_XSPI_SET_Msk & R_CPG->CPG_XSPI_SSEL) >>
+                            R_CPG_CPG_XSPI_SSEL_SEL_XSPI_SET_Pos);
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_XSPI_600 == sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                                  R_CPG->CPG_PLL1_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_XSPI_500 == sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
+                                  R_CPG->CPG_PLL6_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) &
+                                  R_CPG->CPG_PLL2_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_GE3D_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_GE3D:
+        {
+            uint32_t sel =
+                (uint32_t) ((R_CPG_CPG_GE3D_SSEL_SEL_GE3D_SET_Msk & R_CPG->CPG_GE3D_SSEL) >>
+                            R_CPG_CPG_GE3D_SSEL_SEL_GE3D_SET_Pos);
+
+            if (BSP_CLOCKS_SOURCE_CLOCK_GE3D_600 == sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                                  R_CPG->CPG_PLL1_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else if (BSP_CLOCKS_SOURCE_CLOCK_GE3D_500 == sel)
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
+                                  R_CPG->CPG_PLL6_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+            else
+            {
+                FSP_ERROR_RETURN((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) ==
+                                 ((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) &
+                                  R_CPG->CPG_PLL3_MON),
+                                 FSP_ERR_PLL_SRC_INACTIVE);
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CLK266FIXC_DIV16TO128:
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) &
+                              R_CPG->CPG_PLL2_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_BSC_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_BSC:
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL3_MON_PLL3_LOCK_Msk | R_CPG_CPG_PLL3_MON_PLL3_RESETB_Msk) &
+                              R_CPG->CPG_PLL3_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_CORE0_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE0:
+#endif
+#if defined(BSP_CFG_DIV_CORE1_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE1:
+#endif
+#if defined(BSP_CFG_DIV_CORE2_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE2:
+#endif
+#if defined(BSP_CFG_DIV_CORE3_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_CA55_CORE3:
+#endif
+#if defined(BSP_CFG_DIV_CORE0_SET_DIV) || defined(BSP_CFG_DIV_CORE1_SET_DIV) || defined(BSP_CFG_DIV_CORE2_SET_DIV) || \
+        defined(BSP_CFG_DIV_CORE3_SET_DIV)
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL1_MON_PLL1_LOCK_Msk | R_CPG_CPG_PLL1_MON_PLL1_RESETB_Msk) &
+                              R_CPG->CPG_PLL1_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_RSCI0_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI0:
+#endif
+#if defined(BSP_CFG_DIV_RSCI1_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI1:
+#endif
+#if defined(BSP_CFG_DIV_RSCI2_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI2:
+#endif
+#if defined(BSP_CFG_DIV_RSCI3_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSCI3:
+#endif
+#if defined(BSP_CFG_DIV_RSPI0_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI0:
+#endif
+#if defined(BSP_CFG_DIV_RSPI1_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI1:
+#endif
+#if defined(BSP_CFG_DIV_RSPI2_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_RSPI2:
+#endif
+#if defined(BSP_CFG_DIV_RSCI0_SET_DIV) || defined(BSP_CFG_DIV_RSCI1_SET_DIV) || defined(BSP_CFG_DIV_RSCI2_SET_DIV) || \
+        defined(BSP_CFG_DIV_RSCI3_SET_DIV) || defined(BSP_CFG_DIV_RSPI0_SET_DIV) ||                                   \
+        defined(BSP_CFG_DIV_RSPI1_SET_DIV) || defined(BSP_CFG_DIV_RSPI2_SET_DIV)
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL2_MON_PLL2_LOCK_Msk | R_CPG_CPG_PLL2_MON_PLL2_RESETB_Msk) &
+                              R_CPG->CPG_PLL2_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_DSI_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO32_VCLK:
+#endif
+#if defined(BSP_CFG_DIV_DSI_B_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO16_VCLK:
+#endif
+#if defined(BSP_CFG_DIV_DSI_C_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_DSI_DIV1TO2_LVDS:
+#endif
+#if defined(BSP_CFG_DIV_DSI_A_SET_DIV) || defined(BSP_CFG_DIV_DSI_B_SET_DIV) || defined(BSP_CFG_DIV_DSI_C_SET_DIV)
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL7_MON_PLL7_LOCK_Msk | R_CPG_CPG_PLL7_MON_PLL7_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL7_MON_PLL7_LOCK_Msk | R_CPG_CPG_PLL7_MON_PLL7_RESETB_Msk) &
+                              R_CPG->CPG_PLL7_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_TR:
+#endif
+#if defined(BSP_CFG_DIV_ETH_B_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH0_RM:
+#endif
+#if defined(BSP_CFG_DIV_ETH_C_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_TR:
+#endif
+#if defined(BSP_CFG_DIV_ETH_D_SET_DIV)
+        case FSP_PRIV_CLOCK_DIVIDER_DIV_ETH1_RM:
+#endif
+#if defined(BSP_CFG_DIV_ETH_A_SET_DIV) || defined(BSP_CFG_DIV_ETH_B_SET_DIV) || defined(BSP_CFG_DIV_ETH_C_SET_DIV) || \
+        defined(BSP_CFG_DIV_ETH_D_SET_DIV)
+        {
+            FSP_ERROR_RETURN((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) ==
+                             ((R_CPG_CPG_PLL6_MON_PLL6_LOCK_Msk | R_CPG_CPG_PLL6_MON_PLL6_RESETB_Msk) &
+                              R_CPG->CPG_PLL6_MON),
+                             FSP_ERR_PLL_SRC_INACTIVE);
+            break;
+        }
+#endif
+
         default:
         {
             FSP_ERROR_RETURN(FSP_PRIV_CLOCK_DIVIDER_NUM > divider, FSP_ERR_INVALID_ARGUMENT);
@@ -4728,3 +8503,9 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
 }
 
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif

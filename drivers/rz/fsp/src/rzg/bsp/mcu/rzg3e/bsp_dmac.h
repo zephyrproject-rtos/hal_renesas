@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -17,6 +17,18 @@
  * Macro definitions
  *********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
+
+/**********************************************************************************************************************
+ * @addtogroup RZG_BSP_MPU_RZG3E
+ * @{
+ *********************************************************************************************************************/
+
 /**********************************************************************************************************************
  * Typedef definitions
  *********************************************************************************************************************/
@@ -27,11 +39,6 @@
 
 /**********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
- *********************************************************************************************************************/
-
-/**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZG3E
- * @{
  *********************************************************************************************************************/
 
 #define ACK_MODE_LEVEL_MODE            (1 << 16)
@@ -173,23 +180,23 @@
                                                                                         \
         switch (dack_pin)                                                               \
         {                                                                               \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN0:                                               \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN0:                                           \
                 R_INTC->DMACKSEL21 &= ~R_INTC_DMACKSEL21_DACK_SEL84_Msk;                \
                 R_INTC->DMACKSEL21 |= write_value << R_INTC_DMACKSEL21_DACK_SEL84_Pos;  \
                 break;                                                                  \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN1:                                               \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN1:                                           \
                 R_INTC->DMACKSEL21 &= ~R_INTC_DMACKSEL21_DACK_SEL85_Msk;                \
                 R_INTC->DMACKSEL21 |= write_value << R_INTC_DMACKSEL21_DACK_SEL85_Pos;  \
                 break;                                                                  \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN2:                                               \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN2:                                           \
                 R_INTC->DMACKSEL21 &= ~R_INTC_DMACKSEL21_DACK_SEL86_Msk;                \
                 R_INTC->DMACKSEL21 |= write_value << R_INTC_DMACKSEL21_DACK_SEL86_Pos;  \
                 break;                                                                  \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN3:                                               \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN3:                                           \
                 R_INTC->DMACKSEL21 &= ~R_INTC_DMACKSEL21_DACK_SEL87_Msk;                \
                 R_INTC->DMACKSEL21 |= write_value << R_INTC_DMACKSEL21_DACK_SEL87_Pos;  \
                 break;                                                                  \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN4:                                               \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN4:                                           \
                 R_INTC->DMACKSEL22 &= ~R_INTC_DMACKSEL22_DACK_SEL88_Msk;                \
                 R_INTC->DMACKSEL22 |= write_value << R_INTC_DMACKSEL22_DACK_SEL88_Pos;  \
                 break;                                                                  \
@@ -216,23 +223,23 @@
                                                                                         \
         switch (dtend_pin)                                                              \
         {                                                                               \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN0:                                             \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN0:                                           \
                 R_INTC->DMTENDSEL0 &= ~R_INTC_DMTENDSEL0_DTEND_SEL0_Msk;                \
                 R_INTC->DMTENDSEL0 |= write_value << R_INTC_DMTENDSEL0_DTEND_SEL0_Pos;  \
                 break;                                                                  \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN1:                                             \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN1:                                           \
                 R_INTC->DMTENDSEL0 &= ~R_INTC_DMTENDSEL0_DTEND_SEL1_Msk;                \
                 R_INTC->DMTENDSEL0 |= write_value << R_INTC_DMTENDSEL0_DTEND_SEL1_Pos;  \
                 break;                                                                  \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN2:                                             \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN2:                                           \
                 R_INTC->DMTENDSEL0 &= ~R_INTC_DMTENDSEL0_DTEND_SEL2_Msk;                \
                 R_INTC->DMTENDSEL0 |= write_value << R_INTC_DMTENDSEL0_DTEND_SEL2_Pos;  \
                 break;                                                                  \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN3:                                             \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN3:                                           \
                 R_INTC->DMTENDSEL0 &= ~R_INTC_DMTENDSEL0_DTEND_SEL3_Msk;                \
                 R_INTC->DMTENDSEL0 |= write_value << R_INTC_DMTENDSEL0_DTEND_SEL3_Pos;  \
                 break;                                                                  \
-            case DMAC_B_EXTERNAL_OUTPUT_PIN4:                                             \
+            case DMAC_B_EXTERNAL_OUTPUT_PIN4:                                           \
                 R_INTC->DMTENDSEL1 &= ~R_INTC_DMTENDSEL1_DTEND_SEL4_Msk;                \
                 R_INTC->DMTENDSEL1 |= write_value << R_INTC_DMTENDSEL1_DTEND_SEL4_Pos;  \
                 break;                                                                  \
@@ -241,6 +248,10 @@
                 break;                                                                  \
         }                                                                               \
     } while (0)
+
+#define R_BSP_DMAC_EXTERNAL_OUTPUT_ACTIVE_LEVEL_SET(unit, channel, ack_active_level, tend_active_level) \
+    { /* No clearing required for this device. */;                                                      \
+    }                                                                                                   \
 
 typedef enum e_dmac_trigger_event
 {
@@ -751,5 +762,11 @@ typedef enum e_dmac_b_external_output_pin
     } while (0)
 
 /** @} (end addtogroup BSP_MPU_RZG3E) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 #endif                                 /* BSP_DMAC_H */

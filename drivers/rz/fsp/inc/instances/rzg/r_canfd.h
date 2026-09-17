@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -17,11 +17,6 @@
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
-/*******************************************************************************************************************//**
- * @addtogroup CANFD
- * @{
- **********************************************************************************************************************/
-
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
@@ -31,6 +26,18 @@ FSP_HEADER
 #else
  #define R_CANFD_NUM_COMMON_FIFOS    (6U)
 #endif
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZG_CANFD
+ * @{
+ **********************************************************************************************************************/
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -304,8 +311,8 @@ typedef enum e_canfd_txmb_merge_mode
     CANFD_TXMB_MERGE_MODE_ENABLE  = 1,
 } canfd_txmb_merge_mode_t;
 
-/* CAN Instance Control Block   */
-typedef struct st_canfd_instance_ctrl
+/** CAN Instance Control Block   */
+struct st_canfd_instance_ctrl
 {
     R_CANFD_Type * p_reg;                       // Pointer to register base address
 
@@ -315,15 +322,18 @@ typedef struct st_canfd_instance_ctrl
     can_operation_mode_t operation_mode;        // Can operation mode.
     can_test_mode_t      test_mode;             // Can operation mode.
 #if BSP_TZ_SECURE_BUILD
-    bool callback_is_secure;                    // If the callback is in non-secure memory then a security state transistion is required to call p_callback (BLXNS)
+    bool callback_is_secure;                    // If the callback is in non-secure memory then a security state transition is required to call p_callback (BLXNS)
 #endif
     void (* p_callback)(can_callback_args_t *); // Pointer to callback
     can_callback_args_t * p_callback_memory;    // Pointer to optional callback argument memory
-    void const          * p_context;            // Pointer to context to be passed into callback function
-} canfd_instance_ctrl_t;
+    void                * p_context;            // Pointer to context to be passed into callback function
+};
+
+/** CAN Instance Control Block. Please refer to the struct st_canfd_instance_ctrl. */
+typedef struct st_canfd_instance_ctrl canfd_instance_ctrl_t;
 
 /** AFL Entry (based on R_CANFD_CFDGAFL_Type in renesas.h) */
-typedef struct st_canfd_afl_entry
+struct st_canfd_afl_entry
 {
     union
     {
@@ -364,10 +374,13 @@ typedef struct st_canfd_afl_entry
             canfd_rx_fifo_t fifo_select_flags;   ///< RX FIFO(s) to receive messages accepted by this rule
         } destination;
     };
-} canfd_afl_entry_t;
+};
+
+/** AFL Entry (based on R_CANFD_CFDGAFL_Type in renesas.h). Please refer to the struct st_canfd_afl_entry. */
+typedef struct st_canfd_afl_entry canfd_afl_entry_t;
 
 /** CANFD Global Configuration */
-typedef struct st_canfd_global_cfg
+struct st_canfd_global_cfg
 {
     uint32_t global_interrupts;                                      ///< Global control options (CFDGCTR register setting)
     uint32_t global_config;                                          ///< Global configuration options (CFDGCFG register setting)
@@ -380,10 +393,13 @@ typedef struct st_canfd_global_cfg
     uint8_t  global_err_ipl;                                         ///< Global Error interrupt priority
     uint8_t  rx_fifo_ipl;                                            ///< RX FIFO interrupt priority
     uint32_t common_fifo_config[BSP_FEATURE_CANFD_NUM_COMMON_FIFOS]; ///< Common FIFO configurations
-} canfd_global_cfg_t;
+};
+
+/** CANFD Global Configuration. Please refer to the struct st_canfd_global_cfg. */
+typedef struct st_canfd_global_cfg canfd_global_cfg_t;
 
 /** CANFD Extended Configuration */
-typedef struct st_canfd_extended_cfg
+struct st_canfd_extended_cfg
 {
     canfd_afl_entry_t const * p_afl;                   ///< AFL rules list
     uint64_t                  txmb_txi_enable;         ///< Array of TX Message Buffer enable bits
@@ -393,7 +409,10 @@ typedef struct st_canfd_extended_cfg
     canfd_global_cfg_t      * p_global_cfg;            ///< Global configuration (global error callback channel only)
     canfd_txmb_merge_mode_t   txmb_merge_mode_enable;  ///< TXMB buffer marge mode configuration
     void                    * p_reg;                   ///< Register base address for specified channel
-} canfd_extended_cfg_t;
+};
+
+/** CANFD Extended Configuration. Please refer to the struct st_canfd_extended_cfg. */
+typedef struct st_canfd_extended_cfg canfd_extended_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -418,12 +437,17 @@ fsp_err_t R_CANFD_ModeTransition(can_ctrl_t * const   p_api_ctrl,
 fsp_err_t R_CANFD_InfoGet(can_ctrl_t * const p_api_ctrl, can_info_t * const p_info);
 fsp_err_t R_CANFD_CallbackSet(can_ctrl_t * const          p_api_ctrl,
                               void (                    * p_callback)(can_callback_args_t *),
-                              void const * const          p_context,
+                              void * const                p_context,
                               can_callback_args_t * const p_callback_memory);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup CAN)
  **********************************************************************************************************************/
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

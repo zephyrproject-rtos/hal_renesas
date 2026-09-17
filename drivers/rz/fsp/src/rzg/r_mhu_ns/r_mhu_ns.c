@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -8,6 +8,9 @@
  * Includes
  **********************************************************************************************************************/
 #include "r_mhu_ns.h"
+#ifdef BSP_CFG_OPENAMP                 // OpenAMP
+ #include "metal/irq_controller.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -69,8 +72,15 @@ const mhu_api_t g_mhu_ns_on_mhu_ns =
     .close       = R_MHU_NS_Close,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup MHU_NS
+ * @addtogroup RZG_MHU_NS
  * @{
  **********************************************************************************************************************/
 
@@ -153,6 +163,9 @@ fsp_err_t R_MHU_NS_Open (mhu_ctrl_t * const p_ctrl, mhu_cfg_t const * const p_cf
     R_BSP_MODULE_START(FSP_IP_MHU, p_cfg->channel);
 
     R_BSP_IrqCfgEnable(p_cfg->rx_irq, p_cfg->rx_ipl, p_instance_ctrl);
+#if BSP_FEATURE_MHU_IRQ_BUNDLE
+    R_BSP_MHU_ContextSet(p_instance_ctrl->p_cfg->rx_irq, p_instance_ctrl->p_cfg->channel, p_instance_ctrl);
+#endif
 
     /* Set callback and context pointers */
 
@@ -213,7 +226,7 @@ fsp_err_t R_MHU_NS_MsgSend (mhu_ctrl_t * const p_ctrl, uint32_t const msg)
  **********************************************************************************************************************/
 fsp_err_t R_MHU_NS_CallbackSet (mhu_ctrl_t * const          p_api_ctrl,
                                 void (                    * p_callback)(mhu_callback_args_t *),
-                                void const * const          p_context,
+                                void * const                p_context,
                                 mhu_callback_args_t * const p_callback_memory)
 {
     mhu_ns_instance_ctrl_t * p_ctrl = (mhu_ns_instance_ctrl_t *) p_api_ctrl;
@@ -276,7 +289,12 @@ fsp_err_t R_MHU_NS_Close (mhu_ctrl_t * const p_ctrl)
     /* Cleanup the device: disable interrupts */
 
     NVIC_DisableIRQ(p_instance_ctrl->p_cfg->rx_irq);
+
+#if BSP_FEATURE_MHU_IRQ_BUNDLE
+    R_BSP_MHU_ContextSet(p_instance_ctrl->p_cfg->rx_irq, p_instance_ctrl->p_cfg->channel, p_instance_ctrl);
+#else
     R_FSP_IsrContextSet(p_instance_ctrl->p_cfg->rx_irq, p_instance_ctrl);
+#endif
 
     p_instance_ctrl->open = 0U;
 
@@ -288,6 +306,12 @@ fsp_err_t R_MHU_NS_Close (mhu_ctrl_t * const p_ctrl)
  *********************************************************************************************************************/
 
 /** @} (end addtogroup MHU_NS) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -390,6 +414,8 @@ static void r_mhu_ns_set_send_data (mhu_ns_instance_ctrl_t * p_instance_ctrl, ui
  * End of function r_mhu_ns_set_send_data
  *********************************************************************************************************************/
 
+#ifdef BSP_CFG_OPENAMP
+
 /*********************************************************************************************************************
  * MHU_NS receive interrupt (for OpenAMP)
  **********************************************************************************************************************/
@@ -400,7 +426,7 @@ void metal_irq_isr_wrapper (void)
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
 
-    metal_irq_isr(irq);
+    metal_irq_handle(&(struct metal_irq) { (void *) R_MHU_NS_IsrSub, NULL}, irq);
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
@@ -409,6 +435,7 @@ void metal_irq_isr_wrapper (void)
 /**********************************************************************************************************************
  * End of function metal_irq_isr_wrapper
  *********************************************************************************************************************/
+#endif
 
 /*********************************************************************************************************************
  * MHU_NS receive interrupt (for bere mhu_ns application).
@@ -442,8 +469,19 @@ void R_MHU_NS_IsrSub (uint32_t irq)
     /* Clear pending IRQ to make sure it doesn't fire again after exiting */
     R_BSP_IrqStatusClear(irq);
 
+#if BSP_FEATURE_MHU_IRQ_BUNDLE
+    uint32_t ch = 0U;
+
+    /* Get the channel of the current interrupt */
+    ch = R_BSP_MHU_CurrentChannelGet(irq);
+
+    /* Recover ISR context saved in open. */
+    mhu_ns_instance_ctrl_t * p_instance_ctrl = (mhu_ns_instance_ctrl_t *) R_BSP_MHU_ContextGet(irq, ch);
+#else
+
     /* Recover ISR context saved in open. */
     mhu_ns_instance_ctrl_t * p_instance_ctrl = (mhu_ns_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+#endif
 
     /* Check interrupt reason */
     if (
@@ -462,6 +500,12 @@ void R_MHU_NS_IsrSub (uint32_t irq)
         {
             p_instance_ctrl->p_regs->RSP_INT_CLRn = 1;
         }
+
+#if BSP_FEATURE_MHU_IRQ_BUNDLE
+
+        /* Clear the interrupt status of the channel */
+        R_BSP_IntStatusControlClear(FSP_IP_MHU, (uint8_t) ch, irq, 1U);
+#endif
 
         /* Invoke the callback function if it is set. */
         if (NULL != p_instance_ctrl->p_callback)

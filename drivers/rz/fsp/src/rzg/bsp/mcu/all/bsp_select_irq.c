@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -48,7 +48,7 @@
 
 // *UNCRUSTIFY-OFF*
 
-static int32_t mtu3_intpmsel_offset_table[BSP_FEATURE_MTU3_MAX_CHANNELS][MTU3_CAUSE_NUM] =
+static int32_t mtu3_intpmsel_offset_table[BSP_FEATURE_MTU3_MAX_CHANNELS][INTSEL_CAUSE_MTU3_CAUSE_NUM] =
 {
 /* TGIA, TGIB, TGIC, TGID, TGIE, TGIF, TGIU, TGIV, TGIW, TCIU, TCIV */
     { 0,    1,    2,    3,    5,    6,   -1,   -1,   -1,   -1,    4}, /* MTU Ch 0 */
@@ -66,8 +66,49 @@ static int32_t mtu3_intpmsel_offset_table[BSP_FEATURE_MTU3_MAX_CHANNELS][MTU3_CA
 
 #endif
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+#if defined(BSP_FEATURE_ICU_HAS_MISR4_REG)
+
+ #define BSP_PRV_MISR4_REG_STATUS_MASK      (R_INTC_IM33_MISR4_MMNSSTAT3_Msk | R_INTC_IM33_MISR4_MMNSSTAT7_Msk | \
+                                             R_INTC_IM33_MISR4_MMNSSTAT11_Msk | R_INTC_IM33_MISR4_MMNSSTAT15_Msk)
+ #define BSP_PRV_MISR4_MSG_NS_POS_OFFSET    (R_INTC_IM33_MISR4_MMNSSTAT3_Pos)
+ #define BSP_PRV_MISR4_RSP_NS_POS_OFFSET    (R_INTC_IM33_MISR4_MRNSSTAT16_Pos)
+ #define BSP_PRV_MISR4_MSG_S_POS_OFFSET     (R_INTC_IM33_MISR4_MMSSTAT3_Pos)
+ #define BSP_PRV_MISR4_RSP_S_POS_OFFSET     (R_INTC_IM33_MISR4_MRSSTAT16_Pos)
+
+// *UNCRUSTIFY-OFF*
+
+static int32_t mhu_misr4_status_offset_table[BSP_FEATURE_MHU_FOR_CM33_MAX_CHANNELS + 1] =
+{
+/* ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, ch9, ch10, ch11, ch12, ch13, ch14, ch15, ch16, ch17, ch18, ch19*/
+    -1,  -1,  -1,   0,  -1,  -1,  -1,   1,  -1,  -1,   -1,    2,   -1,   -1,   -1,    3,    8,    9,    10,   11,
+};
+
+// *UNCRUSTIFY-ON*
+
+#endif
+
+#if defined(BSP_FEATURE_ICU_HAS_SWISR_REG)
+ #define BSP_PRV_SWISR_REG_STATUS_MASK       (R_INTC_IM33_SWISR_SWSTAT0_Msk | R_INTC_IM33_SWISR_SWSTAT1_Msk | \
+                                              R_INTC_IM33_SWISR_SWSTAT2_Msk | R_INTC_IM33_SWISR_SWSTAT3_Msk)
+
+ #define BSP_PRV_SWISR_VALID_CHANNEL_MASK    (R_INTC_IM33_SWISR_SWSTAT0_Msk | R_INTC_IM33_SWISR_SWSTAT1_Msk | \
+                                              R_INTC_IM33_SWISR_SWSTAT2_Msk | R_INTC_IM33_SWISR_SWSTAT3_Msk)
+#endif
+
+#if defined(BSP_FEATURE_ICU_HAS_PEISR_REG)
+
+ #define BSP_PRV_PEISR_REG_STATUS_MASK       (R_INTC_IM33_PEISR_PEVSTAT0_Msk | R_INTC_IM33_PEISR_PEUSTAT0_Msk)
+
+#endif
+
 /******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZG_BSP_MCU
  *
  * @{
  *********************************************************************************************************************/
@@ -127,7 +168,7 @@ fsp_err_t R_BSP_CM33SelectIrqSet (IRQn_Type irq, IRQSELn_Type irqsel)
 
 #endif
 
-#if defined(BSP_FEATURE_ICU_HAS_INTPMSEL_REG)
+#if defined(BSP_FEATURE_ICU_HAS_INTPMSEL_REG) || defined(BSP_FEATURE_ICU_HAS_INTTSEL_REG)
 
 /******************************************************************************************************************//**
  * Function selection of interrupts with specific factors bundled
@@ -143,26 +184,31 @@ fsp_err_t R_BSP_CM33SelectIrqSet (IRQn_Type irq, IRQSELn_Type irqsel)
  *********************************************************************************************************************/
 fsp_err_t R_BSP_IntCauseSelectionSet (fsp_ip_t ip, uint8_t channel, intsel_cause_t cause)
 {
-    uint32_t  pos_calc;
-    uint32_t  set_value;
-    fsp_err_t err = FSP_SUCCESS;
+    volatile uint32_t * reg_addr;
+    uint32_t            pos_calc;
+    uint32_t            set_value;
+    uint32_t            reg_len;
+    fsp_err_t           err = FSP_SUCCESS;
 
     switch (ip)
     {
+ #if defined(BSP_FEATURE_ICU_HAS_INTPMSEL_REG)
         case FSP_IP_GPT:
         {
             if (0 == ((1U << channel) & BSP_FEATURE_GPT_VALID_CHANNEL_MASK))
             {
                 err = FSP_ERR_IP_CHANNEL_NOT_PRESENT;
             }
-            else if (GPT_CAUSE_NUM <= cause)
+            else if (INTSEL_CAUSE_GPT_CAUSE_NUM <= cause)
             {
                 err = FSP_ERR_INVALID_ARGUMENT;
             }
             else
             {
+                reg_addr  = &R_INTC_IM33->INTPMSEL0;
+                reg_len   = BSP_PRV_INTPMSEL_REG_LENGTH;
                 set_value = BSP_PRV_INTPMSEL_SET_VALUE_GPT;
-                pos_calc  = (uint32_t) (channel * GPT_CAUSE_NUM + cause);
+                pos_calc  = (uint32_t) (channel * INTSEL_CAUSE_GPT_CAUSE_NUM + cause);
             }
 
             break;
@@ -174,7 +220,7 @@ fsp_err_t R_BSP_IntCauseSelectionSet (fsp_ip_t ip, uint8_t channel, intsel_cause
             {
                 err = FSP_ERR_IP_CHANNEL_NOT_PRESENT;
             }
-            else if (MTU3_CAUSE_NUM <= cause)
+            else if (INTSEL_CAUSE_MTU3_CAUSE_NUM <= cause)
             {
                 err = FSP_ERR_INVALID_ARGUMENT;
             }
@@ -184,15 +230,72 @@ fsp_err_t R_BSP_IntCauseSelectionSet (fsp_ip_t ip, uint8_t channel, intsel_cause
             }
             else
             {
+                reg_addr  = &R_INTC_IM33->INTPMSEL0;
+                reg_len   = BSP_PRV_INTPMSEL_REG_LENGTH;
                 set_value = BSP_PRV_INTPMSEL_SET_VALUE_MTU3;
                 pos_calc  = (uint32_t) mtu3_intpmsel_offset_table[channel][cause];
             }
 
             break;
         }
+ #endif
+
+ #if defined(BSP_FEATURE_ICU_HAS_INTTSEL_REG)
+        case FSP_IP_TINT:
+        {
+            if (0 == ((1U << channel) & BSP_FEATURE_INTC_TINT_VALID_CHANNEL_MASK))
+            {
+                err = FSP_ERR_IP_CHANNEL_NOT_PRESENT;
+            }
+            else if (0 != ((1U << channel) & BSP_FEATURE_INTC_TINT_INTTSEL_INVALID_CHANNEL_MASK))
+            {
+                err = FSP_ERR_IP_CHANNEL_NOT_PRESENT;
+            }
+            else if (INTSEL_CAUSE_TINT_CAUSE_NUM <= cause)
+            {
+                err = FSP_ERR_INVALID_ARGUMENT;
+            }
+            else
+            {
+                reg_addr  = &R_INTC_IM33->INTTSEL;
+                reg_len   = BSP_FEATURE_INTTSEL_REG_LENGTH;
+                set_value = BSP_FEATURE_INTC_TINT_INTTSEL_SET_VALUE;
+                pos_calc  = (uint32_t) channel;
+            }
+
+            break;
+        }
+
+        case FSP_IP_IRQ:
+        {
+            if (0 == ((1U << channel) & BSP_FEATURE_INTC_IRQ_VALID_CHANNEL_MASK))
+            {
+                err = FSP_ERR_IP_CHANNEL_NOT_PRESENT;
+            }
+            else if (0 != ((1U << channel) & BSP_FEATURE_INTC_IRQ_INTTSEL_INVALID_CHANNEL_MASK))
+            {
+                err = FSP_ERR_IP_CHANNEL_NOT_PRESENT;
+            }
+            else if (INTSEL_CAUSE_IRQ_CAUSE_NUM <= cause)
+            {
+                err = FSP_ERR_INVALID_ARGUMENT;
+            }
+            else
+            {
+                reg_addr  = &R_INTC_IM33->INTTSEL;
+                reg_len   = BSP_FEATURE_INTTSEL_REG_LENGTH;
+                set_value = BSP_FEATURE_INTC_IRQ_INTTSEL_SET_VALUE;
+                pos_calc  = (uint32_t) (channel + BSP_FEATURE_INTC_IRQ_INTTSEL_POS_OFFSET);
+            }
+
+            break;
+        }
+ #endif
 
         default:
         {
+            FSP_PARAMETER_NOT_USED(reg_addr);
+            FSP_PARAMETER_NOT_USED(reg_len);
             FSP_PARAMETER_NOT_USED(pos_calc);
             FSP_PARAMETER_NOT_USED(set_value);
 
@@ -204,15 +307,14 @@ fsp_err_t R_BSP_IntCauseSelectionSet (fsp_ip_t ip, uint8_t channel, intsel_cause
 
     if (FSP_SUCCESS == err)
     {
-        volatile uint32_t * reg_addr = &R_INTC_IM33->INTPMSEL0;
-        uint32_t            reg_value;
-        uint32_t            nregs;
-        uint32_t            shift;
+        uint32_t reg_value;
+        uint32_t nregs;
+        uint32_t shift;
 
         FSP_CRITICAL_SECTION_DEFINE;
 
-        shift = pos_calc % BSP_PRV_INTPMSEL_REG_LENGTH;
-        nregs = pos_calc / BSP_PRV_INTPMSEL_REG_LENGTH;
+        shift = pos_calc % reg_len;
+        nregs = pos_calc / reg_len;
 
         reg_addr += nregs;
 
@@ -238,4 +340,298 @@ fsp_err_t R_BSP_IntCauseSelectionSet (fsp_ip_t ip, uint8_t channel, intsel_cause
 
 #endif
 
+/******************************************************************************************************************//**
+ * Gets the status that is represent which interrupt signal is active.
+ *
+ * @param[in]  ip           Specifies which module to read status.
+ * @param[in]  channel      Specifies the channel number. If multiple channel interrupt factors are bundled together as
+ *                          a single interrupt factor, this argument is not used.
+ * @param[in]  irq          Specifies the irq number. If the interrupt factor is separated for each channel,
+ *                          this argument is not used.
+ *
+ * @retval     int_status   Returns the value of the Interrupt Status Control register by offsetting the data relative
+ *                          to the position of bit0. If a channel number is specified, returns the status of all
+ *                          interrupts for that channel. If an interrupt factor is specified, it returns the status for
+ *                          all channels of that interrupt factor.
+ *********************************************************************************************************************/
+uint32_t R_BSP_IntStatusControlGet (fsp_ip_t ip, uint8_t channel, IRQn_Type irq)
+{
+    uint32_t int_status = 0;
+    uint32_t status_mask;
+    uint32_t pos_offset;
+
+    switch (ip)
+    {
+#if defined(BSP_FEATURE_ICU_HAS_MISR4_REG) || defined(BSP_FEATURE_ICU_HAS_SWISR_REG)
+        case FSP_IP_MHU:
+        {
+            switch (irq)
+            {
+ #if defined(BSP_FEATURE_ICU_HAS_MISR4_REG)
+                case MHU_MSG_NS_IRQn:
+                {
+                    FSP_PARAMETER_NOT_USED(channel);
+                    status_mask = BSP_PRV_MISR4_REG_STATUS_MASK;
+                    pos_offset  = BSP_PRV_MISR4_MSG_NS_POS_OFFSET;
+                    int_status  = R_INTC_IM33->MISR4;
+                    int_status  = status_mask & (int_status >> pos_offset);
+
+                    break;
+                }
+
+                case MHU_RSP_NS_IRQn:
+                {
+                    FSP_PARAMETER_NOT_USED(channel);
+                    status_mask = BSP_PRV_MISR4_REG_STATUS_MASK;
+                    pos_offset  = BSP_PRV_MISR4_RSP_NS_POS_OFFSET;
+                    int_status  = R_INTC_IM33->MISR4;
+                    int_status  = status_mask & (int_status >> pos_offset);
+
+                    break;
+                }
+
+                case MHU_MSG_S_IRQn:
+                {
+                    FSP_PARAMETER_NOT_USED(channel);
+                    status_mask = BSP_PRV_MISR4_REG_STATUS_MASK;
+                    pos_offset  = BSP_PRV_MISR4_MSG_S_POS_OFFSET;
+                    int_status  = R_INTC_IM33->MISR4;
+                    int_status  = status_mask & (int_status >> pos_offset);
+
+                    break;
+                }
+
+                case MHU_RSP_S_IRQn:
+                {
+                    FSP_PARAMETER_NOT_USED(channel);
+                    status_mask = BSP_PRV_MISR4_REG_STATUS_MASK;
+                    pos_offset  = BSP_PRV_MISR4_RSP_S_POS_OFFSET;
+                    int_status  = R_INTC_IM33->MISR4;
+                    int_status  = status_mask & (int_status >> pos_offset);
+
+                    break;
+                }
+ #endif
+
+ #if defined(BSP_FEATURE_ICU_HAS_SWISR_REG)
+                case MHU_SW_INT_IRQn:
+                {
+                    FSP_PARAMETER_NOT_USED(channel);
+                    FSP_PARAMETER_NOT_USED(pos_offset);
+                    status_mask = BSP_PRV_SWISR_REG_STATUS_MASK;
+                    int_status  = R_INTC_IM33->SWISR;
+                    int_status  = status_mask & int_status;
+
+                    break;
+                }
+ #endif
+
+                default:
+                {
+                    FSP_PARAMETER_NOT_USED(channel);
+                    FSP_PARAMETER_NOT_USED(status_mask);
+                    FSP_PARAMETER_NOT_USED(pos_offset);
+
+                    break;
+                }
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_FEATURE_ICU_HAS_PEISR_REG)
+        case FSP_IP_GPT:
+        {
+            FSP_PARAMETER_NOT_USED(irq);
+
+            status_mask = BSP_PRV_PEISR_REG_STATUS_MASK;
+            pos_offset  = channel;
+
+            if ((1U << channel) & BSP_FEATURE_GPT_VALID_CHANNEL_MASK)
+            {
+                int_status = R_INTC_IM33->PEISR;
+                int_status = status_mask & (int_status >> pos_offset);
+            }
+            else
+            {
+                FSP_PARAMETER_NOT_USED(status_mask);
+                FSP_PARAMETER_NOT_USED(pos_offset);
+            }
+
+            break;
+        }
+#endif
+
+        default:
+        {
+            FSP_PARAMETER_NOT_USED(channel);
+            FSP_PARAMETER_NOT_USED(irq);
+            FSP_PARAMETER_NOT_USED(status_mask);
+            FSP_PARAMETER_NOT_USED(pos_offset);
+
+            break;
+        }
+    }
+
+    return int_status;
+}
+
+/******************************************************************************************************************//**
+ * Clears the status of the specified interrupt source.
+ *
+ * @param[in]  ip           Specifies which module to read status.
+ * @param[in]  channel      Specifies the channel number.
+ * @param[in]  irq          Specifies the irq number.
+ * @param[in]  int_source   Specify the source of the interrupt to be cleared. It does not include the channel number.
+ *
+ * @retval     FSP_SUCCESS                     Interrupt status clear was successful.
+ * @retval     FSP_ERR_INVALID_MODE            Specified module is not eligible for the Interrupt Selection feature.
+ * @retval     FSP_ERR_INVALID_ARGUMENT        An invalid source of interrupt was specified.
+ * @retval     FSP_ERR_IP_CHANNEL_NOT_PRESENT  Requested channel number is not available.
+ *********************************************************************************************************************/
+fsp_err_t R_BSP_IntStatusControlClear (fsp_ip_t ip, uint8_t channel, IRQn_Type irq, uint32_t int_source)
+{
+    volatile uint32_t * reg_addr;
+    uint32_t            pos_calc;
+    fsp_err_t           err = FSP_SUCCESS;
+
+    switch (ip)
+    {
+#if defined(BSP_FEATURE_ICU_HAS_MISR4_REG) || defined(BSP_FEATURE_ICU_HAS_SWISR_REG)
+        case FSP_IP_MHU:
+        {
+            switch (irq)
+            {
+ #if defined(BSP_FEATURE_ICU_HAS_MISR4_REG)
+                case MHU_MSG_NS_IRQn:
+                case MHU_RSP_NS_IRQn:
+                {
+                    if (-1 == mhu_misr4_status_offset_table[channel])
+                    {
+                        FSP_PARAMETER_NOT_USED(int_source);
+                        FSP_PARAMETER_NOT_USED(reg_addr);
+                        FSP_PARAMETER_NOT_USED(pos_calc);
+
+                        err = FSP_ERR_INVALID_ARGUMENT;
+                    }
+                    else
+                    {
+                        reg_addr = &R_INTC_IM33->MISR4;
+                        pos_calc = (uint32_t) mhu_misr4_status_offset_table[channel];
+                    }
+
+                    break;
+                }
+
+                case MHU_MSG_S_IRQn:
+                case MHU_RSP_S_IRQn:
+                {
+                    if (-1 == mhu_misr4_status_offset_table[channel])
+                    {
+                        FSP_PARAMETER_NOT_USED(int_source);
+                        FSP_PARAMETER_NOT_USED(reg_addr);
+                        FSP_PARAMETER_NOT_USED(pos_calc);
+
+                        err = FSP_ERR_INVALID_ARGUMENT;
+                    }
+                    else
+                    {
+                        reg_addr = &R_INTC_IM33->MISR4;
+                        pos_calc = (uint32_t) mhu_misr4_status_offset_table[channel] + BSP_PRV_MISR4_MSG_S_POS_OFFSET;
+                    }
+
+                    break;
+                }
+ #endif
+
+ #if defined(BSP_FEATURE_ICU_HAS_SWISR_REG)
+                case MHU_SW_INT_IRQn:
+                {
+                    if (0 == ((1U << channel) & BSP_PRV_SWISR_VALID_CHANNEL_MASK))
+                    {
+                        FSP_PARAMETER_NOT_USED(int_source);
+                        FSP_PARAMETER_NOT_USED(reg_addr);
+                        FSP_PARAMETER_NOT_USED(pos_calc);
+
+                        err = FSP_ERR_INVALID_ARGUMENT;
+                    }
+                    else
+                    {
+                        reg_addr = &R_INTC_IM33->SWISR;
+                        pos_calc = (uint32_t) channel;
+                    }
+
+                    break;
+                }
+ #endif
+
+                default:
+                {
+                    FSP_PARAMETER_NOT_USED(channel);
+                    FSP_PARAMETER_NOT_USED(int_source);
+                    FSP_PARAMETER_NOT_USED(reg_addr);
+                    FSP_PARAMETER_NOT_USED(pos_calc);
+
+                    err = FSP_ERR_INVALID_ARGUMENT;
+
+                    break;
+                }
+            }
+
+            break;
+        }
+#endif
+
+#if defined(BSP_FEATURE_ICU_HAS_PEISR_REG)
+        case FSP_IP_GPT:
+        {
+            FSP_PARAMETER_NOT_USED(irq);
+
+            if (0 == ((1U << channel) & BSP_FEATURE_GPT_VALID_CHANNEL_MASK))
+            {
+                FSP_PARAMETER_NOT_USED(int_source);
+                FSP_PARAMETER_NOT_USED(reg_addr);
+                FSP_PARAMETER_NOT_USED(pos_calc);
+
+                err = FSP_ERR_IP_CHANNEL_NOT_PRESENT;
+            }
+            else
+            {
+                reg_addr = &R_INTC_IM33->PEISR;
+                pos_calc = (uint32_t) channel;
+            }
+
+            break;
+        }
+#endif
+
+        default:
+        {
+            FSP_PARAMETER_NOT_USED(channel);
+            FSP_PARAMETER_NOT_USED(irq);
+            FSP_PARAMETER_NOT_USED(int_source);
+            FSP_PARAMETER_NOT_USED(reg_addr);
+            FSP_PARAMETER_NOT_USED(pos_calc);
+
+            err = FSP_ERR_INVALID_MODE;
+
+            break;
+        }
+    }
+
+    if (FSP_SUCCESS == err)
+    {
+        /* Clear interrupt status by writing 0 to target bit */
+        *reg_addr = ~(int_source << pos_calc);
+    }
+
+    return err;
+}
+
 /** @} (end addtogroup BSP_MCU) */
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -8,13 +8,6 @@
  * File Name    : bsp_reset.h
  * Version      : 1.00
  * Description  : bsp_reset header
- *********************************************************************************************************************/
-
-/******************************************************************************************************************//**
- * @ingroup BSP_MCU
- * @defgroup BSP_MCU_RZG3E RZG3E
- * @includedoc config_bsp_rzg3e_fsp.html
- * @{
  *********************************************************************************************************************/
 
 #ifndef BSP_RESET_H
@@ -55,6 +48,18 @@
 #define BSP_SLEEP_SET_SLEEP_REQ()          {R_CPG->CPG_LP_CTL1_b.CM33SLEEP_REQ = 0x00000001;}
 #define BSP_SLEEP_CLEAR_SLEEP_REQ()        {R_CPG->CPG_LP_CTL1_b.CM33SLEEP_REQ = 0x00000000;}
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
+/******************************************************************************************************************//**
+ * @addtogroup RZG_BSP_MPU_RZG3E
+ * @{
+ *********************************************************************************************************************/
+
 /**********************************************************************************************************************
  * Typedef definitions
  *********************************************************************************************************************/
@@ -67,6 +72,12 @@
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
 
-#endif                                 /* BSP_RESET_H */
+/** @} (end addtogroup BSP_MPU_RZG3E) */
 
-/** @} (end defgroup BSP_MCU_RZG3E) */
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
+#endif                                 /* BSP_RESET_H */

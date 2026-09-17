@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -39,5 +39,6 @@
 #include "iodefines/tzc_iodefine.h"
 #include "iodefines/wdt_iodefine.h"
 #include "iodefines/xspi_iodefine.h"
+#include "iodefines/r_ethosu_iodefine.h"
 
 #endif                                 /* __IODEFINE_HEADER__ */

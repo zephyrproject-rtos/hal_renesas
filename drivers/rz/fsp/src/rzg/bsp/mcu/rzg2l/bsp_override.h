@@ -1,15 +1,8 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup BSP_MCU_RZG2L
- * @{
- **********************************************************************************************************************/
-
-/** @} (end addtogroup BSP_MCU_RZG2L) */
 
 #ifndef BSP_OVERRIDE_H
 #define BSP_OVERRIDE_H
@@ -22,17 +15,26 @@
  * Macro definitions
  **********************************************************************************************************************/
 
-/* Define overrides required for this MCU. */
+/* Define overrides required for this MPU. */
 #define BSP_OVERRIDE_ADC_INCLUDE
 #define BSP_OVERRIDE_ADC_INFO_T
 #define BSP_OVERRIDE_CANFD_TX_BUFFER_T
 #define BSP_OVERRIDE_CANFD_TX_MB_T
 #define BSP_OVERRIDE_DMAC_B_EXTERNAL_DETECTION_T
+#define BSP_OVERRIDE_DMAC_B_EXTETNAL_OUTPUT_SIGNAL_ACTIVE_LEVEL_T
+#define BSP_OVERRIDE_TIMER_EVENT_T
 #define BSP_OVERRIDE_TRANSFER_ADDR_MODE_T
 #define BSP_OVERRIDE_TRANSFER_CALLBACK_ARGS_T
 #define BSP_OVERRIDE_TRANSFER_INFO_T
 #define BSP_OVERRIDE_TRANSFER_MODE_T
 #define BSP_OVERRIDE_TRANSFER_SIZE_T
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -47,6 +49,35 @@ typedef enum e_dmac_b_external_detection
 {
     DMAC_B_EXTERNAL_DETECTION_NO_DETECTION = 0, ///< Not using hardware detection.
 } dmac_b_external_detection_t;
+
+/** Active level of the external DMA ACK signal. */
+typedef enum e_dmac_b_external_output_signal_active_level
+{
+    DMAC_B_EXTERNAL_OUTPUT_SIGNAL_ACTIVE_LEVEL_NO_OUTPUT = 0, ///< Not using external output.
+} dmac_b_external_output_signal_active_level_t;
+
+/*==============================================
+ * Timer API Overrides
+ *==============================================*/
+
+/** Events that can trigger a callback function */
+typedef enum e_timer_event
+{
+    TIMER_EVENT_CYCLE_END,                     ///< Requested timer delay has expired or timer has wrapped around
+    TIMER_EVENT_CREST = TIMER_EVENT_CYCLE_END, ///< Timer crest event (counter is at a maximum, triangle-wave PWM only)
+    TIMER_EVENT_CAPTURE_A,                     ///< A capture has occurred on signal A
+    TIMER_EVENT_CAPTURE_B,                     ///< A capture has occurred on signal B
+    TIMER_EVENT_CAPTURE_C,                     ///< A capture has occurred on signal C
+    TIMER_EVENT_CAPTURE_D,                     ///< A capture has occurred on signal D
+    TIMER_EVENT_TROUGH,                        ///< Timer trough event (counter is 0, triangle-wave PWM only
+    TIMER_EVENT_COMPARE_A,                     ///< A compare has occurred on signal A
+    TIMER_EVENT_COMPARE_B,                     ///< A compare has occurred on signal B
+    TIMER_EVENT_COMPARE_C,                     ///< A compare has occurred on signal C
+    TIMER_EVENT_COMPARE_D,                     ///< A compare has occurred on signal D
+    TIMER_EVENT_COMPARE_E,                     ///< A compare has occurred on signal E
+    TIMER_EVENT_COMPARE_F,                     ///< A compare has occurred on signal F
+    TIMER_EVENT_DEAD_TIME                      ///< Dead time event
+} timer_event_t;
 
 /*==============================================
  * Transfer API Overrides
@@ -85,7 +116,7 @@ typedef enum e_transfer_size
 /** Address mode specifies whether to modify (increment or decrement) pointer after each transfer. */
 typedef enum e_transfer_addr_mode
 {
-    /** Address pointer is incremented by associated @ref transfer_size_t after each transfer. */
+    /** Address pointer is incremented by associated @ref RZG::transfer_size_t after each transfer. */
     TRANSFER_ADDR_MODE_INCREMENTED = 0,
 
     /** Address pointer remains fixed after each transfer. */
@@ -93,13 +124,17 @@ typedef enum e_transfer_addr_mode
 } transfer_addr_mode_t;
 
 /** Callback function parameter data. */
-typedef struct st_transfer_callback_args_t
+struct st_transfer_callback_args
 {
     transfer_event_t event;            ///< Event code
-    void const     * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in ::transfer_cfg_t.
-} transfer_callback_args_t;
+    void           * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in RZG::transfer_cfg_t.
+};
 
-typedef struct st_transfer_info
+/** Callback function parameter data. Please refer to the struct st_transfer_callback_args. */
+typedef struct st_transfer_callback_args transfer_callback_args_t;
+
+/** This structure specifies the properties of the transfer. */
+struct st_transfer_info
 {
     /** Select what happens to destination address after each transfer. */
     transfer_addr_mode_t dest_addr_mode;
@@ -107,7 +142,7 @@ typedef struct st_transfer_info
     /** Select what happens to source address after each transfer. */
     transfer_addr_mode_t src_addr_mode;
 
-    /** Select mode from @ref transfer_mode_t. */
+    /** Select mode from @ref RZG::transfer_mode_t. */
     transfer_mode_t mode;
 
     /** Source address. */
@@ -129,21 +164,27 @@ typedef struct st_transfer_info
     void const * p_next1_src;
     void       * p_next1_dest;
     uint32_t     next1_length;
-} transfer_info_t;
+};
+
+/** This structure specifies the properties of the transfer. Please refer to the struct st_transfer_info. */
+typedef struct st_transfer_info transfer_info_t;
 
 /*==============================================
  * ADC API Overrides
  *==============================================*/
 
 /** ADC Information Structure for Transfer Interface */
-typedef struct st_adc_info
+struct st_adc_info
 {
     volatile const void * p_address;         ///< The address to start reading the data from
     uint32_t              length;            ///< The total number of transfers to read
     transfer_size_t       transfer_size;     ///< The size of each transfer
     uint32_t              calibration_data1; ///< Temperature sensor calibration data1
     uint32_t              calibration_data2; ///< Temperature sensor calibration data2
-} adc_info_t;
+};
+
+/** ADC Information Structure for Transfer Interface. Please refer to the struct st_adc_info. */
+typedef struct st_adc_info adc_info_t;
 
 /*==============================================
  * CANFD Overrides
@@ -212,9 +253,9 @@ typedef enum e_canfd_tx_mb
         /* Clear the ISTAT bit. */                                              \
         BSP_FEATURE_INTC_BASE_ADDR->ISCR = ~(INTC_IRQ_CLR_REG_MASK << channel); \
         /* Dummy read the ISCR to prevent the interrupt cause that have been cleared from being accidentally accepted. \
-         * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
-        iscr = BSP_FEATURE_INTC_BASE_ADDR->ISCR;                                        \
-        FSP_PARAMETER_NOT_USED(iscr);                                                   \
+         * Reference section "Clear Timing of Interrupt Cause" of the hardware manual. */ \
+        iscr = BSP_FEATURE_INTC_BASE_ADDR->ISCR;                                          \
+        FSP_PARAMETER_NOT_USED(iscr);                                                     \
     } while (0);
 
 /***********************************************************************************************************************
@@ -229,9 +270,9 @@ typedef enum e_canfd_tx_mb
         /* Clear the NSTAT bit. */                                 \
         BSP_FEATURE_INTC_BASE_ADDR->NSCR_b.NSTAT = 0;              \
         /* Dummy read the NSCR to prevent the interrupt cause that have been cleared from being accidentally accepted. \
-         * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
-        nscr = BSP_FEATURE_INTC_BASE_ADDR->NSCR;                                        \
-        FSP_PARAMETER_NOT_USED(nscr);                                                   \
+         * Reference section "Clear Timing of Interrupt Cause" of the hardware manual. */ \
+        nscr = BSP_FEATURE_INTC_BASE_ADDR->NSCR;                                          \
+        FSP_PARAMETER_NOT_USED(nscr);                                                     \
     } while (0);
 
 /***********************************************************************************************************************
@@ -246,9 +287,9 @@ typedef enum e_canfd_tx_mb
         /* Clear the TSTAT bit. */                                               \
         BSP_FEATURE_INTC_BASE_ADDR->TSCR = ~(INTC_TINT_CLR_REG_MASK << channel); \
         /* Dummy read the TSCR to prevent the interrupt cause that should have been cleared from being accidentally \
-         * accepted again. Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
-        tscr = BSP_FEATURE_INTC_BASE_ADDR->TSCR;                                                        \
-        FSP_PARAMETER_NOT_USED(tscr);                                                                   \
+         * accepted again. Reference section "Clear Timing of Interrupt Cause" of the hardware manual. */ \
+        tscr = BSP_FEATURE_INTC_BASE_ADDR->TSCR;                                                          \
+        FSP_PARAMETER_NOT_USED(tscr);                                                                     \
     } while (0);
 
 /***********************************************************************************************************************
@@ -259,4 +300,10 @@ typedef enum e_canfd_tx_mb
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
 #endif
+ #endif
+
+#endif                                 /* BSP_OVERRIDE_H */

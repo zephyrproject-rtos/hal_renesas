@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -68,8 +68,15 @@ const timer_api_t g_timer_on_gtm =
     .close           = R_GTM_Close,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup GTM
+ * @addtogroup RZG_GTM
  * @{
  **********************************************************************************************************************/
 
@@ -364,7 +371,7 @@ fsp_err_t R_GTM_StatusGet (timer_ctrl_t * const p_ctrl, timer_status_t * const p
  **********************************************************************************************************************/
 fsp_err_t R_GTM_CallbackSet (timer_ctrl_t * const          p_api_ctrl,
                              void (                      * p_callback)(timer_callback_args_t *),
-                             void const * const            p_context,
+                             void * const                  p_context,
                              timer_callback_args_t * const p_callback_memory)
 {
     gtm_instance_ctrl_t * p_ctrl = (gtm_instance_ctrl_t *) p_api_ctrl;
@@ -440,6 +447,12 @@ fsp_err_t R_GTM_Close (timer_ctrl_t * const p_ctrl)
 }
 
 /** @} (end addtogroup GTM) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -517,11 +530,25 @@ static fsp_err_t r_gtm_common_preamble (gtm_instance_ctrl_t * p_instance_ctrl)
  **********************************************************************************************************************/
 static void r_gtm_period_register_set (gtm_instance_ctrl_t * p_instance_ctrl, uint32_t period_counts)
 {
+    /* Reference usage note section "Timer Period".
+     * Since the value of max counts exceeds the type range, 0 means the maximum counts.
+     * When 0 is given, set all bits to 1 to avoid underflow. */
+    uint32_t period_counts_reg;
+
+    if (!period_counts)
+    {
+        period_counts_reg = UINT32_MAX;
+    }
+    else
+    {
+        period_counts_reg = period_counts - 1U;
+    }
+
     /* Store the period value so it can be retrieved later. */
     p_instance_ctrl->period = period_counts;
 
     /* Set counter to period. */
-    p_instance_ctrl->p_reg->OSTMnCMP = period_counts;
+    p_instance_ctrl->p_reg->OSTMnCMP = period_counts_reg;
 }
 
 /*******************************************************************************************************************//**

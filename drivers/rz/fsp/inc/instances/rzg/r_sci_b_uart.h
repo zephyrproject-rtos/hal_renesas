@@ -1,16 +1,11 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #ifndef R_SCI_B_UART_H
 #define R_SCI_B_UART_H
-
-/*******************************************************************************************************************//**
- * @addtogroup SCI_B_UART
- * @{
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes
@@ -26,6 +21,18 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZG_SCI_B_UART
+ * @{
+ **********************************************************************************************************************/
+
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -39,6 +46,17 @@ typedef enum e_sci_b_clk_src
     SCI_B_UART_CLOCK_EXT16X                    ///< Use external clock 16x baud rate
 } sci_b_clk_src_t;
 
+#ifndef BSP_OVERRIDE_SCI_B_UART_CLOCK_SOURCE_T
+
+/** SCI_B_UART Internal clock source */
+typedef enum e_sci_b_uart_clock_source
+{
+    SCI_B_UART_SOURCE_CLOCK_TCLK = 0,
+    SCI_B_UART_SOURCE_CLOCK_PCLK,
+} sci_b_uart_clock_source_t;
+
+#endif
+
 /** UART flow control mode definition */
 typedef enum e_sci_b_uart_flow_control
 {
@@ -49,7 +67,7 @@ typedef enum e_sci_b_uart_flow_control
 } sci_b_uart_flow_control_t;
 
 /** UART instance control block. */
-typedef struct st_sci_b_uart_instance_ctrl
+struct st_sci_b_uart_instance_ctrl
 {
     /* Parameters to control UART peripheral device */
     uint8_t  fifo_depth;               // FIFO depth of the UART channel
@@ -82,8 +100,11 @@ typedef struct st_sci_b_uart_instance_ctrl
     uart_callback_args_t * p_callback_memory;    // Pointer to non-secure memory that can be used to pass arguments to a callback in non-secure memory.
 
     /* Pointer to context to be passed into callback function */
-    void const * p_context;
-} sci_b_uart_instance_ctrl_t;
+    void * p_context;
+};
+
+/** UART instance control block. Please refer to the struct st_sci_b_uart_instance_ctrl. */
+typedef struct st_sci_b_uart_instance_ctrl sci_b_uart_instance_ctrl_t;
 
 /** Receive FIFO trigger configuration. */
 typedef enum e_sci_b_uart_rx_fifo_trigger
@@ -156,8 +177,8 @@ typedef enum e_sci_b_uart_half_data_enable_t
     SCI_B_UART_HALF_DATA_ENABLE  = 1,  ///< Half Data Function enabled.
 } sci_b_uart_half_data_enable_t;
 
-/** Register settings to acheive a desired baud rate and modulation duty. */
-typedef struct st_sci_b_baud_setting_t
+/** Register settings to achieve a desired baud rate and modulation duty. */
+struct st_sci_b_baud_setting
 {
     union
     {
@@ -179,25 +200,36 @@ typedef struct st_sci_b_baud_setting_t
             uint32_t mddr  : 8;        ///< Modulation Duty Register setting
         } baudrate_bits_b;
     };
-} sci_b_baud_setting_t;
+
+    sci_b_uart_clock_source_t clock_source; ///< Clock source setting (PCLK or TCLK)
+};
+
+/** Register settings to achieve a desired baud rate and modulation duty. Please refer to the struct st_sci_b_baud_setting. */
+typedef struct st_sci_b_baud_setting sci_b_baud_setting_t;
 
 /** Configuration settings for controlling the DE signal for RS-485. */
-typedef struct st_sci_b_uart_rs485_setting
+struct st_sci_b_uart_rs485_setting
 {
     sci_b_uart_rs485_enable_t      enable;   ///< Enable the DE signal.
     sci_b_uart_rs485_de_polarity_t polarity; ///< DE signal polarity.
     uint8_t assertion_time : 5;              ///< Time in baseclock units after assertion of the DE signal and before the start of the write transfer.
     uint8_t negation_time  : 5;              ///< Time in baseclock units after the end of a write transfer and before the DE signal is negated.
-} sci_b_uart_rs485_setting_t;
+};
+
+/** Configuration settings for controlling the DE signal for RS-485. Please refer to the struct st_sci_b_uart_rs485_setting. */
+typedef struct st_sci_b_uart_rs485_setting sci_b_uart_rs485_setting_t;
 
 /** Configuration settings for controlling the Half Data Function */
-typedef struct st_sci_b_uart_sci_b_uart_half_data_setting
+struct st_sci_b_uart_half_data_setting
 {
     sci_b_uart_half_data_enable_t enable; ///< Enable the half data Function.
-} sci_b_uart_half_data_setting_t;
+};
+
+/** Configuration settings for controlling the Half Data Function. Please refer to the struct st_sci_b_uart_half_data_setting. */
+typedef struct st_sci_b_uart_half_data_setting sci_b_uart_half_data_setting_t;
 
 /** UART on SCI device Configuration */
-typedef struct st_sci_b_uart_extended_cfg
+struct st_sci_b_uart_extended_cfg
 {
     sci_b_clk_src_t                 clock;             ///< The source clock for the baud-rate generator. If internal optionally output baud rate on SCK
     sci_b_uart_start_bit_detect_t   rx_edge_start;     ///< Start reception on falling edge
@@ -209,7 +241,10 @@ typedef struct st_sci_b_uart_extended_cfg
     sci_b_uart_rs485_setting_t      rs485_setting;     ///< RS-485 settings.
     sci_b_uart_half_data_setting_t  half_data_setting; ///< Half Data Function settings
     void                          * p_reg;             ///< Register base address for specified channel
-} sci_b_uart_extended_cfg_t;
+};
+
+/** UART on SCI device Configuration. Please refer to the struct st_sci_b_uart_extended_cfg. */
+typedef struct st_sci_b_uart_extended_cfg sci_b_uart_extended_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -234,13 +269,20 @@ fsp_err_t R_SCI_B_UART_BaudCalculate(uint32_t                     baudrate,
                                      sci_b_baud_setting_t * const p_baud_setting);
 fsp_err_t R_SCI_B_UART_CallbackSet(uart_ctrl_t * const          p_api_ctrl,
                                    void (                     * p_callback)(uart_callback_args_t *),
-                                   void const * const           p_context,
+                                   void * const                 p_context,
                                    uart_callback_args_t * const p_callback_memory);
 fsp_err_t R_SCI_B_UART_ReadStop(uart_ctrl_t * const p_api_ctrl, uint32_t * remaining_bytes);
+fsp_err_t R_SCI_B_UART_ReceiveSuspend(uart_ctrl_t * const p_api_ctrl);
+fsp_err_t R_SCI_B_UART_ReceiveResume(uart_ctrl_t * const p_api_ctrl);
 
 /*******************************************************************************************************************//**
  * @} (end addtogroup SCI_B_UART)
  **********************************************************************************************************************/
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

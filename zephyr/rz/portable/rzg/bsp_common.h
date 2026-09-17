@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -26,8 +26,15 @@
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZG_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -65,7 +72,9 @@ FSP_HEADER
     return err;
 #endif
 
-/** This function is called before returning an error code. To stop on a runtime error, define fsp_error_log in
+/**
+ * @anchor RZG_FSP_ERROR_LOG
+ * This function is called before returning an error code. To stop on a runtime error, define fsp_error_log in
  * user code and do required debugging (breakpoints, stack dump, etc) in this function.*/
 #if (1 == BSP_CFG_ASSERT)
 
@@ -336,6 +345,12 @@ void fsp_error_log(fsp_err_t err, const char * file, int32_t line);
 #endif
 
 /** @} (end addtogroup BSP_MCU) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

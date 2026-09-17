@@ -1,16 +1,8 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @defgroup BSP_IO BSP I/O access
- * @ingroup RENESAS_COMMON
- * @brief This module provides basic read/write access to port pins.
- *
- * @{
- **********************************************************************************************************************/
 
 #ifndef BSP_IO_H
 #define BSP_IO_H
@@ -37,6 +29,21 @@ FSP_HEADER
 #define BSP_IO_PRV_PM_REG_BASE(base)         (&R_GPIO->PM ## base)
 #define BSP_IO_PRV_PIN_REG_BASE_SET(base)    BSP_IO_PRV_PIN_REG_BASE(base)
 #define BSP_IO_PRV_PIN_REG_BASE(base)        (&R_GPIO->PIN ## base)
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @defgroup RZG_BSP_IO BSP I/O access
+ * @ingroup RZG_RENESAS_COMMON
+ * @brief This module provides basic read/write access to port pins.
+ *
+ * @{
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -357,6 +364,7 @@ typedef enum e_bsp_sd_ch
 {
     BSP_SD_CHANNEL_0 = 0x00,           ///< Used to select SD channel 0
     BSP_SD_CHANNEL_1 = 0x01,           ///< Used to select SD channel 1
+    BSP_SD_CHANNEL_2 = 0x02,           ///< Used to select SD channel 2
 } bsp_sd_channel_t;
 
 /** Superset of Ethernet channels. */
@@ -440,6 +448,21 @@ typedef enum e_bsp_bypass_freq_range
     BSP_BYPASS_FREQ_RANGE_24MHZ = 0x01, ///< Frequency range set to 12.1MHz to 24MHz
     BSP_BYPASS_FREQ_RANGE_48MHZ = 0x03, ///< Frequency range set to 24.1MHz to 48MHz
 } bsp_bypass_freq_range_t;
+
+/** Superset of Other POC voltages. */
+typedef enum e_bsp_other_poc_voltage
+{
+    BSP_OTHER_IO_VOLTAGE_33 = 0x00,    ///< Other Poc voltage set to 3.3V
+    BSP_OTHER_IO_VOLTAGE_18 = 0x01,    ///< Other Poc voltage set to 1.8V
+} bsp_other_poc_voltage_t;
+
+/** Superset of Other POC support. */
+typedef enum e_bsp_other_poc_support
+{
+    BSP_OTHER_IO_PVDD1833_OTH_AWO_POC = 0x00, ///< PVDD1833_OTH_AWO_POC
+    BSP_OTHER_IO_PVDD1833_OTH_ISO_POC = 0x01, ///< PVDD1833_OTH_ISO_POC
+    BSP_OTHER_IO_WDTOVF_N_POC         = 0x02, ///< WDTOVF_N_POC
+} bsp_other_poc_support_t;
 
 /***********************************************************************************************************************
  * Exported global variables
@@ -666,7 +689,7 @@ __STATIC_INLINE void R_BSP_SDVoltageModeCfg (bsp_sd_channel_t channel, bsp_sd_vo
 #if BSP_FEATURE_BSP_SUPPORT_SD_VOLT
     if (BSP_SD_CHANNEL_0 == channel)
     {
- #if BSP_FEATURE_BSP_HAS_SD_CH_POC_REG
+ #if BSP_FEATURE_BSP_HAS_SD_CH0_POC_REG
         R_GPIO->SD_CH0_POC = voltage;
  #else
         R_GPIO->SD_ch0 = voltage;
@@ -674,12 +697,19 @@ __STATIC_INLINE void R_BSP_SDVoltageModeCfg (bsp_sd_channel_t channel, bsp_sd_vo
     }
     else if (BSP_SD_CHANNEL_1 == channel)
     {
- #if BSP_FEATURE_BSP_HAS_SD_CH_POC_REG
+ #if BSP_FEATURE_BSP_HAS_SD_CH1_POC_REG
         R_GPIO->SD_CH1_POC = voltage;
  #else
         R_GPIO->SD_ch1 = voltage;
  #endif
     }
+
+  #if BSP_FEATURE_BSP_HAS_SD_CH2_POC_REG
+    else if (BSP_SD_CHANNEL_2 == channel)
+    {
+        R_GPIO->SD_CH2_POC = voltage;
+    }
+  #endif
     else
     {
         /* Do nothing. */
@@ -824,7 +854,51 @@ __STATIC_INLINE void R_BSP_XSPIOutputEnableCfg (void)
 #endif
 }
 
+/*******************************************************************************************************************//**
+ * Configures Other POC voltage mode.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_OtherPocVoltageModeCfg (bsp_other_poc_support_t support, bsp_other_poc_voltage_t voltage)
+{
+#if BSP_FEATURE_BSP_SUPPORT_OTHER_POC_VOLT
+    switch (support)
+    {
+        case BSP_OTHER_IO_PVDD1833_OTH_AWO_POC:
+        {
+            R_GPIO->OTHER_POC_b.PVDD1833_OTH_AWO_POC = voltage;
+            break;
+        }
+
+        case BSP_OTHER_IO_PVDD1833_OTH_ISO_POC:
+        {
+            R_GPIO->OTHER_POC_b.PVDD1833_OTH_ISO_POC = voltage;
+            break;
+        }
+
+        case BSP_OTHER_IO_WDTOVF_N_POC:
+        {
+            R_GPIO->OTHER_POC_b.WDTOVF_N_POC = voltage;
+            break;
+        }
+
+        default:
+
+            /* Do nothing. */
+            FSP_PARAMETER_NOT_USED(support);
+            FSP_PARAMETER_NOT_USED(voltage);
+    }
+
+#else
+    FSP_PARAMETER_NOT_USED(support);
+    FSP_PARAMETER_NOT_USED(voltage);
+#endif
+}
+
 /** @} (end addtogroup BSP_IO) */
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

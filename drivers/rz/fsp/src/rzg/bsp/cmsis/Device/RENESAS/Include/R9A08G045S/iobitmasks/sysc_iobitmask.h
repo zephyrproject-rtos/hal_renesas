@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -288,8 +288,6 @@
 #define R_SYSC_SYS_SLVACCCTL9_SSIF2_SL_Pos                      (4UL)
 #define R_SYSC_SYS_SLVACCCTL9_SSIF3_SL_Msk                      (0x000000C0UL)
 #define R_SYSC_SYS_SLVACCCTL9_SSIF3_SL_Pos                      (6UL)
-#define R_SYSC_SYS_SLVACCCTL9_SRC_SL_Msk                        (0x00000300UL)
-#define R_SYSC_SYS_SLVACCCTL9_SRC_SL_Pos                        (8UL)
 #define R_SYSC_SYS_SLVACCCTL9_SPDIF_SL_Msk                      (0x00000C00UL)
 #define R_SYSC_SYS_SLVACCCTL9_SPDIF_SL_Pos                      (10UL)
 #define R_SYSC_SYS_SLVACCCTL9_PDM_SL_Msk                        (0x00003000UL)

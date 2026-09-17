@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -51,6 +51,18 @@
 #define DMAC_B0_DMAERR_IRQn      DMAC_DMAERR_S_IRQn
 #define DMAC_B1_DMAERR_IRQn      DMAC_DMAERR_NS_IRQn
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
+
+/**********************************************************************************************************************
+ * @addtogroup RZG_BSP_MPU_RZG3S
+ * @{
+ *********************************************************************************************************************/
+
 /**********************************************************************************************************************
  * Typedef definitions
  *********************************************************************************************************************/
@@ -61,11 +73,6 @@
 
 /**********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
- *********************************************************************************************************************/
-
-/**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZG2UL
- * @{
  *********************************************************************************************************************/
 
 typedef enum IRQn
@@ -402,11 +409,11 @@ typedef enum IRQn
     I2S3_INT_REQ_IRQn = 249,            /* IRQ No:249, INT_ssif_int_req_3 */
     I2S3_DMA_RX_IRQn  = 250,            /* IRQ No:250, INT_ssif_dma_rx_3 */
     I2S3_DMA_TX_IRQn  = 251,            /* IRQ No:251, INT_ssif_dma_tx_3 */
-    SRC_IDEI_IRQn     = 252,            /* IRQ No:252, SRC_IDEI */
-    SRC_ODFI_IRQn     = 253,            /* IRQ No:253, SRC_ODFI */
-    SRC_CEF_IRQn      = 254,            /* IRQ No:254, SRC_CEF */
-    SRC_UDF_IRQn      = 255,            /* IRQ No:255, SRC_UDF */
-    SRC_OVF_IRQn      = 256,            /* IRQ No:256, SRC_OVF */
+    /* IRQ No:252, Reserved */
+    /* IRQ No:253, Reserved */
+    /* IRQ No:254, Reserved */
+    /* IRQ No:255, Reserved */
+    /* IRQ No:256, Reserved */
     RIIC0_TEI_IRQn    = 257,            /* IRQ No:257, INTRIICTEI0 */
     RIIC0_NAKI_IRQn   = 258,            /* IRQ No:258, INTRIICNAKI0 */
     RIIC0_SPI_IRQn    = 259,            /* IRQ No:259, INTRIICSPI0 */
@@ -462,12 +469,12 @@ typedef enum IRQn
     RI3C_AL_IRQn   = 309,               /* IRQ No:309, INT_ri3c_al_n */
     RI3C_TMO_IRQn  = 310,               /* IRQ No:310, INT_ri3c_tmo_n */
     RI3C_WU_IRQn   = 311,               /* IRQ No:311, INT_ri3c_wu_n */
-    ADC_INTAD_IRQn = 312,               /* IRQ No:312, INTAD */
+    ADC0_INTAD_IRQn = 312,              /* IRQ No:312, ADC0_INTAD */
                                         /* IRQ No:313, Reserved */
                                         /* IRQ No:314, Reserved */
-    RTC_ALM_IRQn = 315,                 /* IRQ No:315, INT_intreq_rtc_alm_n */
-    RTC_PRD_IRQn = 316,                 /* IRQ No:316, INT_intreq_rtc_prd_n */
-    RTC_CUP_IRQn = 317,                 /* IRQ No:317, INT_intreq_rtc_cup_n */
+    RTC_INTREQ_RTC_ALMPLS_N_IRQn = 315, /* IRQ No:315, INT_intreq_rtc_alm_n */
+    RTC_INTREQ_RTC_PRDPLS_N_IRQn = 316, /* IRQ No:316, INT_intreq_rtc_prd_n */
+    RTC_INTREQ_RTC_CUPPLS_N_IRQn = 317, /* IRQ No:317, INT_intreq_rtc_cup_n */
                                         /* IRQ No:318, Reserved */
                                         /* IRQ No:319, Reserved */
     SCIF0_RERR_IRQn         = 320,      /* IRQ No:320, ERI0 */
@@ -538,13 +545,13 @@ typedef enum IRQn
                                         /* IRQ No:385, Reserved */
                                         /* IRQ No:386, Reserved */
     SPDIF_SPDIF_IRQn             = 387, /* IRQ No:387, intreq_spdif */
-    PDM_ERR0_IRQn                = 388, /* IRQ No:388, INT_PDM_ERR0 */
-    PDM_ERR1_IRQn                = 389, /* IRQ No:389, INT_PDM_ERR1 */
-    PDM_ERR2_IRQn                = 390, /* IRQ No:390, INT_PDM_ERR2 */
-    PDM_DAT0_IRQn                = 391, /* IRQ No:391, INT_PDM_DAT0 */
-    PDM_DAT1_IRQn                = 392, /* IRQ No:392, INT_PDM_DAT1 */
-    PDM_DAT2_IRQn                = 393, /* IRQ No:393, INT_PDM_DAT2 */
-    PDM_SDET_IRQn                = 394, /* IRQ No:394, INT_PDM_SDET */
+    PDM0_ERR0_IRQn               = 388, /* IRQ No:388, INT_PDM_ERR0 */
+    PDM0_ERR1_IRQn               = 389, /* IRQ No:389, INT_PDM_ERR1 */
+    PDM0_ERR2_IRQn               = 390, /* IRQ No:390, INT_PDM_ERR2 */
+    PDM0_DAT0_IRQn               = 391, /* IRQ No:391, INT_PDM_DAT0 */
+    PDM0_DAT1_IRQn               = 392, /* IRQ No:392, INT_PDM_DAT1 */
+    PDM0_DAT2_IRQn               = 393, /* IRQ No:393, INT_PDM_DAT2 */
+    PDM0_SDET_IRQn               = 394, /* IRQ No:394, INT_PDM_SDET */
     PCIE_INT_SERR_IRQn           = 395, /* IRQ No:395, INT_SERR */
     PCIE_INT_SERR_COR_IRQn       = 396, /* IRQ No:396, INT_SERR_COR */
     PCIE_INT_SERR_NONFATAL_IRQn  = 397, /* IRQ No:397, INT_SERR_NONFATAL */
@@ -632,6 +639,12 @@ typedef enum IRQn
                                         /* IRQ No:479, Reserved */
 } IRQn_Type;
 
-/** @} (end addtogroup BSP_MPU_RZG2UL) */
+/** @} (end addtogroup BSP_MPU_RZG3S) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 #endif                                 /* BSP_IRQ_ID_H */
