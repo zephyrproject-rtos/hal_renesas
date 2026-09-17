@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -28,6 +28,7 @@ FSP_HEADER
 #define BSP_FEATURE_ADC_HAS_SAMPLE_HOLD_UNIT_NUM               (3U)
 #define BSP_FEATURE_ADC_HAS_VREFAMPCNT                         (0U)
 #define BSP_FEATURE_ADC_MAX_RESOLUTION_BITS                    (12U)
+#define BSP_FEATURE_ADC_MTU3_TRIGGER_SUPPORTED_UNIT_MASK       (0x3U) // Trigger source from MTU3 is not available in ADC12 unit 2.
 #define BSP_FEATURE_ADC_REGISTER_MASK_TYPE                     (3U)
 #define BSP_FEATURE_ADC_SAMPLE_STATE_COUNT_TYPE                (2U)
 #define BSP_FEATURE_ADC_SENSOR_MIN_SAMPLING_TIME               (4150U)
@@ -61,12 +62,20 @@ FSP_HEADER
 #define BSP_FEATURE_BSP_BOOT_PARAMETER                         (3U)
 #define BSP_FEATURE_BSP_CA55_CORE_NUM                          (4U)
 #define BSP_FEATURE_BSP_CR52_CORE_NUM                          (2U)
+#define BSP_FEATURE_BSP_CS0_BASE_ADDRESS                       (0x70000000U)
+#define BSP_FEATURE_BSP_CS0_SIZE                               (0x10000000U)
 #define BSP_FEATURE_BSP_DDRSS_SUPPORTED                        (1U)
+#define BSP_FEATURE_BSP_EMMC_BOOT_CHANNEL                      (0U)
 #define BSP_FEATURE_BSP_ENCOUT_SUPPORTED                       (1U)
 #define BSP_FEATURE_BSP_ENDAT_UNIT                             (14U)
+#define BSP_FEATURE_BSP_ESD_BOOT_CHANNEL                       (1U)
 #define BSP_FEATURE_BSP_EVENT_NUM_MAX                          (970)
 #define BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM                      (1U)
 #define BSP_FEATURE_BSP_HAS_CR52_CPU1_LLPP                     (1U)
+#define BSP_FEATURE_BSP_HAS_GPT_CLOCK                          (0)
+#define BSP_FEATURE_BSP_HAS_SCI_CLOCK                          (0U)
+#define BSP_FEATURE_BSP_HAS_SCISPI_CLOCK                       (0U)
+#define BSP_FEATURE_BSP_HAS_SPI_CLOCK                          (0U)
 #define BSP_FEATURE_BSP_HAS_SYSTEMRAM_MIRROR_AREA              (0U)
 #define BSP_FEATURE_BSP_HDSL_UNIT                              (14U)
 #define BSP_FEATURE_BSP_IO_REGION_ADDRESS_DIFF_DEDICATED       (R_PORT_NSR_BASE - R_PORT_SRN_BASE)
@@ -97,12 +106,15 @@ FSP_HEADER
 #define BSP_FEATURE_BSP_MASTER_MPU14_SUPPORTED                 (1U)
 #define BSP_FEATURE_BSP_MASTER_MPU15_SUPPORTED                 (1U)
 #define BSP_FEATURE_BSP_MODULE_RESET_DUMMY_READ_COUNT          (7U)
+#define BSP_FEATURE_BSP_MODULE_STOP_DUMMY_READ_COUNT           (7U)
 #define BSP_FEATURE_BSP_MSTP_CA55_HAS_MSTPCRN                  (1U)
 #define BSP_FEATURE_BSP_MSTP_CR52_CPU1_HAS_MSTPCRH             (0U)
 #define BSP_FEATURE_BSP_MSTP_CR52_HAS_MSTPCRN                  (1U)
 #define BSP_FEATURE_BSP_NON_SELECTABLE_INTERRUPT_EVENT_NUM     (384)
 #define BSP_FEATURE_BSP_PCIE_SUPPORTED                         (1U)
 #define BSP_FEATURE_BSP_SDHI_SUPPORTED                         (1U)
+#define BSP_FEATURE_BSP_SDHI_VIRTUAL_ADDRESS                   (0x88000000U)
+#define BSP_FEATURE_BSP_SDHI_VIRTUAL_SIZE                      (0x0C000000U)
 #define BSP_FEATURE_BSP_SELECTABLE_INTERRUPT_EVENT_NUM         (160)
 #define BSP_FEATURE_BSP_SELECTABLE_INTERRUPT_START             (384)
 #define BSP_FEATURE_BSP_SEMAPHORE_SUPPORTED                    (1U)
@@ -110,6 +122,10 @@ FSP_HEADER
 #define BSP_FEATURE_BSP_PHOSTIF_SUPPORTED                      (0U)
 #define BSP_FEATURE_BSP_SLAVE_STOP_SUPPORTED                   (1U)
 #define BSP_FEATURE_BSP_TRACE_CLOCK_SUPPORTED                  (0U)
+#define BSP_FEATURE_BSP_XSPI0_CS0_BASE_ADDRESS                 (0x40000000U)
+#define BSP_FEATURE_BSP_XSPI0_CS0_SIZE                         (0x10000000U)
+#define BSP_FEATURE_BSP_XSPI1_CS0_BASE_ADDRESS                 (0x50000000U)
+#define BSP_FEATURE_BSP_XSPI1_CS0_SIZE                         (0x10000000U)
 
 #define BSP_FEATURE_CAN_CHECK_PCLKB_RATIO                      (0U)
 #define BSP_FEATURE_CAN_CLOCK                                  (0U)
@@ -145,9 +161,9 @@ FSP_HEADER
 #define BSP_FEATURE_CGC_ICLK_DIV_RESET                         (BSP_CLOCKS_SYS_CLOCK_DIV_4)
 #define BSP_FEATURE_CGC_LOCO_CONTROL_ADDRESS                   (0x81280070U)
 #define BSP_FEATURE_CGC_LOCO_STABILIZATION_MAX_US              (61U)
-#define BSP_FEATURE_CGC_LOW_SPEED_MAX_FREQ_HZ                  (1000000U) // This MCU does have Low Speed Mode, up to 1MHz
-#define BSP_FEATURE_CGC_LOW_VOLTAGE_MAX_FREQ_HZ                (0U)       // This MCU does not have Low Voltage Mode
-#define BSP_FEATURE_CGC_MIDDLE_SPEED_MAX_FREQ_HZ               (0U)       // This MCU does not have Middle Speed Mode
+#define BSP_FEATURE_CGC_LOW_SPEED_MAX_FREQ_HZ                  (1000000U) // This MPU does have Low Speed Mode, up to 1MHz
+#define BSP_FEATURE_CGC_LOW_VOLTAGE_MAX_FREQ_HZ                (0U)       // This MPU does not have Low Voltage Mode
+#define BSP_FEATURE_CGC_MIDDLE_SPEED_MAX_FREQ_HZ               (0U)       // This MPU does not have Middle Speed Mode
 #define BSP_FEATURE_CGC_MOCO_STABILIZATION_MAX_US              (15U)
 #define BSP_FEATURE_CGC_MODRV_MASK                             (0x30U)
 #define BSP_FEATURE_CGC_MODRV_SHIFT                            (0x4U)
@@ -184,12 +200,18 @@ FSP_HEADER
 #define BSP_FEATURE_CMTW_VALID_CHANNEL_MASK                    (0x3U)
 
 #define BSP_FEATURE_CRC_VALID_CHANNEL_MASK                     (0x3U)
+#define BSP_FEATURE_CRC_HAS_CRCCR0_LMS                         (1UL)
+#define BSP_FEATURE_CRC_HAS_SNOOP                              (0UL)
+#define BSP_FEATURE_CRC_POLYNOMIAL_MASK                        (0x3EU)
+#define BSP_FEATURE_CRC_SNOOP_ADDRESS_TYPE_TDR                 (0x0U)
 
 #define BSP_FEATURE_DDR_SUPPORTED                              (0U)
 #define BSP_FEATURE_DMAC_HAS_CPU1_TCM_AREA                     (1U)
 #define BSP_FEATURE_DMAC_MAX_CHANNEL                           (16U)
 #define BSP_FEATURE_DMAC_MAX_UNIT                              (3U)
 #define BSP_FEATURE_DMAC_UNIT0_ERROR_NUM                       (8U)
+
+#define BSP_FEATURE_DOC_VERSION                                (1UL) // The version of the DOC peripheral.
 
 #define BSP_FEATURE_DSMIF_ADDRESS_OFFSET                       (0x1000)
 #define BSP_FEATURE_DSMIF_CHANNEL_STATUS                       (3U)
@@ -211,17 +233,18 @@ FSP_HEADER
 
 #define BSP_FEATURE_ELC_ELC_SSEL_NUM                           (65)
 #define BSP_FEATURE_ELC_EVENT_MASK_NUM                         (8U)
+#define BSP_FEATURE_ELC_GPT_EVENT_SOURCE_NUM                   (26U)
 #define BSP_FEATURE_ELC_GPT_EVENT_MASK_NUM                     (26U)
 #define BSP_FEATURE_ELC_GROUP1_PORT_NUM                        (BSP_IO_PORT_14)
 #define BSP_FEATURE_ELC_GROUP2_PORT_NUM                        (BSP_IO_PORT_30)
-#define BSP_FEATURE_ELC_PERIPHERAL_0_MASK                      (0xFFFFFFFFU) // ELC event source no.0 to 31 available on this MCU
-#define BSP_FEATURE_ELC_PERIPHERAL_1_MASK                      (0xFFFFFFFFU) // ELC event source no.32 to 63 available on this MCU.
-#define BSP_FEATURE_ELC_PERIPHERAL_2_MASK                      (0xFFFFFFFFU) // ELC event source no.64 to 95 available on this MCU.
-#define BSP_FEATURE_ELC_PERIPHERAL_3_MASK                      (0xFFFFFFFFU) // ELC event source no.96 to 127 available on this MCU.
-#define BSP_FEATURE_ELC_PERIPHERAL_4_MASK                      (0xFFFFFFFFU) // ELC event source no.128 to 159 available on this MCU.
-#define BSP_FEATURE_ELC_PERIPHERAL_5_MASK                      (0xFFFFFFFFU) // ELC event source no.160 to 191 available on this MCU.
-#define BSP_FEATURE_ELC_PERIPHERAL_6_MASK                      (0x00000003U) // ELC event source no.192 to 223 available on this MCU.
-#define BSP_FEATURE_ELC_PERIPHERAL_7_MASK                      (0x00000000U) // ELC event source no.224 to 255 available on this MCU.
+#define BSP_FEATURE_ELC_PERIPHERAL_0_MASK                      (0xFFFFFFFFU) // ELC event source no.0 to 31 available on this MPU
+#define BSP_FEATURE_ELC_PERIPHERAL_1_MASK                      (0xFFFFFFFFU) // ELC event source no.32 to 63 available on this MPU.
+#define BSP_FEATURE_ELC_PERIPHERAL_2_MASK                      (0xFFFFFFFFU) // ELC event source no.64 to 95 available on this MPU.
+#define BSP_FEATURE_ELC_PERIPHERAL_3_MASK                      (0xFFFFFFFFU) // ELC event source no.96 to 127 available on this MPU.
+#define BSP_FEATURE_ELC_PERIPHERAL_4_MASK                      (0xFFFFFFFFU) // ELC event source no.128 to 159 available on this MPU.
+#define BSP_FEATURE_ELC_PERIPHERAL_5_MASK                      (0xFFFFFFFFU) // ELC event source no.160 to 191 available on this MPU.
+#define BSP_FEATURE_ELC_PERIPHERAL_6_MASK                      (0x00000003U) // ELC event source no.192 to 223 available on this MPU.
+#define BSP_FEATURE_ELC_PERIPHERAL_7_MASK                      (0x00000000U) // ELC event source no.224 to 255 available on this MPU.
 #define BSP_FEATURE_ELC_PERIPHERAL_TYPE                        (3U)
 
 #define BSP_FEATURE_ESC_MAX_PORTS                              (3U)
@@ -238,6 +261,8 @@ FSP_HEADER
 
 #define BSP_FEATURE_GPT_32BIT_CHANNEL_MASK                     (0x3FFFF)
 #define BSP_FEATURE_GPT_CHANNEL                                (56U)
+#define BSP_FEATURE_GPT_CLOCK_DIVIDER_STEP_SIZE                (2U)
+#define BSP_FEATURE_GPT_CLOCK_DIVIDER_VALUE_7_9_VALID          (0U)
 #define BSP_FEATURE_GPT_INPUT_CAPTURE_SIGNAL_SELECTABLE        (1U)
 #define BSP_FEATURE_GPT_LLPP_BASE_ADDRESS                      (R_GPT00_0_BASE)
 #define BSP_FEATURE_GPT_LLPP_BASE_CHANNEL                      (0U) // LLPP channel: ch0-29
@@ -248,12 +273,10 @@ FSP_HEADER
 #define BSP_FEATURE_GPT_LLPP1_BASE_ADDRESS                     (R_GPT06_0_BASE)
 #define BSP_FEATURE_GPT_LLPP1_BASE_CHANNEL                     (30U) // LLPP1 channel: ch30-44
 #define BSP_FEATURE_GPT_LLPP1_CHANNEL_ADDRESS_OFFSET           (R_GPT06_1_BASE - R_GPT06_0_BASE)
-#define BSP_FEATURE_GPT_LLPP1_CHANNEL_MASK                     (0x001FU)
 #define BSP_FEATURE_GPT_LLPP1_UNIT_ADDRESS_OFFSET              (R_GPT07_0_BASE - R_GPT06_0_BASE)
 #define BSP_FEATURE_GPT_NONSAFETY_BASE_ADDRESS                 (R_GPT09_0_BASE)
 #define BSP_FEATURE_GPT_NONSAFETY_BASE_CHANNEL                 (45U) // Non-safety channel: ch45-51
 #define BSP_FEATURE_GPT_NONSAFETY_CHANNEL_ADDRESS_OFFSET       (R_GPT09_1_BASE - R_GPT09_0_BASE)
-#define BSP_FEATURE_GPT_NONSAFETY_CHANNEL_MASK                 (0x007FU)
 #define BSP_FEATURE_GPT_REGISTER_MASK_TYPE                     (2U)
 #define BSP_FEATURE_GPT_SAFETY_BASE_ADDRESS                    (R_GPT10_0_BASE)
 #define BSP_FEATURE_GPT_SAFETY_BASE_CHANNEL                    (52U) // safety channel: ch52-55
@@ -299,6 +322,7 @@ FSP_HEADER
 #define BSP_FEATURE_ICU_INTER_CPU_IRQ_S_SWINT_SHIFT            (14U)
 #define BSP_FEATURE_ICU_IRQ_CHANNELS_MASK                      (0xFFFFU)
 #define BSP_FEATURE_ICU_SAFETY_REGISTER_TYPE                   (2)
+#define BSP_FEATURE_ICU_ENCIF_ENCSEL_TYPE                      (2U)
 #define BSP_FEATURE_ICU_WUPEN_MASK                             (0xFF4FFFFFU)
 
 #define BSP_FEATURE_IIC_FAST_MODE_PLUS                         (0U)
@@ -329,7 +353,10 @@ FSP_HEADER
 #define BSP_FEATURE_LPM_SNZREQCR_MASK                          (0x7342FFFFU)
 
 #define BSP_FEATURE_MAILBOX_SEM_SUPPORTED                      (1U)
+#define BSP_FEATURE_MAILBOX_SEM_INTERNAL_CPU_SEM_SUPPORTED     (1U)
 
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_STEP_SIZE               (2U)
+#define BSP_FEATURE_MTU3_CLOCK_DIVIDER_VALUE_7_9_VALID         (0U)
 #define BSP_FEATURE_MTU3_MAX_CHANNELS                          (9U)
 #define BSP_FEATURE_MTU3_UVW_MAX_CHANNELS                      (3U)
 #define BSP_FEATURE_MTU3_VALID_CHANNEL_MASK                    (0x01FF)
@@ -365,6 +392,8 @@ FSP_HEADER
 #define BSP_FEATURE_RSIP_OTP_ADDRESS_SPACE                     (2U)
 #define BSP_FEATURE_RSIP_OTF_CHANNEL                           (0U)
 
+#define BSP_FEATURE_RTC_MODULE_START_TYPE                      (2U)
+
 #define BSP_FEATURE_SCI_ADDRESS_MATCH_CHANNELS                 (BSP_FEATURE_SCI_CHANNELS)
 #define BSP_FEATURE_SCI_CHANNELS                               (0x3FU)
 #define BSP_FEATURE_SCI_SAFETY_CHANNEL                         (5U)
@@ -375,12 +404,24 @@ FSP_HEADER
 #define BSP_FEATURE_SCI_UART_CTSPEN_CHANNELS                   (0x03FU)
 #define BSP_FEATURE_SCI_UART_FIFO_CHANNELS                     (0x3FFU)
 #define BSP_FEATURE_SCI_UART_FIFO_DEPTH                        (16U)
+
+#define BSP_FEATURE_SCIE_CHANNEL                               (12U)
+#define BSP_FEATURE_SCIE_CHANNELS                              (0xFFFU)
 #define BSP_FEATURE_SCIE_SUPPORTED                             (1U)
+#define BSP_FEATURE_SCIE_UART_CTSPEN_CHANNELS                  (BSP_FEATURE_SCIE_CHANNELS)
+#define BSP_FEATURE_SCIE_UART_FIFO_CHANNELS                    (BSP_FEATURE_SCIE_CHANNELS)
+#define BSP_FEATURE_SCIE_UART_FIFO_DEPTH                       (BSP_FEATURE_SCI_UART_FIFO_DEPTH)
+
+#define BSP_FEATURE_SDHI_CLOCK                                 (FSP_PRIV_CLOCK_SDHI_IMCLK)
+#define BSP_FEATURE_SDHI_HAS_CARD_DETECTION                    (1U)
+#define BSP_FEATURE_SDHI_MAX_CHANNELS                          (2U)
+#define BSP_FEATURE_SDHI_MIN_CLOCK_DIVISION_SHIFT              (0U) // 1 (2^0) is minimum division supported
+#define BSP_FEATURE_SDHI_SUPPORTS_8_BIT_MMC                    (1U)
+#define BSP_FEATURE_SDHI_VALID_CHANNEL_MASK                    (0x03U)
 
 #define BSP_FEATURE_SEM_SUPPORTED                              (0U)
 #define BSP_FEATURE_SHARED_MEMORY_SETTING_TYPE                 (2U)
 
-#define BSP_FEATURE_SPI_HAS_BYTE_SWAP                          (1U)
 #define BSP_FEATURE_SPI_HAS_SPCR3                              (0U)
 #define BSP_FEATURE_SPI_HAS_SSL_LEVEL_KEEP                     (1U)
 #define BSP_FEATURE_SPI_MAX_CHANNEL                            (4U)
@@ -406,6 +447,8 @@ FSP_HEADER
 
 #define BSP_FEATURE_TZC400_SUPPORTED                           (0U)
 #define BSP_FEATURE_USB_HOST_HS_SET_TYPE                       (2U)
+#define BSP_FEATURE_USB_HOST_INIT_TYPE                         (2U)
+#define BSP_FEATURE_USB_PERI_INIT_TYPE                         (2U)
 
 #define BSP_FEATURE_XSPI_CHANNELS                              (0x03U)
 #define BSP_FEATURE_XSPI_CS_ADDRESS_SPACE_SETTING_TYPE         (2U)

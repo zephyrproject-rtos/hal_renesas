@@ -1,15 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup BSP_MCU_RZN2L
- * @{
- **********************************************************************************************************************/
-
-/** @} (end addtogroup BSP_MCU_RZN2L) */
 
 #ifndef BSP_OVERRIDE_H
 #define BSP_OVERRIDE_H
@@ -62,10 +55,13 @@ FSP_HEADER
 #define BSP_OVERRIDE_ETHER_EVENT_T
 #define BSP_OVERRIDE_ETHER_CALLBACK_ARGS_T
 #define BSP_OVERRIDE_ETHER_PHY_LSI_TYPE_T
+#define BSP_OVERRIDE_ETHER_SWITCH_EVENT_T
 #define BSP_OVERRIDE_ETHER_SWITCH_CALLBACK_ARGS_T
 #define BSP_OVERRIDE_POE3_STATE_T
+#define BSP_OVERRIDE_POE3_ACTIVE_LEVEL_T
 #define BSP_OVERRIDE_POEG_STATE_T
 #define BSP_OVERRIDE_POEG_TRIGGER_T
+#define BSP_OVERRIDE_TIMER_EVENT_T
 #define BSP_OVERRIDE_TRANSFER_MODE_T
 #define BSP_OVERRIDE_TRANSFER_SIZE_T
 #define BSP_OVERRIDE_TRANSFER_ADDR_MODE_T
@@ -83,6 +79,13 @@ FSP_HEADER
 #define IOPORT_PFC_OFFSET      (4U)
 #define IOPORT_DRCTL_OFFSET    (8U)
 #define IOPORT_RSELP_OFFSET    (14U)
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -220,14 +223,18 @@ typedef enum e_cgc_clock
 } cgc_clock_t;
 
 /** Clock configuration structure - Dummy definition because it is not used in this MPU.
- * Set NULL as an input parameter to the @ref cgc_api_t::clockStart function for the PLL clock. */
-typedef struct st_cgc_pll_cfg
+ * Set NULL as an input parameter to the RZN::cgc_api_t::clockStart function for the PLL clock. */
+struct st_cgc_pll_cfg
 {
     uint32_t dummy;                    /* Dummy. */
-} cgc_pll_cfg_t;
+};
+
+/** Clock configuration structure - Dummy definition because it is not used in this MPU.
+ * Set NULL as an input parameter to the RZN::cgc_api_t::clockStart function for the PLL clock. Please refer to the struct st_cgc_pll_cfg. */
+typedef struct st_cgc_pll_cfg cgc_pll_cfg_t;
 
 /** Clock configuration structure */
-typedef struct st_cgc_divider_cfg
+struct st_cgc_divider_cfg
 {
     union
     {
@@ -274,7 +281,10 @@ typedef struct st_cgc_divider_cfg
             uint32_t                             : 6;
         } sckcr2_b;
     };
-} cgc_divider_cfg_t;
+};
+
+/** Clock configuration structure. Please refer to the struct st_cgc_divider_cfg. */
+typedef struct st_cgc_divider_cfg cgc_divider_cfg_t;
 
 /** Clock options */
 typedef enum e_cgc_clock_change
@@ -285,12 +295,15 @@ typedef enum e_cgc_clock_change
 } cgc_clock_change_t;
 
 /** Clock configuration */
-typedef struct st_cgc_clocks_cfg
+struct st_cgc_clocks_cfg
 {
     cgc_divider_cfg_t  divider_cfg;    ///< Clock dividers structure
     cgc_clock_change_t loco_state;     ///< State of LOCO
     cgc_clock_change_t pll1_state;     ///< State of PLL1
-} cgc_clocks_cfg_t;
+};
+
+/** Clock configuration. Please refer to the struct st_cgc_clocks_cfg. */
+typedef struct st_cgc_clocks_cfg cgc_clocks_cfg_t;
 
 /*==============================================
  * ELC API Overrides
@@ -381,7 +394,7 @@ typedef enum e_ether_event
 } ether_event_t;
 
 /** Ether Callback function parameter data */
-typedef struct st_ether_callback_args
+struct st_ether_callback_args
 {
     uint32_t      channel;             ///< Device channel number
     ether_event_t event;               ///< Event code
@@ -389,8 +402,11 @@ typedef struct st_ether_callback_args
     uint32_t status_ether;             ///< Interrupt status of SDB or PMT
     uint32_t status_link;              ///< Link status
 
-    void const * p_context;            ///< Placeholder for user data.
-} ether_callback_args_t;
+    void * p_context;                  ///< Placeholder for user data.
+};
+
+/** Ether Callback function parameter data. Please refer to the struct st_ether_callback_args. */
+typedef struct st_ether_callback_args ether_callback_args_t;
 
 /*==============================================
  * ETHER PHY API Overrides
@@ -419,15 +435,18 @@ typedef enum e_ether_switch_event
 } ether_switch_event_t;
 
 /** Ether Switch Callback function parameter data */
-typedef struct st_ether_switch_callback_args
+struct st_ether_switch_callback_args
 {
     uint32_t             channel;      ///< Device channel number
     ether_switch_event_t event;        ///< Event code
 
     uint32_t status_link;              ///< Link status bit0:port0. bit1:port1. bit2:port2, bit3:port3
 
-    void const * p_context;            ///< Placeholder for user data.
-} ether_switch_callback_args_t;
+    void * p_context;                  ///< Placeholder for user data.
+};
+
+/** Ether Switch Callback function parameter data. Please refer to the struct st_ether_switch_callback_args. */
+typedef struct st_ether_switch_callback_args ether_switch_callback_args_t;
 
 /*==============================================
  * IOPORT API Overrides
@@ -1294,6 +1313,14 @@ typedef enum e_poe3_state
     POE3_STATE_OUTPUT_SHORT_CIRCUIT_2_ERROR_REQUEST = 1U << 10, ///< Timer output disabled due to output short circuit 2
 } poe3_state_t;
 
+/** POE3 active level for short circuit detection. */
+typedef enum e_poe3_active_level
+{
+    POE3_ACTIVE_LEVEL_HIGH         = 1U,    ///< High level is set as the active level to detect a short circuit.
+    POE3_ACTIVE_LEVEL_LOW          = 0U,    ///< Low level is set as the active level to detect a short circuit.
+    POE3_ACTIVE_LEVEL_SETTING_NONE = 0xFFU, ///< The active level of the pin is set by the timer peripheral side, not by POE3.
+} poe3_active_level_t;
+
 /*==============================================
  * POEG API Overrides
  *==============================================*/
@@ -1335,6 +1362,29 @@ typedef enum e_poeg_trigger
 } poeg_trigger_t;
 
 /*==============================================
+ * Timer API Overrides
+ *==============================================*/
+
+/** Events that can trigger a callback function */
+typedef enum e_timer_event
+{
+    TIMER_EVENT_CYCLE_END,                     ///< Requested timer delay has expired or timer has wrapped around
+    TIMER_EVENT_CREST = TIMER_EVENT_CYCLE_END, ///< Timer crest event (counter is at a maximum, triangle-wave PWM only)
+    TIMER_EVENT_CAPTURE_A,                     ///< A capture has occurred on signal A
+    TIMER_EVENT_CAPTURE_B,                     ///< A capture has occurred on signal B
+    TIMER_EVENT_CAPTURE_C,                     ///< A capture has occurred on signal C
+    TIMER_EVENT_CAPTURE_D,                     ///< A capture has occurred on signal D
+    TIMER_EVENT_TROUGH,                        ///< Timer trough event (counter is 0, triangle-wave PWM only)
+    TIMER_EVENT_COMPARE_A,                     ///< A compare has occurred on signal A
+    TIMER_EVENT_COMPARE_B,                     ///< A compare has occurred on signal B
+    TIMER_EVENT_COMPARE_C,                     ///< A compare has occurred on signal C
+    TIMER_EVENT_COMPARE_D,                     ///< A compare has occurred on signal D
+    TIMER_EVENT_COMPARE_E,                     ///< A compare has occurred on signal E
+    TIMER_EVENT_COMPARE_F,                     ///< A compare has occurred on signal F
+    TIMER_EVENT_DEAD_TIME,                     ///< Dead time event
+} timer_event_t;
+
+/*==============================================
  * Transfer API Overrides
  *==============================================*/
 
@@ -1370,7 +1420,7 @@ typedef enum e_transfer_size
 /** Address mode specifies whether to modify (increment or decrement) pointer after each transfer. */
 typedef enum e_transfer_addr_mode
 {
-    /** Address pointer is incremented by associated @ref transfer_size_t after each transfer. */
+    /** Address pointer is incremented by associated @ref RZN::transfer_size_t after each transfer. */
     TRANSFER_ADDR_MODE_INCREMENTED = 0,
 
     /** Address pointer remains fixed after each transfer. */
@@ -1378,14 +1428,17 @@ typedef enum e_transfer_addr_mode
 } transfer_addr_mode_t;
 
 /** Callback function parameter data. */
-typedef struct st_transfer_callback_args_t
+struct st_transfer_callback_args
 {
     transfer_event_t event;            ///< Event code
-    void const     * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in ::transfer_cfg_t.
-} transfer_callback_args_t;
+    void           * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in RZN::transfer_cfg_t.
+};
+
+/** Callback function parameter data. Please refer to the struct st_transfer_callback_args. */
+typedef struct st_transfer_callback_args transfer_callback_args_t;
 
 /** This structure specifies the properties of the transfer. */
-typedef struct st_transfer_info
+struct st_transfer_info
 {
     /** Select what happens to destination pointer after each transfer. */
     transfer_addr_mode_t dest_addr_mode;
@@ -1393,7 +1446,7 @@ typedef struct st_transfer_info
     /** Select what happens to source pointer after each transfer. */
     transfer_addr_mode_t src_addr_mode;
 
-    /** Select mode from @ref transfer_mode_t. */
+    /** Select mode from @ref RZN::transfer_mode_t. */
     transfer_mode_t mode;
 
     /** Source pointer. */
@@ -1415,7 +1468,10 @@ typedef struct st_transfer_info
     void const * p_next1_src;
     void       * p_next1_dest;
     uint32_t     next1_length;
-} transfer_info_t;
+};
+
+/** This structure specifies the properties of the transfer. Please refer to the struct st_transfer_info. */
+typedef struct st_transfer_info transfer_info_t;
 
 /***********************************************************************************************************************
  * Exported global variables
@@ -1424,6 +1480,12 @@ typedef struct st_transfer_info
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

@@ -1,13 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup IOPORT
- * @{
- **********************************************************************************************************************/
 
 #ifndef R_IOPORT_H
 #define R_IOPORT_H
@@ -34,6 +29,18 @@ FSP_HEADER
 #define IOPORT_SINGLE_PORT_1      (1)
 #define IOPORT_SINGLE_PORT_2      (2)
 #define IOPORT_SINGLE_PORT_3      (3)
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZN_IOPORT
+ * @{
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -106,53 +113,68 @@ typedef enum e_ioport_event_initial_buffer_value
 /** Single port configuration
  *  @note Event link must be configured by the ELC
  */
-typedef struct st_ioport_event_single
+struct st_ioport_event_single
 {
     ioport_event_control_t          event_control;  ///< Event link control for single port
     ioport_event_direction_t        direction;      ///< Event direction for single port
     uint16_t                        port_num;       ///< Port number specified to single port
     ioport_event_output_operation_t operation;      ///< Single port operation select
     ioport_event_detection_t        edge_detection; ///< Edge detection select
-} ioport_event_single_t;
+};
+
+/** Single port configuration. Please refer to the struct st_ioport_event_single. */
+typedef struct st_ioport_event_single ioport_event_single_t;
 
 /** Output port group configuration
  *  @note Event link must be configured by the ELC
  */
-typedef struct st_ioport_event_group_output
+struct st_ioport_event_group_output
 {
     uint8_t pin_select;                        ///< Port number specified to output port group
     ioport_event_output_operation_t operation; ///< Port group operation select
-} ioport_event_group_output_t;
+};
+
+/** Output port group configuration. Please refer to the struct st_ioport_event_group_output. */
+typedef struct st_ioport_event_group_output ioport_event_group_output_t;
 
 /** Input port group configuration
  *  @note Event link must be configured by the ELC
  */
-typedef struct st_ioport_event_group_input
+struct st_ioport_event_group_input
 {
     ioport_event_control_t   event_control;     ///< Event link control for input port group
     ioport_event_detection_t edge_detection;    ///< Edge detection select
     ioport_event_control_t   overwrite_control; ///< Buffer register overwrite control
     uint8_t pin_select;                         ///< Port number specified to input port group
     uint8_t buffer_init_value;                  ///< Buffer register initial value
-} ioport_event_group_input_t;
+};
+
+/** Input port group configuration. Please refer to the struct st_ioport_event_group_input. */
+typedef struct st_ioport_event_group_input ioport_event_group_input_t;
 
 /** IOPORT extended configuration for event link function
  *  @note Event link must be configured by the ELC
  */
-typedef struct  st_ioport_extend_cfg
+struct st_ioport_extend_cfg
 {
     ioport_event_group_output_t port_group_output_cfg[IOPORT_PORT_GROUP_NUM]; ///< Output port group configuration
     ioport_event_group_input_t  port_group_input_cfg[IOPORT_PORT_GROUP_NUM];  ///< Input port group configuration
     ioport_event_single_t       single_port_cfg[IOPORT_SINGLE_PORT_NUM];      ///< Single input port configuration
-} ioport_extend_cfg_t;
+};
+
+/** IOPORT extended configuration for event link function. Please refer to the struct st_ioport_extend_cfg. */
+typedef struct st_ioport_extend_cfg ioport_extend_cfg_t;
 
 /** IOPORT private control block. DO NOT MODIFY. Initialization occurs when R_IOPORT_Open() is called. */
-typedef struct st_ioport_instance_ctrl
+struct st_ioport_instance_ctrl
 {
     uint32_t             open;         // Whether or not ioport is open
-    void const         * p_context;    // Pointer to context to be passed into callback
+    void               * p_context;    // Pointer to context to be passed into callback
     ioport_cfg_t const * p_cfg;        // Pointer to the configuration block
-} ioport_instance_ctrl_t;
+};
+
+/** IOPORT private control block. DO NOT MODIFY. Initialization occurs when R_IOPORT_Open() is called. Please refer to the struct st_ioport_instance_ctrl. */
+typedef struct st_ioport_instance_ctrl ioport_instance_ctrl_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -172,25 +194,30 @@ fsp_err_t R_IOPORT_Open(ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p_cfg
 fsp_err_t R_IOPORT_Close(ioport_ctrl_t * const p_ctrl);
 fsp_err_t R_IOPORT_PinsCfg(ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p_cfg);
 fsp_err_t R_IOPORT_PinCfg(ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, uint32_t cfg);
-fsp_err_t R_IOPORT_PinEventInputRead(ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, bsp_io_level_t * p_pin_event);
-fsp_err_t R_IOPORT_PinEventOutputWrite(ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, bsp_io_level_t pin_value);
 fsp_err_t R_IOPORT_PinRead(ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, bsp_io_level_t * p_pin_value);
+fsp_err_t R_IOPORT_PortRead(ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, ioport_size_t * p_port_value);
+fsp_err_t R_IOPORT_PortWrite(ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, ioport_size_t value, ioport_size_t mask);
 fsp_err_t R_IOPORT_PinWrite(ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, bsp_io_level_t level);
 fsp_err_t R_IOPORT_PortDirectionSet(ioport_ctrl_t * const p_ctrl,
                                     bsp_io_port_t         port,
                                     ioport_size_t         direction_values,
                                     ioport_size_t         mask);
 fsp_err_t R_IOPORT_PortEventInputRead(ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, ioport_size_t * p_event_data);
+fsp_err_t R_IOPORT_PinEventInputRead(ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, bsp_io_level_t * p_pin_event);
 fsp_err_t R_IOPORT_PortEventOutputWrite(ioport_ctrl_t * const p_ctrl,
                                         bsp_io_port_t         port,
                                         ioport_size_t         event_data,
                                         ioport_size_t         mask_value);
-fsp_err_t R_IOPORT_PortRead(ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, ioport_size_t * p_port_value);
-fsp_err_t R_IOPORT_PortWrite(ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, ioport_size_t value, ioport_size_t mask);
+fsp_err_t R_IOPORT_PinEventOutputWrite(ioport_ctrl_t * const p_ctrl, bsp_io_port_pin_t pin, bsp_io_level_t pin_value);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup IOPORT)
  **********************************************************************************************************************/
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

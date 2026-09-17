@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -30,8 +30,15 @@
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -50,6 +57,7 @@ FSP_HEADER
 #define FSP_CONTEXT_RESTORE
 
 #define BSP_PRV_CPU_FREQ_1000_MHZ              (1000000000U) // CPU frequency is 1000 MHz
+#define BSP_PRV_CPU_FREQ_600_MHZ               (600000000U)  // CPU frequency is 600 MHz
 #define BSP_PRV_CPU_FREQ_500_MHZ               (500000000U)  // CPU frequency is 500 MHz
 #define BSP_PRV_CPU_FREQ_200_MHZ               (200000000U)  // CPU frequency is 200 MHz
 #define BSP_PRV_CPU_FREQ_150_MHZ               (150000000U)  // CPU frequency is 150 MHz
@@ -57,11 +65,13 @@ FSP_HEADER
 #define BSP_PRV_CA55CLK_FREQ_1200_MHZ          (1200000000U) // CA55CLK frequency is 1200 MHz
 #define BSP_PRV_CA55CLK_FREQ_600_MHZ           (600000000U)  // CA55CLK frequency is 600 MHz
 
-#define BSP_PRV_CA55SCLK_FREQ_1000_MHZ         (1000000000U) // CA55SCLK frequency is 500 MHz
+#define BSP_PRV_CA55SCLK_FREQ_1000_MHZ         (1000000000U) // CA55SCLK frequency is 1000 MHz
 #define BSP_PRV_CA55SCLK_FREQ_500_MHZ          (500000000U)  // CA55SCLK frequency is 500 MHz
 
 #define BSP_PRV_ICLK_FREQ_200_MHZ              (200000000U)  // ICLK frequency is 200 MHz
 #define BSP_PRV_ICLK_FREQ_150_MHZ              (150000000U)  // ICLK frequency is 150 MHz
+
+#define BSP_PRV_PCLKAM_FREQ_200_MHz            (200000000U)  // PCLKAM frequency is 200 MHz
 
 #define BSP_PRV_PCLKH_FREQ_250_MHZ             (250000000U)  // PCLKH frequency is 250 MHz
 #define BSP_PRV_PCLKH_FREQ_200_MHZ             (200000000U)  // PCLKH frequency is 200 MHz
@@ -69,7 +79,7 @@ FSP_HEADER
 
 #define BSP_PRV_PCLKM_FREQ_125_MHZ             (125000000U)  // PCLKM frequency is 125 MHz
 #define BSP_PRV_PCLKM_FREQ_100_MHZ             (100000000U)  // PCLKM frequency is 100 MHz
-#define BSP_PRV_PCLKM_FREQ_75_MHZ              (75000000U)   // PCLKM frequency is 750 MHz
+#define BSP_PRV_PCLKM_FREQ_75_MHZ              (75000000U)   // PCLKM frequency is 75 MHz
 
 #define BSP_PRV_PCLKL_FREQ_62_5_MHZ            (62500000U)   // PCLKL frequency is 62.5 MHz
 #define BSP_PRV_PCLKL_FREQ_50_MHZ              (50000000U)   // PCLKL frequency is 50 MHz
@@ -108,7 +118,7 @@ FSP_HEADER
 #define BSP_PRV_CKIO_FREQ_41_7_MHZ             (41666666U)   // CKIO frequency is 41.6 MHz
 #define BSP_PRV_CKIO_FREQ_40_MHZ               (40000000U)   // CKIO frequency is 40 MHz
 #define BSP_PRV_CKIO_FREQ_37_5_MHZ             (37500000U)   // CKIO frequency is 37.5 MHz
-#define BSP_PRV_CKIO_FREQ_35_7_MHZ             (35714285U)   // CKIO frequency is 125 MHz
+#define BSP_PRV_CKIO_FREQ_35_7_MHZ             (35714285U)   // CKIO frequency is 35.7 MHz
 #define BSP_PRV_CKIO_FREQ_33_3_MHZ             (33333333U)   // CKIO frequency is 33.3MHz
 #define BSP_PRV_CKIO_FREQ_31_25_MHZ            (31250000U)   // CKIO frequency is 31.25 MHz
 #define BSP_PRV_CKIO_FREQ_30_MHZ               (30000000U)   // CKIO frequency is 30 MHz
@@ -127,6 +137,8 @@ FSP_HEADER
 #define BSP_PRV_XSPI_CLK_FREQ_25_MHZ           (25000000U)   // XSPI_CLK frequency is 25.0 MHz
 #define BSP_PRV_XSPI_CLK_FREQ_12_5_MHZ         (12500000U)   // XSPI_CLK frequency is 12.5 MHz
 #define BSP_PRV_XSPI_CLK_FREQ_NOT_SUPPORTED    (0xFFFFFFFFU) // XSPI_CLK frequency is not supported
+
+#define BSP_PRV_SDHI_IMCLK_FREQ_200_MHz        (200000000U)  // SDHI_IMCLK frequency is 200 MHz
 
 /** Macro to log and return error without an assertion. */
 #ifndef FSP_RETURN
@@ -148,41 +160,63 @@ FSP_HEADER
  #define FSP_ERROR_LOG(err)
 #endif
 
+#if (3 == BSP_CFG_ASSERT)
+ #define FSP_ASSERT_ACTION(a, error_func)
+#elif (2 == BSP_CFG_ASSERT)
+ #define FSP_ASSERT_ACTION(a, error_func) \
+    {                                      \
+        R_BSP_FspAssert();                 \
+        assert(a);                         \
+    }
+#else
+ #define FSP_ASSERT_ACTION(a, error_func)                   error_func((a), FSP_ERR_ASSERTION)
+#endif
+
 /** Default assertion calls ::FSP_ERROR_RETURN if condition "a" is false. Used to identify incorrect use of API's in FSP
  * functions. */
-#if (3 == BSP_CFG_ASSERT)
- #define FSP_ASSERT(a)
-#elif (2 == BSP_CFG_ASSERT)
- #define FSP_ASSERT(a)    {assert(a);}
-#else
- #define FSP_ASSERT(a)    FSP_ERROR_RETURN((a), FSP_ERR_ASSERTION)
-#endif                                 // ifndef FSP_ASSERT
+#define FSP_ASSERT(a)                                       FSP_ASSERT_ACTION(a, FSP_ERROR_RETURN)
+
+/** Default assertion calls ::FSP_ERROR_NOT_RETURN_VALUE if condition "a" is false. Used to identify incorrect use of API's in FSP
+ * functions. */
+#define FSP_ASSERT_NOT_RETURN_VALUE(a)                      FSP_ASSERT_ACTION(a, FSP_ERROR_NOT_RETURN_VALUE)
+
+#define FSP_ERROR_ACTION(a, err, return_value)         \
+    {                                                  \
+        if ((a))                                       \
+        {                                              \
+            (void) 0;                 /* Do nothing */ \
+        }                                              \
+        else                                           \
+        {                                              \
+            FSP_ERROR_LOG(err);                        \
+            R_BSP_FspAssert();                         \
+            return return_value;                       \
+        }                                              \
+    }
 
 /** All FSP error codes are returned using this macro. Calls ::FSP_ERROR_LOG function if condition "a" is false. Used
  * to identify runtime errors in FSP functions. */
+#define FSP_ERROR_RETURN(a, err)                            FSP_ERROR_ACTION(a, err, err)
 
-#define FSP_ERROR_RETURN(a, err)                        \
-    {                                                   \
-        if ((a))                                        \
-        {                                               \
-            (void) 0;                  /* Do nothing */ \
-        }                                               \
-        else                                            \
-        {                                               \
-            FSP_ERROR_LOG(err);                         \
-            return err;                                 \
-        }                                               \
-    }
+/** This function performs the same operation as ::FSP_ERROR_RETURN, but can be applied to functions that do not return
+ *  an error code. */
+#define FSP_ERROR_NOT_RETURN_VALUE(a, err)                  FSP_ERROR_ACTION(a, err, )
 
 /* Function-like macro used to wait for a condition to be met, most often used to wait for hardware register updates.
  * This macro can be redefined to add a timeout if necessary. */
 #ifndef FSP_HARDWARE_REGISTER_WAIT
- #define FSP_HARDWARE_REGISTER_WAIT(reg, required_value)    while (reg != required_value) { /* Wait. */}
+ #define FSP_HARDWARE_REGISTER_WAIT(reg, required_value)    while (reg != required_value) {__asm volatile ("nop");}
+#endif
+
+/* Read a register and discard the result. */
+#ifndef FSP_REGISTER_READ
+ #define FSP_REGISTER_READ(A)                               __ASM volatile ("" : : "r" (A));
+
 #endif
 
 /* Function-like macro used to wait for a condition to be met with timeout,
  * most often used to wait for hardware register updates. */
-#define BSP_HARDWARE_REGISTER_WAIT_WTIH_TIMEOUT(reg, required_value, timeout) \
+#define BSP_HARDWARE_REGISTER_WAIT_WITH_TIMEOUT(reg, required_value, timeout) \
     while ((timeout))                                                         \
     {                                                                         \
         if ((required_value) == (reg))                                        \
@@ -192,9 +226,10 @@ FSP_HEADER
         (timeout)--;                                                          \
     }
 
-#ifndef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
- #define BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION    (0U)
+#ifdef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
+ #undef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
 #endif
+#define BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION    (0U)
 
 /* This macro defines a variable for saving previous mask value */
 #ifndef FSP_CRITICAL_SECTION_DEFINE
@@ -228,9 +263,9 @@ FSP_HEADER
 
 /* This macro Enable or Disable interrupts. */
 #if defined(BSP_CFG_CORE_CA55)
- #define BSP_INTERRUPT_ENABLE                   __enable_fiq()
+ #define BSP_INTERRUPT_ENABLE                   r_bsp_enable_fiq()
 
- #define BSP_INTERRUPT_DISABLE                  __disable_fiq()
+ #define BSP_INTERRUPT_DISABLE                  r_bsp_disable_fiq()
 
 #elif defined(BSP_CFG_CORE_CR52)
  #define BSP_INTERRUPT_ENABLE                   __asm volatile ("cpsie i"); \
@@ -240,13 +275,11 @@ FSP_HEADER
     __asm volatile ("isb");
 #endif
 
-/** In the event of an unrecoverable error the BSP will by default call the __BKPT() intrinsic function which will
- *  alert the user of the error. The user can override this default behavior by defining their own
- *  BSP_CFG_HANDLE_UNRECOVERABLE_ERROR macro.
- */
-#if !defined(BSP_CFG_HANDLE_UNRECOVERABLE_ERROR)
-
- #define BSP_CFG_HANDLE_UNRECOVERABLE_ERROR(x)    __BKPT((x))
+/* Put certain BSP variables in uninitialized RAM when initializing BSP early. */
+#if BSP_CFG_EARLY_INIT
+ #define BSP_SECTION_EARLY_INIT                 BSP_PLACE_IN_SECTION(BSP_SECTION_NOINIT)
+#else
+ #define BSP_SECTION_EARLY_INIT
 #endif
 
 /***********************************************************************************************************************
@@ -258,7 +291,7 @@ typedef enum e_bsp_warm_start_event
 {
     BSP_WARM_START_RESET = 0,          ///< Called almost immediately after reset. No C runtime environment, clocks, or IRQs.
     BSP_WARM_START_POST_CLOCK,         ///< Called after clock initialization. No C runtime environment or IRQs.
-    BSP_WARM_START_POST_C,             ///< Called after clocks and C runtime environment have been set up
+    BSP_WARM_START_POST_C              ///< Called after clocks and C runtime environment have been set up
 } bsp_warm_start_event_t;
 
 /* Private enum used in R_FSP_SystemClockHzGet. */
@@ -303,7 +336,9 @@ typedef enum e_fsp_priv_clock
     FSP_PRIV_CLOCK_PCLKCAN,
     FSP_PRIV_CLOCK_CKIO,
     FSP_PRIV_CLOCK_XSPI0_CLK,
-    FSP_PRIV_CLOCK_XSPI1_CLK
+    FSP_PRIV_CLOCK_XSPI1_CLK,
+    FSP_PRIV_CLOCK_PCLKAM,
+    FSP_PRIV_CLOCK_SDHI_IMCLK,
 } fsp_priv_clock_t;
 
 /***********************************************************************************************************************
@@ -322,7 +357,7 @@ extern IRQn_Type g_current_interrupt_num[];
 extern uint8_t   g_current_interrupt_pointer;
 
 /***********************************************************************************************************************
- * Exported global functions (to be accessed by other files)
+ * Global variables (defined in other files)
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -421,6 +456,14 @@ __STATIC_INLINE uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
 #endif
             break;
         }
+
+#if (2 == BSP_FEATURE_CGC_SCKCR_TYPE)
+        case FSP_PRIV_CLOCK_PCLKAM:
+        {
+            clock_hz = BSP_PRV_PCLKAM_FREQ_200_MHz;
+            break;
+        }
+#endif
 
         case FSP_PRIV_CLOCK_PCLKH:
         {
@@ -683,6 +726,14 @@ __STATIC_INLINE uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
         }
 #endif
 
+#if (2 == BSP_FEATURE_CGC_SCKCR_TYPE)
+        case FSP_PRIV_CLOCK_SDHI_IMCLK:
+        {
+            clock_hz = BSP_PRV_SDHI_IMCLK_FREQ_200_MHz;
+            break;
+        }
+#endif
+
         default:
         {
             break;
@@ -692,6 +743,9 @@ __STATIC_INLINE uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
     return clock_hz;
 }
 
+/***********************************************************************************************************************
+ * Exported global functions (to be accessed by other files)
+ **********************************************************************************************************************/
 #if ((1 == BSP_CFG_ERROR_LOG) || (1 == BSP_CFG_ASSERT))
 
 /** Prototype of default function called before errors are returned in FSP code if BSP_CFG_LOG_ERRORS is set to 1. */
@@ -699,10 +753,33 @@ void fsp_error_log(fsp_err_t err, const char * file, int32_t line);
 
 #endif
 
+/** In the event of an unrecoverable error, the BSP will by default take no action.
+ *  The user can override this default behavior by defining their own BSP_CFG_HANDLE_UNRECOVERABLE_ERROR macro.
+ *
+ *  When BSP_CFG_HANDLE_UNRECOVERABLE_ERROR is called from error handlers, the user will need to investigate the cause.
+ *  Common problems are stack corruption or the use of an invalid pointer.
+ *
+ *  Use the Fault Status window in e2 studio or manually check the fault status registers for more information.
+ *  After an error handler, other interrupts may occur. Therefore, override  BSP_CFG_HANDLE_UNRECOVERABLE_ERROR macro
+ *  with a user-defined function and place a breakpoint inside it. This will help you catch the first interrupt and
+ *  identify the root cause of the error.
+ */
+#if !defined(BSP_CFG_HANDLE_UNRECOVERABLE_ERROR)
+
+ #define BSP_CFG_HANDLE_UNRECOVERABLE_ERROR(x)
+#endif
+
 /** @} (end addtogroup BSP_MCU) */
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 void * bsp_prv_malloc(size_t size);
 void   bsp_prv_free(void * ptr);
+
+void R_BSP_FspAssert(void);
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

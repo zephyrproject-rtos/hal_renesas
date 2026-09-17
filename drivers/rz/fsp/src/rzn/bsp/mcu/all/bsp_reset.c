@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -30,8 +30,15 @@
  * Private global variables and functions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  *
  * @{
  **********************************************************************************************************************/
@@ -54,7 +61,7 @@ void R_BSP_SystemReset (void)
  *
  * @note With Cortex-A55, you cannot use resets that are not automatically released when a software reset is executed.
  **********************************************************************************************************************/
-void R_BSP_CPUReset (bsp_reset_t cpu)
+void R_BSP_CpuReset (bsp_reset_t cpu)
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
 
@@ -104,7 +111,7 @@ void R_BSP_CPUReset (bsp_reset_t cpu)
  *
  * @param[in] cpu to be reset state.
  **********************************************************************************************************************/
-void R_BSP_CPUResetAutoRelease (bsp_reset_t cpu)
+void R_BSP_CpuResetAutoRelease (bsp_reset_t cpu)
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
 
@@ -145,10 +152,7 @@ void R_BSP_CPUResetAutoRelease (bsp_reset_t cpu)
     else if (BSP_RESET_CA55_0 == cpu)
     {
         /* CA55_0 software reset. */
-        __asm volatile (
-            "MOV  x0, %0                                              \n"
-            "MSR  RMR_EL3, x0                                         \n"
-            ::"r" (BSP_RESET_RMR_RESET_REQUEST_AARCH64) : "memory");
+        __set_RMR_EL3(BSP_RESET_RMR_RESET_REQUEST_AARCH64);
 
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
 
@@ -159,10 +163,7 @@ void R_BSP_CPUResetAutoRelease (bsp_reset_t cpu)
     else if (BSP_RESET_CA55_1 == cpu)
     {
         /* CA55_1 software reset. */
-        __asm volatile (
-            "MOV  x0, %0                                              \n"
-            "MSR  RMR_EL3, x0                                         \n"
-            ::"r" (BSP_RESET_RMR_RESET_REQUEST_AARCH64) : "memory");
+        __set_RMR_EL3(BSP_RESET_RMR_RESET_REQUEST_AARCH64);
 
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
 
@@ -173,10 +174,7 @@ void R_BSP_CPUResetAutoRelease (bsp_reset_t cpu)
     else if (BSP_RESET_CA55_2 == cpu)
     {
         /* CA55_2 software reset. */
-        __asm volatile (
-            "MOV  x0, %0                                              \n"
-            "MSR  RMR_EL3, x0                                         \n"
-            ::"r" (BSP_RESET_RMR_RESET_REQUEST_AARCH64) : "memory");
+        __set_RMR_EL3(BSP_RESET_RMR_RESET_REQUEST_AARCH64);
 
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
 
@@ -187,10 +185,7 @@ void R_BSP_CPUResetAutoRelease (bsp_reset_t cpu)
     else if (BSP_RESET_CA55_3 == cpu)
     {
         /* CA55_3 software reset. */
-        __asm volatile (
-            "MOV  x0, %0                                              \n"
-            "MSR  RMR_EL3, x0                                         \n"
-            ::"r" (BSP_RESET_RMR_RESET_REQUEST_AARCH64) : "memory");
+        __set_RMR_EL3(BSP_RESET_RMR_RESET_REQUEST_AARCH64);
 
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
 
@@ -211,7 +206,7 @@ void R_BSP_CPUResetAutoRelease (bsp_reset_t cpu)
  *
  * @param[in] cpu to be release reset state.
  **********************************************************************************************************************/
-void R_BSP_CPUResetRelease (bsp_reset_t cpu)
+void R_BSP_CpuResetRelease (bsp_reset_t cpu)
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
 
@@ -271,7 +266,7 @@ void R_BSP_CPUResetRelease (bsp_reset_t cpu)
  * @param[in] cpu to be release reset state.
  * @param[in] release Enable/disable automatic reset release.
  **********************************************************************************************************************/
-void R_BSP_CPUClusterResetAutoReleaseControl (bsp_reset_t cpu, bsp_cluster_reset_auto_release_t release)
+void R_BSP_CpuClusterResetAutoReleaseControl (bsp_reset_t cpu, bsp_cluster_reset_auto_release_t release)
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
 
@@ -326,7 +321,7 @@ void R_BSP_ModuleResetEnable (bsp_module_reset_t module_to_enable)
     *p_reg |= mrctl;
 
     /** To ensure processing after module reset. */
-    mrctl = *(volatile uint32_t *) (p_reg);
+    FSP_REGISTER_READ(*(volatile uint32_t *) (p_reg));
 }
 
 /*******************************************************************************************************************//**
@@ -364,9 +359,14 @@ void R_BSP_ModuleResetDisable (bsp_module_reset_t module_to_disable)
 
     while (dummy_read_cnt)
     {
-        mrctl = *(volatile uint32_t *) (p_reg);
+        FSP_REGISTER_READ(*(volatile uint32_t *) (p_reg));
         dummy_read_cnt--;
     }
 }
 
 /** @} (end addtogroup BSP_MCU) */
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -11,11 +11,18 @@
  * Includes
  **********************************************************************************************************************/
 
-/* Includes board and MCU related header files. */
+/* Includes board and MPU related header files. */
 #include "bsp_api.h"
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup RENESAS_COMMON
+ * @addtogroup RZN_RENESAS_COMMON
  * @{
  **********************************************************************************************************************/
 
@@ -24,29 +31,29 @@
  **********************************************************************************************************************/
 
 /** FSP pack major version. */
-#define FSP_VERSION_MAJOR           (2U)
+#define FSP_VERSION_MAJOR           (4U)
 
 /** FSP pack minor version. */
-#define FSP_VERSION_MINOR (1U)
+#define FSP_VERSION_MINOR           (2U)
 
 /** FSP pack patch version. */
-#define FSP_VERSION_PATCH (0U)
+#define FSP_VERSION_PATCH           (0U)
 
 /** FSP pack version build number (currently unused). */
 #define FSP_VERSION_BUILD           (0U)
 
 /** Public FSP version name. */
-#define FSP_VERSION_STRING          ("2.1.0")
+#define FSP_VERSION_STRING          ("4.2.0")
 
 /** Unique FSP version ID. */
-#define FSP_VERSION_BUILD_STRING    ("Built with RZ/N Flexible Software Package version 2.1.0")
+#define FSP_VERSION_BUILD_STRING    ("Built with RZ/N Flexible Software Package version 4.2.0")
 
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** FSP Pack version structure */
-typedef union st_fsp_pack_version
+union st_fsp_pack_version
 {
     /** Version id */
     uint32_t version_id;
@@ -59,8 +66,17 @@ typedef union st_fsp_pack_version
         uint8_t minor;                 ///< Minor version of FSP Pack
         uint8_t major;                 ///< Major version of FSP Pack
     } version_id_b;
-} fsp_pack_version_t;
+};
+
+/** FSP Pack version structure. Please refer to the struct st_fsp_pack_version. */
+typedef union st_fsp_pack_version fsp_pack_version_t;
 
 /** @} */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 #endif

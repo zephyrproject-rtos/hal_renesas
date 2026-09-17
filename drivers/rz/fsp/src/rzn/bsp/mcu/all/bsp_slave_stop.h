@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -30,8 +30,15 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZN
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 typedef enum e_bsp_bus_slave
@@ -54,6 +61,12 @@ typedef enum e_bsp_bus_slave
 } bsp_bus_slave_t;
 
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /***********************************************************************************************************************
  * Exported global variables

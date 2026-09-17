@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -12,7 +12,32 @@
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#if (1 == _RZN_ORDINAL)
+#define BSP_PRV_SECONDARY_ADDRESS_ALIGN    (0x20000U)
+
+#if BSP_CFG_XSPI0_X1_BOOT || BSP_CFG_XSPI0_X8_BOOT
+ #define BSP_PRV_ROM_BASE_ADDRESS          BSP_FEATURE_BSP_XSPI0_CS0_BASE_ADDRESS
+ #define BSP_PRV_ROM_SIZE                  BSP_FEATURE_BSP_XSPI0_CS0_SIZE
+
+#elif BSP_CFG_XSPI1_X1_BOOT
+ #define BSP_PRV_ROM_BASE_ADDRESS          BSP_FEATURE_BSP_XSPI1_CS0_BASE_ADDRESS
+ #define BSP_PRV_ROM_SIZE                  BSP_FEATURE_BSP_XSPI1_CS0_SIZE
+
+#elif BSP_CFG_16BIT_NOR_BOOT || BSP_CFG_32BIT_NOR_BOOT
+ #define BSP_PRV_ROM_BASE_ADDRESS          BSP_FEATURE_BSP_CS0_BASE_ADDRESS
+ #define BSP_PRV_ROM_SIZE                  BSP_FEATURE_BSP_CS0_SIZE
+
+#elif BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT
+ #define BSP_PRV_ROM_BASE_ADDRESS          BSP_FEATURE_BSP_SDHI_VIRTUAL_ADDRESS
+ #define BSP_PRV_ROM_SIZE                  BSP_FEATURE_BSP_SDHI_VIRTUAL_SIZE
+ #if BSP_CFG_ESD_BOOT
+  #define BSP_PRV_BOOT_SDHI_CHANNEL        BSP_FEATURE_BSP_ESD_BOOT_CHANNEL
+ #endif
+ #if BSP_CFG_EMMC_BOOT
+  #define BSP_PRV_BOOT_SDHI_CHANNEL        BSP_FEATURE_BSP_EMMC_BOOT_CHANNEL
+ #endif
+#endif
+
+#if (1 == _RZ_ORDINAL)
  #if (1 == BSP_FEATURE_BSP_MASTER_MPU_REGION_TYPE)
   #define BSP_PRV_MASTER_MPU_REGION_NUM      (8)
  #elif (2 == BSP_FEATURE_BSP_MASTER_MPU_REGION_TYPE)
@@ -20,56 +45,79 @@
  #endif
  #define BSP_PRV_M_MPU_35BIT_ADDRESS_MASK    (0x700000000UL)
 
- #define BSP_PRV_MASTER_MPU_STADD(master,                                                         \
-                                  region)     (((BSP_CFG_MPU ## master ## _STADD ## region) &~    \
-                                                BSP_PRV_M_MPU_35BIT_ADDRESS_MASK) |               \
-                                               (((BSP_CFG_MPU ## master ## _STADD ## region) &    \
-                                                 BSP_PRV_M_MPU_35BIT_ADDRESS_MASK) >> 28) |       \
-                                               (BSP_CFG_MPU ## master ## _WRITE ## region << 1) | \
-                                               BSP_CFG_MPU ## master ## _READ ## region)
+ #define BSP_PRV_MASTER_MPU_STADD(master, region)       \
+    (((BSP_CFG_MPU ## master ## _STADD ## region) &~    \
+      BSP_PRV_M_MPU_35BIT_ADDRESS_MASK) |               \
+     (((BSP_CFG_MPU ## master ## _STADD ## region) &    \
+       BSP_PRV_M_MPU_35BIT_ADDRESS_MASK) >> 28) |       \
+     (BSP_CFG_MPU ## master ## _WRITE ## region << 1) | \
+     BSP_CFG_MPU ## master ## _READ ## region)
 
- #define BSP_PRV_MASTER_MPU_ENDADD(master,                                                     \
-                                   region)    ((BSP_CFG_MPU ## master ## _ENDADD ## region) &~ \
-                                               BSP_PRV_M_MPU_35BIT_ADDRESS_MASK) |             \
-    (((BSP_CFG_MPU ## master ## _ENDADD ## region) &                                           \
-      BSP_PRV_M_MPU_35BIT_ADDRESS_MASK) >> 28)
+ #define BSP_PRV_MASTER_MPU_ENDADD(master, region)    \
+    (((BSP_CFG_MPU ## master ## _ENDADD ## region) &~ \
+      BSP_PRV_M_MPU_35BIT_ADDRESS_MASK) |             \
+     (((BSP_CFG_MPU ## master ## _ENDADD ## region) & \
+       BSP_PRV_M_MPU_35BIT_ADDRESS_MASK) >> 28))
 
+ #define BSP_PRV_GLOBAL_SYSTEM_COUNTER_ENABLE    (1)
+
+ #if (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+  #define BSP_PRV_ATCM_AXIS_CR520_ADDRESS        (0x20000000)
+  #define BSP_PRV_BTCM_AXIS_CR520_ADDRESS        (0x20100000)
+  #define BSP_PRV_ATCM_AXIS_CR521_ADDRESS        (0x21000000)
+  #define BSP_PRV_BTCM_AXIS_CR521_ADDRESS        (0x21100000)
+  #define BSP_PRV_ATCM_AXIS_SIZE                 (0x80000U)
+  #define BSP_PRV_BTCM_AXIS_SIZE                 (0x10000U)
+
+ #endif
 #endif
 
 #if (1U < BSP_FEATURE_BSP_CR52_CORE_NUM) || (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
+ #define BSP_PRV_ATCM_START_ADDRESS                    (0x0U)
+ #define BSP_PRV_ATCM_END_ADDRESS                      (0x7FFFFU)
+ #define BSP_PRV_ATCM_LOADER_TEXT_OFFSET               (0x100U)
+ #define BSP_PRV_BTCM_START_ADDRESS                    (0x100000U)
+ #define BSP_PRV_BTCM_END_ADDRESS                      (0x10FFFFU)
+ #define BSP_PRV_BTCM_LOADER_TEXT_OFFSET               (0x2000U)
+ #define BSP_PRV_SYSTEMRAM_START_ADDRESS               (0x10000000U)
+ #define BSP_PRV_SYSTEMRAM_END_ADDRESS                 (0x101FFFFFU)
+ #define BSP_PRV_SYSTEMRAM_LOADER_TEXT_OFFSET          (0x1000U)
+
  #if !(BSP_CFG_RAM_EXECUTION)
+  #define BSP_PRV_SECONDARY_ADDRESS_ALIGN_MASK         (0xFFFE0000U)
+  #define BSP_PRV_SYSTEMRAM_MIRROR_ADDRESS_MASK        (0x1FFFFFU)
 
-  #define BSP_PRV_LOADER_TEXT_OFFSET                     (0x1000U)
-  #define BSP_PRV_ATCM_AXIS_CR520_ADDRESS                (0x20000000)
-  #define BSP_PRV_ATCM_AXIS_CR521_ADDRESS                (0x21000000)
-
-  #define BSP_PRV_IMAGE_INFO_OFFSET                      (0x800)
-  #define BSP_PRV_IMAGE_INFO_BRANCH_INSTRUCTION_CR520    (0xE51FF004)
-  #define BSP_PRV_IMAGE_INFO_BRANCH_INSTRUCTION_CR521    (0xE51FF000)
-  #define BSP_PRV_IMAGE_INFO_BRANCH_ADDRESS              ((uint32_t) ((uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_START + \
-                                                                      BSP_PRV_LOADER_TEXT_OFFSET))
-  #define BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS           ((uint32_t) ((uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_START))
+  #define BSP_PRV_IMAGE_INFO_OFFSET                    (0x800)
+  #define BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS         ((uint32_t) ((uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_START))
 
   #if defined(BSP_CFG_CORE_CR52)
+   #define BSP_PRV_LOADER_PARAM_LDR_ADDR_NML_OFFSET    (0x14)
+   #define BSP_PRV_LOADER_PARAM_LDR_ADDR_NML_SHIFT     (0)
+   #define BSP_PRV_IMAGE_INFO_INDEX                    (18)
+
    #if (0 == BSP_CFG_CORE_CR52)
-    #define BSP_PRV_IMAGE_INFO_CPU                       (BSP_PRIV_ASSIGNMENT_CPU_CR52_0)
+    #define BSP_PRV_IMAGE_INFO_CPU                     (BSP_PRIV_ASSIGNMENT_CPU_CR52_0)
 
    #elif (1 == BSP_CFG_CORE_CR52)
-    #define BSP_PRV_IMAGE_INFO_CPU                       (BSP_PRIV_ASSIGNMENT_CPU_CR52_1)
+    #define BSP_PRV_IMAGE_INFO_CPU                     (BSP_PRIV_ASSIGNMENT_CPU_CR52_1)
 
    #endif
   #elif defined(BSP_CFG_CORE_CA55)
+   #define BSP_PRV_LOADER_PARAM_LDR_ADDR_NML_OFFSET    (0x10)
+   #define BSP_PRV_LOADER_PARAM_LDR_ADDR_NML_SHIFT     (32)
+   #define BSP_PRV_IMAGE_INFO_INDEX                    (9)
+
    #if (0 == BSP_CFG_CORE_CA55)
-    #define BSP_PRV_IMAGE_INFO_CPU                       (BSP_PRIV_ASSIGNMENT_CPU_CA55_0)
+    #define BSP_PRV_IMAGE_INFO_CPU                     (BSP_PRIV_ASSIGNMENT_CPU_CA55_0)
 
    #elif (1 == BSP_CFG_CORE_CA55)
-    #define BSP_PRV_IMAGE_INFO_CPU                       (BSP_PRIV_ASSIGNMENT_CPU_CA55_1)
+    #define BSP_PRV_IMAGE_INFO_CPU                     (BSP_PRIV_ASSIGNMENT_CPU_CA55_1)
 
    #elif (2 == BSP_CFG_CORE_CA55)
-    #define BSP_PRV_IMAGE_INFO_CPU                       (BSP_PRIV_ASSIGNMENT_CPU_CA55_2)
+    #define BSP_PRV_IMAGE_INFO_CPU                     (BSP_PRIV_ASSIGNMENT_CPU_CA55_2)
 
    #elif (3 == BSP_CFG_CORE_CA55)
-    #define BSP_PRV_IMAGE_INFO_CPU                       (BSP_PRIV_ASSIGNMENT_CPU_CA55_3)
+    #define BSP_PRV_IMAGE_INFO_CPU                     (BSP_PRIV_ASSIGNMENT_CPU_CA55_3)
 
    #endif
   #endif
@@ -78,13 +126,20 @@
 
 #if defined(__ICCARM__)
  #if BSP_CFG_C_RUNTIME_INIT
-  #define BSP_PRV_SECTION_LDR_DATA_ROM_ADDRESS                  __section_begin("LDR_DATA_RBLOCK")
-  #define BSP_PRV_SECTION_LDR_DATA_RAM_START                    __section_begin("LDR_DATA_WBLOCK")
-  #define BSP_PRV_SECTION_LDR_DATA_RAM_END                      __section_end("LDR_DATA_WBLOCK")
+  #define BSP_PRV_SECTION_LDR_DATA_ROM_ADDRESS    __section_begin("LDR_DATA_RBLOCK")
+  #define BSP_PRV_SECTION_LDR_DATA_RAM_START      __section_begin("LDR_DATA_WBLOCK")
+  #define BSP_PRV_SECTION_LDR_DATA_RAM_END        __section_end("LDR_DATA_WBLOCK")
 
-  #define BSP_PRV_SECTION_LDR_DATA_BSS_START                    __section_begin("LDR_DATA_ZBLOCK")
-  #define BSP_PRV_SECTION_LDR_DATA_BSS_END                      __section_end("LDR_DATA_ZBLOCK")
+  #define BSP_PRV_SECTION_LDR_DATA_BSS_START      __section_begin("LDR_DATA_ZBLOCK")
+  #define BSP_PRV_SECTION_LDR_DATA_BSS_END        __section_end("LDR_DATA_ZBLOCK")
 
+  #if BSP_CFG_RAM_EXECUTION
+   #if (0 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM) && (1 == BSP_CFG_CORE_CR52)
+    #define BSP_PRV_SECTION_VECTOR_RAM_START      __section_begin("VECTOR_RBLOCK")
+    #define BSP_PRV_SECTION_VECTOR_RAM_END        __section_end("VECTOR_RBLOCK")
+
+   #endif
+  #endif
  #endif
 
  #if !(BSP_CFG_RAM_EXECUTION)
@@ -100,40 +155,23 @@
   #define BSP_PRV_SECTION_USER_DATA_RAM_START                   __section_begin("USER_DATA_WBLOCK")
   #define BSP_PRV_SECTION_USER_DATA_RAM_END                     __section_end("USER_DATA_WBLOCK")
 
-  #define BSP_PRV_SECTION_USER_DATA_NONCACHE_ROM_ADDRESS        __section_begin("USER_DATA_NONCACHE_RBLOCK")
-  #define BSP_PRV_SECTION_USER_DATA_NONCACHE_RAM_START          __section_begin("USER_DATA_NONCACHE_WBLOCK")
-  #define BSP_PRV_SECTION_USER_DATA_NONCACHE_RAM_END            __section_end("USER_DATA_NONCACHE_WBLOCK")
-
-  #define BSP_PRV_SECTION_DMAC_LINK_MODE_ROM_ADDRESS            __section_begin("DMAC_LINK_MODE_RBLOCK")
-  #define BSP_PRV_SECTION_DMAC_LINK_MODE_RAM_START              __section_begin("DMAC_LINK_MODE_WBLOCK")
-  #define BSP_PRV_SECTION_DMAC_LINK_MODE_RAM_END                __section_end("DMAC_LINK_MODE_WBLOCK")
+  #define BSP_PRV_SECTION_NONCACHE_ROM_ADDRESS                  __section_begin("NONCACHE_RBLOCK")
+  #define BSP_PRV_SECTION_NONCACHE_RAM_START                    __section_begin("NONCACHE_WBLOCK")
+  #define BSP_PRV_SECTION_NONCACHE_RAM_END                      __section_end("NONCACHE_WBLOCK")
 
   #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_ROM_ADDRESS    __section_begin("SHARED_NONCACHE_BUFFER_RBLOCK")
   #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_RAM_START      __section_begin("SHARED_NONCACHE_BUFFER_WBLOCK")
   #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_RAM_END        __section_end("SHARED_NONCACHE_BUFFER_WBLOCK")
 
-  #define BSP_PRV_SECTION_NONCACHE_BUFFER_ROM_ADDRESS           __section_begin("NONCACHE_BUFFER_RBLOCK")
-  #define BSP_PRV_SECTION_NONCACHE_BUFFER_RAM_START             __section_begin("NONCACHE_BUFFER_WBLOCK")
-  #define BSP_PRV_SECTION_NONCACHE_BUFFER_RAM_END               __section_end("NONCACHE_BUFFER_WBLOCK")
-
   #define BSP_PRV_SECTION_LDR_PRG_ROM_ADDRESS                   __section_begin("LDR_PRG_RBLOCK")
   #define BSP_PRV_SECTION_LDR_PRG_RAM_START                     __section_begin("LDR_PRG_WBLOCK")
   #define BSP_PRV_SECTION_LDR_PRG_RAM_END                       __section_end("LDR_PRG_WBLOCK")
 
-  #define BSP_PRV_SECTION_USER_DATA_BSS_START                   __section_begin("USER_DATA_ZBLOCK")
-  #define BSP_PRV_SECTION_USER_DATA_BSS_END                     __section_end("USER_DATA_ZBLOCK")
-
-  #define BSP_PRV_SECTION_USER_DATA_NONCACHE_BSS_START          __section_begin("USER_DATA_NONCACHE_ZBLOCK")
-  #define BSP_PRV_SECTION_USER_DATA_NONCACHE_BSS_END            __section_end("USER_DATA_NONCACHE_ZBLOCK")
-
-  #define BSP_PRV_SECTION_DMAC_LINK_MODE_BSS_START              __section_begin("DMAC_LINK_MODE_ZBLOCK")
-  #define BSP_PRV_SECTION_DMAC_LINK_MODE_BSS_END                __section_end("DMAC_LINK_MODE_ZBLOCK")
+  #define BSP_PRV_SECTION_NONCACHE_BSS_START                    __section_begin("NONCACHE_ZBLOCK")
+  #define BSP_PRV_SECTION_NONCACHE_BSS_END                      __section_end("NONCACHE_ZBLOCK")
 
   #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_BSS_START      __section_begin("SHARED_NONCACHE_BUFFER_ZBLOCK")
   #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_BSS_END        __section_end("SHARED_NONCACHE_BUFFER_ZBLOCK")
-
-  #define BSP_PRV_SECTION_NONCACHE_BUFFER_BSS_START             __section_begin("NONCACHE_BUFFER_ZBLOCK")
-  #define BSP_PRV_SECTION_NONCACHE_BUFFER_BSS_END               __section_end("NONCACHE_BUFFER_ZBLOCK")
 
   #if !(BSP_CFG_C_RUNTIME_INIT)
    #define BSP_PRV_SECTION_LDR_DATA_ROM_ADDRESS                 __section_begin("LDR_DATA_RBLOCK")
@@ -144,21 +182,45 @@
  #endif
 
  #if (1U < BSP_FEATURE_BSP_CR52_CORE_NUM) || (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
-  #define BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS    __section_begin("SECONDARY_RBLOCK")
-  #define BSP_PRV_SECTION_SECONDARY_RAM_START      __section_begin("SECONDARY_WBLOCK")
-  #define BSP_PRV_SECTION_SECONDARY_RAM_END        __section_end("SECONDARY_WBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS             __section_begin("SECONDARY_RBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_RAM_START               __section_begin("SECONDARY_WBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_RAM_END                 __section_end("SECONDARY_WBLOCK")
+
+  #define BSP_PRV_SECTION_SECONDARY_NONCACHE_ROM_ADDRESS    __section_begin("SECONDARY_NONCACHE_RBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_NONCACHE_RAM_START      __section_begin("SECONDARY_NONCACHE_WBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_NONCACHE_RAM_END        __section_end("SECONDARY_NONCACHE_WBLOCK")
+
+  #define BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_START    __section_begin("SECONDARY_ATCM_CR520_RBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_END      __section_end("SECONDARY_ATCM_CR520_RBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_START    __section_begin("SECONDARY_ATCM_CR521_RBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_END      __section_end("SECONDARY_ATCM_CR521_RBLOCK")
+
+  #define BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_START    __section_begin("SECONDARY_BTCM_CR520_RBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_END      __section_end("SECONDARY_BTCM_CR520_RBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_START    __section_begin("SECONDARY_BTCM_CR521_RBLOCK")
+  #define BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_END      __section_end("SECONDARY_BTCM_CR521_RBLOCK")
 
  #endif
 
+ #define BSP_PRV_SECTION_USER_DATA_BSS_START                __section_begin("USER_DATA_ZBLOCK")
+ #define BSP_PRV_SECTION_USER_DATA_BSS_END                  __section_end("USER_DATA_ZBLOCK")
+
 #elif defined(__GNUC__)
  #if BSP_CFG_C_RUNTIME_INIT
-  #define BSP_PRV_SECTION_LDR_DATA_ROM_ADDRESS                  &LOADER_DATA_IMAGE
-  #define BSP_PRV_SECTION_LDR_DATA_RAM_START                    &__loader_data_start
-  #define BSP_PRV_SECTION_LDR_DATA_RAM_END                      &__loader_data_end
+  #define BSP_PRV_SECTION_LDR_DATA_ROM_ADDRESS              &LOADER_DATA_IMAGE
+  #define BSP_PRV_SECTION_LDR_DATA_RAM_START                &__loader_data_start
+  #define BSP_PRV_SECTION_LDR_DATA_RAM_END                  &__loader_data_end
 
-  #define BSP_PRV_SECTION_LDR_DATA_BSS_START                    &__loader_bss_start
-  #define BSP_PRV_SECTION_LDR_DATA_BSS_END                      &__loader_bss_end
+  #define BSP_PRV_SECTION_LDR_DATA_BSS_START                &__loader_bss_start
+  #define BSP_PRV_SECTION_LDR_DATA_BSS_END                  &__loader_bss_end
 
+  #if BSP_CFG_RAM_EXECUTION
+   #if (0 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM) && (1 == BSP_CFG_CORE_CR52)
+    #define BSP_PRV_SECTION_VECTOR_RAM_START                &_fvector_start
+    #define BSP_PRV_SECTION_VECTOR_RAM_END                  &_fvector_end
+
+   #endif
+  #endif
  #endif
 
  #if !(BSP_CFG_RAM_EXECUTION)
@@ -170,25 +232,25 @@
   #define BSP_PRV_SECTION_USER_PRG_RAM_START                    &_text_start
   #define BSP_PRV_SECTION_USER_PRG_RAM_END                      &_text_end
 
+  #define BSP_PRV_SECTION_ARM_EXTAB_ROM_ADDRESS                 &EXTAB_IMAGE
+  #define BSP_PRV_SECTION_ARM_EXTAB_RAM_START                   &__extab_start
+  #define BSP_PRV_SECTION_ARM_EXTAB_RAM_END                     &__extab_end
+
+  #define BSP_PRV_SECTION_ARM_EXIDX_ROM_ADDRESS                 &EXIDX_IMAGE
+  #define BSP_PRV_SECTION_ARM_EXIDX_RAM_START                   &__exidx_start
+  #define BSP_PRV_SECTION_ARM_EXIDX_RAM_END                     &__exidx_end
+
   #define BSP_PRV_SECTION_USER_DATA_ROM_ADDRESS                 &DATA_IMAGE
   #define BSP_PRV_SECTION_USER_DATA_RAM_START                   &_data_start
   #define BSP_PRV_SECTION_USER_DATA_RAM_END                     &_data_end
 
-  #define BSP_PRV_SECTION_USER_DATA_NONCACHE_ROM_ADDRESS        &_mdata_noncache
-  #define BSP_PRV_SECTION_USER_DATA_NONCACHE_RAM_START          &_data_noncache_start
-  #define BSP_PRV_SECTION_USER_DATA_NONCACHE_RAM_END            &_data_noncache_end
+  #define BSP_PRV_SECTION_NONCACHE_ROM_ADDRESS                  &NONCACHE_IMAGE
+  #define BSP_PRV_SECTION_NONCACHE_RAM_START                    &_noncache_start
+  #define BSP_PRV_SECTION_NONCACHE_RAM_END                      &_noncache_end
 
-  #define BSP_PRV_SECTION_DMAC_LINK_MODE_ROM_ADDRESS            &_mdmac_link_mode
-  #define BSP_PRV_SECTION_DMAC_LINK_MODE_RAM_START              &_dmac_link_mode_start
-  #define BSP_PRV_SECTION_DMAC_LINK_MODE_RAM_END                &_dmac_link_mode_end
-
-  #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_ROM_ADDRESS    &_msncbuffer
+  #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_ROM_ADDRESS    &SHARED_NONCACHE_BUFFER_IMAGE
   #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_RAM_START      &_sncbuffer_start
   #define BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_RAM_END        &_sncbuffer_end
-
-  #define BSP_PRV_SECTION_NONCACHE_BUFFER_ROM_ADDRESS           &_mncbuffer
-  #define BSP_PRV_SECTION_NONCACHE_BUFFER_RAM_START             &_ncbuffer_start
-  #define BSP_PRV_SECTION_NONCACHE_BUFFER_RAM_END               &_ncbuffer_end
 
   #define BSP_PRV_SECTION_LDR_PRG_ROM_ADDRESS                   &LOADER_TEXT_IMAGE
   #define BSP_PRV_SECTION_LDR_PRG_RAM_START                     &_loader_text_start
@@ -203,14 +265,28 @@
  #endif
 
  #if (1U < BSP_FEATURE_BSP_CR52_CORE_NUM) || (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
-  #define BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS    &SECONDARY_IMAGE
-  #define BSP_PRV_SECTION_SECONDARY_RAM_START      &_secondary_start
-  #define BSP_PRV_SECTION_SECONDARY_RAM_END        &_secondary_end
+  #define BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS             &SECONDARY_IMAGE
+  #define BSP_PRV_SECTION_SECONDARY_RAM_START               &_secondary_start
+  #define BSP_PRV_SECTION_SECONDARY_RAM_END                 &_secondary_end
+
+  #define BSP_PRV_SECTION_SECONDARY_NONCACHE_ROM_ADDRESS    &_msecondary_noncache
+  #define BSP_PRV_SECTION_SECONDARY_NONCACHE_RAM_START      &_secondary_noncache_start
+  #define BSP_PRV_SECTION_SECONDARY_NONCACHE_RAM_END        &_secondary_noncache_end
+
+  #define BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_START    &_msecondary_atcm_cr520_start
+  #define BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_END      &_msecondary_atcm_cr520_end
+  #define BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_START    &_msecondary_atcm_cr521_start
+  #define BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_END      &_msecondary_atcm_cr521_end
+
+  #define BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_START    &_msecondary_btcm_cr520_start
+  #define BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_END      &_msecondary_btcm_cr520_end
+  #define BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_START    &_msecondary_btcm_cr521_start
+  #define BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_END      &_msecondary_btcm_cr521_end
 
  #endif
 
- #define BSP_PRV_SECTION_USER_DATA_BSS_START       &__bss_start__
- #define BSP_PRV_SECTION_USER_DATA_BSS_END         &__bss_end__
+ #define BSP_PRV_SECTION_USER_DATA_BSS_START                &__bss_start__
+ #define BSP_PRV_SECTION_USER_DATA_BSS_END                  &__bss_end__
 
 #endif
 
@@ -229,14 +305,34 @@ typedef enum e_bsp_assignment_cpu
     BSP_PRIV_ASSIGNMENT_CPU_CA55_3 = 0xAC54E005
 } bsp_assignment_cpu_t;
 
+typedef enum e_bsp_image_info_section
+{
+    BSP_PRIV_IMAGE_INFO_CPU = 0,
+    BSP_PRIV_IMAGE_INFO_SECONDARY_ROM_ADDRESS,
+    BSP_PRIV_IMAGE_INFO_SECONDARY_RAM_START,
+    BSP_PRIV_IMAGE_INFO_NONCACHE_ROM_ADDRESS,
+    BSP_PRIV_IMAGE_INFO_NONCACHE_RAM_START,
+    BSP_PRIV_IMAGE_INFO_SECONDARY_ATCM_CR520_ROM_START,
+    BSP_PRIV_IMAGE_INFO_SECONDARY_BTCM_CR520_ROM_START,
+    BSP_PRIV_IMAGE_INFO_SECONDARY_ATCM_CR521_ROM_START,
+    BSP_PRIV_IMAGE_INFO_SECONDARY_BTCM_CR521_ROM_START
+} bsp_image_info_t;
+
 #endif
 
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -245,12 +341,24 @@ uint32_t SystemCoreClock = 0U;
 
 /** @} (end addtogroup BSP_MCU) */
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 #if defined(__ICCARM__)
  #if BSP_CFG_C_RUNTIME_INIT
   #pragma section="LDR_DATA_RBLOCK"
   #pragma section="LDR_DATA_WBLOCK"
   #pragma section="LDR_DATA_ZBLOCK"
 
+  #if BSP_CFG_RAM_EXECUTION
+   #if (0 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM) && (1 == BSP_CFG_CORE_CR52)
+    #pragma section="VECTOR_RBLOCK"
+
+   #endif
+  #endif
  #endif
 
  #if !(BSP_CFG_RAM_EXECUTION)
@@ -262,23 +370,14 @@ uint32_t SystemCoreClock = 0U;
 
   #pragma section="USER_DATA_RBLOCK"
   #pragma section="USER_DATA_WBLOCK"
-  #pragma section="USER_DATA_ZBLOCK"
 
-  #pragma section="USER_DATA_NONCACHE_RBLOCK"
-  #pragma section="USER_DATA_NONCACHE_WBLOCK"
-  #pragma section="USER_DATA_NONCACHE_ZBLOCK"
-
-  #pragma section="DMAC_LINK_MODE_RBLOCK"
-  #pragma section="DMAC_LINK_MODE_WBLOCK"
-  #pragma section="DMAC_LINK_MODE_ZBLOCK"
+  #pragma section="NONCACHE_RBLOCK"
+  #pragma section="NONCACHE_WBLOCK"
+  #pragma section="NONCACHE_ZBLOCK"
 
   #pragma section="SHARED_NONCACHE_BUFFER_RBLOCK"
   #pragma section="SHARED_NONCACHE_BUFFER_WBLOCK"
   #pragma section="SHARED_NONCACHE_BUFFER_ZBLOCK"
-
-  #pragma section="NONCACHE_BUFFER_RBLOCK"
-  #pragma section="NONCACHE_BUFFER_WBLOCK"
-  #pragma section="NONCACHE_BUFFER_ZBLOCK"
 
   #pragma section="LDR_PRG_RBLOCK"
   #pragma section="LDR_PRG_WBLOCK"
@@ -288,10 +387,27 @@ uint32_t SystemCoreClock = 0U;
    #pragma section="LDR_DATA_WBLOCK"
 
   #endif
+
+  #if BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT
+   #pragma section = "SHT$$PREINIT_ARRAY" const
+   #pragma section = "SHT$$INIT_ARRAY" const
+   #pragma section = "Region$$Table" const
+  #endif
  #endif
 
  #pragma section="SECONDARY_RBLOCK"
  #pragma section="SECONDARY_WBLOCK"
+
+ #pragma section="SECONDARY_NONCACHE_RBLOCK"
+ #pragma section="SECONDARY_NONCACHE_WBLOCK"
+
+ #pragma section="SECONDARY_ATCM_CR520_RBLOCK"
+ #pragma section="SECONDARY_BTCM_CR520_RBLOCK"
+
+ #pragma section="SECONDARY_ATCM_CR521_RBLOCK"
+ #pragma section="SECONDARY_BTCM_CR521_RBLOCK"
+
+ #pragma section="USER_DATA_ZBLOCK"
 
 #elif defined(__GNUC__)
  #if BSP_CFG_C_RUNTIME_INIT
@@ -307,6 +423,13 @@ extern void (* __preinit_array_end[])(void);
 extern void (* __init_array_start[])(void);
 extern void (* __init_array_end[])(void);
 
+  #if BSP_CFG_RAM_EXECUTION
+   #if (0 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM) && (1 == BSP_CFG_CORE_CR52)
+extern void * _fvector_start;
+extern void * _fvector_end;
+
+   #endif
+  #endif
  #endif
 
  #if !(BSP_CFG_RAM_EXECUTION)
@@ -318,25 +441,25 @@ extern void * TEXT_IMAGE;
 extern void * _text_start;
 extern void * _text_end;
 
+extern void * EXTAB_IMAGE;
+extern void * __extab_start;
+extern void * __extab_end;
+
+extern void * EXIDX_IMAGE;
+extern void * __exidx_start;
+extern void * __exidx_end;
+
 extern void * DATA_IMAGE;
 extern void * _data_start;
 extern void * _data_end;
 
-extern void * _mdata_noncache;
-extern void * _data_noncache_start;
-extern void * _data_noncache_end;
+extern void * NONCACHE_IMAGE;
+extern void * _noncache_start;
+extern void * _noncache_end;
 
-extern void * _mdmac_link_mode;
-extern void * _dmac_link_mode_start;
-extern void * _dmac_link_mode_end;
-
-extern void * _msncbuffer;
+extern void * SHARED_NONCACHE_BUFFER_IMAGE;
 extern void * _sncbuffer_start;
 extern void * _sncbuffer_end;
-
-extern void * _mncbuffer;
-extern void * _ncbuffer_start;
-extern void * _ncbuffer_end;
 
 extern void * LOADER_TEXT_IMAGE;
 extern void * _loader_text_start;
@@ -355,6 +478,20 @@ extern void * SECONDARY_IMAGE;
 extern void * _secondary_start;
 extern void * _secondary_end;
 
+extern void * _msecondary_noncache;
+extern void * _secondary_noncache_start;
+extern void * _secondary_noncache_end;
+
+extern void * _msecondary_atcm_cr520_start;
+extern void * _msecondary_atcm_cr520_end;
+extern void * _msecondary_atcm_cr521_start;
+extern void * _msecondary_atcm_cr521_end;
+
+extern void * _msecondary_btcm_cr520_start;
+extern void * _msecondary_btcm_cr520_end;
+extern void * _msecondary_btcm_cr521_start;
+extern void * _msecondary_btcm_cr521_end;
+
  #endif
 
 extern void * __bss_start__;
@@ -362,20 +499,28 @@ extern void * __bss_end__;
 
 #endif
 
+extern bool g_bsp_software_reset_occurred;
+
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
 #if defined(__ICCARM__)
  #if BSP_CFG_C_RUNTIME_INIT
+  #if  !(BSP_CFG_ESD_BOOT) && !(BSP_CFG_EMMC_BOOT)
 extern void __iar_data_init3(void);
 
+  #else
+void        __iar_data_init3(void);
+extern void __call_ctors(void const *, void const *);
+
+  #endif
  #endif
 #endif
 
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
-#if (1 == _RZN_ORDINAL)
+#if (1 == _RZ_ORDINAL)
  #if (1 == BSP_FEATURE_BSP_MASTER_MPU0_SUPPORTED)
 const uint32_t g_bsp_master_mpu0_cfg[BSP_PRV_MASTER_MPU_REGION_NUM][2] =
 {
@@ -748,50 +893,132 @@ const uint32_t g_bsp_master_mpu15_cfg[BSP_PRV_MASTER_MPU_REGION_NUM][2] =
 
 #if (1U < BSP_FEATURE_BSP_CR52_CORE_NUM) || (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
  #if !(BSP_CFG_RAM_EXECUTION)
-  #if (1 != _RZN_ORDINAL)
-uint32_t g_bsp_image_info_cpu BSP_PLACE_IN_SECTION(".image_info") = BSP_PRV_IMAGE_INFO_CPU;
+  #if (1 == _RZ_ORDINAL)
+   #if defined(BSP_CFG_CORE_CR52)
+const uintptr_t g_bsp_image_info_array[BSP_PRV_IMAGE_INFO_INDEX] BSP_PLACE_IN_SECTION(".image_info_secondary") =
+{
+    (uintptr_t) BSP_PRV_IMAGE_INFO_CPU,
+    0,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS,
+    0,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_START,
+    0,
+    (uintptr_t) BSP_PRV_SECTION_NONCACHE_ROM_ADDRESS,
+    0,
+    (uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_START,
+    0,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_START,
+    0,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_START,
+    0,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_START,
+    0,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_START,
+    0
+};
+
+   #else
+const uintptr_t g_bsp_image_info_array[BSP_PRV_IMAGE_INFO_INDEX] BSP_PLACE_IN_SECTION(".image_info_secondary") =
+{
+    (uintptr_t) BSP_PRV_IMAGE_INFO_CPU,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_START,
+    (uintptr_t) BSP_PRV_SECTION_NONCACHE_ROM_ADDRESS,
+    (uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_START,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_START,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_START,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_START,
+    (uintptr_t) BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_START,
+};
+
+   #endif
+  #else
+const uint32_t g_bsp_image_info_cpu BSP_PLACE_IN_SECTION(".image_info") = BSP_PRV_IMAGE_INFO_CPU;
 
   #endif
  #endif
 
  #if defined(__ICCARM__)
-  #if (1 == _RZN_ORDINAL)
-   #if defined(BSP_CFG_CORE_CR52)
-BSP_DONT_REMOVE const void * __ddsc_ATCM_END BSP_PLACE_IN_SECTION(".ddsc_atcm_end");
-BSP_DONT_REMOVE const void * __ddsc_BTCM_END BSP_PLACE_IN_SECTION(".ddsc_btcm_end");
+  #if defined(BSP_CFG_CORE_CR52)
 
-   #else
+   #ifndef LOADER_PROGRAM_LOCATION
+    #define LOADER_PROGRAM_LOCATION    (1)
+void * The_preprocessor_macro_LOADER_PROGRAM_LOCATION_is_not_defined;
+   #endif
+
+   #ifndef USER_PROGRAM_LOCATION
+    #define USER_PROGRAM_LOCATION      (0)
+void * The_preprocessor_macro_USER_PROGRAM_LOCATION_is_not_defined;
+   #endif
+
+   #if (0 == BSP_CFG_CORE_CR52)
+
+BSP_DONT_REMOVE const void * __ddsc_ATCM_CR52_0_END BSP_PLACE_IN_SECTION(".ddsc_atcm_end");
+
+    #if ((1 == LOADER_PROGRAM_LOCATION) || (1 == USER_PROGRAM_LOCATION))
+BSP_DONT_REMOVE const void * __ddsc_BTCM_CR52_0_END BSP_PLACE_IN_SECTION(".ddsc_btcm_end");
+
+    #endif
+    #if ((2 == LOADER_PROGRAM_LOCATION) || (2 == USER_PROGRAM_LOCATION))
 BSP_DONT_REMOVE const void * __ddsc_SYSTEM_RAM_END BSP_PLACE_IN_SECTION(".ddsc_system_ram_end");
 
+    #endif
+
+   #else
+    #if (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+
+BSP_DONT_REMOVE const void * __ddsc_ATCM_CR52_1_END BSP_PLACE_IN_SECTION(".ddsc_atcm_end");
+
+     #if ((1 == LOADER_PROGRAM_LOCATION) || (1 == USER_PROGRAM_LOCATION))
+BSP_DONT_REMOVE const void * __ddsc_BTCM_CR52_1_END BSP_PLACE_IN_SECTION(".ddsc_btcm_end");
+
+     #endif
+     #if ((2 == LOADER_PROGRAM_LOCATION) || (2 == USER_PROGRAM_LOCATION))
+BSP_DONT_REMOVE const void * __ddsc_SYSTEM_RAM_END BSP_PLACE_IN_SECTION(".ddsc_system_ram_end");
+
+     #endif
+
+    #else
+BSP_DONT_REMOVE const void * __ddsc_SYSTEM_RAM_END BSP_PLACE_IN_SECTION(".ddsc_system_ram_end");
+
+    #endif
    #endif
-
-   #if BSP_CFG_XSPI0_X1_BOOT || BSP_CFG_XSPI0_X8_BOOT
-BSP_DONT_REMOVE const void * __ddsc_xSPI0_CS0_SPACE_END BSP_PLACE_IN_SECTION(".ddsc_xspi0_cs0_space_end");
-
-   #elif BSP_CFG_XSPI1_X1_BOOT
-BSP_DONT_REMOVE const void * __ddsc_xSPI1_CS0_SPACE_END BSP_PLACE_IN_SECTION(".ddsc_xspi1_cs0_space_end");
-
-   #elif BSP_CFG_16BIT_NOR_BOOT || BSP_CFG_32BIT_NOR_BOOT
-BSP_DONT_REMOVE const void * __ddsc_CS0_SPACE_END BSP_PLACE_IN_SECTION(".ddsc_cs0_space_end");
-
-   #endif
-
   #else
 BSP_DONT_REMOVE const void * __ddsc_SYSTEM_RAM_END BSP_PLACE_IN_SECTION(".ddsc_system_ram_end");
 
+  #endif
+BSP_DONT_REMOVE const void * __ddsc_NONCACHE_END BSP_PLACE_IN_SECTION(".ddsc_noncache_end");
+
+  #if (1 == _RZ_ORDINAL)
+   #if BSP_CFG_XSPI0_X1_BOOT || BSP_CFG_XSPI0_X8_BOOT
+BSP_DONT_REMOVE const void * const __ddsc_xSPI0_CS0_SPACE_END BSP_PLACE_IN_SECTION(".ddsc_xspi0_cs0_space_end");
+
+   #elif BSP_CFG_XSPI1_X1_BOOT
+BSP_DONT_REMOVE const void * const __ddsc_xSPI1_CS0_SPACE_END BSP_PLACE_IN_SECTION(".ddsc_xspi1_cs0_space_end");
+
+   #elif BSP_CFG_16BIT_NOR_BOOT || BSP_CFG_32BIT_NOR_BOOT
+BSP_DONT_REMOVE const void * const __ddsc_CS0_SPACE_END BSP_PLACE_IN_SECTION(".ddsc_cs0_space_end");
+
+   #elif BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT
+BSP_DONT_REMOVE const void * const __ddsc_eSD_eMMC_SPACE_END BSP_PLACE_IN_SECTION(".ddsc_esd_emmc_space_end");
+
+   #endif
   #endif
  #endif
 #endif
 
 #if defined(__ICCARM__)
 
-void R_BSP_WarmStart(bsp_warm_start_event_t event);
+void                         R_BSP_WarmStart(bsp_warm_start_event_t event);
+BSP_ATTRIBUTE_STACKLESS void R_BSP_WarmStart_StackLess(void);
 
  #pragma weak R_BSP_WarmStart
+ #pragma weak R_BSP_WarmStart_StackLess
 
 #elif defined(__GNUC__) || defined(__ARMCC_VERSION)
 
-void R_BSP_WarmStart(bsp_warm_start_event_t event) __attribute__((weak));
+void                         R_BSP_WarmStart(bsp_warm_start_event_t event) __attribute__((weak));
+BSP_ATTRIBUTE_STACKLESS void R_BSP_WarmStart_StackLess(void) __attribute__((weak));
 
 #endif
 
@@ -802,8 +1029,10 @@ void bsp_static_constructor_init(void);
 
 #endif
 
-void bsp_copy_multibyte(uintptr_t * src, uintptr_t * dst, uintptr_t bytesize);
-void bsp_bss_init_multibyte(uintptr_t * src, uintptr_t bytesize);
+void bsp_copy_multibyte(volatile uintptr_t * src, volatile uintptr_t * dst, volatile uintptr_t bytesize);
+void bsp_bss_init_multibyte(volatile uintptr_t * src, volatile uintptr_t bytesize);
+void bsp_copy_8byte(volatile uintptr_t * src, volatile uintptr_t * dst, volatile uintptr_t bytesize);
+void bsp_bss_init_8byte(volatile uintptr_t * src, volatile uintptr_t bytesize);
 
 #if !(BSP_CFG_RAM_EXECUTION)
 void bsp_application_bss_init(void);
@@ -812,10 +1041,19 @@ void bsp_copy_to_ram(void);
  #if (1U < BSP_FEATURE_BSP_CR52_CORE_NUM) || (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
 void bsp_cpu_reset_release(void);
 
+  #if (1 == _RZ_ORDINAL)
+   #if (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+void bsp_tcm_init_via_axis(void);
+
+   #endif
+  #else
+void bsp_copy_to_ram_secondary(volatile uintptr_t * dst, volatile uintptr_t bytesize);
+
+  #endif
  #endif
 #endif
 
-#if (1 == _RZN_ORDINAL)
+#if (1 == _RZ_ORDINAL)
 void bsp_master_mpu_init(void);
 void bsp_global_system_counter_init(void);
 
@@ -833,7 +1071,7 @@ void bsp_release_port_protect(void);
 
 #endif
 
-#if (1 == _RZN_ORDINAL)
+#if (1 == _RZ_ORDINAL)
 
 /*******************************************************************************************************************//**
  * Initialize the Master-MPU settings.
@@ -920,18 +1158,29 @@ void bsp_master_mpu_init (void)
  **********************************************************************************************************************/
 void bsp_global_system_counter_init (void)
 {
-    /* Initialize registers related the global system counter. */
-    R_GSC->CNTCR  &= (uint32_t) (~R_GSC_CNTCR_EN_Msk);
-    R_GSC->CNTFID0 = BSP_GLOBAL_SYSTEM_COUNTER_CLOCK_HZ;
-    R_GSC->CNTCVL  = 0;
-    R_GSC->CNTCVU  = 0;
-    R_GSC->CNTCR  |= R_GSC_CNTCR_EN_Msk;
+    /* If the global system counter is already running, initialization will be skipped. */
+    if (BSP_PRV_GLOBAL_SYSTEM_COUNTER_ENABLE != R_GSC->CNTCR_b.EN)
+    {
+        /* Initialize registers related the global system counter. */
+        R_GSC->CNTCR  &= (uint32_t) (~R_GSC_CNTCR_EN_Msk);
+        R_GSC->CNTFID0 = BSP_GLOBAL_SYSTEM_COUNTER_CLOCK_HZ;
+        R_GSC->CNTCVL  = 0;
+        R_GSC->CNTCVU  = 0;
+        R_GSC->CNTCR  |= R_GSC_CNTCR_EN_Msk;
+    }
 }
 
 #endif
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -972,7 +1221,34 @@ void R_BSP_WarmStart (bsp_warm_start_event_t event)
     }
 }
 
+/*******************************************************************************************************************//**
+ * This function is called without a stack at the very beginning of the startup process.
+ * This function is declared as a weak symbol higher up in this file because it is meant to be overridden by a user
+ * implemented version.
+ * To use this function just copy this function into your own code and modify it to meet your needs.
+ *
+ * @note At the point this function is called, the stack has not been initialized,
+ *       so all instructions must be written in inline assembly.
+ **********************************************************************************************************************/
+BSP_ATTRIBUTE_STACKLESS void R_BSP_WarmStart_StackLess (void)
+{
+    /* The very beginning of the startup process. */
+
+    /* Do not delete. Required to return to system_init. */
+#if (0 == BSP_LP64_SUPPORT)
+    __asm volatile ("BX lr");
+#else
+    __asm volatile ("BR lr");
+#endif
+}
+
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 #if BSP_CFG_C_RUNTIME_INIT
 
@@ -981,18 +1257,48 @@ void R_BSP_WarmStart (bsp_warm_start_event_t event)
  **********************************************************************************************************************/
 void bsp_loader_data_init (void)
 {
- #if (1 == _RZN_ORDINAL) && !(BSP_CFG_RAM_EXECUTION)
+ #if !(BSP_CFG_RAM_EXECUTION)
 
     /* Define destination/source address pointer and block size */
     uintptr_t * src;
     uintptr_t * dst;
     uintptr_t   size;
 
+  #if (1 == _RZ_ORDINAL)
+
     /* Copy loader data block */
     src  = (uintptr_t *) BSP_PRV_SECTION_LDR_DATA_ROM_ADDRESS;
     dst  = (uintptr_t *) BSP_PRV_SECTION_LDR_DATA_RAM_START;
     size = (uintptr_t) BSP_PRV_SECTION_LDR_DATA_RAM_END - (uintptr_t) BSP_PRV_SECTION_LDR_DATA_RAM_START;
     bsp_copy_multibyte(src, dst, size);
+  #else
+   #if BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT
+
+    /* Copy loader data block */
+    src  = (uintptr_t *) BSP_PRV_SECTION_LDR_DATA_ROM_ADDRESS;
+    dst  = (uintptr_t *) BSP_PRV_SECTION_LDR_DATA_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_LDR_DATA_RAM_END - (uintptr_t) BSP_PRV_SECTION_LDR_DATA_RAM_START;
+    bsp_copy_multibyte(src, dst, size);
+   #else
+
+    /* Copy secondary loader data block */
+    FSP_PARAMETER_NOT_USED(src);
+    dst  = (uintptr_t *) BSP_PRV_SECTION_LDR_DATA_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_LDR_DATA_RAM_END - (uintptr_t) BSP_PRV_SECTION_LDR_DATA_RAM_START;
+    bsp_copy_to_ram_secondary(dst, size);
+   #endif
+  #endif
+ #else
+  #if (0 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM) && (1 == BSP_CFG_CORE_CR52)
+    if (BSP_PRV_SYSTEMRAM_START_ADDRESS != (uintptr_t) BSP_PRV_SECTION_VECTOR_RAM_START)
+    {
+        /* Copy exception vector block to the base address of System RAM. */
+        uintptr_t * src  = (uintptr_t *) BSP_PRV_SECTION_VECTOR_RAM_START;
+        uintptr_t * dst  = (uintptr_t *) BSP_PRV_SYSTEMRAM_START_ADDRESS;
+        uintptr_t   size = (uintptr_t) BSP_PRV_SECTION_VECTOR_RAM_END - (uintptr_t) BSP_PRV_SECTION_VECTOR_RAM_START;
+        bsp_copy_multibyte(src, dst, size);
+    }
+  #endif
  #endif
 }
 
@@ -1011,6 +1317,12 @@ void bsp_loader_bss_init (void)
     bsp_bss_init_multibyte(src, size);
 
  #if BSP_CFG_RAM_EXECUTION
+
+    /* Clear application bss block. */
+    src  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_BSS_START;
+    size = (uintptr_t) BSP_PRV_SECTION_USER_DATA_BSS_END - (uintptr_t) BSP_PRV_SECTION_USER_DATA_BSS_START;
+    bsp_bss_init_multibyte(src, size);
+
   #if defined(__ICCARM__)
 
     /* Initialize the application data and clear the application bss.
@@ -1018,12 +1330,6 @@ void bsp_loader_bss_init (void)
      * enable app_copy and app_bss_init, and disable this code.
      * Also need to change icf file. */
     __iar_data_init3();
-  #elif defined(__GNUC__)
-
-    /* Clear application bss block. */
-    src  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_BSS_START;
-    size = (uintptr_t) BSP_PRV_SECTION_USER_DATA_BSS_END - (uintptr_t) BSP_PRV_SECTION_USER_DATA_BSS_START;
-    bsp_bss_init_multibyte(src, size);
   #endif
  #endif
 }
@@ -1033,14 +1339,17 @@ void bsp_loader_bss_init (void)
 /*******************************************************************************************************************//**
  * Copy the memory block from Source address to Destination address by the multi byte unit.
  **********************************************************************************************************************/
-void bsp_copy_multibyte (uintptr_t * src, uintptr_t * dst, uintptr_t bytesize)
+void bsp_copy_multibyte (volatile uintptr_t * src, volatile uintptr_t * dst, volatile uintptr_t bytesize)
 {
+#if (1 == _RZ_ORDINAL) && (BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT)
+    bsp_sdhi_copy_multibyte(BSP_PRV_BOOT_SDHI_CHANNEL, src, dst, bytesize);
+#else
     uintptr_t i;
     uintptr_t cnt;
 
-    uintptr_t bytesize_mod;
-    uint8_t * src_single_byte;
-    uint8_t * dst_single_byte;
+    volatile uintptr_t bytesize_mod;
+    volatile uint8_t * src_single_byte;
+    volatile uint8_t * dst_single_byte;
 
     if (0 != bytesize)
     {
@@ -1057,8 +1366,8 @@ void bsp_copy_multibyte (uintptr_t * src, uintptr_t * dst, uintptr_t bytesize)
 
         if (0 != bytesize_mod)
         {
-            src_single_byte = (uint8_t *) src;
-            dst_single_byte = (uint8_t *) dst;
+            src_single_byte = (volatile uint8_t *) src;
+            dst_single_byte = (volatile uint8_t *) dst;
 
             for (i = 0; i < bytesize_mod; i++)
             {
@@ -1071,26 +1380,27 @@ void bsp_copy_multibyte (uintptr_t * src, uintptr_t * dst, uintptr_t bytesize)
         }
 
         /* Ensuring data-changing */
-        __asm volatile ("DSB SY");
+        __DSB();
     }
     else
     {
         /* Do nothing */
     }
+#endif
 }
 
 /*******************************************************************************************************************//**
  * Clear the bss block by the multi byte unit.
  **********************************************************************************************************************/
-void bsp_bss_init_multibyte (uintptr_t * src, uintptr_t bytesize)
+void bsp_bss_init_multibyte (volatile uintptr_t * src, volatile uintptr_t bytesize)
 {
     uintptr_t i;
     uintptr_t cnt;
     uintptr_t zero = 0;
 
-    uintptr_t bytesize_mod;
-    uint8_t * src_single_byte;
-    uint8_t   zero_single_byte = 0;
+    volatile uintptr_t bytesize_mod;
+    volatile uint8_t * src_single_byte;
+    uint8_t            zero_single_byte = 0;
 
     if (0 != bytesize)
     {
@@ -1107,7 +1417,7 @@ void bsp_bss_init_multibyte (uintptr_t * src, uintptr_t bytesize)
 
         if (0 != bytesize_mod)
         {
-            src_single_byte = (uint8_t *) src;
+            src_single_byte = (volatile uint8_t *) src;
 
             for (i = 0; i < bytesize_mod; i++)
             {
@@ -1120,7 +1430,100 @@ void bsp_bss_init_multibyte (uintptr_t * src, uintptr_t bytesize)
         }
 
         /* Ensuring data-changing */
-        __asm volatile ("DSB SY");
+        __DSB();
+    }
+    else
+    {
+        /* Do nothing */
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Copy the memory block from Source address to Destination address by the 8 byte unit.
+ **********************************************************************************************************************/
+void bsp_copy_8byte (volatile uintptr_t * src, volatile uintptr_t * dst, volatile uintptr_t bytesize)
+{
+#if (1 == _RZ_ORDINAL) && (BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT)
+    bsp_sdhi_copy_multibyte_8byte(BSP_PRV_BOOT_SDHI_CHANNEL, src, dst, bytesize);
+#else
+    uintptr_t i;
+    uintptr_t cnt;
+
+    if (0 != bytesize)
+    {
+        cnt = ((bytesize + (sizeof(uint64_t) - 1)) / sizeof(uint64_t));
+
+        for (i = 0; i < cnt; i++)
+        {
+ #if defined(BSP_CFG_CORE_CR52)
+            __asm volatile (
+                "    MOV    r6, %[src]         \n"
+                "    LDR    r4, [r6], #4       \n"
+                "    LDR    r5, [r6]           \n"
+                "    MOV    r6, %[dst]         \n"
+                "    STRD   r4, r5, [r6]       \n"
+                "    DSB SY                    \n"
+                ::[src] "r" (src),
+                [dst] "r" (dst) : "memory", "r4", "r5", "r6");
+ #elif defined(BSP_CFG_CORE_CA55)
+            __asm volatile (
+                "    MOV    x6, %[src]         \n"
+                "    LDR    x5, [x6]           \n"
+                "    MOV    x6, %[dst]         \n"
+                "    STR    x5, [x6]           \n"
+                "    DSB SY                    \n"
+                ::[src] "r" (src),
+                [dst] "r" (dst) : "memory", "x5", "x6");
+ #endif
+            src += sizeof(uint64_t) / sizeof(uintptr_t);
+            dst += sizeof(uint64_t) / sizeof(uintptr_t);
+        }
+
+        /* Ensuring data-changing */
+        __DSB();
+    }
+    else
+    {
+        /* Do nothing */
+    }
+#endif
+}
+
+/*******************************************************************************************************************//**
+ * Clear the bss block by the 8 byte unit.
+ **********************************************************************************************************************/
+void bsp_bss_init_8byte (volatile uintptr_t * src, volatile uintptr_t bytesize)
+{
+    uintptr_t i;
+    uintptr_t cnt;
+
+    if (0 != bytesize)
+    {
+        cnt = ((bytesize + (sizeof(uint64_t) - 1)) / sizeof(uint64_t));
+
+        for (i = 0; i < cnt; i++)
+        {
+#if defined(BSP_CFG_CORE_CR52)
+            __asm volatile (
+                "    MOV    r6, %[src]         \n"
+                "    MOV    r4, #0             \n"
+                "    MOV    r5, #0             \n"
+                "    STRD   r4, r5, [r6]       \n"
+                "    DSB SY                    \n"
+                ::[src] "r" (src) : "memory", "r4", "r5", "r6");
+#elif defined(BSP_CFG_CORE_CA55)
+            __asm volatile (
+                "    MOV    x6, %[src]         \n"
+                "    MOV    x5, #0             \n"
+                "    STR    x5, [x6]           \n"
+                "    DSB SY                    \n"
+                ::[src] "r" (src) : "memory", "x5", "x6");
+#endif
+            src += sizeof(uint64_t) / sizeof(uintptr_t);
+        }
+
+        /* Ensuring data-changing */
+        __DSB();
     }
     else
     {
@@ -1146,19 +1549,12 @@ void bsp_application_bss_init (void)
 
  #if defined(__ICCARM__)
 
-    /* Clear user data_noncache block. */
-    src  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_NONCACHE_BSS_START;
-    size = (uintptr_t) BSP_PRV_SECTION_USER_DATA_NONCACHE_BSS_END -
-           (uintptr_t) BSP_PRV_SECTION_USER_DATA_NONCACHE_BSS_START;
+    /* Clear noncache block. */
+    src  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_BSS_START;
+    size = (uintptr_t) BSP_PRV_SECTION_NONCACHE_BSS_END - (uintptr_t) BSP_PRV_SECTION_NONCACHE_BSS_START;
     bsp_bss_init_multibyte(src, size);
 
-    /* Clear DMAC link mode data block. */
-    src  = (uintptr_t *) BSP_PRV_SECTION_DMAC_LINK_MODE_BSS_START;
-    size = (uintptr_t) BSP_PRV_SECTION_DMAC_LINK_MODE_BSS_END -
-           (uintptr_t) BSP_PRV_SECTION_DMAC_LINK_MODE_BSS_START;
-    bsp_bss_init_multibyte(src, size);
-
-  #if (1 == _RZN_ORDINAL)
+  #if (1 == _RZ_ORDINAL)
 
     /* Clear shared non-cache buffer block. */
     src  = (uintptr_t *) BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_BSS_START;
@@ -1166,12 +1562,22 @@ void bsp_application_bss_init (void)
            (uintptr_t) BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_BSS_START;
     bsp_bss_init_multibyte(src, size);
   #endif
+ #endif
 
-    /* Clear non-cache buffer block. */
-    src  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_BUFFER_BSS_START;
-    size = (uintptr_t) BSP_PRV_SECTION_NONCACHE_BUFFER_BSS_END -
-           (uintptr_t) BSP_PRV_SECTION_NONCACHE_BUFFER_BSS_START;
-    bsp_bss_init_multibyte(src, size);
+ #if (1 == _RZ_ORDINAL) && (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+
+    /* After a software reset, the following processes are not executed. */
+    if (false == g_bsp_software_reset_occurred)
+    {
+        uintptr_t secondary_atcm_cr521_size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_END -
+                                              (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_START;
+
+        if ((0 != secondary_atcm_cr521_size) && (0 != R_TCMAW->CPU1HALT))
+        {
+            /* Initialize the TCM of CR52_1. */
+            bsp_tcm_init_via_axis();
+        }
+    }
  #endif
 }
 
@@ -1183,14 +1589,11 @@ void bsp_application_bss_init (void)
 void bsp_copy_to_ram (void)
 {
     /* Define destination/source address pointer and block size */
- #if (1 == _RZN_ORDINAL) || defined(__ICCARM__)
     uintptr_t * src;
     uintptr_t * dst;
- #endif
+    uintptr_t   size;
 
-    uintptr_t size;
-
- #if (1 == _RZN_ORDINAL)
+ #if (1 == _RZ_ORDINAL)
 
     /* Copy exception vector block */
     src  = (uintptr_t *) BSP_PRV_SECTION_VECTOR_ROM_ADDRESS;
@@ -1204,10 +1607,31 @@ void bsp_copy_to_ram (void)
     size = (uintptr_t) BSP_PRV_SECTION_USER_PRG_RAM_END - (uintptr_t) BSP_PRV_SECTION_USER_PRG_RAM_START;
     bsp_copy_multibyte(src, dst, size);
 
+  #if defined(__GNUC__)
+
+    /* Copy ARM.extab block */
+    src  = (uintptr_t *) BSP_PRV_SECTION_ARM_EXTAB_ROM_ADDRESS;
+    dst  = (uintptr_t *) BSP_PRV_SECTION_ARM_EXTAB_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_ARM_EXTAB_RAM_END - (uintptr_t) BSP_PRV_SECTION_ARM_EXTAB_RAM_START;
+    bsp_copy_multibyte(src, dst, size);
+
+    /* Copy ARM.exidx block */
+    src  = (uintptr_t *) BSP_PRV_SECTION_ARM_EXIDX_ROM_ADDRESS;
+    dst  = (uintptr_t *) BSP_PRV_SECTION_ARM_EXIDX_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_ARM_EXIDX_RAM_END - (uintptr_t) BSP_PRV_SECTION_ARM_EXIDX_RAM_START;
+    bsp_copy_multibyte(src, dst, size);
+  #endif
+
     /* Copy user data block */
     src  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_ROM_ADDRESS;
     dst  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_RAM_START;
     size = (uintptr_t) BSP_PRV_SECTION_USER_DATA_RAM_END - (uintptr_t) BSP_PRV_SECTION_USER_DATA_RAM_START;
+    bsp_copy_multibyte(src, dst, size);
+
+    /* Copy noncache block */
+    src  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_ROM_ADDRESS;
+    dst  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_END - (uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_START;
     bsp_copy_multibyte(src, dst, size);
 
     /* Copy shared non-cache buffer block. */
@@ -1216,61 +1640,99 @@ void bsp_copy_to_ram (void)
     size = (uintptr_t) BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_RAM_END -
            (uintptr_t) BSP_PRV_SECTION_SHARED_NONCACHE_BUFFER_RAM_START;
     bsp_copy_multibyte(src, dst, size);
- #endif
- #if (1 == _RZN_ORDINAL) || defined(__ICCARM__)
+ #else
+  #if BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT
 
-    /* Copy user data_noncache block */
-    src  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_NONCACHE_ROM_ADDRESS;
-    dst  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_NONCACHE_RAM_START;
-    size = (uintptr_t) BSP_PRV_SECTION_USER_DATA_NONCACHE_RAM_END -
-           (uintptr_t) BSP_PRV_SECTION_USER_DATA_NONCACHE_RAM_START;
+    /* Copy user data block */
+    src  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_ROM_ADDRESS;
+    dst  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_USER_DATA_RAM_END - (uintptr_t) BSP_PRV_SECTION_USER_DATA_RAM_START;
     bsp_copy_multibyte(src, dst, size);
 
-    /* Copy DMAC link mode data block. */
-    src  = (uintptr_t *) BSP_PRV_SECTION_DMAC_LINK_MODE_ROM_ADDRESS;
-    dst  = (uintptr_t *) BSP_PRV_SECTION_DMAC_LINK_MODE_RAM_START;
-    size = (uintptr_t) BSP_PRV_SECTION_DMAC_LINK_MODE_RAM_END -
-           (uintptr_t) BSP_PRV_SECTION_DMAC_LINK_MODE_RAM_START;
+    /* Copy noncache block */
+    src  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_ROM_ADDRESS;
+    dst  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_END - (uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_START;
     bsp_copy_multibyte(src, dst, size);
-
-    /* Copy non-cache buffer block. */
-    src  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_BUFFER_ROM_ADDRESS;
-    dst  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_BUFFER_RAM_START;
-    size = (uintptr_t) BSP_PRV_SECTION_NONCACHE_BUFFER_RAM_END -
-           (uintptr_t) BSP_PRV_SECTION_NONCACHE_BUFFER_RAM_START;
-    bsp_copy_multibyte(src, dst, size);
- #endif
- #if (1U < BSP_FEATURE_BSP_CR52_CORE_NUM) || (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
-  #if (1 == _RZN_ORDINAL)
-
-    /* Copy secondary core application */
-    src  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS;
-    dst  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_RAM_START;
-    size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_END -
-           (uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_START;
-
-   #if (1U <= BSP_FEATURE_BSP_CA55_CORE_NUM)
-    if ((0 == R_SYSC_NS->RSTSR0_b.SWR0F) && (0 == R_SYSC_NS->RSTSR0_b.SWR550) && (0 == R_SYSC_NS->RSTSR0_b.SWR55C))
-   #else
-    if (0 == R_SYSC_NS->RSTSR0_b.SWR0F)
-   #endif
-    {
-        bsp_copy_multibyte(src, dst, size);
-    }
-    else
-    {
-        size = 0;
-    }
   #else
-    size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_END -
-           (uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_START;
-  #endif
 
-    if (0 != size)
-    {
-        bsp_cpu_reset_release();
-    }
+    /* Copy secondary user data block */
+    FSP_PARAMETER_NOT_USED(src);
+    dst  = (uintptr_t *) BSP_PRV_SECTION_USER_DATA_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_USER_DATA_RAM_END - (uintptr_t) BSP_PRV_SECTION_USER_DATA_RAM_START;
+    bsp_copy_to_ram_secondary(dst, size);
+
+    /* Copy secondary user data_noncache block */
+    FSP_PARAMETER_NOT_USED(src);
+    dst  = (uintptr_t *) BSP_PRV_SECTION_NONCACHE_RAM_START;
+    size = (uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_END - (uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_START;
+    bsp_copy_to_ram_secondary(dst, size);
+  #endif
  #endif
+
+ #if (1U < BSP_FEATURE_BSP_CR52_CORE_NUM) || (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
+  #if (1 == _RZ_ORDINAL)
+
+    /* After a software reset, the following processes are not executed. */
+    if (false == g_bsp_software_reset_occurred)
+    {
+        /* Copy secondary core application */
+        src  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS;
+        dst  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_RAM_START;
+        size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_END - (uintptr_t) BSP_PRV_SECTION_SECONDARY_RAM_START;
+        bsp_copy_multibyte(src, dst, size);
+
+        /* Copy secondary core noncache variable */
+        src  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_NONCACHE_ROM_ADDRESS;
+        dst  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_NONCACHE_RAM_START;
+        size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_NONCACHE_RAM_END -
+               (uintptr_t) BSP_PRV_SECTION_SECONDARY_NONCACHE_RAM_START;
+        bsp_copy_multibyte(src, dst, size);
+
+   #if (0 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+        if (BSP_PRV_SYSTEMRAM_START_ADDRESS != (uintptr_t) BSP_PRV_SECTION_VECTOR_RAM_START)
+        {
+            /* Copy exception vector block to the base address of System RAM. */
+            src  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_ROM_ADDRESS;
+            dst  = (uintptr_t *) BSP_PRV_SYSTEMRAM_START_ADDRESS;
+            size = (uintptr_t) BSP_PRV_SECTION_VECTOR_RAM_END - (uintptr_t) BSP_PRV_SECTION_VECTOR_RAM_START;
+            bsp_copy_multibyte(src, dst, size);
+        }
+   #elif (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+
+        /* Copy secondary core application to ATCM of CR52_0 */
+        src  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_START;
+        dst  = (uintptr_t *) BSP_PRV_ATCM_AXIS_CR520_ADDRESS;
+        size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_END -
+               (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_START;
+        bsp_copy_8byte(src, dst, size);
+
+        /* Copy secondary core application to BTCM of CR52_0 */
+        src  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_START;
+        dst  = (uintptr_t *) (BSP_PRV_BTCM_AXIS_CR520_ADDRESS + BSP_PRV_BTCM_LOADER_TEXT_OFFSET);
+        size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_END -
+               (uintptr_t) BSP_PRV_SECTION_SECONDARY_BTCM_CR520_ROM_START;
+        bsp_copy_8byte(src, dst, size);
+
+        /* Copy secondary core application to ATCM of CR52_1 */
+        src  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_START;
+        dst  = (uintptr_t *) BSP_PRV_ATCM_AXIS_CR521_ADDRESS;
+        size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_END -
+               (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_START;
+        bsp_copy_8byte(src, dst, size);
+
+        /* Copy secondary core application to BTCM of CR52_1 */
+        src  = (uintptr_t *) BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_START;
+        dst  = (uintptr_t *) (BSP_PRV_BTCM_AXIS_CR521_ADDRESS + BSP_PRV_BTCM_LOADER_TEXT_OFFSET);
+        size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_END -
+               (uintptr_t) BSP_PRV_SECTION_SECONDARY_BTCM_CR521_ROM_START;
+        bsp_copy_8byte(src, dst, size);
+   #endif
+    }
+  #endif
+ #endif
+
+    R_BSP_CacheCleanAll();
 }
 
  #if (1U < BSP_FEATURE_BSP_CR52_CORE_NUM) || (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
@@ -1280,151 +1742,247 @@ void bsp_copy_to_ram (void)
  **********************************************************************************************************************/
 void bsp_cpu_reset_release (void)
 {
-    uint32_t image_info_cpu;
+    uint32_t image_info_cpu = *(uint32_t *) (BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS + BSP_PRV_IMAGE_INFO_OFFSET);
 
-  #if (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
-    uint32_t * dst;
-  #endif
-
-    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
-    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_SYSTEM);
-
-    image_info_cpu = *(uint32_t *) (BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS + BSP_PRV_IMAGE_INFO_OFFSET);
-
-    switch (image_info_cpu)
-    {
-        case BSP_PRIV_ASSIGNMENT_CPU_CR52_0:
-        {
-  #if (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
-            R_BSP_CacheCleanAll();
-
-            dst    = (uint32_t *) BSP_PRV_ATCM_AXIS_CR520_ADDRESS;
-            *dst++ = BSP_PRV_IMAGE_INFO_BRANCH_INSTRUCTION_CR520;
-            __asm volatile ("DSB SY");
-            *dst++ = BSP_PRV_IMAGE_INFO_BRANCH_ADDRESS;
-            __asm volatile ("DSB SY");
-
-            R_BSP_CPUResetAutoRelease(BSP_RESET_CR52_0);
-  #endif
-
-            break;
-        }
-
-        case BSP_PRIV_ASSIGNMENT_CPU_CR52_1:
-        {
   #if (0 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
-
+    if (BSP_PRIV_ASSIGNMENT_CPU_CR52_0 == image_info_cpu)
+    {
+        /* Do nothing */
+    }
+    else if (BSP_PRIV_ASSIGNMENT_CPU_CR52_1 == image_info_cpu)
+    {
+        if (0 != R_SYSC_S->SWRCPU1)
+        {
             /* Release CR52_CPU1 reset state. */
-            R_BSP_CPUResetRelease(BSP_RESET_CR52_1);
-  #elif (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
-            R_BSP_CacheCleanAll();
-
-            R_BSP_MODULE_START(FSP_IP_CR52, 1U);
-
-            /* Release CR52_CPU1 reset state. */
-            R_BSP_CPUResetRelease(BSP_RESET_CR52_1);
-
-            /* Release from the slave stop state */
-            R_SSC->SSTPCR7 = (uint32_t) ((uintptr_t) (R_SSC->SSTPCR7 & ~R_SSC_SSTPCR7_AXIS1_REQ_Msk));
-
-            /* Polling ACK bit in SSTPCR */
-            FSP_HARDWARE_REGISTER_WAIT(R_SSC->SSTPCR7_b.AXIS1_ACK, 0);
-
-   #if defined(BSP_CFG_CORE_CR52)
-            __asm volatile (
-                "    MOVS   r1, #0                    \n"
-                "    MOVS   r2, %[dst_cpu1]           \n"
-                "    MOVS   r0, %[inst]               \n"
-                "    STRD   r0, r1, [r2]              \n"
-                "    DSB SY                           \n"
-                "    MOVS   r0, %[addr]               \n"
-                "    STRD   r0, r1, [r2, #8]          \n"
-                "    DSB SY                           \n"
-                ::[inst] "r" (BSP_PRV_IMAGE_INFO_BRANCH_INSTRUCTION_CR521),
-                [addr] "r" (BSP_PRV_IMAGE_INFO_BRANCH_ADDRESS),
-                [dst_cpu1] "r" (BSP_PRV_ATCM_AXIS_CR521_ADDRESS) : "memory", "r0", "r1", "r2");
-   #elif defined(BSP_CFG_CORE_CA55)
-            uint64_t * dst_cpu1 = (uint64_t *) BSP_PRV_ATCM_AXIS_CR521_ADDRESS;
-            *dst_cpu1++ = BSP_PRV_IMAGE_INFO_BRANCH_INSTRUCTION_CR521;
-            __asm volatile ("DSB SY");
-            *dst_cpu1++ = BSP_PRV_IMAGE_INFO_BRANCH_ADDRESS;
-            __asm volatile ("DSB SY");
-   #endif
-
-            R_TCMAW->CPU1HALT = 0x00000000;
-  #endif
-
-            break;
+            R_BSP_CpuResetRelease(BSP_RESET_CR52_1);
         }
+    }
+  #endif
 
   #if (1U < BSP_FEATURE_BSP_CA55_CORE_NUM)
-        case BSP_PRIV_ASSIGNMENT_CPU_CA55_0:
+    uintptr_t   target_core      = 0;
+    bsp_reset_t target_core_enum = BSP_RESET_CR52_0;
+
+    if (BSP_PRIV_ASSIGNMENT_CPU_CA55_0 == image_info_cpu)
+    {
+        if (0 != R_SYSC_S->SWR550)
         {
-            R_CA55->RVBA[0].L = (uint32_t) (BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS + BSP_PRV_LOADER_TEXT_OFFSET);
-
-            R_BSP_MODULE_START(FSP_IP_CA55, 0U);
-
-            R_BSP_CPUResetRelease(BSP_RESET_CA55_CLUSTER);
-            R_BSP_CacheCleanAll();
-            R_BSP_CPUResetRelease(BSP_RESET_CA55_0);
-            R_BSP_CacheCleanAll();
-
-            break;
+            target_core      = 0;
+            target_core_enum = BSP_RESET_CA55_0;
         }
-
-        case BSP_PRIV_ASSIGNMENT_CPU_CA55_1:
+    }
+    else if (BSP_PRIV_ASSIGNMENT_CPU_CA55_1 == image_info_cpu)
+    {
+        if (0 != R_SYSC_S->SWR551)
         {
-            R_CA55->RVBA[1].L = (uint32_t) (BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS + BSP_PRV_LOADER_TEXT_OFFSET);
-
-            R_BSP_MODULE_START(FSP_IP_CA55, 1U);
-
-            R_BSP_CPUResetRelease(BSP_RESET_CA55_CLUSTER);
-            R_BSP_CacheCleanAll();
-            R_BSP_CPUResetRelease(BSP_RESET_CA55_1);
-            R_BSP_CacheCleanAll();
-
-            break;
+            target_core      = 1;
+            target_core_enum = BSP_RESET_CA55_1;
         }
-
-        case BSP_PRIV_ASSIGNMENT_CPU_CA55_2:
+    }
+    else if (BSP_PRIV_ASSIGNMENT_CPU_CA55_2 == image_info_cpu)
+    {
+        if (0 != R_SYSC_S->SWR552)
         {
-            R_CA55->RVBA[2].L = (uint32_t) (BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS + BSP_PRV_LOADER_TEXT_OFFSET);
-
-            R_BSP_MODULE_START(FSP_IP_CA55, 2U);
-
-            R_BSP_CPUResetRelease(BSP_RESET_CA55_CLUSTER);
-            R_BSP_CacheCleanAll();
-            R_BSP_CPUResetRelease(BSP_RESET_CA55_2);
-            R_BSP_CacheCleanAll();
-
-            break;
+            target_core      = 2;
+            target_core_enum = BSP_RESET_CA55_2;
         }
-
-        case BSP_PRIV_ASSIGNMENT_CPU_CA55_3:
+    }
+    else if (BSP_PRIV_ASSIGNMENT_CPU_CA55_3 == image_info_cpu)
+    {
+        if (0 != R_SYSC_S->SWR553)
         {
-            R_CA55->RVBA[3].L = (uint32_t) (BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS + BSP_PRV_LOADER_TEXT_OFFSET);
-
-            R_BSP_MODULE_START(FSP_IP_CA55, 3U);
-
-            R_BSP_CPUResetRelease(BSP_RESET_CA55_CLUSTER);
-            R_BSP_CacheCleanAll();
-            R_BSP_CPUResetRelease(BSP_RESET_CA55_3);
-            R_BSP_CacheCleanAll();
-
-            break;
-        }
-  #endif
-
-        default:
-        {
-            break;
+            target_core      = 3;
+            target_core_enum = BSP_RESET_CA55_3;
         }
     }
 
-    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_SYSTEM);
-    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
+    if (0 != target_core_enum)
+    {
+        R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_SYSTEM);
+        R_CA55->RVBA[target_core].L = (uint32_t) (BSP_PRV_IMAGE_INFO_NEXT_CORE_ADDRESS +
+                                                  BSP_PRV_SYSTEMRAM_LOADER_TEXT_OFFSET);
+        R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_SYSTEM);
+
+        R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
+        R_BSP_MODULE_START(FSP_IP_CA55, target_core);
+        R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
+
+        R_BSP_CpuResetRelease(BSP_RESET_CA55_CLUSTER);
+        R_BSP_CacheCleanAll();
+        R_BSP_CpuResetRelease(target_core_enum);
+        R_BSP_CacheCleanAll();
+    }
+  #endif
+
+  #if (1 == _RZ_ORDINAL) && (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+    uintptr_t secondary_cr520_size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_END -
+                                     (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR520_ROM_START;
+
+    if (0 != secondary_cr520_size)
+    {
+        R_BSP_CpuResetAutoRelease(BSP_RESET_CR52_0);
+    }
+
+    uintptr_t secondary_cr521_size = (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_END -
+                                     (uintptr_t) BSP_PRV_SECTION_SECONDARY_ATCM_CR521_ROM_START;
+
+    if ((0 != secondary_cr521_size) && (0 != R_TCMAW->CPU1HALT))
+    {
+        R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_SYSTEM);
+        R_TCMAW->CPU1HALT = 0x00000000;
+        R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_SYSTEM);
+    }
+  #endif
 }
 
+  #if (1 == _RZ_ORDINAL)
+   #if (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+
+/*******************************************************************************************************************//**
+ * Clear TCM via AXIS.
+ **********************************************************************************************************************/
+void bsp_tcm_init_via_axis ()
+{
+    /* Define source address pointer and block size */
+    uintptr_t * src;
+    uintptr_t   size;
+
+    /* Initialize the TCM of CR52_1. */
+    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
+    R_BSP_MODULE_START(FSP_IP_CR52, 1U);
+    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
+
+    /* Release CR52_CPU1 reset state. */
+    R_BSP_CpuResetRelease(BSP_RESET_CR52_1);
+
+    /* Release from the slave stop state */
+    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_SYSTEM);
+    R_BSP_SlaveStopRelease(BSP_BUS_SLAVE_CR521_AXIS);
+    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_SYSTEM);
+
+    /* Clear ATCM via AXIS. */
+    src  = (uintptr_t *) BSP_PRV_ATCM_AXIS_CR521_ADDRESS;
+    size = (uintptr_t) BSP_PRV_ATCM_AXIS_SIZE;
+    bsp_bss_init_8byte(src, size);
+
+    /* Clear BTCM via AXIS. */
+    src  = (uintptr_t *) BSP_PRV_BTCM_AXIS_CR521_ADDRESS;
+    size = (uintptr_t) BSP_PRV_BTCM_AXIS_SIZE;
+    bsp_bss_init_8byte(src, size);
+}
+
+   #endif
+  #else
+
+/*******************************************************************************************************************//**
+ * Copy the secondary application program block from external Flash to internal RAM.
+ * @note This function is executed only after a software reset.
+ **********************************************************************************************************************/
+void bsp_copy_to_ram_secondary (volatile uintptr_t * dst, uintptr_t bytesize)
+{
+    uintptr_t rom_address;
+    uintptr_t rom_end_address;
+    uintptr_t address_diff;
+    uintptr_t target_section = (uintptr_t) dst;
+
+    uintptr_t  image_info_cpu;
+    uint64_t * image_info;
+
+    /* If the target size is 0, return from the function. */
+    if (0 == bytesize)
+    {
+        return;
+    }
+
+    /* After a software reset, the following processes are not executed. */
+    if (false == g_bsp_software_reset_occurred)
+    {
+        return;
+    }
+
+    /* Get the start address where the SSBL binary is located from the loader parameters */
+    rom_address = (*(uintptr_t *) (BSP_PRV_ROM_BASE_ADDRESS + BSP_PRV_LOADER_PARAM_LDR_ADDR_NML_OFFSET)) >>
+                  BSP_PRV_LOADER_PARAM_LDR_ADDR_NML_SHIFT;
+
+    /* Calculate the minimum address where the secondary binary is located. */
+    rom_address = (rom_address + BSP_PRV_SECONDARY_ADDRESS_ALIGN) & BSP_PRV_SECONDARY_ADDRESS_ALIGN_MASK;
+
+    /* Calculate the end address of the external flash. */
+    rom_end_address = BSP_PRV_ROM_BASE_ADDRESS + BSP_PRV_ROM_SIZE;
+
+    /* Find the address where the secondary binary is located */
+    while (1)
+    {
+        image_info = (uint64_t *) rom_address;
+
+        image_info_cpu = (uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_CPU];
+
+        /* The address is incremented by 0x20000 until a unique value is read,             */
+        /* which indicates that this is the address where the secondary binary is located. */
+        if ((BSP_PRIV_ASSIGNMENT_CPU_CR52_0 == image_info_cpu) || (BSP_PRIV_ASSIGNMENT_CPU_CA55_0 == image_info_cpu))
+        {
+            break;
+        }
+        else
+        {
+            rom_address += BSP_PRV_SECONDARY_ADDRESS_ALIGN;
+        }
+
+        if (rom_end_address <= rom_address)
+        {
+            return;
+        }
+    }
+
+    /* Processing changes depending on which region the target_section corresponds to. */
+    if (((uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_START <= target_section) &&
+        ((uintptr_t) BSP_PRV_SECTION_NONCACHE_RAM_END >= target_section))
+    {
+        address_diff = ((target_section & BSP_PRV_SYSTEMRAM_MIRROR_ADDRESS_MASK) -
+                        ((uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_NONCACHE_RAM_START] &
+                         BSP_PRV_SYSTEMRAM_MIRROR_ADDRESS_MASK));
+
+        rom_address = (uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_NONCACHE_ROM_ADDRESS] + address_diff;
+    }
+    else if ((BSP_PRV_SYSTEMRAM_START_ADDRESS <= target_section) && (BSP_PRV_SYSTEMRAM_END_ADDRESS >= target_section))
+    {
+        address_diff = target_section - (uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_SECONDARY_RAM_START];
+
+        rom_address = (uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_SECONDARY_ROM_ADDRESS] + address_diff;
+    }
+
+   #if defined(BSP_CFG_CORE_CR52) && (1 == BSP_FEATURE_BSP_HAS_CR52_CPU1_TCM)
+    else if (BSP_PRV_ATCM_END_ADDRESS >= target_section)
+    {
+        address_diff = target_section - BSP_PRV_ATCM_START_ADDRESS;
+
+    #if (0 == BSP_CFG_CORE_CR52)
+        rom_address = (uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_SECONDARY_ATCM_CR520_ROM_START] + address_diff;
+    #elif (1 == BSP_CFG_CORE_CR52)
+        rom_address = (uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_SECONDARY_ATCM_CR521_ROM_START] + address_diff;
+    #endif
+    }
+    else if ((BSP_PRV_BTCM_START_ADDRESS <= target_section) && (BSP_PRV_BTCM_END_ADDRESS >= target_section))
+    {
+        address_diff = target_section - (BSP_PRV_BTCM_START_ADDRESS + BSP_PRV_BTCM_LOADER_TEXT_OFFSET);
+
+    #if (0 == BSP_CFG_CORE_CR52)
+        rom_address = (uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_SECONDARY_BTCM_CR520_ROM_START] + address_diff;
+    #elif (1 == BSP_CFG_CORE_CR52)
+        rom_address = (uintptr_t) image_info[BSP_PRIV_IMAGE_INFO_SECONDARY_BTCM_CR521_ROM_START] + address_diff;
+    #endif
+    }
+   #endif
+    else
+    {
+        return;
+    }
+
+    /* Copy from secondary ROM address to RAM. */
+    bsp_copy_multibyte((uintptr_t *) rom_address, dst, bytesize);
+}
+
+  #endif
  #endif
 #endif
 
@@ -1442,7 +2000,7 @@ void bsp_tfu_init (void)
 
   #if 2 == BSP_FEATURE_TFU_VERSION
    #if (1 == BSP_FEATURE_TFU_UNIT)
-    #if (1 == _RZN_ORDINAL)
+    #if (1 == _RZ_ORDINAL)
     R_TFU->FXSCIOC_b.IUF = BSP_CFG_TFU_FIXED_POINT_SINCOS_INPUT_SETTING;
     R_TFU->FXSCIOC_b.OF  = BSP_CFG_TFU_FIXED_POINT_SINCOS_OUTPUT_SETTING;
     R_TFU->FXATIOC_b.OUF = BSP_CFG_TFU_FIXED_POINT_ARCTAN_OUTPUT_SETTING;
@@ -1467,12 +2025,36 @@ void bsp_tfu_init (void)
 #if !BSP_CFG_PORT_PROTECT
 void bsp_release_port_protect (void)
 {
+    bsp_regiser_protect_semaphore_take(BSP_IO_REG_PROTECT_GPIO);
+
     /** When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
      * disable writes. */
     R_RWP_NS->PRCRN = ((R_RWP_NS->PRCRN | BSP_IO_PRV_PRCR_KEY) | BSP_IO_REG_PROTECT_GPIO);
     R_RWP_S->PRCRS  = ((R_RWP_S->PRCRS | BSP_IO_PRV_PRCR_KEY) | BSP_IO_REG_PROTECT_GPIO);
+
+    BSP_SEMAPHORE_INTERNAL_CPU_RELEASE_FOR_PROTECTION;
 }
 
+#endif
+
+#if defined(__ICCARM__)
+ #if BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT
+
+/*******************************************************************************************************************//**
+ * Override the function definition of __iar_data_init3() for eSD boot and eMMC boot.
+ **********************************************************************************************************************/
+void __iar_data_init3 (void)
+{
+    /* Dummy read for suppressing Lp048 error for EWARM.  */
+    volatile const void * dummy = __section_begin("Region$$Table");
+    FSP_PARAMETER_NOT_USED(dummy);
+
+    void const * pibase = __section_begin("SHT$$PREINIT_ARRAY");
+    void const * ilimit = __section_end("SHT$$INIT_ARRAY");
+    __call_ctors(pibase, ilimit);
+}
+
+ #endif
 #endif
 
 /*******************************************************************************************************************//**
@@ -1504,5 +2086,4 @@ void bsp_static_constructor_init (void)
     }
  #endif
 }
-
 #endif

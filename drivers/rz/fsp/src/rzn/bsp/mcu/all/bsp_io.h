@@ -1,16 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @defgroup BSP_IO BSP I/O access
- * @ingroup RENESAS_COMMON
- * @brief This module provides basic read/write/toggle access to port pins and read/write access to port.
- *
- * @{
- **********************************************************************************************************************/
 
 #ifndef BSP_IO_H
 #define BSP_IO_H
@@ -36,6 +28,21 @@ FSP_HEADER
 
 /* Shift to get port in bsp_io_port_t and bsp_io_port_pin_t enums. */
 #define BSP_IO_PRV_PORT_OFFSET     (8U)
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @defgroup RZN_BSP_IO BSP I/O access
+ * @ingroup RZN_RENESAS_COMMON
+ * @brief This module provides basic read/write/toggle access to port pins and read/write access to port.
+ *
+ * @{
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -423,10 +430,18 @@ typedef enum e_bsp_io_region
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
-extern volatile uint32_t g_protect_port_counter;
+
+/** @} (end defgroup RZN_BSP_IO) */
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
+ **********************************************************************************************************************/
+extern void R_BSP_RegisterProtectEnable(bsp_reg_protect_t regs_to_protect);
+extern void R_BSP_RegisterProtectDisable(bsp_reg_protect_t regs_to_unprotect);
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZN_BSP_IO
+ * @{
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -593,26 +608,8 @@ __STATIC_INLINE void R_BSP_PinAccessEnable (void)
 {
 #if BSP_CFG_PORT_PROTECT
 
-    /** Get the current state of interrupts */
-    FSP_CRITICAL_SECTION_DEFINE;
-    FSP_CRITICAL_SECTION_ENTER;
-
-    /** If this is first entry then allow writing of PFS. */
-    if (0 == g_protect_port_counter)
-    {
-        /** Disable protection using PRCR register. */
-
-        /** When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
-         * disable writes. */
-        R_RWP_NS->PRCRN = ((R_RWP_NS->PRCRN | BSP_IO_PRV_PRCR_KEY) | BSP_IO_REG_PROTECT_GPIO);
-        R_RWP_S->PRCRS  = ((R_RWP_S->PRCRS | BSP_IO_PRV_PRCR_KEY) | BSP_IO_REG_PROTECT_GPIO);
-    }
-
-    /** Increment the protect counter */
-    g_protect_port_counter++;
-
-    /** Restore the interrupt state */
-    FSP_CRITICAL_SECTION_EXIT;
+    /* Disable protection using PRCR register. */
+    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_GPIO);
 #endif
 }
 
@@ -624,30 +621,8 @@ __STATIC_INLINE void R_BSP_PinAccessDisable (void)
 {
 #if BSP_CFG_PORT_PROTECT
 
-    /** Get the current state of interrupts */
-    FSP_CRITICAL_SECTION_DEFINE;
-    FSP_CRITICAL_SECTION_ENTER;
-
-    /** Is it safe to disable PFS register? */
-    if (0 != g_protect_port_counter)
-    {
-        /* Decrement the protect counter */
-        g_protect_port_counter--;
-    }
-
-    /** Is it safe to disable writing of PFS? */
-    if (0 == g_protect_port_counter)
-    {
-        /** Enable protection using PRCR register. */
-
-        /** When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
-         * disable writes. */
-        R_RWP_NS->PRCRN = ((R_RWP_NS->PRCRN | BSP_IO_PRV_PRCR_KEY) & (uint16_t) (~BSP_IO_REG_PROTECT_GPIO));
-        R_RWP_S->PRCRS  = ((R_RWP_S->PRCRS | BSP_IO_PRV_PRCR_KEY) & (uint16_t) (~BSP_IO_REG_PROTECT_GPIO));
-    }
-
-    /** Restore the interrupt state */
-    FSP_CRITICAL_SECTION_EXIT;
+    /* Enable protection using PRCR register. */
+    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_GPIO);
 #endif
 }
 
@@ -706,6 +681,11 @@ __STATIC_INLINE bsp_io_region_t R_BSP_IoRegionGet (bsp_io_port_pin_t pin)
 }
 
 /** @} (end addtogroup BSP_IO) */
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

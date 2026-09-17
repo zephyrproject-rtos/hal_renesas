@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -23,11 +23,6 @@
 
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
-
-/*******************************************************************************************************************//**
- * @addtogroup ADC
- * @{
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -88,7 +83,6 @@ typedef enum e_adc_mask
     ADC_MASK_CHANNEL_12 = (1U << 12U), ///< Channel 12 mask
     ADC_MASK_CHANNEL_13 = (1U << 13U), ///< Channel 13 mask
     ADC_MASK_CHANNEL_14 = (1U << 14U), ///< Channel 14 mask
-    ADC_MASK_CHANNEL_15 = (1U << 15U), ///< Channel 15 mask
 } adc_mask_t;
 
 /** ADC data sample addition and averaging options */
@@ -130,13 +124,15 @@ typedef enum e_adc_sample_state_reg
     ADC_SAMPLE_STATE_REG_CHANNEL_12,            ///< Sample state register channel 12
     ADC_SAMPLE_STATE_REG_CHANNEL_13,            ///< Sample state register channel 13
     ADC_SAMPLE_STATE_REG_CHANNEL_14,            ///< Sample state register channel 14
-    ADC_SAMPLE_STATE_REG_CHANNEL_15,            ///< Sample state register channel 15
     ADC_SAMPLE_STATE_REG_CHANNEL_16_TO_31 = -3, ///< Sample state register channel 16 to 31
 } adc_sample_state_reg_t;
 
 /** ADC comparison settings */
 typedef enum e_adc_compare_cfg
 {
+    ADC_COMPARE_CFG_EVENT_OUTPUT_OR  = 0,                                                     ///< Compound condition OR setting
+    ADC_COMPARE_CFG_EVENT_OUTPUT_XOR = 1,                                                     ///< Compound condition XOR setting
+    ADC_COMPARE_CFG_EVENT_OUTPUT_AND = 2,                                                     ///< Compound condition AND setting
 #if 1U == BSP_FEATURE_ADC_REGISTER_MASK_TYPE
     ADC_COMPARE_CFG_A_ENABLE      = R_ADC121_ADCMPCR_CMPAE_Msk | R_ADC121_ADCMPCR_CMPAIE_Msk, ///< Window A operation enabled
     ADC_COMPARE_CFG_B_ENABLE      = R_ADC121_ADCMPCR_CMPBE_Msk | R_ADC121_ADCMPCR_CMPBIE_Msk, ///< Window B operation enabled
@@ -166,7 +162,7 @@ typedef enum e_adc_window_b_channel
     ADC_WINDOW_B_CHANNEL_12,           ///< Window B channel 12
     ADC_WINDOW_B_CHANNEL_13,           ///< Window B channel 13
     ADC_WINDOW_B_CHANNEL_14,           ///< Window B channel 14
-    ADC_WINDOW_B_CHANNEL_15,           ///< Window B channel 15
+    ADC_WINDOW_B_CHANNEL_NONE = 63,    ///< No channel is selected
 } adc_window_b_channel_t;
 
 /** ADC Window B comparison mode */
@@ -184,11 +180,19 @@ typedef enum e_adc_window_b_mode
  * This enumeration is used to specify the priority between Group A and B in group mode.  */
 typedef enum e_adc_group_a
 {
-    ADC_GROUP_A_PRIORITY_OFF             = 0,      ///< Group A ignored and does not interrupt ongoing group B scan
-    ADC_GROUP_A_GROUP_B_WAIT_FOR_TRIGGER = 1,      ///< Group A interrupts Group B(single scan) which restarts at next Group B trigger
-    ADC_GROUP_A_GROUP_B_RESTART_SCAN     = 3,      ///< Group A interrupts Group B(single scan) which restarts immediately after Group A scan is complete
-    ADC_GROUP_A_GROUP_B_RESUME_SCAN      = 0x4003, ///< Resume scanning of interrupted channels
-    ADC_GROUP_A_GROUP_B_CONTINUOUS_SCAN  = 0x8001, ///< Group A interrupts Group B(continuous scan) which continues scanning without a new Group B trigger
+    ADC_GROUP_A_PRIORITY_OFF             = 0,          ///< Deprecated - Group A ignored and does not interrupt ongoing group B scan
+    ADC_GROUP_A_GROUP_B_WAIT_FOR_TRIGGER = 1,          ///< Deprecated - Group A interrupts Group B(single scan) which restarts at next Group B trigger
+    ADC_GROUP_A_GROUP_B_RESTART_SCAN     = 3,          ///< Deprecated - Group A interrupts Group B(single scan) which restarts immediately after Group A scan is complete
+    ADC_GROUP_A_GROUP_B_RESUME_SCAN      = 0x4003,     ///< Deprecated - Resume scanning of interrupted channels
+    ADC_GROUP_A_GROUP_B_CONTINUOUS_SCAN  = 0x8001,     ///< Deprecated - Group A interrupts Group B(continuous scan) which continues scanning without a new Group B trigger
+
+    ADC_GRPA_PRIORITY_OFF                    = 0,      ///< Group A ignored and does not interrupt Group B and Group C
+    ADC_GRPA_GRPB_GRPC_WAIT_TRIG             = 1,      ///< Group B and Group C restart from the first selected channel at next trigger
+    ADC_GRPA_GRPB_GRPC_TOP_RESTART_SCAN      = 3,      ///< Group B and Group C restart immediately from the first selected channel without next trigger
+    ADC_GRPA_GRPB_GRPC_RESTART_SCAN          = 0x4003, ///< Group B and Group C restart immediately from suspended channel without next trigger
+    ADC_GRPA_GRPB_GRPC_TOP_CONT_SCAN         = 0x8001, ///< Group B and Group C restart and scan continuously from the first selected channel at next trigger
+    ADC_GRPA_GRPB_GRPC_RESTART_TOP_CONT_SCAN = 0x8003, ///< Group B and Group C restart immediately and scan continuously from the first selected channel without next trigger
+    ADC_GRPA_GRPB_GRPC_RESTART_CONT_SCAN     = 0xC003, ///< Group B and Group C restart immediately and scan continuously from suspended channel without next trigger
 } adc_group_a_t;
 
 /** Defines the registers settings for the ADC trigger. */
@@ -217,7 +221,7 @@ typedef enum e_adc_active_trigger
 
     ADC_ACTIVE_TRIGGER_ELC_TRIGGER         = (0x11U), ///< A/D Startup source A from ELC
     ADC_ACTIVE_TRIGGER_ELC_TRIGGER_GROUP_B = (0x12U), ///< A/D Startup source B from ELC
-    ADC_ACTIVE_TRIGGER_DISABLED            = (0x3FU)  ///< A/D Start trigger disabled
+    ADC_ACTIVE_TRIGGER_DISABLED            = (0x3FU), ///< A/D Start trigger disabled
 } adc_active_trigger_t;
 
 /** ADC double-trigger mode definitions */
@@ -240,14 +244,17 @@ typedef enum e_adc_elc
 } adc_elc_t;
 
 /** ADC sample state configuration */
-typedef struct st_adc_sample_state
+struct st_adc_sample_state
 {
     adc_sample_state_reg_t reg_id;     ///< Sample state register ID
     uint8_t                num_states; ///< Number of sampling states for conversion. Ch16-20/21 use the same value.
-} adc_sample_state_t;
+};
+
+/** ADC sample state configuration. Please refer to the struct st_adc_sample_state. */
+typedef struct st_adc_sample_state adc_sample_state_t;
 
 /** ADC Window Compare configuration */
-typedef struct st_adc_window_cfg
+struct st_adc_window_cfg
 {
     uint32_t               compare_mask;       ///< Channel mask to compare with Window A
     uint32_t               compare_mode_mask;  ///< Per-channel condition mask for Window A
@@ -258,10 +265,13 @@ typedef struct st_adc_window_cfg
     uint16_t               compare_b_ref_high; ///< Window B upper reference value
     adc_window_b_channel_t compare_b_channel;  ///< Window B channel
     adc_window_b_mode_t    compare_b_mode;     ///< Window B condition setting
-} adc_window_cfg_t;
+};
+
+/** ADC Window Compare configuration. Please refer to the struct st_adc_window_cfg. */
+typedef struct st_adc_window_cfg adc_window_cfg_t;
 
 /** Extended configuration structure for ADC. */
-typedef struct st_adc_extended_cfg
+struct st_adc_extended_cfg
 {
     adc_add_t            add_average_count;           ///< Add or average samples
     adc_clear_t          clearing;                    ///< Clear after read
@@ -276,10 +286,14 @@ typedef struct st_adc_extended_cfg
     uint8_t              window_a_ipl;                ///< Priority for Window Compare A interrupts
     IRQn_Type            window_b_irq;                ///< IRQ number for Window Compare B interrupts
     uint8_t              window_b_ipl;                ///< Priority for Window Compare B interrupts
-} adc_extended_cfg_t;
+    void               * p_reg;                       ///< Register base address for specified unit
+};
+
+/** Extended configuration structure for ADC. Please refer to the struct st_adc_extended_cfg. */
+typedef struct st_adc_extended_cfg adc_extended_cfg_t;
 
 /** ADC channel(s) configuration       */
-typedef struct st_adc_channel_cfg
+struct st_adc_channel_cfg
 {
     uint32_t           scan_mask;          ///< Channels/bits: bit 0 is ch0; bit 15 is ch15.
     uint32_t           scan_mask_group_b;  ///< Valid for group modes.
@@ -289,17 +303,32 @@ typedef struct st_adc_channel_cfg
     adc_group_a_t      priority_group_a;   ///< Valid for group modes.
     uint8_t            sample_hold_mask;   ///< Channels/bits 0-2.
     uint8_t            sample_hold_states; ///< Number of states to be used for sample and hold. Affects channels 0-2.
-} adc_channel_cfg_t;
+};
+
+/** ADC channel(s) configuration. Please refer to the struct st_adc_channel_cfg. */
+typedef struct st_adc_channel_cfg adc_channel_cfg_t;
 
 /* Sample and hold Channel mask. Sample and hold is only available for channel 0,1,2*/
 #define ADC_SAMPLE_HOLD_CHANNELS    (0x07U)
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZN_ADC
+ * @{
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
-/** ADC instance control block. DO NOT INITIALIZE.  Initialized in @ref adc_api_t::open(). */
-typedef struct
+/** ADC instance control block. DO NOT INITIALIZE.  Initialized in @ref RZN::adc_api_t::open(). */
+struct st_adc_instance_ctrl
 {
 #if 1U == BSP_FEATURE_ADC_REGISTER_MASK_TYPE
     R_ADC121_Type * p_reg;                      // Base register for this unit
@@ -308,6 +337,7 @@ typedef struct
 #endif
     adc_cfg_t const * p_cfg;
     uint32_t          opened;                   // Boolean to verify that the Unit has been initialized
+    uint32_t          initialized;              // Initialized status of ADC
     uint32_t          scan_mask;                // Scan mask used for Normal scan.
     uint16_t          scan_start_adcsr;
 
@@ -315,8 +345,11 @@ typedef struct
     adc_callback_args_t * p_callback_memory;    // Pointer to non-secure memory that can be used to pass arguments to a callback in non-secure memory.
 
     /* Pointer to context to be passed into callback function */
-    void const * p_context;
-} adc_instance_ctrl_t;
+    void * p_context;
+};
+
+/** ADC instance control block. DO NOT INITIALIZE.  Initialized in @ref RZN::adc_api_t::open(). Please refer to the struct st_adc_instance_ctrl. */
+typedef struct st_adc_instance_ctrl adc_instance_ctrl_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -333,7 +366,10 @@ extern const adc_api_t g_adc_on_adc;
  **********************************************************************************************************************/
 fsp_err_t R_ADC_Open(adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg);
 fsp_err_t R_ADC_ScanCfg(adc_ctrl_t * p_ctrl, void const * const p_channel_cfg);
-fsp_err_t R_ADC_InfoGet(adc_ctrl_t * p_ctrl, adc_info_t * p_adc_info);
+fsp_err_t R_ADC_CallbackSet(adc_ctrl_t * const          p_ctrl,
+                            void (                    * p_callback)(adc_callback_args_t *),
+                            void * const                p_context,
+                            adc_callback_args_t * const p_callback_memory);
 fsp_err_t R_ADC_ScanStart(adc_ctrl_t * p_ctrl);
 fsp_err_t R_ADC_ScanGroupStart(adc_ctrl_t * p_ctrl, adc_group_mask_t group_mask);
 fsp_err_t R_ADC_ScanStop(adc_ctrl_t * p_ctrl);
@@ -341,17 +377,19 @@ fsp_err_t R_ADC_StatusGet(adc_ctrl_t * p_ctrl, adc_status_t * p_status);
 fsp_err_t R_ADC_Read(adc_ctrl_t * p_ctrl, adc_channel_t const reg_id, uint16_t * const p_data);
 fsp_err_t R_ADC_Read32(adc_ctrl_t * p_ctrl, adc_channel_t const reg_id, uint32_t * const p_data);
 fsp_err_t R_ADC_SampleStateCountSet(adc_ctrl_t * p_ctrl, adc_sample_state_t * p_sample);
+fsp_err_t R_ADC_InfoGet(adc_ctrl_t * p_ctrl, adc_info_t * p_adc_info);
 fsp_err_t R_ADC_Close(adc_ctrl_t * p_ctrl);
-fsp_err_t R_ADC_OffsetSet(adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, int32_t offset);
 fsp_err_t R_ADC_Calibrate(adc_ctrl_t * const p_ctrl, void const * p_extend);
-fsp_err_t R_ADC_CallbackSet(adc_ctrl_t * const          p_ctrl,
-                            void (                    * p_callback)(adc_callback_args_t *),
-                            void const * const          p_context,
-                            adc_callback_args_t * const p_callback_memory);
+fsp_err_t R_ADC_OffsetSet(adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, int32_t offset);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup ADC)
  **********************************************************************************************************************/
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
