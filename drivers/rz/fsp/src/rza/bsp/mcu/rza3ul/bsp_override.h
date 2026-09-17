@@ -1,15 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup BSP_MPU_RZA3UL
- * @{
- **********************************************************************************************************************/
-
-/** @} (end addtogroup BSP_MPU_RZA3UL) */
 
 #ifndef BSP_OVERRIDE_H
 #define BSP_OVERRIDE_H
@@ -32,7 +25,8 @@
  #define __IOM    volatile
 #endif
 
-/* Define overrides required for this MCU. */
+/* Define overrides required for this MPU. */
+ #define BSP_OVERRIDE_TIMER_EVENT_T
 #define BSP_OVERRIDE_TRANSFER_INFO_T
 #define BSP_OVERRIDE_TRANSFER_ADDR_MODE_T
 #define BSP_OVERRIDE_TRANSFER_REPEAT_AREA_T
@@ -40,13 +34,15 @@
 #define BSP_OVERRIDE_TRANSFER_CHAIN_MODE_T
 #define BSP_OVERRIDE_TRANSFER_SIZE_T
 #define BSP_OVERRIDE_TRANSFER_MODE_T
+#define BSP_OVERRIDE_ETHER_EVENT_T
 #define BSP_OVERRIDE_ETHER_PHY_LSI_TYPE_T
+#define BSP_OVERRIDE_DMAC_EXTETNAL_OUTPUT_SIGNAL_ACTIVE_LEVEL_T
 #define BSP_OVERRIDE_DISPLAY_IN_FORMAT_T
 #define BSP_OVERRIDE_DISPLAY_INPUT_CFG_T
 #define BSP_OVERRIDE_DISPLAY_DATA_SWAP_T
 #define BSP_OVERRIDE_CANFD_TX_MB_T
 
-/* Define register overrides required for this MCU. */
+/* Define register overrides required for this MPU. */
 
 /* Override definitions. */
 
@@ -57,13 +53,38 @@
  * Typedef definitions
  **********************************************************************************************************************/
 
-typedef struct mmu_pagetable_config
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZA
+{
+  #endif
+ #endif
+
+struct mmu_pagetable_config
 {
     uint64_t vaddress;
     uint64_t paddress;
     uint64_t size;
     uint64_t attribute;
-} r_mmu_pgtbl_cfg_t;
+};
+
+/* Please refer to the struct mmu_pagetable_config. */
+typedef struct mmu_pagetable_config r_mmu_pgtbl_cfg_t;
+
+/** Event code of callback function */
+typedef enum e_ether_event
+{
+    ETHER_EVENT_WAKEON_LAN,            ///< Magic packet detection event
+    ETHER_EVENT_LINK_ON,               ///< Link up detection event
+    ETHER_EVENT_LINK_OFF,              ///< Link down detection event
+    ETHER_EVENT_INTERRUPT,             ///< Interrupt event
+    ETHER_EVENT_RX_COMPLETE,           ///< Receive complete event.
+    ETHER_EVENT_RX_MESSAGE_LOST,       ///< Receive FIFO overflow or Receive descriptor is full.
+    ETHER_EVENT_TX_COMPLETE,           ///< Transmit complete event.
+    ETHER_EVENT_TX_BUFFER_EMPTY,       ///< Transmit descriptor or FIFO is empty.
+    ETHER_EVENT_TX_ABORTED,            ///< Transmit abort event.
+    ETHER_EVENT_ERR_GLOBAL,            ///< Global error has occurred.
+} ether_event_t;
 
 /** Phy LSI */
 typedef enum e_ether_phy_lsi_type
@@ -77,6 +98,29 @@ typedef enum e_ether_phy_lsi_type
     ETHER_PHY_LSI_TYPE_CUSTOM      = 0xFFU, ///< Select configuration for User custom.
 } ether_phy_lsi_type_t;
 
+/*==============================================
+ * Timer API Overrides
+ *==============================================*/
+
+/** Events that can trigger a callback function */
+typedef enum e_timer_event
+{
+    TIMER_EVENT_CYCLE_END,                     ///< Requested timer delay has expired or timer has wrapped around
+    TIMER_EVENT_CREST = TIMER_EVENT_CYCLE_END, ///< Timer crest event (counter is at a maximum, triangle-wave PWM only)
+    TIMER_EVENT_CAPTURE_A,                     ///< A capture has occurred on signal A
+    TIMER_EVENT_CAPTURE_B,                     ///< A capture has occurred on signal B
+    TIMER_EVENT_CAPTURE_C,                     ///< A capture has occurred on signal C
+    TIMER_EVENT_CAPTURE_D,                     ///< A capture has occurred on signal D
+    TIMER_EVENT_TROUGH,                        ///< Timer trough event (counter is 0, triangle-wave PWM only
+    TIMER_EVENT_COMPARE_A,                     ///< A compare has occurred on signal A
+    TIMER_EVENT_COMPARE_B,                     ///< A compare has occurred on signal B
+    TIMER_EVENT_COMPARE_C,                     ///< A compare has occurred on signal C
+    TIMER_EVENT_COMPARE_D,                     ///< A compare has occurred on signal D
+    TIMER_EVENT_COMPARE_E,                     ///< A compare has occurred on signal E
+    TIMER_EVENT_COMPARE_F,                     ///< A compare has occurred on signal F
+    TIMER_EVENT_DEAD_TIME                      ///< Dead time event
+} timer_event_t;
+
 /** Address mode specifies whether to modify (increment or decrement) pointer after each transfer. */
 typedef enum e_transfer_addr_mode
 {
@@ -86,10 +130,10 @@ typedef enum e_transfer_addr_mode
     /** Offset is added to the address pointer after each transfer. */
     TRANSFER_ADDR_MODE_OFFSET = 1,
 
-    /** Address pointer is incremented by associated @ref transfer_size_t after each transfer. */
+    /** Address pointer is incremented by associated @ref RZA::transfer_size_t after each transfer. */
     TRANSFER_ADDR_MODE_INCREMENTED = 2,
 
-    /** Address pointer is decremented by associated @ref transfer_size_t after each transfer. */
+    /** Address pointer is decremented by associated @ref RZA::transfer_size_t after each transfer. */
     TRANSFER_ADDR_MODE_DECREMENTED = 3
 } transfer_addr_mode_t;
 
@@ -126,19 +170,19 @@ typedef enum e_transfer_chain_mode
     /** Chain mode not used. */
     TRANSFER_CHAIN_MODE_DISABLED = 0,
 
-    /** Switch to next transfer after a single transfer from this @ref transfer_info_t. */
+    /** Switch to next transfer after a single transfer from this @ref RZA::transfer_info_t. */
     TRANSFER_CHAIN_MODE_EACH = 2,
 
-    /** Complete the entire transfer defined in this @ref transfer_info_t before chaining to next transfer. */
+    /** Complete the entire transfer defined in this @ref RZA::transfer_info_t before chaining to next transfer. */
     TRANSFER_CHAIN_MODE_END = 3
 } transfer_chain_mode_t;
 
 /** Transfer mode describes what will happen when a transfer request occurs. */
 typedef enum e_transfer_mode
 {
-    /** In normal mode, each transfer request causes a transfer of @ref transfer_size_t from the source pointer to
+    /** In normal mode, each transfer request causes a transfer of @ref RZA::transfer_size_t from the source pointer to
      *  the destination pointer.  The transfer length is decremented and the source and address pointers are
-     *  updated according to @ref transfer_addr_mode_t.  After the transfer length reaches 0, transfer requests
+     *  updated according to @ref RZA::transfer_addr_mode_t.  After the transfer length reaches 0, transfer requests
      *  will not cause any further transfers. */
     TRANSFER_MODE_NORMAL = 0,
 
@@ -149,9 +193,9 @@ typedef enum e_transfer_mode
      *  used, the transfer repeats continuously (no limit to the number of repeat transfers). */
     TRANSFER_MODE_REPEAT = 1,
 
-    /** In block mode, each transfer request causes transfer_info_t::length transfers of @ref transfer_size_t.
+    /** In block mode, each transfer request causes transfer_info_t::length transfers of @ref RZA::transfer_size_t.
      *  After each individual transfer, the source and destination pointers are updated according to
-     *  @ref transfer_addr_mode_t.  After the block transfer is complete, transfer_info_t::num_blocks is
+     *  @ref RZA::transfer_addr_mode_t.  After the block transfer is complete, transfer_info_t::num_blocks is
      *  decremented.  After the transfer_info_t::num_blocks reaches 0, transfer requests will not cause any
      *  further transfers. */
     TRANSFER_MODE_BLOCK = 2,
@@ -180,7 +224,7 @@ typedef enum e_transfer_size
  *  @warning  When using DTC, this structure must not be allocated in a temporary location.  Any instance of this
  *            structure must remain in scope until the transfer it is used for is closed.
  *  @note     When using DTC, consider placing instances of this structure in a protected section of memory. */
-typedef struct st_transfer_info
+struct st_transfer_info
 {
     union
     {
@@ -210,7 +254,7 @@ typedef struct st_transfer_info
             /** Select number of bytes to transfer at once. @see transfer_info_t::length. */
             transfer_size_t size : 2;
 
-            /** Select mode from @ref transfer_mode_t. */
+            /** Select mode from @ref RZA::transfer_mode_t. */
             transfer_mode_t mode : 2;
         }        transfer_settings_word_b;
         uint32_t transfer_settings_word;
@@ -228,10 +272,13 @@ typedef struct st_transfer_info
     volatile uint16_t length;
 
     void const * p_extend_info;        ///< Extension parameter for hardware specific settings.
-} transfer_info_t;
+};
+
+/** This structure specifies the properties of the transfer. Please refer to the struct st_transfer_info. */
+typedef struct st_transfer_info transfer_info_t;
 
 /** ADC Information Structure for Transfer Interface */
-typedef struct st_adc_info
+struct st_adc_info
 {
     __IM void * p_address;                                                  ///< The address to start reading the data from
     uint32_t    length;                                                     ///< The total number of transfers to read
@@ -240,7 +287,20 @@ typedef struct st_adc_info
     uint32_t        calibration_data[BSP_FEATURE_ADC_NUM_CALIBRATION_DATA]; ///< Temperature sensor calibration data (0xFFFFFFFF if unsupported) for reference voltage
     int16_t         slope_microvolts;                                       ///< Temperature sensor slope in microvolts/degrees C
     bool            calibration_ongoing;                                    ///< Calibration is in progress.
-} adc_info_t;
+};
+
+/** ADC Information Structure for Transfer Interface. Please refer to the struct st_adc_info. */
+typedef struct st_adc_info adc_info_t;
+
+/*==============================================
+ * DMAC Overrides
+ *==============================================*/
+
+/** Active level of the external DMA ACK signal. */
+typedef enum e_dmac_external_output_signal_active_level
+{
+    DMAC_EXTERNAL_OUTPUT_SIGNAL_ACTIVE_LEVEL_NO_OUTPUT = 0, ///< Not using external output.
+} dmac_external_output_signal_active_level_t;
 
 typedef enum e_display_in_format
 {
@@ -279,7 +339,7 @@ typedef enum e_display_data_swap
 } display_data_swap_t;
 
 /** Graphics plane input configuration structure */
-typedef struct st_display_input_cfg
+struct st_display_input_cfg
 {
     uint32_t          * p_base;        ///< Base address to the frame buffer
     uint32_t          * p_base_cb;     ///< Base address to the frame buffer for Cb plane
@@ -292,7 +352,10 @@ typedef struct st_display_input_cfg
     uint16_t            hstride_cbcr;  ///< Memory stride (bytes) in a line for Cb and Cr plane
     display_in_format_t format;        ///< Input format setting
     display_data_swap_t data_swap;     ///< Input data swap_Setting
-} display_input_cfg_t;
+};
+
+/** Graphics plane input configuration structure. Please refer to the struct st_display_input_cfg. */
+typedef struct st_display_input_cfg display_input_cfg_t;
 
 /** CANFD Transmit Message Buffer (TX MB) */
 typedef enum e_canfd_tx_mb
@@ -353,4 +416,10 @@ typedef enum e_canfd_tx_buffer
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
 
+#endif
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
 #endif

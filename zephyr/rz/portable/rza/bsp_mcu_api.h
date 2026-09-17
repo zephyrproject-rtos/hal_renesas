@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -76,8 +76,15 @@ unsigned long long R_BSP_CACHE_DisableInst(void);
  **********************************************************************************************************************/
 unsigned long long R_BSP_CACHE_DisableData(void);
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZA_BSP_MCU
  *
  * @{
  **********************************************************************************************************************/
@@ -150,6 +157,12 @@ __STATIC_INLINE void R_BSP_TLB_Invalidate(void)
 }
 
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

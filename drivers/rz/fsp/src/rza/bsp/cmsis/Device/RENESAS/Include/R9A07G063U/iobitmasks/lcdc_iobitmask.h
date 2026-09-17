@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -611,14 +611,6 @@
 #define R_LCDC_FCP_VCR_REVISION_Pos                        (0UL)
 #define R_LCDC_FCP_VCR_CATEGORY_Msk                        (0x0000FF00UL)
 #define R_LCDC_FCP_VCR_CATEGORY_Pos                        (8UL)
-#define R_LCDC_FCP_CFG0_FCPVSEL_Msk                        (0x00000002UL)
-#define R_LCDC_FCP_CFG0_FCPVSEL_Pos                        (1UL)
-#define R_LCDC_FCP_RST_SOFTRST_Msk                         (0x00000001UL)
-#define R_LCDC_FCP_RST_SOFTRST_Pos                         (0UL)
-#define R_LCDC_FCP_RST_MODRST_Msk                          (0x00000010UL)
-#define R_LCDC_FCP_RST_MODRST_Pos                          (4UL)
-#define R_LCDC_FCP_STA_ACT_Msk                             (0x00000001UL)
-#define R_LCDC_FCP_STA_ACT_Pos                             (0UL)
 #define R_LCDC_DU_MCR0_DI_EN_Msk                           (0x00000100UL)
 #define R_LCDC_DU_MCR0_DI_EN_Pos                           (8UL)
 #define R_LCDC_DU_MCR0_PB_CLR_Msk                          (0x00010000UL)
@@ -665,11 +657,15 @@
 #define R_LCDC_DU_DITR4_HBP_Pos                            (0UL)
 #define R_LCDC_DU_DITR4_HFP_Msk                            (0x1FFF0000UL)
 #define R_LCDC_DU_DITR4_HFP_Pos                            (16UL)
-#define R_LCDC_DU_DITR5_VSFT_Msk                           (0x00001FFFUL)
-#define R_LCDC_DU_DITR5_VSFT_Pos                           (0UL)
-#define R_LCDC_DU_DITR5_HSFT_Msk                           (0x1FFF0000UL)
-#define R_LCDC_DU_DITR5_HSFT_Pos                           (16UL)
+#define R_LCDC_DU_MCR1_OPMD_Msk                            (0x00000003UL)
+#define R_LCDC_DU_MCR1_OPMD_Pos                            (0UL)
+#define R_LCDC_DU_MCR1_PB_AUTOCLR_Msk                      (0x00010000UL)
+#define R_LCDC_DU_MCR1_PB_AUTOCLR_Pos                      (16UL)
 #define R_LCDC_DU_PBCR0_PB_DEP_Msk                         (0x0000001FUL)
 #define R_LCDC_DU_PBCR0_PB_DEP_Pos                         (0UL)
+#define R_LCDC_DU_PBCR1_PB_RUFOP_Msk                       (0x00000001UL)
+#define R_LCDC_DU_PBCR1_PB_RUFOP_Pos                       (0UL)
+#define R_LCDC_DU_PBCR2_PB_RUFDAT_Msk                      (0x00FFFFFFUL)
+#define R_LCDC_DU_PBCR2_PB_RUFDAT_Pos                      (0UL)
 
 #endif

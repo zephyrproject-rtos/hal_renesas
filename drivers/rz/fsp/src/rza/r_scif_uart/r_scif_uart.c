@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -192,10 +192,19 @@ const uart_api_t g_uart_on_scif =
     .communicationAbort = R_SCIF_UART_Abort,
     .callbackSet        = R_SCIF_UART_CallbackSet,
     .readStop           = R_SCIF_UART_ReadStop,
+    .receiveSuspend     = R_SCIF_UART_ReceiveSuspend,
+    .receiveResume      = R_SCIF_UART_ReceiveResume,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup SCIF_UART
+ * @addtogroup RZA_SCIF_UART
  * @{
  **********************************************************************************************************************/
 
@@ -214,7 +223,7 @@ const uart_api_t g_uart_on_scif =
  *                                         instance. Call close() then open() to reconfigure.
  * @retval  FSP_ERR_INVALID_ARGUMENT       Setting for RS485 DE Control pin is invalid
  *
- * @return                       See @ref RENESAS_ERROR_CODES
+ * @return                       See @ref RZA_RENESAS_ERROR_CODES
  **********************************************************************************************************************/
 fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * const p_cfg)
 {
@@ -226,6 +235,8 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
     FSP_ASSERT(p_ctrl);
     FSP_ASSERT(p_cfg);
     FSP_ASSERT(p_cfg->p_extend);
+    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_cfg->p_extend;
+    FSP_ASSERT(NULL != p_extend->p_reg);
     FSP_ASSERT(((scif_uart_extended_cfg_t *) p_cfg->p_extend)->p_baud_setting);
     FSP_ERROR_RETURN(SCIF_UART_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
 
@@ -245,9 +256,11 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
             FSP_ERR_INVALID_ARGUMENT);
     }
  #endif
+#else
+    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_cfg->p_extend;
 #endif
 
-    p_ctrl->p_reg = ((R_SCIFA0_Type *) ((uintptr_t) R_SCIFA0_BASE + ((uintptr_t) SCIF_REG_SIZE * p_cfg->channel)));
+    p_ctrl->p_reg = (R_SCIFA0_Type *) p_extend->p_reg;
 
     p_ctrl->p_cfg = p_cfg;
 
@@ -266,12 +279,10 @@ fsp_err_t R_SCIF_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * c
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 #endif
 
-    scif_uart_extended_cfg_t * p_extend = (scif_uart_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
-
     /* Enable the SCIF channel */
     R_BSP_MODULE_START(FSP_IP_SCIF, p_cfg->channel);
 
-    /* Initialize registers as defined in section "SCIFA Initialization in Asynchronous Mode" in the user's
+    /* Initialize registers as defined in section "SCIFA Initialization in Asynchronous Mode" in the hardware
      * manual or the relevant section for the MPU being used. */
     p_ctrl->p_reg->SCR = 0U;
     uint32_t fcr = p_ctrl->p_reg->FCR;
@@ -443,7 +454,7 @@ fsp_err_t R_SCIF_UART_Close (uart_ctrl_t * const p_api_ctrl)
  * @retval  FSP_ERR_IN_USE               A previous read operation is still in progress.
  * @retval  FSP_ERR_UNSUPPORTED          SCIF_UART_CFG_RX_ENABLE is set to 0
  *
- * @return                       See @ref RENESAS_ERROR_CODES
+ * @return                       See @ref RZA_RENESAS_ERROR_CODES
  **********************************************************************************************************************/
 fsp_err_t R_SCIF_UART_Read (uart_ctrl_t * const p_api_ctrl, uint8_t * const p_dest, uint32_t const bytes)
 {
@@ -503,7 +514,7 @@ fsp_err_t R_SCIF_UART_Read (uart_ctrl_t * const p_api_ctrl, uint8_t * const p_de
  * @retval  FSP_ERR_IN_USE               A UART transmission is in progress
  * @retval  FSP_ERR_UNSUPPORTED          SCIF_UART_CFG_TX_ENABLE is set to 0
  *
- * @return                       See @ref RENESAS_ERROR_CODES
+ * @return                       See @ref RZA_RENESAS_ERROR_CODES
  **********************************************************************************************************************/
 fsp_err_t R_SCIF_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * const p_src, uint32_t const bytes)
 {
@@ -590,7 +601,7 @@ fsp_err_t R_SCIF_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * con
  **********************************************************************************************************************/
 fsp_err_t R_SCIF_UART_CallbackSet (uart_ctrl_t * const          p_api_ctrl,
                                    void (                     * p_callback)(uart_callback_args_t *),
-                                   void const * const           p_context,
+                                   void * const                 p_context,
                                    uart_callback_args_t * const p_callback_memory)
 {
     scif_uart_instance_ctrl_t * p_ctrl = (scif_uart_instance_ctrl_t *) p_api_ctrl;
@@ -741,7 +752,7 @@ fsp_err_t R_SCIF_UART_InfoGet (uart_ctrl_t * const p_api_ctrl, uart_info_t * con
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  * @retval  FSP_ERR_UNSUPPORTED          The requested Abort direction is unsupported.
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZA_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes.
  **********************************************************************************************************************/
 fsp_err_t R_SCIF_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communication_to_abort)
@@ -821,7 +832,7 @@ fsp_err_t R_SCIF_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communic
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  * @retval  FSP_ERR_UNSUPPORTED          The requested Abort direction is unsupported.
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZA_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes.
  **********************************************************************************************************************/
 fsp_err_t R_SCIF_UART_ReadStop (uart_ctrl_t * const p_api_ctrl, uint32_t * remaining_bytes)
@@ -1030,8 +1041,38 @@ fsp_err_t R_SCIF_UART_BaudCalculate (uart_ctrl_t * const         p_api_ctrl,
 }
 
 /*******************************************************************************************************************//**
+ * Suspend Reception
+ *
+ * @retval     FSP_ERR_UNSUPPORTED       Functionality not supported by this driver instance
+ **********************************************************************************************************************/
+fsp_err_t R_SCIF_UART_ReceiveSuspend (uart_ctrl_t * const p_api_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Resume Reception
+ *
+ * @retval     FSP_ERR_UNSUPPORTED       Functionality not supported by this driver instance
+ **********************************************************************************************************************/
+fsp_err_t R_SCIF_UART_ReceiveResume (uart_ctrl_t * const p_api_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
  * @} (end addtogroup SCIF_UART)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -1133,7 +1174,7 @@ static fsp_err_t r_scif_uart_transfer_configure (transfer_instance_t const * p_t
  * @retval        FSP_SUCCESS        UART transfer drivers successfully configured
  * @retval        FSP_ERR_ASSERTION  Invalid pointer or required interrupt not enabled in vector table
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZA_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::open
  **********************************************************************************************************************/
@@ -1501,7 +1542,7 @@ static void r_scif_uart_fifo_cfg (scif_uart_instance_ctrl_t * const p_ctrl)
         /* RTRG(Receive FIFO Data Trigger Number) controls when the RXI interrupt will be generated. If data is
          * received but the trigger number is not met the RXI interrupt will be generated after 15 ETUs from
          * the last stop bit in asynchronous mode. For more information see the FIFO Selected section of "Serial Data
-         * Reception in Asynchronous Mode" in the user's manual or the relevant section for the MPU being used. */
+         * Reception in Asynchronous Mode" in the hardware manual or the relevant section for the MPU being used. */
         ftcr = r_scif_uart_make_rftc(p_extend->rx_fifo_trigger);
         fcr |= r_scif_uart_make_rtrg(p_extend->rx_fifo_trigger);
 

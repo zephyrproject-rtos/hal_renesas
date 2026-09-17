@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -61,8 +61,15 @@ const wdt_api_t g_wdt_on_wdt =
     .callbackSet = R_WDT_CallbackSet,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup WDT WDT
+ * @addtogroup RZA_WDT
  * @{
  **********************************************************************************************************************/
 
@@ -79,7 +86,7 @@ const wdt_api_t g_wdt_on_wdt =
  * calls will have no effect.
  *
  * Example:
- * @snippet r_wdt_example.c R_WDT_Open
+ * @snippet rza_r_wdt_example.c R_WDT_Open
  *
  * @retval FSP_SUCCESS              WDT successfully configured.
  * @retval FSP_ERR_ASSERTION        Null pointer, or one or more configuration options is invalid.
@@ -137,7 +144,7 @@ fsp_err_t R_WDT_TimeoutGet (wdt_ctrl_t * const p_ctrl, wdt_timeout_values_t * co
     FSP_PARAMETER_NOT_USED(p_ctrl);
 
     /* Get timeout value from WDTTIM register.
-     * (see section 'WDT Period Setting Register_n (WDTSET_n)' of the user's manual)*/
+     * (see section 'WDT Period Setting Register_n (WDTSET_n)' of the hardware manual)*/
     p_timeout->timeout_clocks = WDT_PRV_WDTSET_TIMEOUT_CALCURATE_VALUE *
                                 ((R_WDT0->WDTSET >> R_WDT0_WDTSET_WDTTIME_Pos) + 1);
 
@@ -153,7 +160,7 @@ fsp_err_t R_WDT_TimeoutGet (wdt_ctrl_t * const p_ctrl, wdt_timeout_values_t * co
  * In addition to refreshing the watchdog counter this function can be used to start the counter.
  *
  * Example:
- * @snippet r_wdt_example.c R_WDT_Refresh
+ * @snippet rza_r_wdt_example.c R_WDT_Refresh
  *
  * @retval FSP_SUCCESS              WDT successfully refreshed.
  * @retval FSP_ERR_ASSERTION        p_ctrl is NULL.
@@ -187,7 +194,7 @@ fsp_err_t R_WDT_Refresh (wdt_ctrl_t * const p_ctrl)
  * Indicates both status and error conditions.
  *
  * Example:
- * @snippet r_wdt_example.c R_WDT_StatusGet
+ * @snippet rza_r_wdt_example.c R_WDT_StatusGet
  *
  * @retval FSP_SUCCESS              WDT status successfully read.
  * @retval FSP_ERR_ASSERTION        Null pointer as a parameter.
@@ -214,7 +221,7 @@ fsp_err_t R_WDT_StatusGet (wdt_ctrl_t * const p_ctrl, wdt_status_t * const p_sta
  * Clear the WDT status and error flags. Implements @ref wdt_api_t::statusClear.
  *
  * Example:
- * @snippet r_wdt_example.c R_WDT_StatusClear
+ * @snippet rza_r_wdt_example.c R_WDT_StatusClear
  *
  * @retval FSP_SUCCESS              WDT flag(s) successfully cleared.
  * @retval FSP_ERR_ASSERTION        Null pointer as a parameter.
@@ -257,7 +264,7 @@ fsp_err_t R_WDT_StatusClear (wdt_ctrl_t * const p_ctrl, const wdt_status_t statu
  * Read the current count value of the WDT. Implements @ref wdt_api_t::counterGet.
  *
  * Example:
- * @snippet r_wdt_example.c R_WDT_CounterGet
+ * @snippet rza_r_wdt_example.c R_WDT_CounterGet
  *
  * @retval FSP_SUCCESS          WDT current count successfully read.
  * @retval FSP_ERR_ASSERTION    Null pointer passed as a parameter.
@@ -292,7 +299,7 @@ fsp_err_t R_WDT_CounterGet (wdt_ctrl_t * const p_ctrl, uint32_t * const p_count)
  **********************************************************************************************************************/
 fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl,
                              void (                    * p_callback)(wdt_callback_args_t *),
-                             void const * const          p_context,
+                             void * const                p_context,
                              wdt_callback_args_t * const p_callback_memory)
 {
     wdt_instance_ctrl_t * p_instance_ctrl = (wdt_instance_ctrl_t *) p_ctrl;
@@ -340,6 +347,12 @@ fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl,
 /*******************************************************************************************************************//**
  * @} (end addtogroup WDT)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions

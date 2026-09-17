@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -9,6 +9,7 @@
  **********************************************************************************************************************/
 #include "r_lcdc.h"
 #include "bsp_api.h"
+#include "hal_data.h"
 #include "r_lcdc_cfg.h"
 
 /***********************************************************************************************************************
@@ -87,6 +88,7 @@ static void r_lcdc_brs_set(void);
 static void r_lcdc_layer_change(display_runtime_cfg_t const * const p_cfg, display_frame_layer_t layer);
 static void r_lcdc_ckey_set(display_colorkeying_layer_t ck_cfg, display_frame_layer_t layer);
 static void r_lcdc_interrupt_enable(display_cfg_t const * const p_cfg, lcdc_instance_ctrl_t * const p_instance_ctrl);
+static void r_lcdc_interrupt_disable(display_cfg_t const * const p_cfg);
 void        lcdc_vspd_int(IRQn_Type const irq);
 
 #if (LCDC_CFG_PARAM_CHECKING_ENABLE)
@@ -148,16 +150,23 @@ static lcdc_ctrl_t r_lcdc_blk =
     .p_context = NULL,
 };
 
-static display_list_data_type dl_body __attribute__((section(".nocache"), __aligned__(16)));
+static display_list_data_type dl_body __attribute__((section("UNCACHED_BSS"), __aligned__(16)));
 static uint32_t               layer_status;
 
 /***********************************************************************************************************************
  * Global Variables
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
  *
- * @addtogroup LCDC
+ * @addtogroup RZA_LCDC
  * @{
  **********************************************************************************************************************/
 
@@ -179,11 +188,6 @@ fsp_err_t R_LCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const * 
     fsp_err_t              err    = FSP_SUCCESS;
     lcdc_instance_ctrl_t * p_ctrl = (lcdc_instance_ctrl_t *) p_api_ctrl;
 
-    p_ctrl->p_cfg        = p_cfg;
-    p_ctrl->p_context    = p_cfg->p_context;
-    p_ctrl->p_callback   = p_cfg->p_callback;
-    r_lcdc_blk.p_context = p_ctrl;
-
 #if  (LCDC_CFG_PARAM_CHECKING_ENABLE)
 
     /* Check parameters */
@@ -195,10 +199,13 @@ fsp_err_t R_LCDC_Open (display_ctrl_t * const p_api_ctrl, display_cfg_t const * 
         return err;
     }
 #endif
-    R_BSP_MODULE_START(FSP_IP_LCDC, 0);
 
-    /* FCPVD processing mode */
-    R_LCDC->FCP_CFG0_b.FCPVSEL = 0;
+    p_ctrl->p_cfg        = p_cfg;
+    p_ctrl->p_context    = p_cfg->p_context;
+    p_ctrl->p_callback   = p_cfg->p_callback;
+    r_lcdc_blk.p_context = p_ctrl;
+
+    R_BSP_MODULE_START(FSP_IP_LCDC, 0);
 
     /* DU Initialization */
     r_lcdc_du_set(p_cfg);
@@ -289,6 +296,9 @@ fsp_err_t R_LCDC_Close (display_ctrl_t * const p_api_ctrl)
     FSP_ERROR_RETURN(DISPLAY_STATE_CLOSED != p_ctrl->state, FSP_ERR_NOT_OPEN);
 #endif
 
+    /* Disable LCDC Interrupt */
+    r_lcdc_interrupt_disable(p_ctrl->p_cfg);
+
     /* Display Disable */
     R_LCDC->DU_MCR0_b.DI_EN = 0;
     while (R_LCDC->DU_MSR0_b.ST_DI_BSY == 1)
@@ -298,7 +308,7 @@ fsp_err_t R_LCDC_Close (display_ctrl_t * const p_api_ctrl)
          */
     }
 
-    /* Software Reset */
+    /* Internal modules Software Reset */
     R_LCDC->VI6_SRESET_b.SRST0 = 1;
     while (R_LCDC->VI6_WPF0_IRQ_STA_b.FRE == 0)
     {
@@ -308,6 +318,9 @@ fsp_err_t R_LCDC_Close (display_ctrl_t * const p_api_ctrl)
     }
 
     p_ctrl->state = DISPLAY_STATE_CLOSED;
+
+    /* Stop modules and clocks to the LCDC peripheral */
+    R_BSP_MODULE_STOP(FSP_IP_LCDC, 0);
 
     return err;
 }
@@ -366,14 +379,7 @@ fsp_err_t R_LCDC_Stop (display_ctrl_t * const p_api_ctrl)
     /* Display List Update */
     R_LCDC->VI6_DL_BODY_SIZE0_b.UPD0 = 1;
 
-    if (!(layer_status))
-    {
-        p_ctrl->state = DISPLAY_STATE_OPENED;
-    }
-    else
-    {
-        /* Do Nothing */
-    }
+    p_ctrl->state = DISPLAY_STATE_OPENED;
 
     return err;
 }
@@ -606,6 +612,12 @@ fsp_err_t R_LCDC_StatusGet (display_ctrl_t const * const p_api_ctrl, display_sta
 /*******************************************************************************************************************//**
  * @} (end addtogroup IOPORT)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -1316,6 +1328,33 @@ static void r_lcdc_interrupt_enable (display_cfg_t const * const p_cfg, lcdc_ins
     {
         /* Do Nothing */
     }
+}
+
+/*******************************************************************************************************************//**
+ *  Disable the interrupt setting for LCDC module
+ *
+ * @param[in]       p_cfg       LCDC configuration parameters
+ * @retval          none
+ **********************************************************************************************************************/
+static void r_lcdc_interrupt_disable (display_cfg_t const * const p_cfg)
+{
+    lcdc_extended_cfg_t * pextend = (lcdc_extended_cfg_t *) p_cfg->p_extend;
+
+    if (pextend->frame_end_irq >= 0)
+    {
+        R_BSP_IrqDisable(pextend->frame_end_irq);
+    }
+    else
+    {
+        /* Do Nothing */
+    }
+
+    /* LCDC Interrupt Setting */
+    /* Interrupt Disable for Frame End */
+    R_LCDC->VI6_WPF0_IRQ_ENB_b.FREE = 0;
+
+    /* Interrupt Disable for DU Connection UnderRun Error */
+    R_LCDC->VI6_WPF0_IRQ_ENB_b.UNDE = 0;
 }
 
 /*******************************************************************************************************************//**

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -49,7 +49,7 @@ typedef struct
             uint32_t             : 7;
             __IOM uint32_t EGA   : 2;
             uint32_t             : 2;
-            __IM uint32_t TRGEN  : 6;
+            __IOM uint32_t TRGEN : 6;
             uint32_t             : 10;
         } ADM1_b;
     };
@@ -197,18 +197,18 @@ typedef struct
             uint32_t           : 20;
         } ADCR3_b;
     };
-} R_ADC_Type;
+} R_ADC0_Type;
 
 /* =========================================================================================================================== */
 /* ================                          Device Specific Peripheral Address Map                           ================ */
 /* =========================================================================================================================== */
 
-#define R_ADC_BASE    0x10059000
+#define R_ADC0_BASE    0x10059000
 
 /* =========================================================================================================================== */
 /* ================                                  Peripheral declaration                                   ================ */
 /* =========================================================================================================================== */
 
-#define R_ADC    ((R_ADC_Type *) R_ADC_BASE)
+#define R_ADC0    ((R_ADC0_Type *) R_ADC0_BASE)
 
 #endif

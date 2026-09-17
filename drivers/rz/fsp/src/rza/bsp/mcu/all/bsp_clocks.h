@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -19,8 +19,15 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZA
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZA_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -68,6 +75,9 @@ FSP_HEADER
                                                      BSP_RST_REG_ ## ip(channel) = 0x00000000U                       \
                                                                                    | (BSP_RST_BIT_ ## ip(channel) << \
                                                                                       16U);                          \
+                                                     while ((BSP_RSTMON_REG_ ## ip(channel) &                        \
+                                                             BSP_RSTMON_BIT_ ## ip(channel)) == 0U)                  \
+                                                     { /* wait */};                                                  \
                                                      FSP_CRITICAL_SECTION_EXIT;}
 
 /*******************************************************************************************************************//**
@@ -88,6 +98,12 @@ FSP_HEADER
                                                      FSP_CRITICAL_SECTION_EXIT;}
 
 /** @} (end addtogroup BSP_MCU) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 #define BSP_CLKON_REG_FSP_IP_ADC(channel)           (R_CPG->CPG_CLKON_ADC)
 #define BSP_CLKON_BIT_FSP_IP_ADC(channel)           (3U << (R_CPG_CPG_CLKON_ADC_CLK0_ON_Pos))

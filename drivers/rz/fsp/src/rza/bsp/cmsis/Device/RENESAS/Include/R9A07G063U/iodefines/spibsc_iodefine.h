@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -226,27 +226,7 @@ typedef struct
         } SMRDR0_b;
     };
 
-    union
-    {
-        __IM uint32_t SMRDR1;
-        struct
-        {
-            __IM uint16_t L;
-            __IM uint16_t H;
-        } SMRDR1_hword;
-        struct
-        {
-            __IM uint8_t LL;
-            __IM uint8_t LH;
-            __IM uint8_t HL;
-            __IM uint8_t HH;
-        } SMRDR1_byte;
-        struct
-        {
-            __IM uint32_t RDATA1 : 32;
-        } SMRDR1_b;
-    };
-
+    __IM uint8_t RESERVED2[4];
     union
     {
         __IOM uint32_t SMWDR0;
@@ -268,27 +248,7 @@ typedef struct
         } SMWDR0_b;
     };
 
-    union
-    {
-        __IOM uint32_t SMWDR1;
-        struct
-        {
-            __IOM uint16_t L;
-            __IOM uint16_t H;
-        } SMWDR1_hword;
-        struct
-        {
-            __IOM uint8_t LL;
-            __IOM uint8_t LH;
-            __IOM uint8_t HL;
-            __IOM uint8_t HH;
-        } SMWDR1_byte;
-        struct
-        {
-            __IOM uint32_t WDATA1 : 32;
-        } SMWDR1_b;
-    };
-
+  __IM uint8_t RESERVED3[4];
     union
     {
         __IM uint32_t CMNSR;
@@ -300,7 +260,7 @@ typedef struct
         } CMNSR_b;
     };
 
-    __IM uint8_t RESERVED2[12];
+    __IM uint8_t RESERVED4[12];
     union
     {
         __IOM uint32_t DRDMCR;
@@ -322,7 +282,8 @@ typedef struct
             uint32_t             : 3;
             __IOM uint32_t ADDRE : 1;
             uint32_t             : 3;
-            uint32_t             : 20;
+            __IOM uint32_t HYPE  : 3;
+            uint32_t             : 17;
         } DRDRENR_b;
     };
 
@@ -351,7 +312,7 @@ typedef struct
         } SMDRENR_b;
     };
 
-    __IM uint8_t RESERVED3[8];
+    __IM uint8_t RESERVED5[8];
     union
     {
         __IOM uint32_t PHYADJ1;
@@ -370,7 +331,7 @@ typedef struct
         } PHYADJ2_b;
     };
 
-    __IM uint8_t RESERVED4[4];
+    __IM uint8_t RESERVED6[4];
     union
     {
         __IOM uint32_t PHYCNT;
