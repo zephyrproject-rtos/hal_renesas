@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -17,6 +17,18 @@
  * Macro definitions
  *********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
+
+/**********************************************************************************************************************
+ * @addtogroup RZG_BSP_MPU_RZG2UL
+ * @{
+ *********************************************************************************************************************/
+
 /**********************************************************************************************************************
  * Typedef definitions
  *********************************************************************************************************************/
@@ -29,11 +41,6 @@
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
 
-/**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZG2UL
- * @{
- *********************************************************************************************************************/
-
 #define ACK_MODE_LEVEL_MODE          (1 << 16)
 #define ACK_MODE_BUS_CYCLE_MODE      (2 << 16)
 #define ACK_MODE_MASK_DACK_OUTPUT    (4 << 16)
@@ -43,9 +50,10 @@
 
 #define ACTIVATION_SOURCE_CLEAR_Msk  (R_DMAC_B0_EX_DMARS0_CH0_RID_Msk | R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)
 
-#define R_BSP_DMAC_DREQ_DETECT_METHOD_SELECT(dmac_reg, channel,                                                                \
-                                             detection, activation)       { /* No configuration required for this device. */;  \
-}                                                                                                                              \
+#define R_BSP_DMAC_DREQ_DETECT_METHOD_SELECT(dmac_reg, channel,                                                              \
+                                             detection,                                                                      \
+                                             activation)                 { /* No configuration required for this device. */; \
+}                                                                                                                            \
 
 #define R_BSP_DMAC_B_TRANSFER_END_DETECT_METHOD_SELECT(unit, channel,                                                          \
                                                        dmaint_detect)     { /* No configuration required for this device. */;  \
@@ -58,9 +66,13 @@
                                                                           { /* No clearing required for this device. */; \
 }                                                                                                                        \
 
-#define R_BSP_DMAC_TEND_OUTPUT_PIN_SET(unit, channel, dtend_pin)                                                         \
-                                                                          { /* No clearing required for this device. */; \
-}                                                                                                                        \
+#define R_BSP_DMAC_TEND_OUTPUT_PIN_SET(unit, channel, dtend_pin) \
+    { /* No clearing required for this device. */;               \
+    }                                                            \
+
+#define R_BSP_DMAC_EXTERNAL_OUTPUT_ACTIVE_LEVEL_SET(unit, channel, ack_active_level, tend_active_level) \
+    { /* No clearing required for this device. */;                                                      \
+    }                                                                                                   \
 
 typedef enum e_dmac_trigger_event
 {
@@ -227,5 +239,11 @@ typedef enum e_dmac_b_external_output_pin
     } while (0)
 
 /** @} (end addtogroup BSP_MPU_RZG2UL) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 #endif                                 /* BSP_DMAC_H */

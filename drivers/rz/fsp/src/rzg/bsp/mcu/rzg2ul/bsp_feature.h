@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -34,14 +34,16 @@
  **********************************************************************************************************************/
 
 /* ADC-Related Definitions */
-#define BSP_FEATURE_ADC_NUM_CALIBRATION_DATA                   (2U)
-#define BSP_FEATURE_ADC_C_VALID_CHANNEL_MASK                   (0xF)
-#define BSP_FEATURE_ADC_C_NUM_CHANNELS                         (2U)
-#define BSP_FEATURE_ADC_C_SAMPLE_STATE_COUNT_MIN               (6U)
-#define BSP_FEATURE_ADC_C_SAMPLE_STATE_COUNT_MAX               (2800U)
-#define BSP_FEATURE_ADC_C_CONVERSION_TIME                      (14U)
-#define BSP_FEATURE_ADC_C_HAS_ADIVC                            (1U)
-#define BSP_FEATURE_ADC_C_TSU_CONTROL_AVAILABLE                (0U)
+#define BSP_FEATURE_ADC_C_UNIT_VALID_CONVERSION_RESULT_REGISTER_MASKS \
+    BSP_FEATURE_ADC_C_UNIT_0_VALID_CONVERSION_RESULT_REGISTER_MASK
+#define BSP_FEATURE_ADC_C_UNIT_0_VALID_CONVERSION_RESULT_REGISTER_MASK    (0xFU)
+#define BSP_FEATURE_ADC_C_SAMPLE_STATE_COUNT_MIN                          (6U)
+#define BSP_FEATURE_ADC_C_SAMPLE_STATE_COUNT_MAX                          (2800U)
+#define BSP_FEATURE_ADC_C_CONVERSION_TIME                                 (14U)
+#define BSP_FEATURE_ADC_C_HAS_ADIVC                                       (1U)
+#define BSP_FEATURE_ADC_C_TSU_CONTROL_AVAILABLE                           (0U)
+#define BSP_FEATURE_ADC_C_VALID_UNIT_MASK                                 (0x1U)
+#define BSP_FEATURE_ADC_C_TSUMODE_TSUEN_SETTING                           (0U)
 
 /* BSP Capabilities Definitions */
 #define BSP_FEATURE_BSP_ACCESS_CONTROL_SET_SUPPORT             (0U)
@@ -63,8 +65,11 @@
 #define BSP_FEATURE_BSP_SUPPORT_OEN_PROTECT                    (0U)
 #define BSP_FEATURE_BSP_HAS_PFC_OEN_REG                        (0U)
 #define BSP_FEATURE_BSP_HAS_ETHER_MODE_REG                     (0U)
-#define BSP_FEATURE_BSP_HAS_SD_CH_POC_REG                      (0U)
+#define BSP_FEATURE_BSP_HAS_SD_CH0_POC_REG                     (0U)
+#define BSP_FEATURE_BSP_HAS_SD_CH1_POC_REG                     (0U)
+#define BSP_FEATURE_BSP_HAS_SD_CH2_POC_REG                     (0U)
 #define BSP_FEATURE_BSP_HAS_ETH_POC_REG                        (0U)
+#define BSP_FEATURE_BSP_SUPPORT_OTHER_POC_VOLT                 (0U)
 
 /* CANFD-Related Definitions */
 #define BSP_FEATURE_CANFD_NUM_CHANNELS                         (2)
@@ -112,6 +117,7 @@
 
 /* GPT-Related Definitions */
 #define BSP_FEATURE_GPT_VALID_CHANNEL_MASK                     (0xFFU)
+#define BSP_FEATURE_GPT_SHARED_OVFUNF_INTERRUPT                (0U)
 
 /* GTM-Related Definitions */
 #define BSP_FEATURE_GTM_MAX_CHANNEL                            (3U)
@@ -119,7 +125,7 @@
 #define BSP_FEATURE_GTM_SOURCE_CLOCK                           (FSP_PRIV_CLOCK_P0CLK)
 
 /* IIC-Related Definitions */
-#define BSP_FEATURE_IIC_SOURCE_CLOCK                           (FSP_PRIV_CLOCK_P0CLK)
+#define BSP_FEATURE_IIC_SOURCE_CLOCK(channel)                  (FSP_PRIV_CLOCK_P0CLK)
 #define BSP_FEATURE_IIC_MAX_CHANNEL                            (4U)
 #define BSP_FEATURE_IIC_VALID_CHANNEL_MASK                     (0x0F)
 
@@ -130,6 +136,7 @@
 /* IOPORT-Related Definitions */
 #define BSP_FEATURE_IOPORT_PORT_GROUP_NUM                      (0U)
 #define BSP_FEATURE_IOPORT_SINGLE_PORT_NUM                     (0U)
+#define BSP_FEATURE_IOPORT_HAS_DEDICATED_NMI                   (1U)
 #define BSP_FEATURE_IOPORT_SUPPORT_PERIPHERAL_FIL              (0U)
 #define BSP_FEATURE_IOPORT_SUPPORT_PERIPHERAL_FIL_NMI          (0U)
 #define BSP_FEATURE_IOPORT_SUPPORT_SR_REG                      (1U)
@@ -142,14 +149,25 @@
 #define BSP_FEATURE_IOPORT_REG_POSTFIX_L
 #define BSP_FEATURE_IOPORT_SP_REG_BASE_NUM                     2
 #define BSP_FEATURE_IOPORT_FIL_SP_REG_BASE_NUM                 01
+#define BSP_FEATURE_IOPORT_IEN_SP_REG_POSTFIX_L
+#define BSP_FEATURE_IOPORT_IEN_GP_REG_POSTFIX_L
 #define BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM                 2
 #define BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM_SYM             02
 #define BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM                 (0U)
 #define BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM_SYM             0
+#define BSP_FEATURE_IOPORT_IOLH_SP_REG_POSTFIX_L
+#define BSP_FEATURE_IOPORT_IOLH_GP_REG_POSTFIX_L
+#define BSP_FEATURE_IOPORT_IOLH_GP_REG_BASE_NUM                (0U)
+#define BSP_FEATURE_IOPORT_IOLH_GP_REG_BASE_NUM_SYM            10
 #define BSP_FEATURE_IOPORT_IOLH_SP_REG_BASE_NUM                02
 #define BSP_FEATURE_IOPORT_SR_SP_REG_BASE_NUM                  02
 #define BSP_FEATURE_IOPORT_NOD_SP_REG_BASE_NUM                 (0U)
+#define BSP_FEATURE_IOPORT_PUPD_SP_REG_POSTFIX_L
+#define BSP_FEATURE_IOPORT_PUPD_GP_REG_POSTFIX_L
+#define BSP_FEATURE_IOPORT_PUPD_GP_REG_BASE_NUM                (0U)
+#define BSP_FEATURE_IOPORT_PUPD_GP_REG_BASE_NUM_SYM            10
 #define BSP_FEATURE_IOPORT_PUPD_SP_REG_BASE_NUM                (0U)
+#define BSP_FEATURE_IOPORT_PUPD_SP_REG_BASE_NUM_SYM
 #define BSP_FEATURE_IOPORT_GROUP1_PORT                         (0U)
 #define BSP_FEATURE_IOPORT_GROUP2_PORT                         (0U)
 #define BSP_FEATURE_IOPORT_FIL_IRQ_FUNC                        (0U)
@@ -158,6 +176,7 @@
 #define BSP_FEATURE_IOPORT_NMI_PIN                             (0U)
 #define BSP_FEATURE_IOPORT_PWPR_PFCWE_OFFSET                   (6U)
 #define BSP_FEATURE_IOPORT_PWPR_B0WI_OFFSET                    (7U)
+#define BSP_FEATURE_IOPORT_CLONE_CHANNEL_PORT_OFFSET           (0U)
 
 /* MHU-Related Definitions */
 #define BSP_FEATURE_MHU_NS_VALID_CHANNEL_MASK                  (0x12U)
@@ -166,12 +185,14 @@
 #define BSP_FEATURE_MHU_NS_SWINT_SET_VALID_CHANNEL_MASK        (0x05U)
 #define BSP_FEATURE_MHU_S_VALID_CHANNEL_MASK                   (0x12U)
 #define BSP_FEATURE_MHU_S_SEND_TYPE_RSP_VALID_CHANNEL_MASK     (0x02U)
+#define BSP_FEATURE_MHU_IRQ_BUNDLE                             (0)
 
 /* MTU-Related Definitions */
 #define BSP_FEATURE_MTU3_VALID_CHANNEL_MASK                    (0x01FF)
 #define BSP_FEATURE_MTU3_MAX_CHANNELS                          (9U)
 #define BSP_FEATURE_MTU3_CLOCK_DIVIDER_STEP_SIZE               (2U)
 #define BSP_FEATURE_MTU3_CLOCK_DIVIDER_VALUE_7_9_VALID         (0U)
+#define BSP_FEATURE_MTU3_CLOCK_SOURCE                          (FSP_PRIV_CLOCK_P0CLK)
 
 /* POEG-Related Definitions */
 #define BSP_FEATURE_POEG_CHANNEL_MASK                          (0xFU)

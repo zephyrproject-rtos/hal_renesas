@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -8,7 +8,6 @@
  * Includes
  **********************************************************************************************************************/
 #include "r_dmac_b.h"
-#include "r_dmac_b_cfg.h"
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
  #include "hal_data.h"
 #endif
@@ -112,8 +111,15 @@ const transfer_api_t g_transfer_on_dmac_b =
     .callbackSet   = R_DMAC_B_CallbackSet
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup DMAC_B
+ * @addtogroup RZG_DMAC_B
  * @{
  **********************************************************************************************************************/
 
@@ -164,6 +170,11 @@ fsp_err_t R_DMAC_B_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t cons
     {
         /* Do nothing. */
     }
+
+    R_BSP_DMAC_EXTERNAL_OUTPUT_ACTIVE_LEVEL_SET(p_extend->unit,
+                                                p_extend->channel,
+                                                p_extend->ack_output_signal_active_level,
+                                                p_extend->tend_output_signal_active_level);
 
     /* Mark driver as open by initializing "DMAC" in its ASCII equivalent.*/
     p_ctrl->open = DMAC_B_ID;
@@ -265,12 +276,10 @@ fsp_err_t R_DMAC_B_LinkDescriptorSet (transfer_ctrl_t * const p_api_ctrl, dmac_b
     uint32_t converted_addr = R_BSP_SlaveAddressConversion(original_addr);
     p_ctrl->p_reg->GRP[group].CH[channel].NXLA = converted_addr;
 
-    /* The values ​​of p_src, p_dest, and p_next_link_addr are also subjected to address conversion.
+    /* The values of p_src, p_dest, and p_next_link_addr are also subjected to address conversion.
      * This address conversion is continued until the end of the link. */
-    while (NULL != p_descriptor)
+    do
     {
-        uint32_t next_link_address = (uint32_t) p_descriptor->p_next_link_addr;
-
         /* Set source address */
         original_addr       = (uint32_t) p_descriptor->p_src;
         converted_addr      = R_BSP_SlaveAddressConversion(original_addr);
@@ -287,13 +296,22 @@ fsp_err_t R_DMAC_B_LinkDescriptorSet (transfer_ctrl_t * const p_api_ctrl, dmac_b
             break;
         }
 
+        uint32_t next_link_address = (uint32_t) p_descriptor->p_next_link_addr;
+
         /* Set address of the next link destination */
         original_addr                  = (uint32_t) p_descriptor->p_next_link_addr;
         converted_addr                 = R_BSP_SlaveAddressConversion(original_addr);
         p_descriptor->p_next_link_addr = (uint32_t *) converted_addr;
 
+        /* If the next descriptor address matches the first descriptor address,
+         * it indicates the end of the descriptor loop, so this conversion process is also terminated. */
+        if ((uint32_t) p_ctrl->p_descriptor == next_link_address)
+        {
+            break;
+        }
+
         p_descriptor = (dmac_b_link_cfg_t *) next_link_address;
-    }
+    } while (NULL != p_descriptor);
 
 #else
 
@@ -411,6 +429,7 @@ fsp_err_t R_DMAC_B_SoftwareStop (transfer_ctrl_t * const p_api_ctrl)
  *
  * @retval FSP_SUCCESS              Counter value written successfully.
  * @retval FSP_ERR_ASSERTION        An input parameter is invalid.
+ * @retval FSP_ERR_INVALID_ADDRESS  Descriptor address is invalid.
  * @retval FSP_ERR_NOT_OPEN         Handle is not initialized.  Call R_DMAC_Open to initialize the control block.
  **********************************************************************************************************************/
 fsp_err_t R_DMAC_B_Enable (transfer_ctrl_t * const p_api_ctrl)
@@ -624,7 +643,7 @@ fsp_err_t R_DMAC_B_Reload (transfer_ctrl_t * const p_api_ctrl,
  **********************************************************************************************************************/
 fsp_err_t R_DMAC_B_CallbackSet (transfer_ctrl_t * const        p_api_ctrl,
                                 void (                       * p_callback)(dmac_b_callback_args_t *),
-                                void const * const             p_context,
+                                void * const                   p_context,
                                 dmac_b_callback_args_t * const p_callback_memory)
 {
     dmac_b_instance_ctrl_t * p_ctrl = (dmac_b_instance_ctrl_t *) p_api_ctrl;
@@ -647,6 +666,12 @@ fsp_err_t R_DMAC_B_CallbackSet (transfer_ctrl_t * const        p_api_ctrl,
  * @} (end addtogroup DMAC_B)
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
@@ -656,8 +681,9 @@ fsp_err_t R_DMAC_B_CallbackSet (transfer_ctrl_t * const        p_api_ctrl,
  *
  * @param[in]  p_ctrl             Pointer to control structure.
  *
- * @retval     FSP_SUCCESS        Successful close.
- * @retval     FSP_ERR_ASSERTION  An input parameter is invalid.
+ * @retval     FSP_SUCCESS                 Successful close.
+ * @retval     FSP_ERR_ASSERTION           An input parameter is invalid.
+ * @retval     FSP_ERR_INVALID_ADDRESS     Descriptor address is invalid.
  **********************************************************************************************************************/
 static fsp_err_t r_dmac_b_prv_enable (dmac_b_instance_ctrl_t * p_ctrl)
 {
@@ -911,11 +937,14 @@ static void r_dmac_b_config_transfer_info_link_mode (dmac_b_instance_ctrl_t * p_
 
     dmac_b_link_cfg_t * p_descriptor = (dmac_b_link_cfg_t *) p_extend->p_descriptor;
 
-    /* The values ​​of p_src, p_dest, and p_next_link_addr are also subjected to address conversion.
+    /* The values of p_src, p_dest, and p_next_link_addr are also subjected to address conversion.
      * This address conversion is continued until the end of the link. */
-    while (NULL != p_descriptor)
+    do
     {
-        uint32_t next_link_address = (uint32_t) p_descriptor->p_next_link_addr;
+        if (NULL == p_descriptor)
+        {
+            break;
+        }
 
         /* Set source address */
         original_addr       = (uint32_t) p_descriptor->p_src;
@@ -933,13 +962,22 @@ static void r_dmac_b_config_transfer_info_link_mode (dmac_b_instance_ctrl_t * p_
             break;
         }
 
+        uint32_t next_link_address = (uint32_t) p_descriptor->p_next_link_addr;
+
         /* Set address of the next link destination */
         original_addr                  = (uint32_t) p_descriptor->p_next_link_addr;
         converted_addr                 = R_BSP_SlaveAddressConversion(original_addr);
         p_descriptor->p_next_link_addr = (uint32_t *) converted_addr;
 
+        /* If the next descriptor address matches the first descriptor address,
+         * it indicates the end of the descriptor loop, so this conversion process is also terminated. */
+        if ((uint32_t) p_extend->p_descriptor == next_link_address)
+        {
+            break;
+        }
+
         p_descriptor = (dmac_b_link_cfg_t *) next_link_address;
-    }
+    } while (NULL != p_descriptor);
 
 #else
 
@@ -972,16 +1010,9 @@ static fsp_err_t r_dmac_b_open_parameter_checking (dmac_b_instance_ctrl_t * cons
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(p_ctrl->open != DMAC_B_ID, FSP_ERR_ALREADY_OPEN);
     FSP_ASSERT(NULL != p_cfg);
-    dmac_b_extended_cfg_t * p_extend = (dmac_b_extended_cfg_t *) p_cfg->p_extend;
     FSP_ASSERT(NULL != p_cfg->p_extend);
+    dmac_b_extended_cfg_t * p_extend = (dmac_b_extended_cfg_t *) p_cfg->p_extend;
     FSP_ERROR_RETURN(p_extend->channel < BSP_FEATURE_DMAC_MAX_CHANNEL, FSP_ERR_IP_CHANNEL_NOT_PRESENT);
-
-    if (DMAC_B_CONTINUOUS_SETTING_TRANSFER_ONCE != p_extend->continuous_setting)
-    {
-        FSP_ASSERT(NULL != p_cfg->p_info->p_next1_src);
-        FSP_ASSERT(NULL != p_cfg->p_info->p_next1_dest);
-        FSP_ASSERT(0 != p_cfg->p_info->next1_length);
-    }
 
     if (NULL != p_extend->p_callback)
     {
@@ -990,6 +1021,13 @@ static fsp_err_t r_dmac_b_open_parameter_checking (dmac_b_instance_ctrl_t * cons
 
     fsp_err_t err = r_dmac_b_info_parameter_checking(p_cfg->p_info);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+    if (DMAC_B_CONTINUOUS_SETTING_TRANSFER_ONCE != p_extend->continuous_setting)
+    {
+        FSP_ASSERT(NULL != p_cfg->p_info->p_next1_src);
+        FSP_ASSERT(NULL != p_cfg->p_info->p_next1_dest);
+        FSP_ASSERT(0 != p_cfg->p_info->next1_length);
+    }
 
     if (DMAC_B_MODE_SELECT_LINK == p_extend->dmac_mode)
     {
@@ -1028,14 +1066,35 @@ static fsp_err_t r_dmac_b_info_parameter_checking (transfer_info_t const * const
  **********************************************************************************************************************/
 static fsp_err_t r_dmac_b_link_descriptor_parameter_checking (dmac_b_link_cfg_t const * p_descriptor)
 {
+    /* Provide a pointer variable for accessing values stored in the descriptor.
+     * In CA55 environment, the virtual address of the descriptor is stored. */
     dmac_b_link_cfg_t const * p_current_descriptor = p_descriptor;
+
+    /* Provide a uint32_t variable to store the descriptor address value (physical address).
+     * Since DMAC handles 32 bit physical addresses, the descriptor address is evaluated as same condition. */
+    uint32_t current_descriptor_pa;
+
+ #if defined(BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t va;
+    uint64_t pa;
+
+    /* In CA55 environment, address conversion is required to store physical address to current_descriptor_pa
+     * since a virtual address is provided as the descriptor address. */
+    va = (uint64_t) p_current_descriptor;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    current_descriptor_pa = (uint32_t) pa;
+ #else
+
+    /* The received descriptor address is stored without conversion since MMU is not implemented. */
+    current_descriptor_pa = (uint32_t) p_current_descriptor;
+ #endif
 
     do
     {
         /* Start address of the link destination must be 4 byte align.
-         * (See section 'Next Link Address Register n (NXLA_n)' of the user's manual) */
+         * (See section 'Next Link Address Register n (NXLA_n)' of the hardware manual) */
         FSP_ASSERT(0U ==
-                   ((uintptr_t) p_current_descriptor & DMAC_B_PRV_MASK_ALIGN_N_BYTES(DMAC_B_PRV_MASK_ALIGN_4_BYTES)));
+                   ((uintptr_t) current_descriptor_pa & DMAC_B_PRV_MASK_ALIGN_N_BYTES(DMAC_B_PRV_MASK_ALIGN_4_BYTES)));
 
         if (DMAC_B_LINK_END_ENABLE == p_current_descriptor->header.link_end)
         {
@@ -1043,11 +1102,42 @@ static fsp_err_t r_dmac_b_link_descriptor_parameter_checking (dmac_b_link_cfg_t 
         }
 
  #if (BSP_FEATURE_DMAC_B_64BIT_SYSTEM == 1)
-        p_current_descriptor = (dmac_b_link_cfg_t *) (uintptr_t) (p_current_descriptor->next_link_addr);
+
+        /* If the next descriptor address matches the first descriptor address,
+         * it indicates the end of the descriptor loop, so this process is also terminated. */
+        if (p_descriptor == p_current_descriptor->next_link_addr)
  #else
-        p_current_descriptor = (dmac_b_link_cfg_t *) (uintptr_t) (p_current_descriptor->p_next_link_addr);
+        if (p_descriptor == p_current_descriptor->p_next_link_addr)
  #endif
-    } while (NULL != p_current_descriptor);
+        {
+            break;
+        }
+
+ #if (BSP_FEATURE_DMAC_B_64BIT_SYSTEM == 1)
+
+        /* Physical address is stored in next_link_addr. */
+        current_descriptor_pa = p_current_descriptor->next_link_addr;
+
+        /* FSP_SUCCESS should be returned when next link address is NULL
+         * since NULL is stored as next link address at the end of the list. */
+        if (NULL != (void *) (uintptr_t) current_descriptor_pa)
+        {
+            /* Store virtual address of the next descriptor to p_current_descriptor
+             * in order to access the values in the next descriptor. */
+            pa = current_descriptor_pa;
+            R_MMU_PAtoVA(&g_mmu_ctrl, pa, (void *) &va);
+            p_current_descriptor = (dmac_link_cfg_t *) va;
+        }
+
+ #else
+        current_descriptor_pa = (uint32_t) (p_current_descriptor->p_next_link_addr);
+
+        /* The received descriptor address is stored without conversion since MMU is not implemented. */
+        p_current_descriptor = (dmac_b_link_cfg_t *) current_descriptor_pa;
+ #endif
+
+        /* If NULL is stored in the next link address (physical address), it indicates the end of the list. */
+    } while (NULL != (void *) (uintptr_t) current_descriptor_pa);
 
     return FSP_SUCCESS;
 }

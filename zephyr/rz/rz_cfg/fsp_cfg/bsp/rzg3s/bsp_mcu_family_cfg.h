@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 #define BSP_MCU_GROUP_RZG3S (1)
+#define BSP_SUPPORT_CORE_CM33 (1)
 #define BSP_CURRENT_CORE    (RZG3S_CORE_CM33)
 #define BSP_CORTEX_VECTOR_TABLE_ENTRIES    (16U)
 #define BSP_VECTOR_TABLE_MAX_ENTRIES       (496U)

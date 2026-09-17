@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -254,10 +254,19 @@ const uart_api_t g_uart_on_sci_b =
     .communicationAbort = R_SCI_B_UART_Abort,
     .callbackSet        = R_SCI_B_UART_CallbackSet,
     .readStop           = R_SCI_B_UART_ReadStop,
+    .receiveSuspend     = R_SCI_B_UART_ReceiveSuspend,
+    .receiveResume      = R_SCI_B_UART_ReceiveResume,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup SCI_B_UART
+ * @addtogroup RZG_SCI_B_UART
  * @{
  **********************************************************************************************************************/
 
@@ -276,7 +285,7 @@ const uart_api_t g_uart_on_sci_b =
  * @retval  FSP_ERR_ALREADY_OPEN           Control block has already been opened or channel is being used by another
  *                                         instance. Call close() then open() to reconfigure.
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZG_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::open
  **********************************************************************************************************************/
@@ -418,7 +427,7 @@ fsp_err_t R_SCI_B_UART_Open (uart_ctrl_t * const p_api_ctrl, uart_cfg_t const * 
 
     /* Wait until interanl state of RE is 1 as it takes some time for the state to be reflected internally after
      * rewriting the control register. Please refer "Communication Enable Status Register(CESR)" description in the
-     * user's manual */
+     * hardware manual */
     FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CESR_b.RIST, 1U);
 
     p_ctrl->open = SCI_B_UART_OPEN;
@@ -463,7 +472,7 @@ fsp_err_t R_SCI_B_UART_Close (uart_ctrl_t * const p_api_ctrl)
 
     /* Wait until interanl state of TE is 0 as it takes some time for the state to be reflected internally after
      * rewriting the control register. Please refer "Communication Enable Status Register(CESR)" description in the
-     * user's manual */
+     * hardware manual */
     FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CESR_b.TIST, 0U);
 
     /* If transmission is enabled at build time, disable transmission irqs. */
@@ -505,7 +514,7 @@ fsp_err_t R_SCI_B_UART_Close (uart_ctrl_t * const p_api_ctrl)
  * @retval  FSP_ERR_IN_USE               A previous read operation is still in progress.
  * @retval  FSP_ERR_UNSUPPORTED          SCI_B_UART_CFG_RX_ENABLE is set to 0
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZG_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::reset
  *
@@ -575,7 +584,7 @@ fsp_err_t R_SCI_B_UART_Read (uart_ctrl_t * const p_api_ctrl, uint8_t * const p_d
  * @retval  FSP_ERR_IN_USE               A UART transmission is in progress
  * @retval  FSP_ERR_UNSUPPORTED          SCI_B_UART_CFG_TX_ENABLE is set to 0
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZG_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::reset
  *
@@ -670,7 +679,7 @@ fsp_err_t R_SCI_B_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * co
  **********************************************************************************************************************/
 fsp_err_t R_SCI_B_UART_CallbackSet (uart_ctrl_t * const          p_api_ctrl,
                                     void (                     * p_callback)(uart_callback_args_t *),
-                                    void const * const           p_context,
+                                    void * const                 p_context,
                                     uart_callback_args_t * const p_callback_memory)
 {
     sci_b_uart_instance_ctrl_t * p_ctrl = (sci_b_uart_instance_ctrl_t *) p_api_ctrl;
@@ -813,7 +822,7 @@ fsp_err_t R_SCI_B_UART_InfoGet (uart_ctrl_t * const p_api_ctrl, uart_info_t * co
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  * @retval  FSP_ERR_UNSUPPORTED          The requested Abort direction is unsupported.
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZG_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::disable
  **********************************************************************************************************************/
@@ -901,7 +910,7 @@ fsp_err_t R_SCI_B_UART_Abort (uart_ctrl_t * const p_api_ctrl, uart_dir_t communi
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  * @retval  FSP_ERR_UNSUPPORTED          The requested Abort direction is unsupported.
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZG_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::disable
  **********************************************************************************************************************/
@@ -948,6 +957,7 @@ fsp_err_t R_SCI_B_UART_ReadStop (uart_ctrl_t * const p_api_ctrl, uint32_t * rema
  * Calculates baud rate register settings. Evaluates and determines the best possible settings set to the baud rate
  * related registers.
  *
+ * @param[in]  p_api_ctrl                Pointer to the UART control block.
  * @param[in]  baudrate                  Baud rate [bps]. For example, 19200, 57600, 115200, etc.
  * @param[in]  bitrate_modulation        Enable bitrate modulation
  * @param[in]  baud_rate_error_x_1000    Max baud rate error. At most &lt;baud_rate_percent_error&gt; x 1000 required
@@ -959,16 +969,20 @@ fsp_err_t R_SCI_B_UART_ReadStop (uart_ctrl_t * const p_api_ctrl, uint32_t * rema
  * @retval     FSP_ERR_INVALID_ARGUMENT  Baud rate is '0', error in calculated baud rate is larger than requested
  *                                       max error, or requested max error in baud rate is larger than 15%.
  **********************************************************************************************************************/
-fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
+fsp_err_t R_SCI_B_UART_BaudCalculate (uart_ctrl_t * const          p_api_ctrl,
+                                      uint32_t                     baudrate,
                                       bool                         bitrate_modulation,
                                       uint32_t                     baud_rate_error_x_1000,
                                       sci_b_baud_setting_t * const p_baud_setting)
 {
 #if (SCI_B_UART_CFG_PARAM_CHECKING_ENABLE)
+    FSP_ASSERT(p_api_ctrl);
     FSP_ASSERT(p_baud_setting);
     FSP_ERROR_RETURN(SCI_B_UART_MAX_BAUD_RATE_ERROR_X_1000 >= baud_rate_error_x_1000, FSP_ERR_INVALID_ARGUMENT);
     FSP_ERROR_RETURN((0U != baudrate), FSP_ERR_INVALID_ARGUMENT);
 #endif
+
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
 
     p_baud_setting->baudrate_bits_b.brr  = SCI_B_UART_BRR_MAX;
     p_baud_setting->baudrate_bits_b.brme = 0U;
@@ -983,11 +997,19 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
     int32_t  hit_bit_err = SCI_B_UART_100_PERCENT_X_1000;
     uint8_t  hit_mddr    = 0U;
     uint32_t divisor     = 0U;
+    uint32_t freq_hz     = 0U;
 
 #if BSP_FEATURE_BSP_HAS_SCISPI_CLOCK
-    uint32_t freq_hz = R_FSP_SciSpiClockHzGet();
+    freq_hz = R_FSP_SciSpiClockHzGet();
 #else
-    uint32_t freq_hz = R_FSP_SystemClockHzGet(BSP_FEATURE_SCI_CLOCK);
+    if (SCI_B_UART_SOURCE_CLOCK_PCLK == p_baud_setting->clock_source)
+    {
+        freq_hz = R_FSP_SystemClockHzGet(BSP_FEATURE_SCI_B_PCLK);
+    }
+    else
+    {
+        freq_hz = R_FSP_SystemClockHzGet(BSP_FEATURE_SCI_B_TCLK(p_baud_setting->clock_source));
+    }
 #endif
 
     for (uint32_t select_16_base_clk_cycles = 0U;
@@ -996,8 +1018,8 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
     {
         for (uint32_t i = 0U; i < SCI_B_UART_NUM_DIVISORS_ASYNC; i++)
         {
-            /* if select_16_base_clk_cycles == true:  Skip this calculation for divisors that are not acheivable with 16 base clk cycles per bit.
-             *  if select_16_base_clk_cycles == false: Skip this calculation for divisors that are only acheivable without 16 base clk cycles per bit.
+            /* if select_16_base_clk_cycles == true:  Skip this calculation for divisors that are not achievable with 16 base clk cycles per bit.
+             *  if select_16_base_clk_cycles == false: Skip this calculation for divisors that are only achievable without 16 base clk cycles per bit.
              */
             if (((uint8_t) select_16_base_clk_cycles) ^ (g_async_baud[i].abcs | g_async_baud[i].abcse))
             {
@@ -1043,7 +1065,7 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
                     if (bitrate_modulation)
                     {
                         /* Calculate the MDDR (M) value if bit rate modulation is enabled,
-                         * The formula to calculate MBBR (from the M and N relationship given in the user's manual) is as follows
+                         * The formula to calculate MBBR (from the M and N relationship given in the hardware manual) is as follows
                          * and it must be between 128 and 255.
                          * MDDR = ((div_coefficient * baud * 256) * (BRR + 1)) / PCLK */
                         mddr = (uint8_t) ((uint32_t) err_divisor / (freq_hz / SCI_B_UART_MDDR_MAX));
@@ -1102,8 +1124,38 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
 }
 
 /*******************************************************************************************************************//**
+ * Suspend Reception
+ *
+ * @retval     FSP_ERR_UNSUPPORTED       Functionality not supported by this driver instance
+ **********************************************************************************************************************/
+fsp_err_t R_SCI_B_UART_ReceiveSuspend (uart_ctrl_t * const p_api_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Resume Reception
+ *
+ * @retval     FSP_ERR_UNSUPPORTED       Functionality not supported by this driver instance
+ **********************************************************************************************************************/
+fsp_err_t R_SCI_B_UART_ReceiveResume (uart_ctrl_t * const p_api_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
  * @} (end addtogroup SCI_B_UART)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -1213,7 +1265,7 @@ static fsp_err_t r_sci_b_uart_transfer_configure (sci_b_uart_instance_ctrl_t * c
  * @retval        FSP_SUCCESS        UART transfer drivers successfully configured
  * @retval        FSP_ERR_ASSERTION  Invalid pointer or required interrupt not enabled in vector table
  *
- * @return                       See @ref RENESAS_ERROR_CODES or functions called by this function for other possible
+ * @return                       See @ref RZG_RENESAS_ERROR_CODES or functions called by this function for other possible
  *                               return codes. This function calls:
  *                                   * @ref transfer_api_t::open
  **********************************************************************************************************************/
@@ -1296,6 +1348,10 @@ static void r_sci_b_uart_config_set (sci_b_uart_instance_ctrl_t * const p_ctrl, 
     ccr3 |= ((uint32_t) p_extend->rx_edge_start << R_SCI_B0_CCR3_RXDESEL_Pos) & R_SCI_B0_CCR3_RXDESEL_Msk;
     ccr3 |= ((uint32_t) p_extend->rs485_setting.enable << R_SCI_B0_CCR3_DEN_Pos) & R_SCI_B0_CCR3_DEN_Msk;
     ccr3 |= ((uint32_t) p_extend->clock << SCI_B_UART_CCR3_CKE_OFFSET) & SCI_B_UART_CCR3_CKE_MASK;
+
+    /* Apply the synchronization bypass settings. */
+    ccr3 |= (uint32_t) ((SCI_B_UART_SOURCE_CLOCK_PCLK == p_baud_setting->clock_source) << R_SCI_B0_CCR3_BPEN_Pos);
+
 #if SCI_B_UART_CFG_FIFO_SUPPORT
     if (p_ctrl->fifo_depth > 0U)
     {
@@ -1410,7 +1466,7 @@ static void r_sci_b_uart_fifo_cfg (sci_b_uart_instance_ctrl_t * const p_ctrl)
             /* RTRG(Receive FIFO Data Trigger Number) controls when the RXI interrupt will be generated. If data is
              * received but the trigger number is not met the RXI interrupt will be generated after 15 ETUs from
              * the last stop bit in asynchronous mode. For more information see the FIFO Selected section of "Serial
-             * Data Reception (Asynchronous Mode)" in the user's manual */
+             * Data Reception (Asynchronous Mode)" in the hardware manual */
             fcr |= (((p_ctrl->fifo_depth - 1U) & p_extend->rx_fifo_trigger) & SCI_B_UART_FCR_TRIGGER_MASK) <<
                    R_SCI_B0_FCR_RTRG_Pos;
         }
@@ -1422,8 +1478,8 @@ static void r_sci_b_uart_fifo_cfg (sci_b_uart_instance_ctrl_t * const p_ctrl)
  #if SCI_UART_CFG_TX_ENABLE && SCI_B_UART_CFG_DMAC_SUPPORTED
         if (NULL != p_ctrl->p_cfg->p_transfer_tx)
         {
-            /* When using the DMAC, setting TTRG to (FIFO_DEPTH - 1) is recommended by the user's manual.
-             * For more information, refer to the user's manual and navigate to the FCR Register's TTRG bits. */
+            /* When using the DMAC, setting TTRG to (FIFO_DEPTH - 1) is recommended by the hardware manual.
+             * For more information, refer to the hardware manual and navigate to the FCR Register's TTRG bits. */
             fcr |= (BSP_FEATURE_SCI_UART_FIFO_DEPTH - 1) << R_SCI_B0_FCR_TTRG_Pos;
         }
  #endif

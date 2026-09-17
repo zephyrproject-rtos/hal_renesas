@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -213,10 +213,14 @@ FSP_HEADER
  #define BSP_SLV_ACCCNT_WRITE_DIRECTION                  (16U)
  #define BSP_SLV_ACCCNT_READ_DIRECTION                   (0U)
 
+ #ifndef BSP_OVERRIDE_BSP_SLV_ACCESS_CONTROL
+
  #define BSP_SLV_ACCCNT_REG_BSP_SLV_ACCCNT_SRAMM         (R_TZC_SRAMM->REGION_ID_ACCESS_0)
  #define BSP_SLV_ACCCNT_REG_BSP_SLV_ACCCNT_SRAMA         (R_TZC_SRAMA->REGION_ID_ACCESS_0)
  #define BSP_SLV_ACCCNT_REG_BSP_SLV_ACCCNT_DDR01         (R_TZC_DDR01->REGION_ID_ACCESS_0)
  #define BSP_SLV_ACCCNT_REG_BSP_SLV_ACCCNT_DDR11         (R_TZC_DDR11->REGION_ID_ACCESS_0)
+
+ #endif
 
  #ifndef BSP_OVERRIDE_BSP_MST_ACCESS_CONTROL
 

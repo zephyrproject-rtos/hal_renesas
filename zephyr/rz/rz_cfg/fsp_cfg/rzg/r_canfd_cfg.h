@@ -8,17 +8,22 @@
 
 #ifndef R_CANFD_CFG_H_
 #define R_CANFD_CFG_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define CANFD_CFG_PARAM_CHECKING_ENABLE   (BSP_CFG_PARAM_CHECKING_ENABLE)
 
 #define CANFD_CFG_AFL_CH0_RULE_NUM   (DT_PROP_OR(DT_NODELABEL(canfd0), rx_max_filters, 64))
 #define CANFD_CFG_AFL_CH1_RULE_NUM   (DT_PROP_OR(DT_NODELABEL(canfd1), rx_max_filters, 64))
+#define CANFD_CFG_AFL_CH2_RULE_NUM   (0)
+#define CANFD_CFG_AFL_CH3_RULE_NUM   (0)
+#define CANFD_CFG_AFL_CH4_RULE_NUM   (0)
+#define CANFD_CFG_AFL_CH5_RULE_NUM   (0)
 
-#define CANFD_CFG_GLOBAL_ERROR_CH    (1)
+#define CANFD_CFG_GLOBAL_ERROR_CH    (1U)
 
-#define CANFD_CFG_FD_STANDARD             (0)
-#define CANFD_CFG_FD_PROTOCOL_EXCEPTION   (0)
-
+#define CANFD_CFG_FD_PROTOCOL_EXCEPTION (0)
 #define CANFD_CFG_GLOBAL_ERR_SOURCES    (0x3)
 #define CANFD_CFG_TX_PRIORITY           (R_CANFD_CFDGCFG_TPRI_Msk)
 #define CANFD_CFG_DLC_CHECK             (0)
@@ -78,4 +83,8 @@
 #define CANFD_CFG_RXFIFO7_PAYLOAD       (7)
 #define CANFD_CFG_RXFIFO7_INT_MODE      (R_CANFD_CFDRFCC_RFIE_Msk | R_CANFD_CFDRFCC_RFIM_Msk)
 #define CANFD_CFG_RXFIFO7_ENABLE        (0)
+
+#ifdef __cplusplus
+}
+#endif
 #endif /* R_CANFD_CFG_H_ */

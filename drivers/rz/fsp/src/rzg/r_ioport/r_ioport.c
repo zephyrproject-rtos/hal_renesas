@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -17,63 +17,65 @@
  **********************************************************************************************************************/
 
 /* "PORT" in ASCII, used to determine if the module is open */
-#define IOPORT_OPEN                       (0x504F5254U)
-#define IOPORT_CLOSED                     (0x00000000U)
+#define IOPORT_OPEN                          (0x504F5254U)
+#define IOPORT_CLOSED                        (0x00000000U)
 
 /* Shift to get pin 0 on a package in extended data. */
-#define IOPORT_PRV_EXISTS_B0_SHIFT        (16UL)
+#define IOPORT_PRV_EXISTS_B0_SHIFT           (16UL)
 
 /* Mask to determine if any pins on port exist on this package. */
-#define IOPORT_PRV_PORT_EXISTS_MASK       (0xFFFF0000U)
+#define IOPORT_PRV_PORT_EXISTS_MASK          (0xFFFF0000U)
 
 /* Shift to get port in bsp_io_port_t and bsp_io_port_pin_t enums. */
-#define IOPORT_PRV_PORT_OFFSET            (8U)
+#define IOPORT_PRV_PORT_OFFSET               (8U)
 
-#define IOPORT_PRV_PORT_BITS              (0xFF00U)
-#define IOPORT_PRV_PIN_BITS               (0x00FFU)
+#define IOPORT_PRV_PORT_BITS                 (0xFF00U)
+#define IOPORT_PRV_PIN_BITS                  (0x00FFU)
 
 /* Macro definition for generating the values to set for each register from the ioport_cfg_options_t enums. */
-#define IOPORT_PRV_P_OFFSET               (0U)
-#define IOPORT_PRV_PM_OFFSET              (2U)
-#define IOPORT_PRV_PUPD_OFFSET            (4U)
-#define IOPORT_PRV_NOD_OFFSET             (6U)
-#define IOPORT_PRV_IOLH_OFFSET            (10U)
-#define IOPORT_PRV_ISEL_OFFSET            (14U)
-#define IOPORT_PRV_PMC_OFFSET             (16U)
-#define IOPORT_PRV_SR_OFFSET              (17U)
-#define IOPORT_PRV_IEN_OFFSET             (18U)
-#define IOPORT_PRV_FILONOFF_OFFSET        (19U)
-#define IOPORT_PRV_FILNUM_OFFSET          (20U)
-#define IOPORT_PRV_FILCLKSEL_OFFSET       (22U)
-#define IOPORT_PRV_PFC_OFFSET             (24U)
-#define IOPORT_PRV_SMT_OFFSET             (31U)
+#define IOPORT_PRV_P_OFFSET                  (0U)
+#define IOPORT_PRV_PM_OFFSET                 (2U)
+#define IOPORT_PRV_PUPD_OFFSET               (4U)
+#define IOPORT_PRV_NOD_OFFSET                (6U)
+#define IOPORT_PRV_IOLH_OFFSET               (10U)
+#define IOPORT_PRV_ISEL_OFFSET               (14U)
+#define IOPORT_PRV_PMC_OFFSET                (16U)
+#define IOPORT_PRV_SR_OFFSET                 (17U)
+#define IOPORT_PRV_IEN_OFFSET                (18U)
+#define IOPORT_PRV_FILONOFF_OFFSET           (19U)
+#define IOPORT_PRV_FILNUM_OFFSET             (20U)
+#define IOPORT_PRV_FILCLKSEL_OFFSET          (22U)
+#define IOPORT_PRV_PFC_OFFSET                (24U)
+#define IOPORT_PRV_SMT_OFFSET                (31U)
 
-#define IOPORT_PRV_ELC_PEL_MASK           (0x80)
-#define IOOPRT_PRV_ELC_PGC_MASK           (0x88)
-#define IOPORT_PRV_ELC_PEL_PSM_HIGH       (0x20)
+#define IOPORT_PRV_ELC_PEL_MASK              (0x80)
+#define IOOPRT_PRV_ELC_PGC_MASK              (0x88)
+#define IOPORT_PRV_ELC_PEL_PSM_HIGH          (0x20)
 
-#define IOPORT_PRV_PERIPHERAL_FUNCTION    (1U << 16)
+#define IOPORT_PRV_PERIPHERAL_FUNCTION       (1U << 16)
 
-#define IOPORT_PRV_2BIT_MASK              (0x3U)
-#define IOPORT_PRV_8BIT_MASK              (0xFFU)
+#define IOPORT_PRV_2BIT_MASK                 (0x3U)
+#define IOPORT_PRV_8BIT_MASK                 (0xFFU)
 
-#define IOPORT_PRV_BITFIELD_1BIT          (1U)
-#define IOPORT_PRV_BITFIELD_2BIT          (3U)
-#define IOPORT_PRV_BITFIELD_3BIT          (7U)
-#define IOPORT_PRV_BITFIELD_4BIT          (0xFU)
+#define IOPORT_PRV_BITFIELD_1BIT             (1U)
+#define IOPORT_PRV_BITFIELD_2BIT             (3U)
+#define IOPORT_PRV_BITFIELD_3BIT             (7U)
+#define IOPORT_PRV_BITFIELD_4BIT             (0xFU)
 
-#define IOPORT_PRV_POS_ALIGN_2BIT         (2U)
-#define IOPORT_PRV_POS_ALIGN_4BIT         (4U)
-#define IOPORT_PRV_POS_ALIGN_8BIT         (8U)
+#define IOPORT_PRV_POS_ALIGN_2BIT            (2U)
+#define IOPORT_PRV_POS_ALIGN_4BIT            (4U)
+#define IOPORT_PRV_POS_ALIGN_8BIT            (8U)
 
-#define IOPORT_PRV_SET_PWPR_PFSWE         (0x40U)
-#define IOPORT_PRV_SET_PWPR_BOWI          (0x80U)
+#define IOPORT_PRV_SET_PWPR_PFSWE            (0x40U)
+#define IOPORT_PRV_SET_PWPR_BOWI             (0x80U)
 
-#define IOPORT_PRV_NONMASK_ACCESS         (0xFFFFFFFFUL)
+#define IOPORT_PRV_NONMASK_ACCESS            (0xFFFFFFFFUL)
 
-#define IOPORT_PRV_MAX_PORT               (29U)
-#define IOPORT_PRV_MAX_PIN                (8U)
-#define IOPORT_PRV_NF_DREQ_NOT_USED       (0xF0U)
+#define IOPORT_PRV_MAX_PORT                  (29U)
+#define IOPORT_PRV_MAX_PIN                   (8U)
+#define IOPORT_PRV_NF_DREQ_NOT_USED          (0xF0U)
+
+#define IOPORT_PRV_CLONE_CHANNEL_NOT_USED    (0xF0U)
 
 #define IOPORT_PRV_P_REG_BASE_SET(base)                     IOPORT_PRV_P_REG_BASE(base)
 #define IOPORT_PRV_P_REG_BASE(base)                         (&R_GPIO->P ## base)
@@ -583,8 +585,763 @@ static const ioport_noise_filter_dreq_port_offset_t ioport_noise_filter_dmac[IOP
 };
 #endif
 
+#if BSP_FEATURE_IOPORT_SUPPORT_CLONE_CHANNEL
+
+/* Clone channel of RIIC. */
+static const ioport_clone_channel_num_riic_port_t ioport_clone_channel_num_riic_port[IOPORT_PRV_MAX_PORT][
+    IOPORT_PRV_MAX_PIN] =
+{
+    /* P00 to P07 */
+    {},                                /* Reserved */
+
+    /* P10 to P17 */
+    {},                                /* Reserved */
+
+    /* P20 to P21 */
+    {IOPORT_CLONE_CHANNEL_NUM_RIIC_P20,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P21},
+
+    /* P30 to P37 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* P40 to P47 */
+    {},                                /* Reserved */
+
+    /* P50 to P57 */
+    {IOPORT_CLONE_CHANNEL_NUM_RIIC_P50,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P51,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P52,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P53,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P54,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P55,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P56,
+     0xF0},
+
+    /* P60 to P67 */
+    {IOPORT_CLONE_CHANNEL_NUM_RIIC_P60,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P61,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P62,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P63,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P64,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P65,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P66,
+     0xF0},
+
+    /* P70 to P77 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P76,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P77},
+
+    /* P80 to P87 */
+    {IOPORT_CLONE_CHANNEL_NUM_RIIC_P80,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P81,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P82,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P83,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P84,
+     IOPORT_CLONE_CHANNEL_NUM_RIIC_P85,
+     0xF0,
+     0xF0},
+
+    /* P90 to P97 */
+    {},                                /* Reserved */
+
+    /* PA0 to PA7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PB0 to PB7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PC0 to PC2 */
+    {0xF0,
+     0xF0,
+     0xF0},
+
+    /* PD0 to PD7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PE0 to PE7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PF0 to PF2 */
+    {0xF0,
+     0xF0,
+     0xF0},
+
+    /* PG0 to PG7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PH0 to PH5 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    {},                                /* Reserved */
+
+    /* PJ0 to PJ4 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PK0 to PK3 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PL0 to PL7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PM0 to PM7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+
+    /* PS0 to PS3 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+};
+
+/* Clone channel of RSCI. */
+static const ioport_clone_channel_num_rsci_port_t ioport_clone_channel_num_rsci_port[IOPORT_PRV_MAX_PORT][
+    IOPORT_PRV_MAX_PIN] =
+{
+    /* P00 to P07 */
+    {},                                /* Reserved */
+
+    /* P10 to P17 */
+    {},                                /* Reserved */
+
+    /* P20 to P21 */
+    {0xF0,
+     0xF0},
+
+    /* P30 to P37 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* P40 to P47 */
+    {},                                /* Reserved */
+
+    /* P50 to P57 */
+    {IOPORT_CLONE_CHANNEL_NUM_RSCI_P50,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P51,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P52,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P53,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P54,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P55,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P56,
+     0xF0},
+
+    /* P60 to P67 */
+    {IOPORT_CLONE_CHANNEL_NUM_RSCI_P60,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P61,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P62,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P63,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P64,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P65,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P66,
+     0xF0},
+
+    /* P70 to P77 */
+    {IOPORT_CLONE_CHANNEL_NUM_RSCI_P70,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P71,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P72,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P73,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P74,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P75,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P76,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P77},
+
+    /* P80 to P87 */
+    {IOPORT_CLONE_CHANNEL_NUM_RSCI_P80,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P81,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P82,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P83,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P84,
+     IOPORT_CLONE_CHANNEL_NUM_RSCI_P85,
+     0xF0,
+     0xF0},
+
+    /* P90 to P97 */
+    {},                                /* Reserved */
+
+    /* PA0 to PA7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PB0 to PB7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PC0 to PC2 */
+    {0xF0,
+     0xF0,
+     0xF0},
+
+    /* PD0 to PD7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PE0 to PE7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PF0 to PF2 */
+    {0xF0,
+     0xF0,
+     0xF0},
+
+    /* PG0 to PG7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PH0 to PH5 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    {},                                /* Reserved */
+
+    /* PJ0 to PJ4 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PK0 to PK3 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PL0 to PL7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PM0 to PM7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+
+    /* PS0 to PS3 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+};
+
+/* Clone channel of RSPI. */
+static const ioport_clone_channel_num_rspi_port_t ioport_clone_channel_num_rspi_port[IOPORT_PRV_MAX_PORT][
+    IOPORT_PRV_MAX_PIN] =
+{
+    /* P00 to P07 */
+    {},                                /* Reserved */
+
+    /* P10 to P17 */
+    {},                                /* Reserved */
+
+    /* P20 to P21 */
+    {0xF0,
+     0xF0},
+
+    /* P30 to P37 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* P40 to P47 */
+    {},                                /* Reserved */
+
+    /* P50 to P57 */
+    {IOPORT_CLONE_CHANNEL_NUM_RSPI_P50,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P51,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P52,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P53,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P54,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P55,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P56,
+     0xF0},
+
+    /* P60 to P67 */
+    {IOPORT_CLONE_CHANNEL_NUM_RSPI_P60,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P61,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P62,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P63,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P64,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P65,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P66,
+     0xF0},
+
+    /* P70 to P77 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P77},
+
+    /* P80 to P87 */
+    {IOPORT_CLONE_CHANNEL_NUM_RSPI_P80,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P81,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P82,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P83,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P84,
+     IOPORT_CLONE_CHANNEL_NUM_RSPI_P85,
+     0xF0,
+     0xF0},
+
+    /* P90 to P97 */
+    {},                                /* Reserved */
+
+    /* PA0 to PA7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PB0 to PB7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PC0 to PC2 */
+    {0xF0,
+     0xF0,
+     0xF0},
+
+    /* PD0 to PD7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PE0 to PE7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PF0 to PF2 */
+    {0xF0,
+     0xF0,
+     0xF0},
+
+    /* PG0 to PG7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PH0 to PH5 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    {},                                /* Reserved */
+
+    /* PJ0 to PJ4 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PK0 to PK3 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PL0 to PL7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PM0 to PM7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+
+    /* PS0 to PS3 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+};
+
+/* Clone channel of SCIF. */
+static const ioport_clone_channel_num_scif_port_t ioport_clone_channel_num_scif_port[IOPORT_PRV_MAX_PORT][
+    IOPORT_PRV_MAX_PIN] =
+{
+    /* P00 to P07 */
+    {},                                /* Reserved */
+
+    /* P10 to P17 */
+    {},                                /* Reserved */
+
+    /* P20 to P21 */
+    {0xF0,
+     0xF0},
+
+    /* P30 to P37 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* P40 to P47 */
+    {},                                /* Reserved */
+
+    /* P50 to P57 */
+    {IOPORT_CLONE_CHANNEL_NUM_SCIF_P50,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P51,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P52,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P53,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P54,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P55,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P56,
+     0xF0},
+
+    /* P60 to P67 */
+    {IOPORT_CLONE_CHANNEL_NUM_SCIF_P60,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P61,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P62,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P63,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P64,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P65,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P66,
+     0xF0},
+
+    /* P70 to P77 */
+    {IOPORT_CLONE_CHANNEL_NUM_SCIF_P70,
+     0xF0,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P72,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P73,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P74,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P75,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P76,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P77},
+
+    /* P80 to P87 */
+    {IOPORT_CLONE_CHANNEL_NUM_SCIF_P80,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P81,
+     IOPORT_CLONE_CHANNEL_NUM_SCIF_P82,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* P90 to P97 */
+    {},                                /* Reserved */
+
+    /* PA0 to PA7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PB0 to PB7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PC0 to PC2 */
+    {0xF0,
+     0xF0,
+     0xF0},
+
+    /* PD0 to PD7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PE0 to PE7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PF0 to PF2 */
+    {0xF0,
+     0xF0,
+     0xF0},
+
+    /* PG0 to PG7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PH0 to PH5 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    {},                                /* Reserved */
+
+    /* PJ0 to PJ4 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PK0 to PK3 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PL0 to PL7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    /* PM0 to PM7 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+    {},                                /* Reserved */
+
+    /* PS0 to PS3 */
+    {0xF0,
+     0xF0,
+     0xF0,
+     0xF0},
+};
+
+#endif
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup IOPORT
+ * @addtogroup RZG_IOPORT
  * @{
  **********************************************************************************************************************/
 
@@ -608,6 +1365,9 @@ fsp_err_t R_IOPORT_Open (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p_cf
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data || 0 == p_cfg->number_of_pins);
     FSP_ERROR_RETURN(IOPORT_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
+ #if BSP_FEATURE_BSP_HAS_ELC
+    FSP_ASSERT(NULL != p_cfg->p_extend);
+ #endif
 #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
@@ -668,6 +1428,9 @@ fsp_err_t R_IOPORT_PinsCfg (ioport_ctrl_t * const p_ctrl, const ioport_cfg_t * p
     FSP_ERROR_RETURN(IOPORT_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_pin_cfg_data);
+ #if BSP_FEATURE_BSP_HAS_ELC
+    FSP_ASSERT(NULL != p_cfg->p_extend);
+ #endif
 #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
@@ -1160,6 +1923,11 @@ fsp_err_t R_IOPORT_PinEventOutputWrite (ioport_ctrl_t * const p_ctrl, bsp_io_por
 /*******************************************************************************************************************//**
  * @} (end addtogroup IOPORT)
  **********************************************************************************************************************/
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -1258,7 +2026,7 @@ static void r_ioport_dedicated_port_cfg (bsp_io_port_pin_t pin, uint32_t value)
     uint32_t            value_pupd;
 #endif
 
-#if !BSP_FEATURE_IOPORT_SUPPORT_PERIPHERAL_FIL_NMI
+#if ((!BSP_FEATURE_IOPORT_SUPPORT_PERIPHERAL_FIL_NMI) && (BSP_FEATURE_IOPORT_HAS_DEDICATED_NMI))
     volatile uint32_t * p_filonoff;
     volatile uint32_t * p_filnum;
     volatile uint32_t * p_filclksel;
@@ -1276,7 +2044,8 @@ static void r_ioport_dedicated_port_cfg (bsp_io_port_pin_t pin, uint32_t value)
     /* Configure of IEN Register */
     adr_offset_ien = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM) * 2) + (u_pin >> 2));
     p_ien          =
-        IOPORT_PRV_IEN_REG_BASE_SET(BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM_SYM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+        IOPORT_PRV_IEN_REG_BASE_SET(BSP_FEATURE_IOPORT_IEN_SP_REG_BASE_NUM_SYM,
+                                    BSP_FEATURE_IOPORT_IEN_SP_REG_POSTFIX_L);
     mask_ien  = IOPORT_PRV_BITFIELD_1BIT << bitpos_align;
     value_ien = (value >> IOPORT_PRV_IEN_OFFSET) & IOPORT_PRV_BITFIELD_1BIT;
     r_ioport_regwrite_32(&p_ien[adr_offset_ien], value_ien, bitpos_align, mask_ien);
@@ -1284,7 +2053,7 @@ static void r_ioport_dedicated_port_cfg (bsp_io_port_pin_t pin, uint32_t value)
     /* Configure of IOLH Register */
     adr_offset_iolh = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_SP_REG_BASE_NUM) * 2) + (u_pin >> 2));
     p_iolh          =
-        IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_IOLH_SP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+        IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_IOLH_SP_REG_BASE_NUM, BSP_FEATURE_IOPORT_IOLH_SP_REG_POSTFIX_L);
     mask_iolh  = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
     value_iolh = (value >> IOPORT_PRV_IOLH_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
     r_ioport_regwrite_32(&p_iolh[adr_offset_iolh], value_iolh, bitpos_align, mask_iolh);
@@ -1316,13 +2085,14 @@ static void r_ioport_dedicated_port_cfg (bsp_io_port_pin_t pin, uint32_t value)
     /* Configure of PUPD Register */
     adr_offset_pupd = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_PUPD_SP_REG_BASE_NUM) * 2) + (u_pin >> 2));
     p_pupd          =
-        IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_PUPD_SP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+        IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_PUPD_SP_REG_BASE_NUM_SYM,
+                                     BSP_FEATURE_IOPORT_PUPD_SP_REG_POSTFIX_L);
     mask_pupd  = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
     value_pupd = (value >> IOPORT_PRV_PUPD_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
     r_ioport_regwrite_32(&p_pupd[adr_offset_pupd], value_pupd, bitpos_align, mask_pupd);
 #endif
 
-#if (!BSP_FEATURE_IOPORT_SUPPORT_PERIPHERAL_FIL_NMI)
+#if ((!BSP_FEATURE_IOPORT_SUPPORT_PERIPHERAL_FIL_NMI) && (BSP_FEATURE_IOPORT_HAS_DEDICATED_NMI))
     if (((BSP_IO_NMI & IOPORT_PRV_PORT_BITS) >> IOPORT_PRV_PORT_OFFSET) == u_port)
     {
         /* When use NMI pin, configure FILONOFF, FILNUM, FILCLKSEL register. */
@@ -1424,6 +2194,50 @@ static void r_ioport_peri_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
 
     r_ioport_make_port_pin_num(pin, &u_port, &u_pin);
 
+#if (BSP_FEATURE_IOPORT_SUPPORT_CLONE_CHANNEL)
+    value_pfc = ((value >> IOPORT_PRV_PFC_OFFSET) & BSP_FEATURE_IOPORT_PFC_REG_BITFIELD);
+
+    volatile uint32_t * p_sys_ipcont_set_clonech = BSP_FEATURE_SYS_IPCONT_SEL_CLONECH_REG_BASE;
+    uint8_t             u_port_clonech           = (uint8_t) (u_port + BSP_FEATURE_IOPORT_CLONE_CHANNEL_PORT_OFFSET);
+
+    /* Configure of SYS_IPCONT_ SEL_CLONECH Register for RIIC */
+    if ((BSP_FEATURE_IOPORT_ClONE_CHANNEL_RIIC_FUNC == (value_pfc << IOPORT_PRV_PFC_OFFSET)) &&
+        (ioport_clone_channel_num_riic_port[u_port_clonech][u_pin] != IOPORT_PRV_CLONE_CHANNEL_NOT_USED))
+    {
+        *p_sys_ipcont_set_clonech |= 1U << (ioport_clone_channel_num_riic_port[u_port_clonech][u_pin] -
+                                            BSP_FEATURE_IOPORT_CLONE_CHANNEL_RIIC_BASE_NUM +
+                                            BSP_FEATURE_IOPORT_CLONE_CHANNEL_RIIC_BASE_BIT);
+    }
+
+    /* Configure of SYS_IPCONT_ SEL_CLONECH Register for RSCI */
+    if (((BSP_FEATURE_IOPORT_ClONE_CHANNEL_RSCI_FUNC == (value_pfc << IOPORT_PRV_PFC_OFFSET)) ||
+         (BSP_FEATURE_IOPORT_ClONE_CHANNEL_RSCI_FUNC_EXT == (value_pfc << IOPORT_PRV_PFC_OFFSET))) &&
+        (ioport_clone_channel_num_rsci_port[u_port_clonech][u_pin] != IOPORT_PRV_CLONE_CHANNEL_NOT_USED))
+    {
+        *p_sys_ipcont_set_clonech |= 1U << (ioport_clone_channel_num_rsci_port[u_port_clonech][u_pin] -
+                                            BSP_FEATURE_IOPORT_CLONE_CHANNEL_RSCI_BASE_NUM +
+                                            BSP_FEATURE_IOPORT_CLONE_CHANNEL_RSCI_BASE_BIT);
+    }
+
+    /* Configure of SYS_IPCONT_ SEL_CLONECH Register for RSPI */
+    if ((BSP_FEATURE_IOPORT_ClONE_CHANNEL_RSPI_FUNC == (value_pfc << IOPORT_PRV_PFC_OFFSET)) &&
+        (ioport_clone_channel_num_rspi_port[u_port_clonech][u_pin] != IOPORT_PRV_CLONE_CHANNEL_NOT_USED))
+    {
+        *p_sys_ipcont_set_clonech |= 1U << (ioport_clone_channel_num_rspi_port[u_port_clonech][u_pin] -
+                                            BSP_FEATURE_IOPORT_CLONE_CHANNEL_RSPI_BASE_NUM +
+                                            BSP_FEATURE_IOPORT_CLONE_CHANNEL_RSPI_BASE_BIT);
+    }
+
+    /* Configure of SYS_IPCONT_ SEL_CLONECH Register for SCIF */
+    if ((BSP_FEATURE_IOPORT_ClONE_CHANNEL_SCIF_FUNC == (value_pfc << IOPORT_PRV_PFC_OFFSET)) &&
+        (ioport_clone_channel_num_scif_port[u_port_clonech][u_pin] != IOPORT_PRV_CLONE_CHANNEL_NOT_USED))
+    {
+        *p_sys_ipcont_set_clonech |= 1U << (ioport_clone_channel_num_scif_port[u_port_clonech][u_pin] -
+                                            BSP_FEATURE_IOPORT_CLONE_CHANNEL_SCIF_BASE_NUM +
+                                            BSP_FEATURE_IOPORT_CLONE_CHANNEL_SCIF_BASE_BIT);
+    }
+#endif
+
     /* Configure of PMC Register */
     p_pmc     = IOPORT_PRV_PMC_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM);
     mask_pmc  = (uint8_t) (IOPORT_PRV_BITFIELD_1BIT << u_pin);
@@ -1439,17 +2253,19 @@ static void r_ioport_peri_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
     bitpos_align = (u_pin & IOPORT_PRV_2BIT_MASK) * IOPORT_PRV_POS_ALIGN_8BIT;
 
     /* Configure of IOLH Register */
-    adr_offset_iolh = (uint8_t) ((u_port * 2) + (u_pin >> 2));
+    adr_offset_iolh = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_IOLH_GP_REG_BASE_NUM) * 2) + (u_pin >> 2));
     p_iolh          =
-        IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+        IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_IOLH_GP_REG_BASE_NUM_SYM,
+                                     BSP_FEATURE_IOPORT_IOLH_GP_REG_POSTFIX_L);
     mask_iolh  = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
     value_iolh = (value >> IOPORT_PRV_IOLH_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
     r_ioport_regwrite_32(&p_iolh[adr_offset_iolh], value_iolh, bitpos_align, mask_iolh);
 
     /* Configure of PUPD Register */
-    adr_offset_pupd = (uint8_t) ((u_port * 2) + (u_pin >> 2));
+    adr_offset_pupd = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_PUPD_GP_REG_BASE_NUM) * 2) + (u_pin >> 2));
     p_pupd          =
-        IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+        IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_PUPD_GP_REG_BASE_NUM_SYM,
+                                     BSP_FEATURE_IOPORT_PUPD_GP_REG_POSTFIX_L);
     mask_pupd  = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
     value_pupd = (value >> IOPORT_PRV_PUPD_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
     r_ioport_regwrite_32(&p_pupd[adr_offset_pupd], value_pupd, bitpos_align, mask_pupd);
@@ -1479,7 +2295,8 @@ static void r_ioport_peri_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
     /* Configure of IEN Register */
     adr_offset_ien = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM) * 2) + (u_pin >> 2));
     p_ien          =
-        IOPORT_PRV_IEN_REG_BASE_SET(BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM_SYM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+        IOPORT_PRV_IEN_REG_BASE_SET(BSP_FEATURE_IOPORT_IEN_GP_REG_BASE_NUM_SYM,
+                                    BSP_FEATURE_IOPORT_IEN_GP_REG_POSTFIX_L);
     mask_ien  = IOPORT_PRV_BITFIELD_1BIT << bitpos_align;
     value_ien = (value >> IOPORT_PRV_IEN_OFFSET) & IOPORT_PRV_BITFIELD_1BIT;
     r_ioport_regwrite_32(&p_ien[adr_offset_ien], value_ien, bitpos_align, mask_ien);
@@ -1566,10 +2383,12 @@ static void r_ioport_port_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
     uint8_t            mask_p;
     uint8_t            value_p;
 
+    uint8_t             adr_offset_iolh;
     volatile uint32_t * p_iolh;
     uint32_t            mask_iolh;
     uint32_t            value_iolh;
 
+    uint8_t             adr_offset_pupd;
     volatile uint32_t * p_pupd;
     uint32_t            mask_pupd;
     uint32_t            value_pupd;
@@ -1628,20 +2447,27 @@ static void r_ioport_port_mode_pin_config (bsp_io_port_pin_t pin, uint32_t value
     value_p = (uint8_t) ((value >> IOPORT_PRV_P_OFFSET) & IOPORT_PRV_BITFIELD_1BIT);
     r_ioport_regwrite_8(&p_p[u_port], value_p, u_pin, mask_p);
 
-    adr_offset   = (uint8_t) ((u_port * 2) + (u_pin >> 2));
     bitpos_align = (u_pin & IOPORT_PRV_2BIT_MASK) * IOPORT_PRV_POS_ALIGN_8BIT;
 
     /* Configure of IOLH Register */
-    p_iolh     = IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    adr_offset_iolh = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_IOLH_GP_REG_BASE_NUM) * 2) + (u_pin >> 2));
+    p_iolh          =
+        IOPORT_PRV_IOLH_REG_BASE_SET(BSP_FEATURE_IOPORT_IOLH_GP_REG_BASE_NUM_SYM,
+                                     BSP_FEATURE_IOPORT_IOLH_GP_REG_POSTFIX_L);
     mask_iolh  = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
     value_iolh = (value >> IOPORT_PRV_IOLH_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
-    r_ioport_regwrite_32(&p_iolh[adr_offset], value_iolh, bitpos_align, mask_iolh);
+    r_ioport_regwrite_32(&p_iolh[adr_offset_iolh], value_iolh, bitpos_align, mask_iolh);
 
     /* Configure of PUPD Register */
-    p_pupd     = IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);
+    adr_offset_pupd = (uint8_t) (((u_port - BSP_FEATURE_IOPORT_PUPD_GP_REG_BASE_NUM) * 2) + (u_pin >> 2));
+    p_pupd          =
+        IOPORT_PRV_PUPD_REG_BASE_SET(BSP_FEATURE_IOPORT_PUPD_GP_REG_BASE_NUM_SYM,
+                                     BSP_FEATURE_IOPORT_PUPD_GP_REG_POSTFIX_L);
     mask_pupd  = IOPORT_PRV_BITFIELD_2BIT << bitpos_align;
     value_pupd = (value >> IOPORT_PRV_PUPD_OFFSET) & IOPORT_PRV_BITFIELD_2BIT;
-    r_ioport_regwrite_32(&p_pupd[adr_offset], value_pupd, bitpos_align, mask_pupd);
+    r_ioport_regwrite_32(&p_pupd[adr_offset_pupd], value_pupd, bitpos_align, mask_pupd);
+
+    adr_offset = (uint8_t) ((u_port * 2) + (u_pin >> 2));
 
     /* Configure of ISEL Register */
     p_isel     = IOPORT_PRV_ISEL_REG_BASE_SET(BSP_FEATURE_IOPORT_GP_REG_BASE_NUM, BSP_FEATURE_IOPORT_REG_POSTFIX_L);

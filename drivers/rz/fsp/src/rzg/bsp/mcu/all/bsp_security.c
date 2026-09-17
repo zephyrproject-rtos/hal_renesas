@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -63,8 +63,15 @@ BSP_DONT_REMOVE uint32_t const * const gp_start_of_nonsecure_vector_table = &__t
 #define BSP_PRV_STACK_LIMIT    ((uint32_t) &__StackLimit)
 extern uint32_t __StackLimit;
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZG_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -99,6 +106,14 @@ void R_BSP_NonSecureEnter (void)
 }
 
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
+/** @cond DOXYGEN_IGNORE_ATTRIBUTE */
 
 /*******************************************************************************************************************//**
  * Initialize security features for TrustZone.
@@ -157,3 +172,5 @@ void R_BSP_SecurityInit (void)
 BSP_WEAK_REFERENCE void R_BSP_PinCfgSecurityInit (void)
 {
 }
+
+/** @endcond */
