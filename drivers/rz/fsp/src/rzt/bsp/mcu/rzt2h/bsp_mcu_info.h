@@ -1,17 +1,29 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZT
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @ingroup BSP_MCU
- * @defgroup BSP_MCU_RZT2H RZT2H
+ * @ingroup RZT_BSP_MCU
+ * @defgroup RZT_BSP_MCU_RZT2H RZT2H
  * @includedoc config_bsp_rzt2h_fsp.html
  * @{
  **********************************************************************************************************************/
 
 /** @} (end defgroup BSP_MCU_RZT2H) */
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 #ifndef BSP_MCU_INFO_H
 #define BSP_MCU_INFO_H
@@ -20,7 +32,7 @@
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
 
-/* BSP MCU Specific Includes. */
+/* BSP MPU Specific Includes. */
 #include "bsp_elc.h"
 #include "bsp_feature.h"
 
@@ -30,7 +42,7 @@ FSP_HEADER
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#if ((1 != _RZT_ORDINAL) && (1 == BSP_CFG_DDR_INIT_ENABLE))
+#if ((1 != _RZ_ORDINAL) && (1 == BSP_CFG_DDR_INIT_ENABLE))
  #error "DDR setting is prohibited except for primary core project. Please disable DDR setting in the BSP properties."
 #endif
 

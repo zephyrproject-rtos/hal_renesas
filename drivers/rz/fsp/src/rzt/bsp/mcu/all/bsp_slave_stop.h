@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -30,17 +30,27 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZT
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZT_BSP_MCU
  * @{
  **********************************************************************************************************************/
 typedef enum e_bsp_bus_slave
 {
+    BSP_BUS_SLAVE_DDRSS_PORT1 = (BSP_SLAVE_STOP_SSTPCR0_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(0, 1)),
     BSP_BUS_SLAVE_DDRSS_A0_IF = (BSP_SLAVE_STOP_SSTPCR0_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(0, 1)),
     BSP_BUS_SLAVE_DDRSS_A1_IF = (BSP_SLAVE_STOP_SSTPCR0_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(4, 5)),
+    BSP_BUS_SLAVE_DDRSS_PORT0 = (BSP_SLAVE_STOP_SSTPCR4_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(0, 1)),
     BSP_BUS_SLAVE_DDRSS_R2_IF = (BSP_SLAVE_STOP_SSTPCR4_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(0, 1)),
     BSP_BUS_SLAVE_DDRSS_R3_IF = (BSP_SLAVE_STOP_SSTPCR4_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(4, 5)),
     BSP_BUS_SLAVE_DDRSS_A4_IF = (BSP_SLAVE_STOP_SSTPCR0_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(8, 9)),
+    BSP_BUS_SLAVE_PCIE        = (BSP_SLAVE_STOP_SSTPCR1_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(0, 1)),
     BSP_BUS_SLAVE_PCIE0       = (BSP_SLAVE_STOP_SSTPCR1_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(0, 1)),
     BSP_BUS_SLAVE_PCIE1       = (BSP_SLAVE_STOP_SSTPCR1_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(4, 5)),
     BSP_BUS_SLAVE_SDHI0       = (BSP_SLAVE_STOP_SSTPCR1_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(16, 17)),
@@ -48,12 +58,20 @@ typedef enum e_bsp_bus_slave
     BSP_BUS_SLAVE_GIC600      = (BSP_SLAVE_STOP_SSTPCR5_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(16, 17)),
     BSP_BUS_SLAVE_XSPI0       = (BSP_SLAVE_STOP_SSTPCR6_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(0, 1)),
     BSP_BUS_SLAVE_XSPI1       = (BSP_SLAVE_STOP_SSTPCR6_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(4, 5)),
+    BSP_BUS_SLAVE_OTFD0       = (BSP_SLAVE_STOP_SSTPCR6_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(16, 17)),
+    BSP_BUS_SLAVE_OTFD1       = (BSP_SLAVE_STOP_SSTPCR6_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(20, 21)),
     BSP_BUS_SLAVE_CR520_AXIS  = (BSP_SLAVE_STOP_SSTPCR7_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(0, 1)),
     BSP_BUS_SLAVE_CR521_AXIS  = (BSP_SLAVE_STOP_SSTPCR7_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(4, 5)),
+    BSP_BUS_SLAVE_HPSW        = (BSP_SLAVE_STOP_SSTPCR7_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(16, 17)),
     BSP_BUS_SLAVE_DDRAPB      = (BSP_SLAVE_STOP_SSTPCR4_SELECT | BSP_SLAVE_STOP_SSTPCR_REQ_ACK_POS(8, 8)),
 } bsp_bus_slave_t;
 
 /** @} (end addtogroup BSP_MCU) */
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /***********************************************************************************************************************
  * Exported global variables
