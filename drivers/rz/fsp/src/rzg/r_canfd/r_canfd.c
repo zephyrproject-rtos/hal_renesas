@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -169,8 +169,15 @@ const can_api_t g_canfd_on_canfd =
     .callbackSet    = R_CANFD_CallbackSet,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup CANFD
+ * @addtogroup RZG_CANFD
  * @{
  **********************************************************************************************************************/
 
@@ -182,7 +189,7 @@ const can_api_t g_canfd_on_canfd =
  * Open and configure the CANFD channel for operation.
  *
  * Example:
- * @snippet r_canfd_example.c R_CANFD_Open
+ * @snippet rzg_r_canfd_example.c R_CANFD_Open
  *
  * @retval FSP_SUCCESS                            Channel opened successfully.
  * @retval FSP_ERR_ALREADY_OPEN                   Driver already open.
@@ -270,7 +277,7 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
     if (p_reg->CFDGSTS & R_CANFD_CFDGSTS_GRSTSTS_Msk)
 #endif
     {
-        /* Wait for RAM initialization (see the user's manual section 'Timing of Global Mode Change' Note 2 */
+        /* Wait for RAM initialization (see the hardware manual section 'Timing of Global Mode Change' Note 2 */
         FSP_HARDWARE_REGISTER_WAIT((p_reg->CFDGSTS & R_CANFD_CFDGSTS_GRAMINIT_Msk), 0);
 
         /* Cancel Global Sleep and wait for transition to Global Reset */
@@ -334,7 +341,7 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
         for (uint32_t i = 0; i < BSP_FEATURE_CANFD_NUM_COMMON_FIFOS; i++)
         {
             /* Configure the Common FIFOs. Mask out the enable bit because it can only be set once operating.
-             * See Section Common FIFO Configuration/Control Register n (CFDCFCCn) of the user's manual */
+             * See Section Common FIFO Configuration/Control Register n (CFDCFCCn) of the hardware manual */
             p_reg->CFDCFCC[i] = p_global_cfg->common_fifo_config[i] & ~R_CANFD_CFDCFCC_CFE_Msk;
         }
     }
@@ -390,7 +397,7 @@ fsp_err_t R_CANFD_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const p
     for ( ; afl_entry < afl_max; afl_entry++)
     {
         /* AFL register access is performed through a page window comprised of 16 entries. See Section "Entering
-         * Entries in the AFL" in the the user's manual for more details. */
+         * Entries in the AFL" in the the hardware manual for more details. */
 
         /* Set AFL page */
         p_reg->CFDGAFLECTR = (afl_entry >> 4) | R_CANFD_CFDGAFLECTR_AFLDAE_Msk;
@@ -607,7 +614,7 @@ fsp_err_t R_CANFD_Close (can_ctrl_t * const p_api_ctrl)
  * Write data to the CANFD channel.
  *
  * Example:
- * @snippet r_canfd_example.c R_CANFD_Write
+ * @snippet rzg_r_canfd_example.c R_CANFD_Write
  *
  * @retval FSP_SUCCESS                      Operation succeeded.
  * @retval FSP_ERR_NOT_OPEN                 Control block not open.
@@ -764,7 +771,7 @@ fsp_err_t R_CANFD_Write (can_ctrl_t * const p_api_ctrl, uint32_t buffer, can_fra
  * Read data from a CANFD Message Buffer or FIFO.
  *
  * Example:
- * snippet r_canfd_example.c R_CANFD_Read
+ * snippet rzg_r_canfd_example.c R_CANFD_Read
  *
  * @retval FSP_SUCCESS                      Operation succeeded.
  * @retval FSP_ERR_NOT_OPEN                 Control block not open.
@@ -827,7 +834,7 @@ fsp_err_t R_CANFD_Read (can_ctrl_t * const p_api_ctrl, uint32_t buffer, can_fram
  * Switch to a different channel, global or test mode.
  *
  * Example:
- * @snippet r_canfd_example.c R_CANFD_ModeTransition
+ * @snippet rzg_r_canfd_example.c R_CANFD_ModeTransition
  *
  * @retval FSP_SUCCESS                      Operation succeeded.
  * @retval FSP_ERR_NOT_OPEN                 Control block not open.
@@ -861,7 +868,7 @@ fsp_err_t R_CANFD_ModeTransition (can_ctrl_t * const   p_api_ctrl,
  #endif
 
     /* Check to ensure the current mode is Global Reset when transitioning into or out of Global Sleep (see Section
-     * "Global Modes" in the user's manual for details) */
+     * "Global Modes" in the hardware manual for details) */
     FSP_ERROR_RETURN(((cfdgsts & R_CANFD_CFDGSTS_GRSTSTS_Msk) && (CAN_OPERATION_MODE_RESET & operation_mode)) ||
                      (!(cfdgsts & R_CANFD_CFDGSTS_GSLPSTS_Msk) && (CAN_OPERATION_MODE_GLOBAL_SLEEP != operation_mode)),
                      FSP_ERR_INVALID_MODE);
@@ -883,7 +890,7 @@ fsp_err_t R_CANFD_ModeTransition (can_ctrl_t * const   p_api_ctrl,
 #if !BSP_FEATURE_CANFD_LITE
 
         /* Follow the procedure for switching to Internal Bus mode given in Section "Internal CAN Bus
-         * Communication Test Mode" of the user's manual */
+         * Communication Test Mode" of the hardware manual */
         if (CAN_TEST_MODE_INTERNAL_BUS == test_mode)
         {
             /* Disable channel test mode */
@@ -963,7 +970,13 @@ fsp_err_t R_CANFD_InfoGet (can_ctrl_t * const p_api_ctrl, can_info_t * const p_i
     p_info->error_count_transmit = (uint8_t) ((cfdcnsts & R_CANFD_CFDC_STS_TEC_Msk) >> R_CANFD_CFDC_STS_TEC_Pos);
     p_info->error_code           = p_ctrl->p_reg->CFDC[interlaced_channel].ERFL & UINT16_MAX;
 #if BSP_FEATURE_CANFD_RXMB_MAX > CANFD_PRV_CFDRMND_BIT_NUM
-    for (uint8_t i = 0; i < (BSP_FEATURE_CANFD_RXMB_MAX / CANFD_PRV_CFDRMND_BIT_NUM); i++)
+    uint32_t num_of_rmnd = BSP_FEATURE_CANFD_RXMB_MAX / CANFD_PRV_CFDRMND_BIT_NUM;
+    if ((BSP_FEATURE_CANFD_RXMB_MAX % CANFD_PRV_CFDRMND_BIT_NUM) != 0)
+    {
+        num_of_rmnd += 1;
+    }
+
+    for (uint8_t i = 0; i < num_of_rmnd; i++)
     {
         p_info->rx_mb_status[i] = p_ctrl->p_reg->CFDRMND[i];
     }
@@ -994,7 +1007,7 @@ fsp_err_t R_CANFD_InfoGet (can_ctrl_t * const p_api_ctrl, can_info_t * const p_i
  **********************************************************************************************************************/
 fsp_err_t R_CANFD_CallbackSet (can_ctrl_t * const          p_api_ctrl,
                                void (                    * p_callback)(can_callback_args_t *),
-                               void const * const          p_context,
+                               void * const                p_context,
                                can_callback_args_t * const p_callback_memory)
 {
     canfd_instance_ctrl_t * p_ctrl = (canfd_instance_ctrl_t *) p_api_ctrl;
@@ -1037,6 +1050,12 @@ fsp_err_t R_CANFD_CallbackSet (can_ctrl_t * const          p_api_ctrl,
  * @} (end addtogroup CAN)
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
@@ -1049,7 +1068,7 @@ static bool r_canfd_bit_timing_parameter_check (can_bit_timing_cfg_t * const p_b
                      false);
 
     /* Check that TSEG1 > TSEG2 >= SJW for nominal bitrate and that TSEG1 >= TSEG2 >= SJW for data bitrate per section
-     * "Bit Timing Conditions" in the user's manual. */
+     * "Bit Timing Conditions" in the hardware manual. */
 
  #if BSP_FEATURE_CANFD_FD_SUPPORT
     if (is_data_phase)
@@ -1669,7 +1688,7 @@ static void r_canfd_mode_transition (canfd_instance_ctrl_t * p_ctrl, can_operati
             ((!(cfdcnctr & CANFD_PRV_CTR_RESET_BIT)) && (CAN_OPERATION_MODE_SLEEP == operation_mode)))
         {
             /* Transition channel to Reset if a transition to/from Sleep is requested (see Section "Channel
-             * Modes" in the user's manual for details) */
+             * Modes" in the hardware manual for details) */
             r_canfd_mode_ctr_set(&p_ctrl->p_reg->CFDC[interlaced_channel].CTR, CAN_OPERATION_MODE_RESET);
         }
 
@@ -1708,7 +1727,7 @@ static void r_canfd_mode_ctr_set (volatile uint32_t * p_ctr_reg, can_operation_m
 {
     volatile uint32_t * p_sts_reg = p_ctr_reg + 1;
 
-    /* See definitions for CFDCnCTR, CFDCnSTS, CFDGCTR and CFDGSTS in the user's manual */
+    /* See definitions for CFDCnCTR, CFDCnSTS, CFDGCTR and CFDGSTS in the hardware manual */
     *p_ctr_reg = (*p_ctr_reg & ~CANFD_PRV_CTR_MODE_MASK) | operation_mode;
     FSP_HARDWARE_REGISTER_WAIT((*p_sts_reg & CANFD_PRV_CTR_MODE_MASK), operation_mode);
 }

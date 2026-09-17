@@ -1,17 +1,8 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @ingroup BSP_MCU
- * @defgroup BSP_MCU_RZG3E RZG3E
- * @includedoc config_bsp_rzg3e_fsp.html
- * @{
- **********************************************************************************************************************/
-
-/** @} (end defgroup BSP_MCU_RZG3E) */
 
 #ifndef BSP_MCU_INFO_H
 #define BSP_MCU_INFO_H
@@ -37,6 +28,20 @@
  * Macro definitions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @ingroup RZG_BSP_MCU
+ * @defgroup RZG_BSP_MPU_RZG3E RZG3E
+ * @includedoc config_bsp_rzg3e_fsp.html
+ * @{
+ **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -49,5 +54,13 @@ typedef IRQSELn_Type bsp_interrupt_event_t;
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
+
+/** @} (end defgroup BSP_MPU_RZG3E) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 #endif                                 /* BSP_MCU_INFO_H */

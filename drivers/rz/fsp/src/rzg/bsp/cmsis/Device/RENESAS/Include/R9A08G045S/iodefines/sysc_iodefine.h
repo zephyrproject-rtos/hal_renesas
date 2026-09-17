@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -287,7 +287,7 @@ typedef struct
             __IOM uint32_t SSIF1_SL : 2;
             __IOM uint32_t SSIF2_SL : 2;
             __IOM uint32_t SSIF3_SL : 2;
-            __IOM uint32_t SRC_SL   : 2;
+            uint32_t                : 2;
             __IOM uint32_t SPDIF_SL : 2;
             __IOM uint32_t PDM_SL   : 2;
             uint32_t                : 18;

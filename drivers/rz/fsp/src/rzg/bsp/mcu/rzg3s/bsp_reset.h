@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -50,6 +50,18 @@
 #define BSP_SLEEP_SET_SLEEP_REQ()      /* DO NOTHING */
 #define BSP_SLEEP_CLEAR_SLEEP_REQ()    /* DO NOTHING */
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
+/**********************************************************************************************************************
+ * @addtogroup RZG_BSP_MPU_RZG3S
+ * @{
+ *********************************************************************************************************************/
+
 /**********************************************************************************************************************
  * Typedef definitions
  *********************************************************************************************************************/
@@ -62,11 +74,12 @@
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
 
-/**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZG3S
- * @{
- *********************************************************************************************************************/
-
 /** @} (end addtogroup BSP_MPU_RZG3S) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 #endif                                 /* BSP_RESET_H */

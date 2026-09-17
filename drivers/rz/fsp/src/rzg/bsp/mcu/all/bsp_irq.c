@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -28,8 +28,15 @@ void * gp_renesas_isr_context[BSP_ICU_VECTOR_MAX_ENTRIES];
  * Private global variables and functions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZG
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZG_BSP_MCU
  *
  * @{
  **********************************************************************************************************************/
@@ -177,6 +184,12 @@ void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority, void * p_contex
 #endif                                 // 0 == BSP_CFG_INLINE_IRQ_FUNCTIONS
 
 /** @} (end addtogroup BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /*******************************************************************************************************************//**
  * In this device, this function does nothing. This function is written to share code with other devices.

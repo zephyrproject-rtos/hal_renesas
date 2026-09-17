@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -913,17 +913,7 @@ typedef struct
             uint32_t                  : 8;
         } CPG_CLKON_SSI_b;
     };
-    union
-    {
-        __IOM uint32_t CPG_CLKON_SRC;
-        struct
-        {
-            __IOM uint32_t CLK0_ON    : 1;
-            uint32_t                  : 15;
-            __IOM uint32_t CLK0_ONWEN : 1;
-            uint32_t                  : 15;
-        } CPG_CLKON_SRC_b;
-    };
+    __IM uint8_t RESERVED13[4];
     union
     {
         __IOM uint32_t CPG_CLKON_USB;
@@ -987,14 +977,14 @@ typedef struct
             __IOM uint32_t CLK2_ON    : 1;
             __IOM uint32_t CLK3_ON    : 1;
             __IOM uint32_t CLK4_ON    : 1;
-            __IM uint32_t  CLK5_ON    : 1;
+            __IOM uint32_t CLK5_ON    : 1;
             uint32_t                  : 10;
             __IOM uint32_t CLK0_ONWEN : 1;
             __IOM uint32_t CLK1_ONWEN : 1;
             __IOM uint32_t CLK2_ONWEN : 1;
             __IOM uint32_t CLK3_ONWEN : 1;
             __IOM uint32_t CLK4_ONWEN : 1;
-            __IM uint32_t  CLK5_ONWEN : 1;
+            __IOM uint32_t CLK5_ONWEN : 1;
             uint32_t                  : 10;
         } CPG_CLKON_SCIF_b;
     };
@@ -1065,7 +1055,7 @@ typedef struct
             uint32_t                  : 15;
         } CPG_CLKON_GPIO_b;
     };
-    __IM uint8_t RESERVED13[12];
+    __IM uint8_t RESERVED14[12];
     union
     {
         __IOM uint32_t CPG_CLKON_ADC;
@@ -1090,7 +1080,7 @@ typedef struct
             uint32_t                  : 15;
         } CPG_CLKON_TSU_b;
     };
-    __IM uint8_t RESERVED14[4];
+    __IM uint8_t RESERVED15[4];
     union
     {
         __IOM uint32_t CPG_CLKON_AXI_ACPU_BUS;
@@ -1172,7 +1162,7 @@ typedef struct
             uint32_t                  : 6;
         } CPG_CLKON_AXI_COM_BUS_b;
     };
-    __IM uint8_t RESERVED15[4];
+    __IM uint8_t RESERVED16[4];
     union
     {
         __IOM uint32_t CPG_CLKON_PERI_COM;
@@ -1247,7 +1237,7 @@ typedef struct
             uint32_t                  : 8;
         } CPG_CLKON_PERI_CPU_b;
     };
-    __IM uint8_t RESERVED16[4];
+    __IM uint8_t RESERVED17[4];
     union
     {
         __IOM uint32_t CPG_CLKON_PERI_DDR;
@@ -1270,7 +1260,7 @@ typedef struct
             uint32_t                  : 15;
         } CPG_CLKON_AXI_TZCDDR_b;
     };
-    __IM uint8_t RESERVED17[20];
+    __IM uint8_t RESERVED18[20];
     union
     {
         __IOM uint32_t CPG_CLKON_OCTA;
@@ -1297,7 +1287,7 @@ typedef struct
             uint32_t                  : 14;
         } CPG_CLKON_OTFDE_DDR_b;
     };
-    __IM uint8_t RESERVED18[4];
+    __IM uint8_t RESERVED19[4];
     union
     {
         __IOM uint32_t CPG_CLKON_OTFDE_SPI;
@@ -1372,7 +1362,7 @@ typedef struct
             uint32_t                  : 15;
         } CPG_CLKON_VBAT_b;
     };
-    __IM uint8_t RESERVED19[104];
+    __IM uint8_t RESERVED20[104];
     union
     {
         __IM uint32_t CPG_CLKMON_CA55;
@@ -1421,7 +1411,7 @@ typedef struct
             uint32_t               : 30;
         } CPG_CLKMON_SRAM_MCPU_b;
     };
-    __IM uint8_t RESERVED20[4];
+    __IM uint8_t RESERVED21[4];
     union
     {
         __IM uint32_t CPG_CLKMON_GIC600;
@@ -1504,7 +1494,7 @@ typedef struct
             uint32_t               : 30;
         } CPG_CLKMON_DMAC_REG_b;
     };
-    __IM uint8_t RESERVED21[4];
+    __IM uint8_t RESERVED22[4];
     union
     {
         __IM uint32_t CPG_CLKMON_GTM;
@@ -1618,7 +1608,7 @@ typedef struct
             uint32_t                : 20;
         } CPG_CLKMON_SDHI_b;
     };
-    __IM uint8_t RESERVED22[24];
+    __IM uint8_t RESERVED23[24];
     union
     {
         __IM uint32_t CPG_CLKMON_SSI;
@@ -1635,15 +1625,7 @@ typedef struct
             uint32_t               : 24;
         } CPG_CLKMON_SSI_b;
     };
-    union
-    {
-        __IM uint32_t CPG_CLKMON_SRC;
-        struct
-        {
-            __IM uint32_t CLK0_MON : 1;
-            uint32_t               : 31;
-        } CPG_CLKMON_SRC_b;
-    };
+    __IM uint8_t RESERVED24[4];
     union
     {
         __IM uint32_t CPG_CLKMON_USB;
@@ -1746,7 +1728,7 @@ typedef struct
             uint32_t               : 31;
         } CPG_CLKMON_GPIO_b;
     };
-    __IM uint8_t RESERVED23[12];
+    __IM uint8_t RESERVED25[12];
     union
     {
         __IM uint32_t CPG_CLKMON_ADC;
@@ -1766,7 +1748,7 @@ typedef struct
             uint32_t               : 31;
         } CPG_CLKMON_TSU_b;
     };
-    __IM uint8_t RESERVED24[4];
+    __IM uint8_t RESERVED26[4];
     union
     {
         __IM uint32_t CPG_CLKMON_AXI_ACPU_BUS;
@@ -1819,7 +1801,7 @@ typedef struct
             uint32_t               : 22;
         } CPG_CLKMON_AXI_COM_BUS_b;
     };
-    __IM uint8_t RESERVED25[4];
+    __IM uint8_t RESERVED27[4];
     union
     {
         __IM uint32_t CPG_CLKMON_PERI_COM;
@@ -1871,7 +1853,7 @@ typedef struct
             uint32_t               : 24;
         } CPG_CLKMON_PERI_CPU_b;
     };
-    __IM uint8_t RESERVED26[4];
+    __IM uint8_t RESERVED28[4];
     union
     {
         __IM uint32_t CPG_CLKMON_PERI_DDR;
@@ -1890,7 +1872,7 @@ typedef struct
             uint32_t               : 31;
         } CPG_CLKMON_AXI_TZCDDR_b;
     };
-    __IM uint8_t RESERVED27[20];
+    __IM uint8_t RESERVED29[20];
     union
     {
         __IM uint32_t CPG_CLKMON_OCTA;
@@ -1911,7 +1893,7 @@ typedef struct
             uint32_t               : 30;
         } CPG_CLKMON_OTFDE_DDR_b;
     };
-    __IM uint8_t RESERVED28[4];
+    __IM uint8_t RESERVED30[4];
     union
     {
         __IM uint32_t CPG_CLKMON_OTFDE_SPI;
@@ -1970,7 +1952,7 @@ typedef struct
             uint32_t               : 31;
         } CPG_CLKMON_VBAT_b;
     };
-    __IM uint8_t RESERVED29[104];
+    __IM uint8_t RESERVED31[104];
     union
     {
         __IOM uint32_t CPG_RST_CA55;
@@ -2057,7 +2039,7 @@ typedef struct
             uint32_t                    : 14;
         } CPG_RST_SRAM_MCPU_b;
     };
-    __IM uint8_t RESERVED30[4];
+    __IM uint8_t RESERVED32[4];
     union
     {
         __IOM uint32_t CPG_RST_GIC600;
@@ -2108,7 +2090,7 @@ typedef struct
             uint32_t                    : 15;
         } CPG_RST_MHU_b;
     };
-    __IM uint8_t RESERVED31[4];
+    __IM uint8_t RESERVED33[4];
     union
     {
         __IOM uint32_t CPG_RST_SYC;
@@ -2133,7 +2115,7 @@ typedef struct
             uint32_t                    : 14;
         } CPG_RST_DMAC_b;
     };
-    __IM uint8_t RESERVED32[4];
+    __IM uint8_t RESERVED34[4];
     union
     {
         __IOM uint32_t CPG_RST_GTM;
@@ -2277,7 +2259,7 @@ typedef struct
             uint32_t                    : 13;
         } CPG_RST_SDHI_b;
     };
-    __IM uint8_t RESERVED33[24];
+    __IM uint8_t RESERVED35[24];
     union
     {
         __IOM uint32_t CPG_RST_SSIF;
@@ -2295,17 +2277,7 @@ typedef struct
             uint32_t                    : 12;
         } CPG_RST_SSIF_b;
     };
-    union
-    {
-        __IOM uint32_t CPG_RST_SRC;
-        struct
-        {
-            __IOM uint32_t UNIT0_RSTB   : 1;
-            uint32_t                    : 15;
-            __IOM uint32_t UNIT0_RSTWEN : 1;
-            uint32_t                    : 15;
-        } CPG_RST_SRC_b;
-    };
+    __IM uint8_t RESERVED36[4];
     union
     {
         __IOM uint32_t CPG_RST_USB;
@@ -2445,7 +2417,7 @@ typedef struct
             uint32_t                    : 13;
         } CPG_RST_GPIO_b;
     };
-    __IM uint8_t RESERVED34[12];
+    __IM uint8_t RESERVED37[12];
     union
     {
         __IOM uint32_t CPG_RST_ADC;
@@ -2470,7 +2442,7 @@ typedef struct
             uint32_t                    : 15;
         } CPG_RST_TSU_b;
     };
-    __IM uint8_t RESERVED35[4];
+    __IM uint8_t RESERVED38[4];
     union
     {
         __IOM uint32_t CPG_RST_AXI_ACPU_BUS;
@@ -2506,7 +2478,7 @@ typedef struct
             uint32_t                    : 14;
         } CPG_RST_AXI_COM_BUS_b;
     };
-    __IM uint8_t RESERVED36[4];
+    __IM uint8_t RESERVED39[4];
     union
     {
         __IOM uint32_t CPG_RST_PERI_COM;
@@ -2555,7 +2527,7 @@ typedef struct
             uint32_t                    : 14;
         } CPG_RST_PERI_CPU_b;
     };
-    __IM uint8_t RESERVED37[4];
+    __IM uint8_t RESERVED40[4];
     union
     {
         __IOM uint32_t CPG_RST_PERI_DDR;
@@ -2584,7 +2556,7 @@ typedef struct
             uint32_t                    : 12;
         } CPG_RST_AXI_TZCDDR_b;
     };
-    __IM uint8_t RESERVED38[20];
+    __IM uint8_t RESERVED41[20];
     union
     {
         __IOM uint32_t CPG_RST_OCTA;
@@ -2609,7 +2581,7 @@ typedef struct
             uint32_t                    : 14;
         } CPG_RST_OTFDE_DDR_b;
     };
-    __IM uint8_t RESERVED39[4];
+    __IM uint8_t RESERVED42[4];
     union
     {
         __IOM uint32_t CPG_RST_OTFDE_SPI;
@@ -2692,7 +2664,7 @@ typedef struct
             uint32_t                    : 15;
         } CPG_RST_VBAT_b;
     };
-    __IM uint8_t RESERVED40[104];
+    __IM uint8_t RESERVED43[104];
     union
     {
         __IM uint32_t CPG_RSTMON_CA55;
@@ -2748,7 +2720,7 @@ typedef struct
             uint32_t               : 30;
         } CPG_RSTMON_SRAM_MCPU_b;
     };
-    __IM uint8_t RESERVED41[4];
+    __IM uint8_t RESERVED44[4];
     union
     {
         __IM uint32_t CPG_RSTMON_GIC600;
@@ -2786,7 +2758,7 @@ typedef struct
             uint32_t               : 31;
         } CPG_RSTMON_MHU_b;
     };
-    __IM uint8_t RESERVED42[4];
+    __IM uint8_t RESERVED45[4];
     union
     {
         __IM uint32_t CPG_RSTMON_SYC;
@@ -2806,7 +2778,7 @@ typedef struct
             uint32_t               : 30;
         } CPG_RSTMON_DMAC_b;
     };
-    __IM uint8_t RESERVED43[4];
+    __IM uint8_t RESERVED46[4];
     union
     {
         __IM uint32_t CPG_RSTMON_GTM;
@@ -2910,7 +2882,7 @@ typedef struct
             uint32_t               : 29;
         } CPG_RSTMON_SDHI_b;
     };
-    __IM uint8_t RESERVED44[24];
+    __IM uint8_t RESERVED47[24];
     union
     {
         __IM uint32_t CPG_RSTMON_SSIF;
@@ -2923,15 +2895,7 @@ typedef struct
             uint32_t               : 28;
         } CPG_RSTMON_SSIF_b;
     };
-    union
-    {
-        __IM uint32_t CPG_RSTMON_SRC;
-        struct
-        {
-            __IM uint32_t RST0_MON : 1;
-            uint32_t               : 31;
-        } CPG_RSTMON_SRC_b;
-    };
+    __IM uint8_t RESERVED48[4];
     union
     {
         __IM uint32_t CPG_RSTMON_USB;
@@ -3033,7 +2997,7 @@ typedef struct
             uint32_t               : 29;
         } CPG_RSTMON_GPIO_b;
     };
-    __IM uint8_t RESERVED45[12];
+    __IM uint8_t RESERVED49[12];
     union
     {
         __IM uint32_t CPG_RSTMON_ADC;
@@ -3053,7 +3017,7 @@ typedef struct
             uint32_t               : 31;
         } CPG_RSTMON_TSU_b;
     };
-    __IM uint8_t RESERVED46[4];
+    __IM uint8_t RESERVED50[4];
     union
     {
         __IM uint32_t CPG_RSTMON_AXI_ACPU_BUS;
@@ -3082,7 +3046,7 @@ typedef struct
             uint32_t               : 30;
         } CPG_RSTMON_AXI_COM_BUS_b;
     };
-    __IM uint8_t RESERVED47[4];
+    __IM uint8_t RESERVED51[4];
     union
     {
         __IM uint32_t CPG_RSTMON_PERI_COM;
@@ -3121,7 +3085,7 @@ typedef struct
             uint32_t               : 30;
         } CPG_RSTMON_PERI_CPU_b;
     };
-    __IM uint8_t RESERVED48[4];
+    __IM uint8_t RESERVED52[4];
     union
     {
         __IM uint32_t CPG_RSTMON_PERI_DDR;
@@ -3143,7 +3107,7 @@ typedef struct
             uint32_t               : 28;
         } CPG_RSTMON_AXI_TZCDDR_b;
     };
-    __IM uint8_t RESERVED49[20];
+    __IM uint8_t RESERVED53[20];
     union
     {
         __IM uint32_t CPG_RSTMON_OCTA;
@@ -3163,7 +3127,7 @@ typedef struct
             uint32_t               : 30;
         } CPG_RSTMON_OTFDE_DDR_b;
     };
-    __IM uint8_t RESERVED50[4];
+    __IM uint8_t RESERVED54[4];
     union
     {
         __IM uint32_t CPG_RSTMON_OTFDE_SPI;
@@ -3226,7 +3190,7 @@ typedef struct
             uint32_t               : 31;
         } CPG_RSTMON_VBAT_b;
     };
-    __IM uint8_t RESERVED51[120];
+    __IM uint8_t RESERVED55[120];
     union
     {
         __IOM uint32_t CPG_WDTOVF_RST;
@@ -3273,7 +3237,7 @@ typedef struct
             uint32_t                       : 5;
         } CPG_WDTRST_SEL_b;
     };
-    __IM uint8_t RESERVED52[24];
+    __IM uint8_t RESERVED56[24];
     union
     {
         __IM uint32_t CPG_CLUSTER_PCHMON;
@@ -3316,16 +3280,22 @@ typedef struct
             uint32_t                   : 10;
         } CPG_CORE0_PCHCTL_b;
     };
-    __IM uint8_t RESERVED53[32];
+    __IM uint8_t RESERVED57[32];
     union
     {
         __IOM uint32_t CPG_BUS_ACPU_MSTOP;
         struct
         {
             __IOM uint32_t MSTOP0_ON     : 1;
-            uint32_t                     : 15;
+            __IOM uint32_t MSTOP1_ON     : 1;
+            __IOM uint32_t MSTOP2_ON     : 1;
+            __IOM uint32_t MSTOP3_ON     : 1;
+            uint32_t                     : 12;
             __IOM uint32_t MSTOP0_ON_WEN : 1;
-            uint32_t                     : 15;
+            __IOM uint32_t MSTOP1_ON_WEN : 1;
+            __IOM uint32_t MSTOP2_ON_WEN : 1;
+            __IOM uint32_t MSTOP3_ON_WEN : 1;
+            uint32_t                     : 12;
         } CPG_BUS_ACPU_MSTOP_b;
     };
     union
@@ -3336,7 +3306,7 @@ typedef struct
             __IOM uint32_t MSTOP0_ON      : 1;
             __IOM uint32_t MSTOP1_ON      : 1;
             __IOM uint32_t MSTOP2_ON      : 1;
-            __IOM uint32_t MSTOP3_ON      : 1;
+            uint32_t                      : 1;
             __IOM uint32_t MSTOP4_ON      : 1;
             __IOM uint32_t MSTOP5_ON      : 1;
             __IOM uint32_t MSTOP6_ON      : 1;
@@ -3491,7 +3461,7 @@ typedef struct
             uint32_t                     : 14;
         } CPG_BUS_PERI_DDR_MSTOP_b;
     };
-    __IM uint8_t RESERVED54[4];
+    __IM uint8_t RESERVED58[4];
     union
     {
         __IOM uint32_t CPG_BUS_REG0_MSTOP;
@@ -3568,13 +3538,13 @@ typedef struct
         __IOM uint32_t CPG_MHU_MSTOP;
         struct
         {
-            __IOM uint32_t MSTOP0_ON     : 1;
+            __IOM uint32_t MHU_MSTOP     : 1;
             uint32_t                     : 15;
             __IOM uint32_t MSTOP0_ON_WEN : 1;
             uint32_t                     : 15;
         } CPG_MHU_MSTOP_b;
     };
-    __IM uint8_t RESERVED55[4];
+    __IM uint8_t RESERVED59[4];
     union
     {
         __IOM uint32_t CPG_BUS_MCPU3_MSTOP;
@@ -3635,7 +3605,7 @@ typedef struct
             uint32_t                     : 6;
         } CPG_BUS_PERI_CPU2_MSTOP_b;
     };
-    __IM uint8_t RESERVED56[24];
+    __IM uint8_t RESERVED60[24];
     union
     {
         __IOM uint32_t CPG_PWRDN_IP1;
@@ -3694,15 +3664,15 @@ typedef struct
             uint32_t                     : 11;
         } CPG_PWRDN_IP2_b;
     };
-    __IM uint8_t RESERVED57[8];
+    __IM uint8_t RESERVED61[8];
     union
     {
         __IOM uint32_t CPG_PWRDN_MSTOP;
         struct
         {
-            __IOM uint32_t PWRDN0_ON     : 1;
+            __IOM uint32_t PWRDN_MSTOP     : 1;
             uint32_t                     : 15;
-            __IOM uint32_t PWRDN0_ON_WEN : 1;
+            __IOM uint32_t PWRDN_MSTOP_WEN : 1;
             uint32_t                     : 15;
         } CPG_PWRDN_MSTOP_b;
     };
@@ -3711,9 +3681,9 @@ typedef struct
         __IOM uint32_t CPG_PWRDN_CLKON;
         struct
         {
-            __IOM uint32_t PWRDN0_ON     : 1;
+            __IOM uint32_t PWRDN_CLKON     : 1;
             uint32_t                     : 15;
-            __IOM uint32_t PWRDN0_ON_WEN : 1;
+            __IOM uint32_t PWRDN_CLKON_WEN : 1;
             uint32_t                     : 15;
         } CPG_PWRDN_CLKON_b;
     };
@@ -3722,13 +3692,13 @@ typedef struct
         __IOM uint32_t CPG_PWRDN_RST;
         struct
         {
-            __IOM uint32_t PWRDN0_RST     : 1;
+            __IOM uint32_t PWRDN_RST     : 1;
             uint32_t                      : 15;
-            __IOM uint32_t PWRDN0_RST_WEN : 1;
+            __IOM uint32_t PWRDN_RST_WEN : 1;
             uint32_t                      : 15;
         } CPG_PWRDN_RST_b;
     };
-    __IM uint8_t RESERVED58[4];
+    __IM uint8_t RESERVED62[4];
     union
     {
         __IOM uint32_t CPG_RET_FUNC1;
@@ -3758,7 +3728,7 @@ typedef struct
             uint32_t             : 31;
         } CPG_RET_FUNC3_b;
     };
-    __IM uint8_t RESERVED59[16];
+    __IM uint8_t RESERVED63[16];
     union
     {
         __IOM uint32_t CPG_OTHERFUNC2_REG;

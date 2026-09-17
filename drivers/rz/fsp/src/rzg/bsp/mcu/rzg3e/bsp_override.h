@@ -1,15 +1,8 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup BSP_MCU_RZG3E
- * @{
- **********************************************************************************************************************/
-
-/** @} (end addtogroup BSP_MCU_RZG3E) */
 
 #ifndef BSP_OVERRIDE_H
 #define BSP_OVERRIDE_H
@@ -32,6 +25,11 @@
 #define BSP_OVERRIDE_BSP_PIN_T
 #define BSP_OVERRIDE_BSP_PORT_T
 #define BSP_OVERRIDE_BSP_SYSTEM_RESET_SIGNAL_T
+#define BSP_OVERRIDE_CAN_CALLBACK_ARGS_T
+#define BSP_OVERRIDE_CAN_EVENT_T
+#define BSP_OVERRIDE_CAN_FRAME_T
+#define BSP_OVERRIDE_CAN_FRAME_TYPE_T
+#define BSP_OVERRIDE_CAN_ID_MODE_T
 #define BSP_OVERRIDE_CAN_INFO_T
 #define BSP_OVERRIDE_CANFD_ERROR_T
 #define BSP_OVERRIDE_CANFD_RX_BUFFER_T
@@ -45,8 +43,12 @@
 #define BSP_OVERRIDE_FSP_PRIV_CLOCK_T
 #define BSP_OVERRIDE_FSP_PRIV_CLOCK_DIVIDER_T
 #define BSP_OVERRIDE_FSP_PRIV_CLOCK_SELECTOR_T
+#define BSP_OVERRIDE_SCI_B_SPI_CLOCK_SOURCE_T
+#define BSP_OVERRIDE_SCI_B_UART_CLOCK_SOURCE_T
+#define BSP_OVERRIDE_SCI_B_I2C_CLOCK_SOURCE_T
 #define BSP_OVERRIDE_GPT_SOURCE_T
 #define BSP_OVERRIDE_IOPORT_CFG_OPTIONS_T
+#define BSP_OVERRIDE_SPI_B_CLOCK_SOURCE_T
 #define BSP_OVERRIDE_TRANSFER_ADDR_MODE_T
 #define BSP_OVERRIDE_TRANSFER_CALLBACK_ARGS_T
 #define BSP_OVERRIDE_TRANSFER_INFO_T
@@ -808,6 +810,7 @@
  **********************************************************************************************************************/
 #define R_BSP_MODULE_START_FSP_IP_ADC(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -849,6 +852,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_POEG(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -870,6 +874,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_RIIC(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -895,6 +900,8 @@
                                                     R_BSP_MODULE_CLKON(FSP_IP_SCIPS2, (ch)); \
                                                     R_BSP_MODULE_CLKON(FSP_IP_SCIPS1, (ch)); \
                                                     R_BSP_MSTP_START(ip, ch);                \
+                                                    R_BSP_MODULE_RSTON(FSP_IP_SCIP, ch);     \
+                                                    R_BSP_MODULE_RSTON(FSP_IP_SCIT, ch);     \
                                                     R_BSP_MODULE_RSTOFF(FSP_IP_SCIP, ch);    \
                                                     R_BSP_MODULE_RSTOFF(FSP_IP_SCIT, ch);}
 
@@ -921,6 +928,8 @@
 
 #define R_BSP_MODULE_START_FSP_IP_RSPI(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch);              \
                                                     R_BSP_MSTP_START(ip, ch);                \
+                                                    R_BSP_MODULE_RSTON(FSP_IP_RSPIP, (ch));  \
+                                                    R_BSP_MODULE_RSTON(FSP_IP_RSPIT, (ch));  \
                                                     R_BSP_MODULE_RSTOFF(FSP_IP_RSPIP, (ch)); \
                                                     R_BSP_MODULE_RSTOFF(FSP_IP_RSPIT, (ch));}
 
@@ -943,6 +952,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_TSU(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -964,6 +974,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_SCIF(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -1007,6 +1018,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_CMTW(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -1053,6 +1065,7 @@
 #define R_BSP_MODULE_START_FSP_IP_WDT(ip, ch)      {R_BSP_MODULE_CLKON(FSP_IP_WDT_CLKP, (ch)); \
                                                     R_BSP_MODULE_CLKON(FSP_IP_WDT_LOCO, (ch)); \
                                                     R_BSP_MSTP_START(ip, ch);                  \
+                                                    R_BSP_MODULE_RSTON(ip, (ch));              \
                                                     R_BSP_MODULE_RSTOFF(ip, (ch));}
 
 /*******************************************************************************************************************//**
@@ -1073,6 +1086,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_CRC(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -1094,6 +1108,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_I3C(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -1115,6 +1130,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_RTC(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
                                                     R_BSP_MSTP_START(ip, ch);   \
+                                                    R_BSP_MODULE_RSTON(ip, ch); \
                                                     R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -1146,6 +1162,27 @@
  **********************************************************************************************************************/
 
 #define R_BSP_MODULE_STOP_FSP_IP_PDM(ip, ch)       {R_BSP_MSTP_STOP(ip, ch); \
+                                                    R_BSP_MODULE_CLKOFF(ip, ch);}
+
+/*******************************************************************************************************************//**
+ * Cancel the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
+#define R_BSP_MODULE_START_FSP_IP_NPU(ip, ch)      {R_BSP_MODULE_CLKON(ip, ch); \
+                                                    R_BSP_MSTP_START(ip, ch)    \
+                                                    R_BSP_MODULE_RSTOFF(ip, ch);}
+
+/*******************************************************************************************************************//**
+ * Enables the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
+#define R_BSP_MODULE_STOP_FSP_IP_NPU(ip, ch)       {R_BSP_MSTP_STOP(ip, ch); \
                                                     R_BSP_MODULE_CLKOFF(ip, ch);}
 
 /***********************************************************************************************************************
@@ -1269,7 +1306,8 @@
 #define BSP_RST_REG_FSP_IP_RIIC(channel)       *((channel == 8) ? &R_CPG->CPG_RST_10 : &R_CPG->CPG_RST_9)
 #define BSP_RST_BIT_FSP_IP_RIIC(channel)       ((channel ==                                                              \
                                                  8) ? (1U << R_CPG_CPG_RST_10_RSTB0_Pos) : (1U <<                        \
-                                                                                            (R_CPG_CPG_RST_9_RSTB8_Pos + \
+                                                                                             (R_CPG_CPG_RST_9_RSTB8_Pos \
+                                                                                              +                         \
                                                                                              (channel))))
 
 #define BSP_RSTMON_REG_FSP_IP_RIIC(channel)    (R_CPG->CPG_RSTMON_4)
@@ -1623,7 +1661,8 @@
                                                                                                                            5))))))
 #define BSP_CLKON_BIT_FSP_IP_SCIPS2(channel)     (((channel <                                                                                          \
                                                     4) ? (1U <<                                                                                        \
-                                                          (R_CPG_CPG_CLKON_6_CLK0_ON_Pos + (channel) * 5)) : ((channel <                               \
+                                                           (R_CPG_CPG_CLKON_6_CLK0_ON_Pos + (channel) *                                                \
+                                                            5)) : ((channel <                                                                          \
                                                                                                                7) ? (1U                                \
                                                                                                                      <<                                \
                                                                                                                      (                                 \
@@ -1648,7 +1687,8 @@
                                                                                                                       5))))))
 #define BSP_CLKON_BIT_FSP_IP_SCIPS1(channel)     (((channel <                                                                                          \
                                                     3) ? (1U <<                                                                                        \
-                                                          (R_CPG_CPG_CLKON_6_CLK1_ON_Pos + (channel) * 5)) : ((channel <                               \
+                                                           (R_CPG_CPG_CLKON_6_CLK1_ON_Pos + (channel) *                                                \
+                                                            5)) : ((channel <                                                                          \
                                                                                                                7) ? (1U                                \
                                                                                                                      <<                                \
                                                                                                                      (                                 \
@@ -1950,6 +1990,21 @@
 #define BSP_RSTMON_BIT_FSP_IP_SYC(channel)           (1U << (R_CPG_CPG_RSTMON_2_RST8_MON_Pos))
 
 /***********************************************************************************************************************
+ * Definition of macros to control NPU clock ON/OFF and reset ON/OFF
+ **********************************************************************************************************************/
+#define BSP_CLKON_REG_FSP_IP_NPU(channel)            (R_CPG->CPG_CLKON_26)
+#define BSP_CLKON_BIT_FSP_IP_NPU(channel)            (7U << (R_CPG_CPG_CLKON_26_CLK11_ON_Pos))
+
+#define BSP_CLKMON_REG_FSP_IP_NPU(channel)           (R_CPG->CPG_CLKMON_11)
+#define BSP_CLKMON_BIT_FSP_IP_NPU(channel)           (7U << (R_CPG_CPG_CLKMON_11_CLK1_MON_Pos))
+
+#define BSP_RST_REG_FSP_IP_NPU(channel)              (R_CPG->CPG_RST_18)
+#define BSP_RST_BIT_FSP_IP_NPU(channel)              (7U << R_CPG_CPG_RST_18_RSTB0_Pos)
+
+#define BSP_RSTMON_REG_FSP_IP_NPU(channel)           (R_CPG->CPG_RSTMON_7)
+#define BSP_RSTMON_BIT_FSP_IP_NPU(channel)           (1U << (R_CPG_CPG_RSTMON_7_RST27_MON_Pos))
+
+/***********************************************************************************************************************
  * Definition of macros to control GTM module START/STOP
  **********************************************************************************************************************/
 #define BSP_MSTP_REG_FSP_IP_GTM(channel)             *((channel <                                                     \
@@ -1974,7 +2029,8 @@
                                                              (R_CPG_CPG_BUS_5_MSTOP_MSTOP10_ON_Pos +                                                  \
                                                               channel)) : ((channel <                                                                 \
                                                                             4) ? (1U <<                                                               \
-                                                                                  ((R_CPG_CPG_BUS_2_MSTOP_MSTOP13_ON_Pos                              \
+                                                                                   ((                                                                 \
+                                                                                        R_CPG_CPG_BUS_2_MSTOP_MSTOP13_ON_Pos                          \
                                                                                     - 2) + channel)) : ((channel <                                    \
                                                                                                          7)                                           \
                                                                                                         ? (1U                                         \
@@ -1989,7 +2045,8 @@
                                                                                                             1U <<                                     \
                                                                                                             ((                                        \
                                                                                                                  R_CPG_CPG_BUS_12_MSTOP_MSTOP0_ON_Pos \
-                                                                                                                 - 7) +                               \
+                                                                                                                     - 7)                             \
+                                                                                                                 +                                    \
                                                                                                              channel)))))
 
 /***********************************************************************************************************************
@@ -2105,7 +2162,8 @@
                                                                                       : &R_CPG->CPG_BUS_5_MSTOP))
 #define BSP_MSTP_BIT_FSP_IP_WDT(channel)         ((channel <                                                                                                 \
                                                    1) ? (1U <<                                                                                               \
-                                                         (channel + R_CPG_CPG_BUS_3_MSTOP_MSTOP10_ON_Pos)) : ((channel <                                     \
+                                                          (channel +                                                                                         \
+                                                           R_CPG_CPG_BUS_3_MSTOP_MSTOP10_ON_Pos)) : ((channel <                                              \
                                                                                                                2) ? (1U                                      \
                                                                                                                      << (                                    \
                                                                                                                          R_CPG_CPG_BUS_1_MSTOP_MSTOP0_ON_Pos \
@@ -2144,8 +2202,10 @@
                                                                                                         (1U <<                                                        \
                                                                                                          (                                                            \
                                                                                                              R_CPG_CPG_BUS_4_MSTOP_MSTOP0_ON_Pos                      \
-                                                                                                             + ((channel)                                             \
-                                                                                                                - 1))) : ((                                           \
+                                                                                                              + ((                                                    \
+                                                                                                                     channel)                                         \
+                                                                                                                 - 1)))                                               \
+                                                                                                         : ((                                                         \
                                                                                                                               channel                                 \
                                                                                                                               <                                       \
                                                                                                                               5)                                      \
@@ -2204,6 +2264,12 @@
 #define BSP_MSTP_BIT_FSP_IP_PDM(channel)         (1U << ((R_CPG_CPG_BUS_5_MSTOP_MSTOP6_ON_Pos) + channel))
 
 /***********************************************************************************************************************
+ * Definition of macros to control NPU module START/STOP
+ **********************************************************************************************************************/
+#define BSP_MSTP_REG_FSP_IP_NPU(channel)         R_CPG->CPG_BUS_8_MSTOP
+#define BSP_MSTP_BIT_FSP_IP_NPU(channel)         (1U << (R_CPG_CPG_BUS_8_MSTOP_MSTOP11_ON_Pos))
+
+/***********************************************************************************************************************
  * Definition of macros to clear state flag of INTC IRQ
  **********************************************************************************************************************/
 #define BSP_INTC_IRQ_CLR_STATE_FLAG(channel)                                    \
@@ -2225,9 +2291,9 @@
         /* Clear the NCLR bit. */                                    \
         BSP_FEATURE_INTC_BASE_ADDR->NSCLR_b.NCLR = 1;                \
         /* Dummy read the NSCNT to prevent the interrupt cause that have been cleared from being accidentally accepted. \
-         * Reference section "Clear Timing of Interrupt Cause" of the user's manual. */ \
-        nscnt = BSP_FEATURE_INTC_BASE_ADDR->NSCNT;                                      \
-        FSP_PARAMETER_NOT_USED(nscnt);                                                  \
+         * Reference section "Clear Timing of Interrupt Cause" of the hardware manual. */ \
+        nscnt = BSP_FEATURE_INTC_BASE_ADDR->NSCNT;                                        \
+        FSP_PARAMETER_NOT_USED(nscnt);                                                    \
     } while (0);
 
 /***********************************************************************************************************************
@@ -2264,6 +2330,13 @@
  *==============================================*/
 
 #define OVERRIDE_IOPORT_PRV_PFS_PSEL_OFFSET    (24)
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -2493,8 +2566,26 @@ typedef enum e_bsp_io_port_pin_t
  * CAN API Overrides
  *==============================================*/
 
+/** CAN event codes */
+typedef enum e_can_event
+{
+    CAN_EVENT_ERR_WARNING          = 0x0002, ///< Error Warning event.
+    CAN_EVENT_ERR_PASSIVE          = 0x0004, ///< Error Passive event.
+    CAN_EVENT_ERR_BUS_OFF          = 0x0008, ///< Bus Off event.
+    CAN_EVENT_BUS_RECOVERY         = 0x0010, ///< Bus Off Recovery event.
+    CAN_EVENT_MAILBOX_MESSAGE_LOST = 0x0020, ///< Mailbox has been overrun.
+    CAN_EVENT_ERR_BUS_LOCK         = 0x0080, ///< Bus lock detected (32 consecutive dominant bits).
+    CAN_EVENT_ERR_CHANNEL          = 0x0100, ///< Channel error has occurred.
+    CAN_EVENT_TX_ABORTED           = 0x0200, ///< Transmit abort event.
+    CAN_EVENT_RX_COMPLETE          = 0x0400, ///< Receive complete event.
+    CAN_EVENT_TX_COMPLETE          = 0x0800, ///< Transmit complete event.
+    CAN_EVENT_ERR_GLOBAL           = 0x1000, ///< Global error has occurred.
+    CAN_EVENT_TX_FIFO_EMPTY        = 0x2000, ///< Transmit FIFO is empty.
+    CAN_EVENT_FIFO_MESSAGE_LOST    = 0x4000, ///< Receive FIFO overrun.
+} can_event_t;
+
 /** CAN status info */
-typedef struct st_can_info
+struct st_can_info
 {
     uint32_t status;                   ///< Useful information from the CAN status register.
     uint32_t rx_mb_status[3];          ///< RX Message Buffer New Data flags.
@@ -2502,7 +2593,56 @@ typedef struct st_can_info
     uint8_t  error_count_transmit;     ///< Transmit error count.
     uint8_t  error_count_receive;      ///< Receive error count.
     uint32_t error_code;               ///< Error code, cleared after reading.
-} can_info_t;
+};
+
+/** CAN status info. Please refer to the struct st_can_info. */
+typedef struct st_can_info can_info_t;
+
+/** CAN ID modes */
+typedef enum e_can_id_mode
+{
+    CAN_ID_MODE_STANDARD,              ///< Standard IDs of 11 bits used.
+    CAN_ID_MODE_EXTENDED,              ///< Extended IDs of 29 bits used.
+} can_id_mode_t;
+
+/** CAN frame types */
+typedef enum e_can_frame_type
+{
+    CAN_FRAME_TYPE_DATA,               ///< Data frame.
+    CAN_FRAME_TYPE_REMOTE,             ///< Remote frame.
+} can_frame_type_t;
+
+/** CAN data Frame */
+struct st_can_frame
+{
+    uint32_t         id;               ///< CAN ID.
+    can_id_mode_t    id_mode;          ///< Standard or Extended ID (IDE).
+    can_frame_type_t type;             ///< Frame type (RTR).
+    uint8_t          data_length_code; ///< CAN Data Length Code (DLC).
+    uint32_t         options;          ///< Implementation-specific options.
+    uint8_t          data[64];         ///< CAN data.
+};
+
+/** CAN data Frame. Please refer to the struct st_can_frame. */
+typedef struct st_can_frame can_frame_t;
+
+/** CAN callback parameter definition */
+struct st_can_callback_args
+{
+    uint32_t    channel;               ///< Device channel number.
+    can_event_t event;                 ///< Event code.
+    uint64_t    error;                 ///< Error code.
+    union
+    {
+        uint32_t mailbox;              ///< Mailbox number of interrupt source.
+        uint32_t buffer;               ///< Buffer number of interrupt source.
+    };
+    void      * p_context;             ///< Context provided to user during callback.
+    can_frame_t frame;                 ///< Received frame data.
+};
+
+/** CAN callback parameter definition. Please refer to the struct st_can_callback_args. */
+typedef struct st_can_callback_args can_callback_args_t;
 
 /*==============================================
  * CANFD Overrides
@@ -2531,12 +2671,14 @@ typedef enum e_canfd_error
     CANFD_ERROR_GLOBAL_PAYLOAD_OVERFLOW  = 0x00080000, ///< FD Payload Overflow
     CANFD_ERROR_GLOBAL_TXQ_OVERWRITE     = 0x00100000, ///< TX Queue Message Overwrite
     CANFD_ERROR_GLOBAL_TXQ_MESSAGE_LOST  = 0x00400000, ///< TX Queue Message Lost
-    CANFD_ERROR_GLOBAL_CH0_ECC           = 0x04000000, ///< Channel 0 ECC Error
-    CANFD_ERROR_GLOBAL_CH1_ECC           = 0x08000000, ///< Channel 1 ECC Error
-    CANFD_ERROR_GLOBAL_CH2_ECC           = 0x10000000, ///< Channel 2 ECC Error
-    CANFD_ERROR_GLOBAL_CH3_ECC           = 0x20000000, ///< Channel 3 ECC Error
-    CANFD_ERROR_GLOBAL_CH4_ECC           = 0x40000000, ///< Channel 4 ECC Error
-    CANFD_ERROR_GLOBAL_CH5_ECC           = 0x80000000, ///< Channel 5 ECC Error
+    CANFD_ERROR_GLOBAL_CH0_SCAN_FAIL     = 0x01000000,  ///< Channel 0 RX Scan Failure
+    CANFD_ERROR_GLOBAL_CH1_SCAN_FAIL     = 0x02000000,  ///< Channel 1 RX Scan Failure
+    CANFD_ERROR_GLOBAL_CH0_ECC           = 0x10000000,  ///< Channel 0 ECC Error
+    CANFD_ERROR_GLOBAL_CH1_ECC           = 0x20000000,  ///< Channel 1 ECC Error
+    CANFD_ERROR_GLOBAL_CH2_ECC           = 0x40000000,  ///< Channel 2 ECC Error
+    CANFD_ERROR_GLOBAL_CH3_ECC           = 0x80000000,  ///< Channel 3 ECC Error
+    CANFD_ERROR_GLOBAL_CH4_ECC           = 0x100000000, ///< Channel 4 ECC Error
+    CANFD_ERROR_GLOBAL_CH5_ECC           = 0x200000000, ///< Channel 5 ECC Error
 } canfd_error_t;
 
 /** CANFD Receive Buffer (MB + FIFO) */
@@ -3440,6 +3582,71 @@ typedef enum e_ioport_cfg_options
 } ioport_cfg_options_t;
 
 /*==============================================
+ * SPI_B Overrides
+ *==============================================*/
+
+/** SPI communication clock source. */
+typedef enum e_spi_b_clock_source
+{
+    SPI_B_CLOCK_SOURCE_TCLK,
+    SPI_B_CLOCK_SOURCE_PCLK
+} spi_b_clock_source_t;
+
+/*==============================================
+ * SCI_B_SPI Overrides
+ *==============================================*/
+typedef enum e_sci_b_spi_clock_source
+{
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH0 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH1 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH2 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH3 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH4 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH5 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH6 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH7 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH8 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_TCLK_CH9 = 0,
+    SCI_B_SPI_SOURCE_CLOCK_PCLK
+} sci_b_spi_clock_source_t;
+
+/*==============================================
+ * SCI_B_UART Overrides
+ *==============================================*/
+typedef enum e_sci_b_uart_clock_source
+{
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH0 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH1 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH2 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH3 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH4 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH5 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH6 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH7 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH8 = 0,
+    SCI_B_UART_SOURCE_CLOCK_TCLK_CH9 = 0,
+    SCI_B_UART_SOURCE_CLOCK_PCLK
+} sci_b_uart_clock_source_t;
+
+/*==============================================
+ * SCI_B_I2C Overrides
+ *==============================================*/
+typedef enum e_sci_b_i2c_clock_source
+{
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH0 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH1 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH2 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH3 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH4 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH5 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH6 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH7 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH8 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_TCLK_CH9 = 0,
+    SCI_B_I2C_SOURCE_CLOCK_PCLK
+} sci_b_i2c_clock_source_t;
+
+/*==============================================
  * Transfer API Overrides
  *==============================================*/
 
@@ -3476,7 +3683,7 @@ typedef enum e_transfer_size
 /** Address mode specifies whether to modify (increment or decrement) pointer after each transfer. */
 typedef enum e_transfer_addr_mode
 {
-    /** Address pointer is incremented by associated @ref transfer_size_t after each transfer. */
+    /** Address pointer is incremented by associated @ref RZG::transfer_size_t after each transfer. */
     TRANSFER_ADDR_MODE_INCREMENTED = 0,
 
     /** Address pointer remains fixed after each transfer. */
@@ -3484,13 +3691,17 @@ typedef enum e_transfer_addr_mode
 } transfer_addr_mode_t;
 
 /** Callback function parameter data. */
-typedef struct st_transfer_callback_args_t
+struct st_transfer_callback_args
 {
     transfer_event_t event;            ///< Event code
-    void const     * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in ::transfer_cfg_t.
-} transfer_callback_args_t;
+    void           * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in RZG::transfer_cfg_t.
+};
 
-typedef struct st_transfer_info
+/** Callback function parameter data. Please refer to the struct st_transfer_callback_args. */
+typedef struct st_transfer_callback_args transfer_callback_args_t;
+
+/** This structure specifies the properties of the transfer. */
+struct st_transfer_info
 {
     /** Select what happens to destination address after each transfer. */
     transfer_addr_mode_t dest_addr_mode;
@@ -3498,7 +3709,7 @@ typedef struct st_transfer_info
     /** Select what happens to source address after each transfer. */
     transfer_addr_mode_t src_addr_mode;
 
-    /** Select mode from @ref transfer_mode_t. */
+    /** Select mode from @ref RZG::transfer_mode_t. */
     transfer_mode_t mode;
 
     /** Source address. */
@@ -3520,21 +3731,27 @@ typedef struct st_transfer_info
     void const * p_next1_src;
     void       * p_next1_dest;
     uint32_t     next1_length;
-} transfer_info_t;
+};
+
+/** This structure specifies the properties of the transfer. Please refer to the struct st_transfer_info. */
+typedef struct st_transfer_info transfer_info_t;
 
 /*==============================================
  * ADC API Overrides
  *==============================================*/
 
 /** ADC Information Structure for Transfer Interface */
-typedef struct st_adc_info
+struct st_adc_info
 {
     volatile const void * p_address;         ///< The address to start reading the data from
     uint32_t              length;            ///< The total number of transfers to read
     transfer_size_t       transfer_size;     ///< The size of each transfer
     uint32_t              calibration_data1; ///< Temperature sensor calibration data1
     uint32_t              calibration_data2; ///< Temperature sensor calibration data2
-} adc_info_t;
+};
+
+/** ADC Information Structure for Transfer Interface. Please refer to the struct st_adc_info. */
+typedef struct st_adc_info adc_info_t;
 
 /***********************************************************************************************************************
  * Exported global variables
@@ -3544,4 +3761,10 @@ typedef struct st_adc_info
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
 
-#endif
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
+
+#endif                                 /* BSP_OVERRIDE_H */

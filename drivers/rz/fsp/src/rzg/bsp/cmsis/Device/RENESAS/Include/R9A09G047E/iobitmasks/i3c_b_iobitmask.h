@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -493,6 +493,14 @@
 #define R_I3C_B_DATBAS7_DVNACK_Pos        (29UL)
 #define R_I3C_B_DATBAS7_DVTYP_Msk         (0x80000000UL)
 #define R_I3C_B_DATBAS7_DVTYP_Pos         (31UL)
+#define R_I3C_B_EXDATBAS_EDSTAD_Msk       (0x0000007FUL)
+#define R_I3C_B_EXDATBAS_EDSTAD_Pos       (0UL)
+#define R_I3C_B_EXDATBAS_EDDYAD_Msk       (0x00FF0000UL)
+#define R_I3C_B_EXDATBAS_EDDYAD_Pos       (16UL)
+#define R_I3C_B_EXDATBAS_EDNACK_Msk       (0x60000000UL)
+#define R_I3C_B_EXDATBAS_EDNACK_Pos       (29UL)
+#define R_I3C_B_EXDATBAS_EDTYP_Msk        (0x80000000UL)
+#define R_I3C_B_EXDATBAS_EDTYP_Pos        (31UL)
 #define R_I3C_B_SDATBAS0_SDSTAD_Msk       (0x000003FFUL)
 #define R_I3C_B_SDATBAS0_SDSTAD_Pos       (0UL)
 #define R_I3C_B_SDATBAS0_SDADLS_Msk       (0x00000400UL)
@@ -597,14 +605,6 @@
 #define R_I3C_B_MSDCT7_RBCR3_Pos          (11UL)
 #define R_I3C_B_MSDCT7_RBCR76_Msk         (0x0000C000UL)
 #define R_I3C_B_MSDCT7_RBCR76_Pos         (14UL)
-#define R_I3C_B_EXDATBAS_EDSTAD_Msk       (0x0000007FUL)
-#define R_I3C_B_EXDATBAS_EDSTAD_Pos       (0UL)
-#define R_I3C_B_EXDATBAS_EDDYAD_Msk       (0x00FF0000UL)
-#define R_I3C_B_EXDATBAS_EDDYAD_Pos       (16UL)
-#define R_I3C_B_EXDATBAS_EDNACK_Msk       (0x60000000UL)
-#define R_I3C_B_EXDATBAS_EDNACK_Pos       (29UL)
-#define R_I3C_B_EXDATBAS_EDTYP_Msk        (0x80000000UL)
-#define R_I3C_B_EXDATBAS_EDTYP_Pos        (31UL)
 #define R_I3C_B_SVDCT_TDCR_Msk            (0x000000FFUL)
 #define R_I3C_B_SVDCT_TDCR_Pos            (0UL)
 #define R_I3C_B_SVDCT_TBCR0_Msk           (0x00000100UL)

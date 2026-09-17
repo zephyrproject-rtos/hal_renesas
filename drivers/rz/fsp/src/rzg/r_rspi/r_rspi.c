@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -108,8 +108,15 @@ const spi_api_t g_spi_on_rspi =
     .callbackSet = R_RSPI_CallbackSet
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup RSPI
+ * @addtogroup RZG_RSPI
  * @{
  **********************************************************************************************************************/
 
@@ -122,14 +129,14 @@ const spi_api_t g_spi_on_rspi =
  *
  * This function performs the following tasks:
  * - Performs parameter checking and processes error conditions.
- * - Configures the pperipheral registers acording to the configuration.
- * - Initialize the control structure for use in other @ref SPI_API functions.
+ * - Configures the pperipheral registers according to the configuration.
+ * - Initialize the control structure for use in other @ref RZG_SPI_API functions.
  *
  * @retval     FSP_SUCCESS                     Channel initialized successfully.
  * @retval     FSP_ERR_ALREADY_OPEN            Instance was already initialized.
  * @retval     FSP_ERR_ASSERTION               An invalid argument was given in the configuration structure.
  * @retval     FSP_ERR_IP_CHANNEL_NOT_PRESENT  The channel number is invalid.
- * @return     See @ref RENESAS_ERROR_CODES or functions called by this function for other possible return codes.
+ * @return     See @ref RZG_RENESAS_ERROR_CODES or functions called by this function for other possible return codes.
  * @note       This function is reentrant.
  **********************************************************************************************************************/
 fsp_err_t R_RSPI_Open (spi_ctrl_t * p_api_ctrl, spi_cfg_t const * const p_cfg)
@@ -260,7 +267,7 @@ fsp_err_t R_RSPI_WriteRead (spi_ctrl_t * const    p_api_ctrl,
  **********************************************************************************************************************/
 fsp_err_t R_RSPI_CallbackSet (spi_ctrl_t * const          p_api_ctrl,
                               void (                    * p_callback)(spi_callback_args_t *),
-                              void const * const          p_context,
+                              void * const                p_context,
                               spi_callback_args_t * const p_callback_memory)
 {
     rspi_instance_ctrl_t * p_ctrl = (rspi_instance_ctrl_t *) p_api_ctrl;
@@ -305,7 +312,7 @@ fsp_err_t R_RSPI_CallbackSet (spi_ctrl_t * const          p_api_ctrl,
  * Disables SPI operations by disabling the SPI bus.
  * - Disables the SPI peripheral.
  * - Disables all the associated interrupts.
- * - Update control structure so it will not work with @ref SPI_API functions.
+ * - Update control structure so it will not work with @ref RZG_SPI_API functions.
  *
  * @retval  FSP_SUCCESS              Channel successfully closed.
  * @retval  FSP_ERR_ASSERTION        A required pointer argument is NULL.
@@ -428,6 +435,12 @@ fsp_err_t R_RSPI_CalculateBitrate (uint32_t bitrate, rspi_rspck_div_setting_t * 
  * @} (end addtogroup RSPI)
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
  * Private Functions
  **********************************************************************************************************************/
@@ -440,7 +453,7 @@ fsp_err_t R_RSPI_CalculateBitrate (uint32_t bitrate, rspi_rspck_div_setting_t * 
  * @param      p_cfg           Configuration structure with references to receive and transmit transfer instances.
  *
  * @retval     FSP_SUCCESS     The given transfer instances were configured successfully.
- * @return                     See @ref RENESAS_ERROR_CODES for other possible return codes. This function internally
+ * @return                     See @ref RZG_RENESAS_ERROR_CODES for other possible return codes. This function internally
  *                             calls @ref transfer_api_t::open.
  **********************************************************************************************************************/
 static fsp_err_t r_rspi_transfer_config (rspi_instance_ctrl_t * p_ctrl, spi_cfg_t const * const p_cfg)
@@ -649,7 +662,7 @@ static void r_rspi_nvic_config (rspi_instance_ctrl_t * p_ctrl)
  * @param[in]  p_ctrl          pointer to control structure.
  *
  * Note: For 8-Bit wide data frames, the devices require the SPBYT bit to enable byte level access to the
- * data register. Although this register is not documented in some user's manual, it does seem to be available
+ * data register. Although this register is not documented in some hardware manual, it does seem to be available
  * on all of them.
  **********************************************************************************************************************/
 static void r_rspi_bit_width_config (rspi_instance_ctrl_t * p_ctrl)
@@ -873,8 +886,8 @@ static void r_rspi_set_rx_fifo_level (rspi_instance_ctrl_t * p_ctrl)
  * @retval     FSP_ERR_NOT_OPEN          The instance has not been initialized.
  * @retval     FSP_ERR_IN_USE            A transfer is already in progress.
  * @retval     FSP_ERR_INVALID_ARGUMENT  A bit length not supported by this device was assigned to the argument.
- * @return                       See @ref RENESAS_ERROR_CODES for other possible return codes. This function internally
- *                               calls @ref transfer_api_t::reconfigure.
+ * @return                       See @ref RZG_RENESAS_ERROR_CODES for other possible return codes. This function internally
+ *                               calls @ref RZG::transfer_api_t::reconfigure.
  **********************************************************************************************************************/
 static fsp_err_t r_rspi_write_read_common (spi_ctrl_t * const    p_api_ctrl,
                                            void const          * p_src,

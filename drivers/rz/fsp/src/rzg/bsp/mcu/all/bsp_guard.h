@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -9,8 +9,15 @@
 
 #include "bsp_api.h"
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZG_BSP_MCU
  *
  * @{
  **********************************************************************************************************************/
@@ -20,7 +27,13 @@ FSP_HEADER
 
 /** @} (end addtogroup BSP_MCU) */
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
-    FSP_FOOTER
+FSP_FOOTER
 
 #endif
