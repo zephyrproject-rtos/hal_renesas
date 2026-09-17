@@ -6,19 +6,23 @@
 
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_cfg.h"
 #include "bsp_override.h"
 #include "bsp_mcu_info.h"
 #include "bsp_clock_cfg.h"
-#define BSP_MCU_GROUP_RZA3M (1)
-#define BSP_CORTEX_VECTOR_TABLE_ENTRIES    (0U)
-#define BSP_VECTOR_TABLE_MAX_ENTRIES       (512U)
+#define BSP_MCU_GROUP_RZA3M               (1)
+#define BSP_CORTEX_VECTOR_TABLE_ENTRIES   (0U)
+#define BSP_VECTOR_TABLE_MAX_ENTRIES      (512U)
 
-#define BSP_TZ_SECURE_BUILD                  (0)
-#define BSP_TZ_NONSECURE_BUILD               (0)
-#define BSP_CFG_MSTP_CHANGE_DELAY_ENABLE     (1)
-#define BSP_CFG_CLOCK_SETTLING_DELAY_US      (150)
+#define BSP_TZ_SECURE_BUILD               (0)
+#define BSP_TZ_NONSECURE_BUILD            (0)
+#define BSP_CFG_MSTP_CHANGE_DELAY_ENABLE  (0)
+#define BSP_CFG_CLOCK_SETTLING_DELAY_US   (0)
 
 /* TrustZone Settings */
 #define BSP_TZ_CFG_INIT_SECURE_ONLY       (BSP_CFG_CLOCKS_SECURE || (!BSP_CFG_CLOCKS_OVERRIDE))
@@ -45,5 +49,9 @@
 
 #ifndef FPU_FPCCR_CLRONRET_VAL
 #define FPU_FPCCR_CLRONRET_VAL            (1)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */

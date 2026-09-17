@@ -1,13 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup ADC
- * @{
- **********************************************************************************************************************/
 
 #ifndef R_ADC_C_H
 #define R_ADC_C_H
@@ -25,6 +20,18 @@ FSP_HEADER
 
 /***********************************************************************************************************************
  * Macro definitions
+ **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZA
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZA_ADC
+ * @{
  **********************************************************************************************************************/
 
 /** For ADC Scan configuration adc_channel_cfg_t::scan_mask.
@@ -112,7 +119,7 @@ typedef enum e_adc_c_interrupt_channel_setting
 } adc_c_interrupt_channel_setting_t;
 
 /** Extended configuration structure for ADC. */
-typedef struct st_adc_c_extended_cfg
+struct st_adc_c_extended_cfg
 {
     adc_c_trigger_mode_t         trigger_mode;            ///< Trigger mode.
     adc_c_active_trigger_t       trigger_source;          ///< Hardware trigger source.
@@ -123,23 +130,29 @@ typedef struct st_adc_c_extended_cfg
     uint16_t                     sampling_time;           ///< Sampling period. (6~2800)
     adc_c_filter_stage_setting_t external_trigger_filter; ///< AD external trigger pin filter.
     void                       * p_reg;                   ///< Register base address for specified unit
-} adc_c_extended_cfg_t;
+};
+
+/** Extended configuration structure for ADC. Please refer to the struct st_adc_c_extended_cfg. */
+typedef struct st_adc_c_extended_cfg adc_c_extended_cfg_t;
 
 /** ADC channel(s) configuration       */
-typedef struct st_adc_c_channel_cfg
+struct st_adc_c_channel_cfg
 {
     uint32_t scan_mask;                                  ///< Channels/bits: bit 0 is ch0; bit 1 is ch1.
     adc_c_interrupt_channel_setting_t interrupt_setting; ///< Interrupt setting.
-} adc_c_channel_cfg_t;
+};
+
+/** ADC channel(s) configuration. Please refer to the struct st_adc_c_channel_cfg. */
+typedef struct st_adc_c_channel_cfg adc_c_channel_cfg_t;
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** ADC instance control block. DO NOT INITIALIZE.  Initialized in @ref adc_api_t::open(). */
-typedef struct
+struct st_adc_c_instance_ctrl
 {
-    R_ADC_Type      * p_reg;           // Base register
+    R_ADC0_Type     * p_reg;           // Base register
     adc_cfg_t const * p_cfg;
     uint32_t          opened;          // Boolean to verify that the Unit has been initialized
     uint32_t          initialized;     // Initialized status of ADC
@@ -152,8 +165,11 @@ typedef struct
     adc_callback_args_t * p_callback_memory;    // Pointer to non-secure memory that can be used to pass arguments to a callback in non-secure memory.
 
     /* Pointer to context to be passed into callback function */
-    void const * p_context;
-} adc_c_instance_ctrl_t;
+    void * p_context;
+};
+
+/** ADC instance control block. DO NOT INITIALIZE.  Initialized in @ref adc_api_t::open(). Please refer to the struct st_adc_c_instance_ctrl. */
+typedef struct st_adc_c_instance_ctrl adc_c_instance_ctrl_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -183,12 +199,18 @@ fsp_err_t R_ADC_C_OffsetSet(adc_ctrl_t * const p_ctrl, adc_channel_t const reg_i
 fsp_err_t R_ADC_C_Calibrate(adc_ctrl_t * const p_ctrl, void const * p_extend);
 fsp_err_t R_ADC_C_CallbackSet(adc_ctrl_t * const          p_api_ctrl,
                               void (                    * p_callback)(adc_callback_args_t *),
-                              void const * const          p_context,
+                              void * const                p_context,
                               adc_callback_args_t * const p_callback_memory);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup ADC)
  **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

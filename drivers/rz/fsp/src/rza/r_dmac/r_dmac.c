@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -8,7 +8,6 @@
  * Includes
  **********************************************************************************************************************/
 #include "r_dmac.h"
-#include "r_dmac_cfg.h"
 #if (BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
  #include "hal_data.h"
 #endif
@@ -107,8 +106,15 @@ const transfer_api_t g_transfer_on_dmac =
     .callbackSet   = R_DMAC_CallbackSet,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup DMAC
+ * @addtogroup RZA_DMAC
  * @{
  **********************************************************************************************************************/
 
@@ -127,15 +133,15 @@ fsp_err_t R_DMAC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
     fsp_err_t err = FSP_SUCCESS;
     err = r_dma_open_parameter_checking(p_api_ctrl, p_cfg);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_cfg->p_extend;
+    FSP_ASSERT(NULL != p_extend->p_reg);
+#else
+    dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_cfg->p_extend;
 #endif
 
-    dmac_instance_ctrl_t * p_ctrl   = (dmac_instance_ctrl_t *) p_api_ctrl;
-    dmac_extended_cfg_t  * p_extend = (dmac_extended_cfg_t *) p_cfg->p_extend;
+    dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) p_api_ctrl;
 
     /* Calculate base address for registers on this channel. */
-    uintptr_t base_address = (uintptr_t) R_DMA0_NS +
-                             (p_extend->channel * ((uintptr_t) R_DMA1_NS - (uintptr_t) R_DMA0_NS));
-    R_DMA0_Type * p_reg = (R_DMA0_Type *) base_address;
     p_reg_ex = R_DMA_EX_NS;
     if (p_extend->channel < 8)
     {
@@ -147,7 +153,7 @@ fsp_err_t R_DMAC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
     }
 
     p_ctrl->p_cfg = p_cfg;
-    p_ctrl->p_reg = p_reg;
+    p_ctrl->p_reg = p_extend->p_reg;
 
     /* Set callback and context pointers, if configured */
     p_ctrl->p_callback        = p_extend->p_callback;
@@ -170,6 +176,11 @@ fsp_err_t R_DMAC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
     {
         /* Do nothing. */
     }
+
+    R_BSP_DMAC_EXTERNAL_OUTPUT_ACTIVE_LEVEL_SET(p_extend->unit,
+                                                p_extend->channel,
+                                                p_extend->ack_output_signal_active_level,
+                                                p_extend->tend_output_signal_active_level);
 
     /* Mark driver as open by initializing "DMAC" in its ASCII equivalent.*/
     p_ctrl->open = DMAC_ID;
@@ -541,7 +552,7 @@ fsp_err_t R_DMAC_Reload (transfer_ctrl_t * const p_api_ctrl,
  **********************************************************************************************************************/
 fsp_err_t R_DMAC_CallbackSet (transfer_ctrl_t * const      p_api_ctrl,
                               void (                     * p_callback)(dmac_callback_args_t *),
-                              void const * const           p_context,
+                              void * const                 p_context,
                               dmac_callback_args_t * const p_callback_memory)
 {
     FSP_PARAMETER_NOT_USED(p_callback_memory);
@@ -563,6 +574,12 @@ fsp_err_t R_DMAC_CallbackSet (transfer_ctrl_t * const      p_api_ctrl,
 /*******************************************************************************************************************//**
  * @} (end addtogroup DMAC)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -824,9 +841,11 @@ static fsp_err_t r_dma_open_parameter_checking (dmac_instance_ctrl_t * const p_c
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(p_ctrl->open != DMAC_ID, FSP_ERR_ALREADY_OPEN);
     FSP_ASSERT(NULL != p_cfg);
+    FSP_ASSERT(NULL != p_cfg->p_extend);
+    FSP_ASSERT(NULL != p_cfg->p_info);
+    FSP_ASSERT(NULL != p_cfg->p_info->p_extend_info);
     dmac_extended_cfg_t  * p_extend      = (dmac_extended_cfg_t *) p_cfg->p_extend;
     dmac_extended_info_t * p_extend_info = (dmac_extended_info_t *) p_cfg->p_info->p_extend_info;
-    FSP_ASSERT(NULL != p_cfg->p_extend);
     FSP_ERROR_RETURN(p_extend->channel < BSP_FEATURE_DMAC_MAX_CHANNEL, FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 
     if (DMAC_CONTINUOUS_SETTING_TRANSFER_NEXT0_ONCE != p_extend->continuous_setting)
@@ -839,14 +858,11 @@ static fsp_err_t r_dma_open_parameter_checking (dmac_instance_ctrl_t * const p_c
         FSP_ERROR_RETURN(p_extend->dmac_int_irq >= 0, FSP_ERR_IRQ_BSP_DISABLED);
     }
 
-    fsp_err_t err = r_dmac_reconfigure_parameter_checking(p_cfg->p_info);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
-
     if (DMAC_MODE_SELECT_LINK == p_extend->dmac_mode)
     {
         if (NULL != p_extend->p_descriptor)
         {
-            err = r_dmac_link_descriptor_parameter_checking(p_extend->p_descriptor);
+            fsp_err_t err = r_dmac_link_descriptor_parameter_checking(p_extend->p_descriptor);
             FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
         }
     }
@@ -879,25 +895,66 @@ static fsp_err_t r_dmac_reconfigure_parameter_checking (transfer_info_t const * 
  **********************************************************************************************************************/
 static fsp_err_t r_dmac_link_descriptor_parameter_checking (dmac_link_cfg_t const * p_descriptor)
 {
+    /* Provide a pointer variable for accessing values stored in the descriptor.
+     * In CA55 environment, the virtual address of the descriptor is stored. */
     dmac_link_cfg_t const * p_current_descriptor = p_descriptor;
+
+    /* Provide a uint32_t variable to store the descriptor address value (physical address).
+     * Since DMAC handles 32 bit physical addresses, the descriptor address is evaluated as same condition. */
+    uint32_t current_descriptor_pa;
+
+ #if defined(BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+    uint64_t va;
+    uint64_t pa;
+
+    /* In CA55 environment, address conversion is required to store physical address to current_descriptor_pa
+     * since a virtual address is provided as the descriptor address. */
+    va = (uint64_t) p_current_descriptor;
+    R_MMU_VAtoPA(&g_mmu_ctrl, va, (void *) &pa);
+    current_descriptor_pa = (uint32_t) pa;
+ #else
+
+    /* The received descriptor address is stored without conversion since MMU is not implemented. */
+    current_descriptor_pa = (uint32_t) p_current_descriptor;
+ #endif
 
     do
     {
         /* Start address of the link destination must be 4 byte align.
          * (See section 'Next Link Address Register n (NXLA_n)' of the RZ microprocessor manual) */
-        FSP_ASSERT(0U == ((uintptr_t) p_current_descriptor & DMAC_PRV_MASK_ALIGN_N_BYTES(DMAC_PRV_MASK_ALIGN_4_BYTES)));
+        FSP_ASSERT(0U ==
+                   ((uintptr_t) current_descriptor_pa & DMAC_PRV_MASK_ALIGN_N_BYTES(DMAC_PRV_MASK_ALIGN_4_BYTES)));
 
         if (DMAC_LINK_END_ENABLE == p_current_descriptor->header.link_end)
         {
             break;
         }
 
- #if (BSP_FEATURE_DMAC_64BIT_SYSTEM == 1)
-        p_current_descriptor = (dmac_link_cfg_t *) (uintptr_t) (p_current_descriptor->next_link_addr);
+ #if defined(BSP_FEATURE_BSP_HAS_MMU_SUPPORT)
+
+        /* Physical address is stored in next_link_addr. */
+        current_descriptor_pa = p_current_descriptor->next_link_addr;
+
+        /* FSP_SUCCESS should be returned when next link address is NULL
+         * since NULL is stored as next link address at the end of the list. */
+        if (NULL != (void *) (uintptr_t) current_descriptor_pa)
+        {
+            /* Store virtual address of the next descriptor to p_current_descriptor
+             * in order to access the values in the next descriptor. */
+            pa = current_descriptor_pa;
+            R_MMU_PAtoVA(&g_mmu_ctrl, pa, (void *) &va);
+            p_current_descriptor = (dmac_link_cfg_t *) va;
+        }
+
  #else
-        p_current_descriptor = (dmac_link_cfg_t *) (uintptr_t) (p_current_descriptor->p_next_link_addr);
+        current_descriptor_pa = (uint32_t) (p_current_descriptor->p_next_link_addr);
+
+        /* The received descriptor address is stored without conversion since MMU is not implemented. */
+        p_current_descriptor = (dmac_link_cfg_t *) current_descriptor_pa;
  #endif
-    } while (NULL != p_current_descriptor);
+
+        /* If NULL is stored in the next link address (physical address), it indicates the end of the list. */
+    } while (NULL != (void *) (uintptr_t) current_descriptor_pa);
 
     return FSP_SUCCESS;
 }

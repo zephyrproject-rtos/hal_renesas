@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -27,6 +27,18 @@
  * Macro definitions
  **********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZA
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZA_BSP_MCU
+ * @{
+ **********************************************************************************************************************/
+
 /*******************************************************************************************************************//**
  * Cancels the module stop state.
  *
@@ -44,6 +56,16 @@
 #define R_BSP_MODULE_STOP(ip, ch)                      (R_BSP_MODULE_STOP_ ## ip(ip, ch))
 
 /*******************************************************************************************************************//**
+ * @} (end addtogroup BSP_MCU)
+ **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
  * Cancel the module stop state.
  *
  * @param      ip       fsp_ip_t enum value for the module to be stopped
@@ -51,6 +73,7 @@
  **********************************************************************************************************************/
 #define R_BSP_MODULE_START_FSP_IP_ADC(ip, ch)          {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -92,6 +115,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_CRU(ip, ch)          {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -123,6 +147,28 @@
  **********************************************************************************************************************/
 
 #define R_BSP_MODULE_STOP_FSP_IP_DMAC_NS(ip, ch)       {NULL;}
+
+/*******************************************************************************************************************//**
+ * Cancel the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
+ #define R_BSP_MODULE_START_FSP_IP_DRW(ip, ch)          {R_BSP_MODULE_CLKON(ip, ch); \
+                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                         R_BSP_MODULE_RSTON(ip, ch); \
+                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
+
+/*******************************************************************************************************************//**
+ * Enables the module stop state.
+ *
+ * @param      ip       fsp_ip_t enum value for the module to be stopped
+ * @param      ch       The channel. Use channel 0 for modules without channels.
+ **********************************************************************************************************************/
+
+ #define R_BSP_MODULE_STOP_FSP_IP_DRW(ip, ch)           {R_BSP_MSTP_STOP(ip, ch); \
+                                                         R_BSP_MODULE_CLKOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
  * Cancel the module stop state.
@@ -176,6 +222,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_LCDC(ip, ch)         {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -197,6 +244,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_MIPI_DSI(ip, ch)     {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -238,6 +286,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_RIIC(ip, ch)         {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -259,6 +308,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_RSPI(ip, ch)         {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -280,6 +330,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_SCI(ip, ch)          {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -301,6 +352,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_SCIF(ip, ch)         {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -362,6 +414,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_SPI_MULTI(ip, ch)    {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -383,6 +436,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_SSI(ip, ch)          {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -404,6 +458,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_USBPHY(ip, ch)       {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -425,6 +480,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_USB0(ip, ch)         {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -446,6 +502,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_USB1(ip, ch)         {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -467,6 +524,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_WDT(ip, ch)          {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch)    \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -487,6 +545,7 @@
 
 #define R_BSP_MODULE_START_FSP_IP_ISU(ip, ch)          {R_BSP_MODULE_CLKON(ip, ch); \
                                                         R_BSP_MSTP_START(ip, ch);   \
+                                                        R_BSP_MODULE_RSTON(ip, ch); \
                                                         R_BSP_MODULE_RSTOFF(ip, ch);}
 
 /*******************************************************************************************************************//**
@@ -502,6 +561,18 @@
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 
 FSP_HEADER
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZA
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZA_BSP_MCU
+ * @{
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -534,11 +605,19 @@ typedef enum e_fsp_ip
     FSP_IP_MTU3      = 23,             ///< Multi-Function Timer Pulse Unit 3
     FSP_IP_SPI_MULTI = 24,             ///< SPI Multi I/O Bus Controller
     FSP_IP_OCTA      = 25,             ///< Octa Memory Controller
+    FSP_IP_MIPI_DSI  = 26,             ///< MIPI-DSI Tx module
+    FSP_IP_DRW       = 27,             ///< 2D Drawing Engine
 } fsp_ip_t;
 
 typedef void (* fsp_vector_t)(IRQn_Type const irq);
 
 /** @} (end addtogroup BSP_MCU) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

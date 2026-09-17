@@ -1,16 +1,11 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #ifndef R_MTU3_H
 #define R_MTU3_H
-
-/*******************************************************************************************************************//**
- * @addtogroup MTU3
- * @{
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes
@@ -23,6 +18,18 @@ FSP_HEADER
 
 /***********************************************************************************************************************
  * Macro definitions
+ **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZA
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZA_MTU3
+ * @{
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -95,6 +102,8 @@ typedef enum e_mtu3_tcnt_clear
     MTU3_TCNT_CLEAR_DISABLE = 0x0,     ///< TCNT clearing disabled
     MTU3_TCNT_CLEAR_TGRA    = 0x1,     ///< TCNT cleared by TGRA compare match/input capture
     MTU3_TCNT_CLEAR_TGRB    = 0x2,     ///< TCNT cleared by TGRB compare match/input capture
+    MTU3_TCNT_CLEAR_TGRC    = 0x5,     ///< TCNT cleared by TGRC compare match/input capture
+    MTU3_TCNT_CLEAR_TGRD    = 0x6,     ///< TCNT cleared by TGRD compare match/input capture
 } mtu3_tcnt_clear_t;
 
 /** Level of MTU3 pin */
@@ -103,14 +112,48 @@ typedef enum e_mtu3_io_pin
     MTU3_IO_PIN_MTIOCA            = 0, ///< MTIOCA
     MTU3_IO_PIN_MTIOCB            = 1, ///< MTIOCB
     MTU3_IO_PIN_MTIOCA_AND_MTIOCB = 2, ///< MTIOCA and MTIOCB
+    MTU3_IO_PIN_MTIOCC                                  = 3,  ///< MTIOCC
+    MTU3_IO_PIN_MTIOCD                                  = 4,  ///< MTIOCD
+    MTU3_IO_PIN_MTIOCA_AND_MTIOCC                       = 5,  ///< MTIOCA and MTIOCC
+    MTU3_IO_PIN_MTIOCA_AND_MTIOCD                       = 6,  ///< MTIOCA and MTIOCD
+    MTU3_IO_PIN_MTIOCB_AND_MTIOCC                       = 7,  ///< MTIOCB and MTIOCC
+    MTU3_IO_PIN_MTIOCB_AND_MTIOCD                       = 8,  ///< MTIOCB and MTIOCD
+    MTU3_IO_PIN_MTIOCC_AND_MTIOCD                       = 9,  ///< MTIOCC and MTIOCD
+    MTU3_IO_PIN_MTIOCA_AND_MTIOCB_AND_MTIOCC            = 10, ///< MTIOCA, MTIOCB and MTIOCC
+    MTU3_IO_PIN_MTIOCA_AND_MTIOCB_AND_MTIOCD            = 11, ///< MTIOCA, MTIOCB and MTIOCD
+    MTU3_IO_PIN_MTIOCA_AND_MTIOCC_AND_MTIOCD            = 12, ///< MTIOCA, MTIOCC and MTIOCD
+    MTU3_IO_PIN_MTIOCB_AND_MTIOCC_AND_MTIOCD            = 13, ///< MTIOCB, MTIOCC and MTIOCD
+    MTU3_IO_PIN_MTIOCA_AND_MTIOCB_AND_MTIOCC_AND_MTIOCD = 14, ///< MTIOCA, MTIOCB, MTIOCC and MTIOCD
 } mtu3_io_pin_t;
 
+/** Level of MTU3 pin */
+typedef enum e_mtu3_pin_level
+{
+    MTU3_PIN_LEVEL_LOW  = 0,           ///< Pin level low
+    MTU3_PIN_LEVEL_HIGH = 1,           ///< Pin level high
+} mtu3_pin_level_t;
+
 /** Configurations for output pins. */
-typedef struct st_mtu3_output_pin
+struct st_mtu3_output_pin
 {
     mtu3_io_pin_level_t output_pin_level_a; ///< I/O Control A
     mtu3_io_pin_level_t output_pin_level_b; ///< I/O Control B
-} mtu3_output_pin_t;
+    mtu3_io_pin_level_t output_pin_level_c; ///< I/O Control C
+    mtu3_io_pin_level_t output_pin_level_d; ///< I/O Control D
+    bool                output_enabled_a;   ///< Set to true to enable output, false to disable output
+    mtu3_pin_level_t    stop_level_a;       ///< Select a stop level from ::mtu3_pin_level_t
+    mtu3_pin_level_t    initial_level;      ///< Select a initial level from ::mtu3_pin_level_t
+    bool                output_enabled_b;   ///< Set to true to enable output, false to disable output
+    mtu3_pin_level_t    stop_level_b;       ///< Select a stop level from ::mtu3_pin_level_t
+    bool                retain_level;       ///< Set to true to retain output, false to not retain output
+    bool                output_enabled_c;   ///< Set to true to enable output, false to disable output
+    mtu3_pin_level_t    stop_level_c;       ///< Select a stop level from ::mtu3_pin_level_t
+    bool                output_enabled_d;   ///< Set to true to enable output, false to disable output
+    mtu3_pin_level_t    stop_level_d;       ///< Select a stop level from ::mtu3_pin_level_t
+};
+
+/** Configurations for output pins. Please refer to the struct st_mtu3_output_pin. */
+typedef struct st_mtu3_output_pin mtu3_output_pin_t;
 
 /** Disables or enables the noise filter for input from the MTIOCnA pin */
 typedef enum e_mtu3_noise_filter
@@ -118,10 +161,12 @@ typedef enum e_mtu3_noise_filter
     MTU3_NOISE_FILTER_DISABLE  = 0U,   ///< The noise filter for the MTIOC pin is disabled
     MTU3_NOISE_FILTER_A_ENABLE = 1U,   ///< The noise filter for the MTIOCA pin is enabled
     MTU3_NOISE_FILTER_B_ENABLE = 2U,   ///< The noise filter for the MTIOCB pin is enabled
+    MTU3_NOISE_FILTER_C_ENABLE = 4U,   ///< The noise filter for the MTIOCC pin is enabled
+    MTU3_NOISE_FILTER_D_ENABLE = 8U,   ///< The noise filter for the MTIOCD pin is enabled
 } mtu3_noise_filter_t;
 
 /** Disables or enables the noise filter for the external clock input pins of the MTU */
-typedef enum e_mtu3_noise_filter_external
+typedef enum e_mtu3_noise_filter_mtclk
 {
     MTU3_NOISE_FILTER_MTCLK_DISABLE  = 0U, ///< The noise filter for the MTCLK pin is disabled
     MTU3_NOISE_FILTER_MTCLK_A_ENABLE = 1U, ///< The noise filter for the MTCLKA pin is enabled.
@@ -179,8 +224,41 @@ typedef enum e_mtu3_adc_tgra_compare_match
     MTU3_ADC_TGRA_COMPARE_MATCH_ENABLE  = 1U, ///< A/D Converter Activation by TGRA Input Capture/Compare Match Enable
 } mtu3_adc_activation_tgra_compare_match_t;
 
+typedef enum e_mtu3_buffer_mode
+{
+    MTU3_BUFFER_MODE_ENABLE  = 1U,     ///< Buffer mode enable
+    MTU3_BUFFER_MODE_DISABLE = 0U,     ///< Buffer mode disabled
+} mtu3_buffer_mode_t;
+
+typedef enum e_mtu3_phase_counting_mode
+{
+    MTU3_PHASE_COUNTING_MODE_NONE,     ///< Disable Counting Mode
+    MTU3_PHASE_COUNTING_MODE_1,        ///< Mode 1
+    MTU3_PHASE_COUNTING_MODE_200,      ///< Mode 2 (00)
+    MTU3_PHASE_COUNTING_MODE_201,      ///< Mode 2 (01)
+    MTU3_PHASE_COUNTING_MODE_210,      ///< Mode 2 (1x)
+    MTU3_PHASE_COUNTING_MODE_300,      ///< Mode 3 (00)
+    MTU3_PHASE_COUNTING_MODE_301,      ///< Mode 3 (01)
+    MTU3_PHASE_COUNTING_MODE_310,      ///< Mode 3 (1x)
+    MTU3_PHASE_COUNTING_MODE_4,        ///< Mode 4
+    MTU3_PHASE_COUNTING_MODE_50,       ///< Mode 5 (0x)
+    MTU3_PHASE_COUNTING_MODE_51,       ///< Mode 5 (1x)
+} mtu3_phase_counting_mode_t;
+
+typedef enum e_mtu3_bit_mode
+{
+    MTU3_BIT_MODE_NORMAL_16BIT,        ///< normal mode(16bit mode)
+    MTU3_BIT_MODE_NORMAL_32BIT,        ///< normal mode(32bit mode)
+} mtu3_bit_mode_t;
+
+typedef enum e_mtu3_external_clock
+{
+    MTU3_EXTERNAL_CLOCK_MTCLKA_B = 0x0, ///< MTCLKA, MTCLKB
+    MTU3_EXTERNAL_CLOCK_MTCLKC_D = 0x1, ///< MTCLKC, MTCLKD
+} mtu3_external_clock_t;
+
 /** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref timer_api_t::open is called. */
-typedef struct st_mtu3_instance_ctrl
+struct st_mtu3_instance_ctrl
 {
     uint32_t            open;                     ///< Whether or not channel is open
     const timer_cfg_t * p_cfg;                    ///< Pointer to initial configurations
@@ -188,14 +266,22 @@ typedef struct st_mtu3_instance_ctrl
     R_MTU_Type        * p_reg_com;                ///< Base register for this channel(common ch)
     void              * p_reg_nf;                 ///< Base register for this channel(noise fileter)
     uint32_t            channel_mask;             ///< Channel bitmask
+    bool                oneshot_interrupt_flag;   ///< Interrupt flag when One-Shot mode
+    uint8_t             tior_ioa;                 ///< TIOR.IOA register value
+    uint8_t             tior_iob;                 ///< TIOR.IOB register value
+    uint8_t             tior_ioc;                 ///< TIOR.IOC register value
+    uint8_t             tior_iod;                 ///< TIOR.IOD register value
 
     void (* p_callback)(timer_callback_args_t *); ///< Pointer to callback
     timer_callback_args_t * p_callback_memory;    ///< Pointer to optional callback argument memory
-    void const            * p_context;            ///< Pointer to context to be passed into callback function
-} mtu3_instance_ctrl_t;
+    void * p_context;                             ///< Pointer to context to be passed into callback function
+};
+
+/** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref timer_api_t::open is called. Please refer to the struct st_mtu3_instance_ctrl. */
+typedef struct st_mtu3_instance_ctrl mtu3_instance_ctrl_t;
 
 /** MTU3 extension for advanced PWM features. */
-typedef struct st_mtu3_extended_pwm_cfg
+struct st_mtu3_extended_pwm_cfg
 {
     mtu3_interrupt_skip_mode_t interrupt_skip_mode_a;           ///< Selects interrupt skipping function 1 or 2(TIMTRA)
     mtu3_interrupt_skip_mode_t interrupt_skip_mode_b;           ///< Selects interrupt skipping function 1 or 2(TIMTRB)
@@ -207,10 +293,13 @@ typedef struct st_mtu3_extended_pwm_cfg
     mtu3_interrupt_skip_count_t interrupt_skip_count_tgia6;     ///< TGIA6 Interrupt Skipping Count Setting(TITCR1B)
     mtu3_interrupt_skip_count_t interrupt_skip_count_tgr4an_bn; ///< TRG4AN/TRG4BN Interrupt Skipping Count Setting(TITCR2A)
     mtu3_interrupt_skip_count_t interrupt_skip_count_tgr7an_bn; ///< TRG7AN/TRG7BN Interrupt Skipping Count Setting(TITCR2B)
-} mtu3_extended_pwm_cfg_t;
+};
+
+/** MTU3 extension for advanced PWM features. Please refer to the struct st_mtu3_extended_pwm_cfg. */
+typedef struct st_mtu3_extended_pwm_cfg mtu3_extended_pwm_cfg_t;
 
 /** The MTU3 extension constitutes a unique feature of MTU3. */
-typedef struct st_mtu3_extended_cfg
+struct st_mtu3_extended_cfg
 {
     uint32_t          tgra_val;           ///< Capture/Compare match A register
     uint32_t          tgrb_val;           ///< Capture/Compare match B register
@@ -220,6 +309,9 @@ typedef struct st_mtu3_extended_cfg
     mtu3_clock_edge_t clk_edge;           ///< Clock Edge Select
     mtu3_tcnt_clear_t mtu3_clear;         ///< Counter Clear Source Select
     mtu3_output_pin_t mtioc_ctrl_setting; ///< I/O Control A, B
+
+    /* Set to true to enable custom waveform, false to disable custom waveform */
+    bool custom_waveform_enabled;
 
     /* Debounce filter for MTIOCxA or MTIOCxB input signal pin. */
     mtu3_noise_filter_t       noise_filter_mtioc_setting;
@@ -237,9 +329,25 @@ typedef struct st_mtu3_extended_cfg
     uint8_t   capture_b_ipl;                   ///< Capture/Compare match B interrupt priority
     IRQn_Type capture_a_irq;                   ///< Capture/Compare match A interrupt
     IRQn_Type capture_b_irq;                   ///< Capture/Compare match B interrupt
+    uint8_t   capture_c_ipl;                   ///< Capture/Compare match C interrupt priority
+    uint8_t   capture_d_ipl;                   ///< Capture/Compare match D interrupt priority
+    IRQn_Type capture_c_irq;                   ///< Capture/Compare match C interrupt
+    IRQn_Type capture_d_irq;                   ///< Capture/Compare match D interrupt
 
     mtu3_extended_pwm_cfg_t const * p_pwm_cfg; ///< Advanced PWM features, optional
-} mtu3_extended_cfg_t;
+
+    void   * p_reg;                            ///< Register base address for specified channel
+    uint32_t compare_match_value[2];           ///< Storing compare match value for channels
+    uint8_t  compare_match_status;             ///< Storing the compare match register status
+
+    mtu3_phase_counting_mode_t counting_mode;  ///< Select the counting mode.
+    mtu3_bit_mode_t            bit_mode;       ///< Select bit mode
+    mtu3_external_clock_t      external_clock; ///< Select External Clock Input Pins
+    mtu3_buffer_mode_t         buffer_mode;    ///< Buffer mode enable
+};
+
+/** The MTU3 extension constitutes a unique feature of MTU3. Please refer to the struct st_mtu3_extended_cfg. */
+typedef struct st_mtu3_extended_cfg mtu3_extended_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -260,9 +368,6 @@ fsp_err_t R_MTU3_Start(timer_ctrl_t * const p_ctrl);
 fsp_err_t R_MTU3_Reset(timer_ctrl_t * const p_ctrl);
 fsp_err_t R_MTU3_PeriodSet(timer_ctrl_t * const p_ctrl, uint32_t const period_counts);
 fsp_err_t R_MTU3_DutyCycleSet(timer_ctrl_t * const p_ctrl, uint32_t const duty_cycle_counts, uint32_t const pin);
-fsp_err_t R_MTU3_CompareMatchSet(timer_ctrl_t * const        p_ctrl,
-                                 uint32_t const              compare_match_value,
-                                 timer_compare_match_t const match_channel);
 fsp_err_t R_MTU3_InfoGet(timer_ctrl_t * const p_ctrl, timer_info_t * const p_info);
 fsp_err_t R_MTU3_StatusGet(timer_ctrl_t * const p_ctrl, timer_status_t * const p_status);
 fsp_err_t R_MTU3_CounterSet(timer_ctrl_t * const p_ctrl, uint32_t counter);
@@ -275,13 +380,22 @@ fsp_err_t R_MTU3_AdcTriggerSet(timer_ctrl_t * const     p_ctrl,
                                uint16_t                 compare_match_value);
 fsp_err_t R_MTU3_CallbackSet(timer_ctrl_t * const          p_api_ctrl,
                              void (                      * p_callback)(timer_callback_args_t *),
-                             void const * const            p_context,
+                             void * const                  p_context,
                              timer_callback_args_t * const p_callback_memory);
 fsp_err_t R_MTU3_Close(timer_ctrl_t * const p_ctrl);
+fsp_err_t R_MTU3_CompareMatchSet(timer_ctrl_t * const        p_ctrl,
+                                 uint32_t const              compare_match_value,
+                                 timer_compare_match_t const match_channel);
 
 /*******************************************************************************************************************//**
  * @} (end defgroup MTU3)
  **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

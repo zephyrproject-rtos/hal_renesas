@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -23,7 +23,7 @@
 #define ADC_C_FRQ_DIV_RATIO                      (4U)
 #define ADC_C_IDLE_TIME                          (0U)
 #define ADC_C_CONVERSION_TIME                    (14U)
-#define ADC_C_PRV_ADM0_CLEAR_ADCE                (~R_ADC_ADM0_ADCE_Msk)
+#define ADC_C_PRV_ADM0_CLEAR_ADCE                (~R_ADC0_ADM0_ADCE_Msk)
 #define ADC_C_DATA_SIZE_BUFFER_MODE_4            (4U)
 #define ADC_C_INTERRUPT_CHANNEL_BUFFER_MODE_4    (0x8U)
 #define ADC_C_SAMPLE_STATE_COUNT_MIN             (6U)
@@ -52,6 +52,15 @@ static void     r_adc_c_irq_disable(IRQn_Type irq);
 static uint32_t r_adc_c_lowest_channel_get(uint32_t adc_mask);
 static uint32_t r_adc_c_highest_channel_get(uint32_t adc_mask);
 
+#if ADC_C_CFG_PARAM_CHECKING_ENABLE
+
+/** Mask of valid channels on this MPU. */
+static const uint32_t g_adc_c_valid_channels[] =
+{
+    BSP_FEATURE_ADC_UNIT_VALID_CONVERSION_RESULT_REGISTER_MASKS
+};
+#endif
+
 /***********************************************************************************************************************
  * Global Variables
  **********************************************************************************************************************/
@@ -74,8 +83,15 @@ const adc_api_t g_adc_on_adc_c =
     .callbackSet    = R_ADC_C_CallbackSet,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup ADC
+ * @addtogroup RZA_ADC
  * @{
  **********************************************************************************************************************/
 
@@ -90,6 +106,7 @@ const adc_api_t g_adc_on_adc_c =
  * @retval FSP_ERR_ASSERTION               An input argument is invalid.
  * @retval FSP_ERR_ALREADY_OPEN            The instance control structure has already been opened.
  * @retval FSP_ERR_IRQ_BSP_DISABLED        A callback is provided, but the interrupt is not enabled.
+ * @retval FSP_ERR_IP_UNIT_NOT_PRESENT     The requested unit does not exist on this MPU.
  **********************************************************************************************************************/
 fsp_err_t R_ADC_C_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
 {
@@ -104,6 +121,9 @@ fsp_err_t R_ADC_C_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
     /* Verify the configuration parameters are valid   */
     FSP_ASSERT(NULL != p_cfg);
 
+    /* Verify the unit exists on the MPU. */
+    FSP_ERROR_RETURN(((1U << p_cfg->unit) & BSP_FEATURE_ADC_VALID_UNIT_MASK), FSP_ERR_IP_UNIT_NOT_PRESENT);
+
     /* Verify this unit has not already been initialized   */
     FSP_ERROR_RETURN(ADC_C_OPEN != p_instance_ctrl->opened, FSP_ERR_ALREADY_OPEN);
 
@@ -112,6 +132,11 @@ fsp_err_t R_ADC_C_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
     {
         FSP_ERROR_RETURN((p_cfg->scan_end_irq >= 0), FSP_ERR_IRQ_BSP_DISABLED);
     }
+
+    adc_c_extended_cfg_t const * p_cfg_extend = (adc_c_extended_cfg_t const *) p_cfg->p_extend;
+    FSP_ASSERT(NULL != p_cfg_extend->p_reg);
+#else
+    adc_c_extended_cfg_t const * p_cfg_extend = (adc_c_extended_cfg_t const *) p_cfg->p_extend;
 #endif
 
     /* Save configurations. */
@@ -121,7 +146,7 @@ fsp_err_t R_ADC_C_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
     p_instance_ctrl->p_callback_memory = NULL;
 
     /* Calculate the register base address. */
-    p_instance_ctrl->p_reg = R_ADC;
+    p_instance_ctrl->p_reg = p_cfg_extend->p_reg;
 
     /* Initialize the hardware based on the configuration. */
     r_adc_c_open_sub(p_instance_ctrl, p_cfg);
@@ -185,7 +210,7 @@ fsp_err_t R_ADC_C_ScanCfg (adc_ctrl_t * p_ctrl, void const * const p_channel_cfg
  **********************************************************************************************************************/
 fsp_err_t R_ADC_C_CallbackSet (adc_ctrl_t * const          p_api_ctrl,
                                void (                    * p_callback)(adc_callback_args_t *),
-                               void const * const          p_context,
+                               void * const                p_context,
                                adc_callback_args_t * const p_callback_memory)
 {
     adc_c_instance_ctrl_t * p_ctrl = (adc_c_instance_ctrl_t *) p_api_ctrl;
@@ -344,9 +369,9 @@ fsp_err_t R_ADC_C_Read (adc_ctrl_t * p_ctrl, adc_channel_t const reg_id, uint16_
     FSP_ERROR_RETURN(ADC_C_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
     FSP_ERROR_RETURN(ADC_C_OPEN == p_instance_ctrl->initialized, FSP_ERR_NOT_INITIALIZED);
 
-    /* Verify that the channel is valid for this MCU */
-    uint32_t requested_channel_mask = (1U << (uint32_t) reg_id);
-    FSP_ASSERT(0 != (requested_channel_mask & BSP_FEATURE_ADC_VALID_CHANNEL_MASK));
+    /* Verify the requested ADC conversion result register exists on this MPU */
+    uint32_t requested_register_mask = (1U << (uint32_t) reg_id);
+    FSP_ASSERT(0 != (requested_register_mask & g_adc_c_valid_channels[p_instance_ctrl->p_cfg->unit]));
 #endif
 
     /* Read the data from the requested ADC conversion register and return it */
@@ -509,11 +534,11 @@ fsp_err_t R_ADC_C_Close (adc_ctrl_t * p_ctrl)
     FSP_HARDWARE_REGISTER_WAIT(p_instance_ctrl->p_reg->ADM0_b.ADCE, 0U);
 
     /* Clear the interrupt cause flag and trigger detection flag.  */
-    uint32_t adsts = (uint32_t) (1 << R_ADC_ADSTS_TRGS_Pos);
-    adsts |= (uint32_t) (BSP_FEATURE_ADC_VALID_CHANNEL_MASK << R_ADC_ADSTS_INTST_Pos);
+    uint32_t adsts = (uint32_t) (1 << R_ADC0_ADSTS_TRGS_Pos);
+    adsts |= (uint32_t) R_ADC0_ADSTS_INTST_Msk;
     p_instance_ctrl->p_reg->ADSTS = adsts;
 
-    R_BSP_MODULE_STOP(FSP_IP_ADC, 0);
+    R_BSP_MODULE_STOP(FSP_IP_ADC, p_instance_ctrl->p_cfg->unit);
 
     /* Return the error code */
     return FSP_SUCCESS;
@@ -522,7 +547,7 @@ fsp_err_t R_ADC_C_Close (adc_ctrl_t * p_ctrl)
 /*******************************************************************************************************************//**
  * @ref adc_api_t::calibrate is not supported.
  *
- * @retval FSP_ERR_UNSUPPORTED         Calibration not supported on this MCU.
+ * @retval FSP_ERR_UNSUPPORTED         Calibration not supported on this MPU.
  **********************************************************************************************************************/
 fsp_err_t R_ADC_C_Calibrate (adc_ctrl_t * const p_ctrl, void const * p_extend)
 {
@@ -552,6 +577,12 @@ fsp_err_t R_ADC_C_OffsetSet (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_
  * @} (end addtogroup ADC)
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
@@ -570,24 +601,24 @@ static void r_adc_c_open_sub (adc_c_instance_ctrl_t * const p_instance_ctrl, adc
      * The value to set in ADCSR to start a scan is stored in the control structure.
      * ADM0.ADCE is set in R_ADC_ScanStart.
      *//* Sets the trigger mode. */
-    uint32_t adm1 = (uint32_t) (p_cfg_extend->trigger_mode << R_ADC_ADM1_TRG_Pos);
+    uint32_t adm1 = (uint32_t) (p_cfg_extend->trigger_mode << R_ADC0_ADM1_TRG_Pos);
 
     /* When using hardware trigger mode, set the hardware trigger signal parameter. */
     if (ADC_C_TRIGGER_MODE_HARDWARE == p_cfg_extend->trigger_mode)
     {
-        adm1 |= (uint32_t) (p_cfg_extend->trigger_source << R_ADC_ADM1_TRGEN_Pos);
-        adm1 |= (uint32_t) (p_cfg_extend->input_mode << R_ADC_ADM1_TRGIN_Pos);
+        adm1 |= (uint32_t) (p_cfg_extend->trigger_source << R_ADC0_ADM1_TRGEN_Pos);
+        adm1 |= (uint32_t) (p_cfg_extend->input_mode << R_ADC0_ADM1_TRGIN_Pos);
 
         /* The trigger edge setting is valid only when the trigger source is ADC_TRG.
-         * Reference section "A/D Converter Mode Register 1 (ADM1)" of the user's manual. */
+         * Reference section "A/D Converter Mode Register 1 (ADM1)" of the hardware manual. */
         if (ADC_C_ACTIVE_TRIGGER_EXTERNAL == p_cfg_extend->trigger_source)
         {
-            adm1 |= (uint32_t) (p_cfg_extend->trigger_edge << R_ADC_ADM1_EGA_Pos);
+            adm1 |= (uint32_t) (p_cfg_extend->trigger_edge << R_ADC0_ADM1_EGA_Pos);
         }
         /* Otherwise falling edge is always valid. */
         else
         {
-            adm1 |= (uint32_t) (ADC_C_TRIGGER_EDGE_FALLING << R_ADC_ADM1_EGA_Pos);
+            adm1 |= (uint32_t) (ADC_C_TRIGGER_EDGE_FALLING << R_ADC0_ADM1_EGA_Pos);
         }
     }
     else
@@ -596,32 +627,32 @@ static void r_adc_c_open_sub (adc_c_instance_ctrl_t * const p_instance_ctrl, adc
     }
 
     /* Sets the operating mode and buffer mode. */
-    adm1 |= (uint32_t) (p_cfg_extend->operating_mode << R_ADC_ADM1_MS_Pos);
+    adm1 |= (uint32_t) (p_cfg_extend->operating_mode << R_ADC0_ADM1_MS_Pos);
 
     /* 1-Buffer mode and 4-Buffer mode can be set when using select mode. */
     if (ADC_C_OPERATING_MODE_SELECT == p_cfg_extend->operating_mode)
     {
-        adm1 |= (uint32_t) (p_cfg_extend->buffer_mode << R_ADC_ADM1_BS_Pos);
+        adm1 |= (uint32_t) (p_cfg_extend->buffer_mode << R_ADC0_ADM1_BS_Pos);
     }
 
     /* Repeat mode corresponds to ADC_MODE_CONTINUOUS_SCAN of API,
      * but since the API value (=2) and repeat mode register setting value (=1) are different,
      * it is necessary to convert them.
      * Sets the conversion mode. */
-    adm1 |= (uint32_t) ((p_cfg->mode >> 1U) << R_ADC_ADM1_RPS_Pos);
+    adm1 |= (uint32_t) ((p_cfg->mode >> 1U) << R_ADC0_ADM1_RPS_Pos);
 
     /* Sets the frequency division ratio for dividing the frequency of ADC_ADCLK(TSUϕ). */
-    uint32_t adivc = (uint32_t) (ADC_C_FRQ_DIV_RATIO << R_ADC_ADIVC_DIVADC_Pos);
+    uint32_t adivc = (uint32_t) (ADC_C_FRQ_DIV_RATIO << R_ADC0_ADIVC_DIVADC_Pos);
 
     uint32_t adfil = 0;
 
     /* Enables or disables the AD external trigger pin filter. */
     if (ADC_C_FILTER_STAGE_SETTING_DISABLE != p_cfg_extend->external_trigger_filter)
     {
-        adfil = (uint32_t) (1 << R_ADC_ADFIL_FILONOFF_Pos);
+        adfil = (uint32_t) (1 << R_ADC0_ADFIL_FILONOFF_Pos);
 
         /* Set the number of stages of the AD external trigger pin filter. */
-        adfil |= (uint32_t) ((p_cfg_extend->external_trigger_filter - 1) << R_ADC_ADFIL_FILNUM_Pos);
+        adfil |= (uint32_t) ((p_cfg_extend->external_trigger_filter - 1) << R_ADC0_ADFIL_FILNUM_Pos);
     }
     else
     {
@@ -629,19 +660,19 @@ static void r_adc_c_open_sub (adc_c_instance_ctrl_t * const p_instance_ctrl, adc
     }
 
     /* Set the idle period. */
-    uint32_t adm3 = (uint32_t) (ADC_C_IDLE_TIME << R_ADC_ADM3_ADIL_Pos);
+    uint32_t adm3 = (uint32_t) (ADC_C_IDLE_TIME << R_ADC0_ADM3_ADIL_Pos);
 
     /* Set the conversion period and sampling period. */
-    adm3 |= (uint32_t) (ADC_C_CONVERSION_TIME << R_ADC_ADM3_ADCMP_Pos);
-    adm3 |= (uint32_t) (p_cfg_extend->sampling_time << R_ADC_ADM3_ADSMP_Pos);
+    adm3 |= (uint32_t) (ADC_C_CONVERSION_TIME << R_ADC0_ADM3_ADCMP_Pos);
+    adm3 |= (uint32_t) (p_cfg_extend->sampling_time << R_ADC0_ADM3_ADSMP_Pos);
 
     /* Apply clock to peripheral. */
 
-    R_BSP_MODULE_START(FSP_IP_ADC, 0);
+    R_BSP_MODULE_START(FSP_IP_ADC, p_cfg->unit);
 
-    /* The following series of steps refer to "A/D conversion start procedure" in the user's manual. */
+    /* The following series of steps refer to "A/D conversion start procedure" in the hardware manual. */
     /* Release from software reset state. */
-    uint32_t adm0 = (uint32_t) (1 << R_ADC_ADM0_SRESB_Pos);
+    uint32_t adm0 = (uint32_t) (1 << R_ADC0_ADM0_SRESB_Pos);
     p_instance_ctrl->p_reg->ADM0 = adm0;
 
     /* The waiting time until the reset state of the A/D converter is released is 2 × ADC_ADCLK(TSUϕ) (80 MHz),
@@ -650,8 +681,8 @@ static void r_adc_c_open_sub (adc_c_instance_ctrl_t * const p_instance_ctrl, adc
     R_BSP_SoftwareDelay(1U, BSP_DELAY_UNITS_MICROSECONDS);
 
     /* Clear the interrupt cause flag and trigger detection flag.  */
-    uint32_t adsts = (uint32_t) (1 << R_ADC_ADSTS_TRGS_Pos);
-    adsts |= (uint32_t) (BSP_FEATURE_ADC_VALID_CHANNEL_MASK << R_ADC_ADSTS_INTST_Pos);
+    uint32_t adsts = (uint32_t) (1 << R_ADC0_ADSTS_TRGS_Pos);
+    adsts |= (uint32_t) R_ADC0_ADSTS_INTST_Msk;
     p_instance_ctrl->p_reg->ADSTS = adsts;
 
     /* Set the predetermined values for ADM1, ADM3, ADINT, ADIVC, and ADFIL.
@@ -662,14 +693,14 @@ static void r_adc_c_open_sub (adc_c_instance_ctrl_t * const p_instance_ctrl, adc
     p_instance_ctrl->p_reg->ADFIL = adfil;
 
     /* Change from power-saving mode to normal mode. */
-    adm0 |= (uint32_t) (1 << R_ADC_ADM0_PWDWNB_Pos);
+    adm0 |= (uint32_t) (1 << R_ADC0_ADM0_PWDWNB_Pos);
     p_instance_ctrl->p_reg->ADM0 = adm0;
 
     /* Secure the A/D converter stabilization wait time. */
     R_BSP_SoftwareDelay(ADC_C_STABILIZATION_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
 
     /* Set the ADCE bit. */
-    adm0 |= (uint32_t) (R_ADC_ADM0_ADCE_Msk);
+    adm0 |= (uint32_t) (R_ADC0_ADM0_ADCE_Msk);
 
     p_instance_ctrl->scan_start = adm0;
 
@@ -690,19 +721,19 @@ static void r_adc_c_scan_cfg (adc_c_instance_ctrl_t * const     p_instance_ctrl,
                               adc_c_channel_cfg_t const * const p_channel_cfg)
 {
     /* Set mask for channels. */
-    p_instance_ctrl->p_reg->ADM2 = (uint32_t) (p_channel_cfg->scan_mask & (uint32_t) R_ADC_ADM2_CHSEL_Msk);
+    p_instance_ctrl->p_reg->ADM2 = (uint32_t) (p_channel_cfg->scan_mask & (uint32_t) R_ADC0_ADM2_CHSEL_Msk);
 
     /* Disables the A/D conversion channel select error interrupt. */
-    uint32_t adint = (uint32_t) (0 << R_ADC_ADINT_CSEEN_Pos);
+    uint32_t adint = (uint32_t) (0 << R_ADC0_ADINT_CSEEN_Pos);
 
     /* Enable or disable the conversion end interrupt of channel n (n = 0 to 3). */
     if (ADC_C_INTERRUPT_CHANNEL_SETTING_ENABLE == p_channel_cfg->interrupt_setting)
     {
         /* Channel 3 interrupt output is enabled in 4-buffer mode.
-         * Reference section "Example of A/D Conversion in 4-Buffer Mode" of the user's manual.*/
+         * Reference section "Example of A/D Conversion in 4-Buffer Mode" of the hardware manual.*/
         if (ADC_C_BUFFER_MODE_4 == p_instance_ctrl->buffer_mode)
         {
-            adint |= (uint32_t) (ADC_C_INTERRUPT_CHANNEL_BUFFER_MODE_4 << R_ADC_ADINT_INTEN_Pos);
+            adint |= (uint32_t) (ADC_C_INTERRUPT_CHANNEL_BUFFER_MODE_4 << R_ADC0_ADINT_INTEN_Pos);
         }
         else
         {
@@ -878,11 +909,11 @@ void adc_c_scan_end_isr (IRQn_Type const irq)
     /* Clear the trigger detection flag.  */
     if (ADC_C_TRIGGER_MODE_HARDWARE == p_extend->trigger_mode)
     {
-        adsts = (uint32_t) (1 << R_ADC_ADSTS_TRGS_Pos);
+        adsts = (uint32_t) (1 << R_ADC0_ADSTS_TRGS_Pos);
     }
 
     /* Clear the interrupt cause flag.  */
-    adsts |= (uint32_t) (BSP_FEATURE_ADC_VALID_CHANNEL_MASK << R_ADC_ADSTS_INTST_Pos);
+    adsts |= (uint32_t) (R_ADC0_ADSTS_INTST_Msk << R_ADC0_ADSTS_INTST_Pos);
     p_instance_ctrl->p_reg->ADSTS = adsts;
 
     /* Dummy read the ADSTS bit. */

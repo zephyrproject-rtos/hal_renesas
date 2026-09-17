@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -10,15 +10,6 @@
  * Description  : bsp_mcu_info header
  *********************************************************************************************************************/
 
-/*******************************************************************************************************************//**
- * @ingroup BSP_MCU
- * @defgroup BSP_MPU_RZA3UL RZA3UL
- * @includedoc config_bsp_rza3ul_fsp.html
- * @{
- **********************************************************************************************************************/
-
-/** @} (end defgroup BSP_MPU_RZA3UL) */
-
 #ifndef BSP_MCU_INFO_H
 #define BSP_MCU_INFO_H
 
@@ -26,13 +17,27 @@
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
 
-/* BSP MCU Specific Includes. */
+/* BSP MPU Specific Includes. */
 #include "bsp_irq_id.h"
 #include "bsp_dmac.h"
 #include "bsp_feature.h"
 
 /***********************************************************************************************************************
  * Macro definitions
+ **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @ingroup RZA_BSP_MCU
+ * @defgroup RZA_BSP_MPU_RZA3UL RZA3UL
+ * @includedoc config_bsp_rza3ul_fsp.html
+ * @{
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -46,5 +51,12 @@
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
+
+/** @} (end defgroup BSP_MPU_RZA3UL) */
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 #endif                                 /* BSP_MCU_INFO_H */

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -23,12 +23,14 @@ FSP_HEADER
  #define __PACKED_STRUCT    struct __attribute__((packed, aligned(1)))
 #endif
 
+/** @cond DOXYGEN_IGNORE_ATTRIBUTE */
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** MIPI PHY D-PHY power mode transition timing */
-typedef struct st_mipi_phy_b_timing
+struct st_mipi_phy_b_timing
 {
     uint32_t t_init;                   ///< Minimum duration of the TINIT state (Units: PCLKA cycles)
     uint8_t  t_clk_prep;               ///< Duration of the clock lane LP-00 state (immediately before entry to the HS-0 state)
@@ -41,23 +43,32 @@ typedef struct st_mipi_phy_b_timing
     uint8_t  t_hs_trail;               ///< THSTRAIL setting.
     uint8_t  t_hs_exit;                ///< THSEXIT setting.
     uint8_t  t_lp_exit;                ///< Low-power transition time to High-Speed mode
-} mipi_phy_b_timing_t;
+};
+
+/** MIPI PHY D-PHY power mode transition timing. Please refer to the struct st_mipi_phy_b_timing. */
+typedef struct st_mipi_phy_b_timing mipi_phy_b_timing_t;
 
 /** MIPI_PHY configuration structure. */
-typedef struct st_mipi_phy_b_cfg
+struct st_mipi_phy_b_cfg
 {
     mipi_phy_b_timing_t const * p_timing; ///< Pointer to D-PHY HS/LP transition timing values
-} mipi_phy_b_cfg_t;
+};
+
+/** MIPI_PHY configuration structure. Please refer to the struct st_mipi_phy_b_cfg. */
+typedef struct st_mipi_phy_b_cfg mipi_phy_b_cfg_t;
 
 /** MIPI_PHY instance control block. */
-typedef struct st_mipi_phy_b_ctrl
+struct st_mipi_phy_b_ctrl
 {
     uint32_t                 open;
     mipi_phy_b_cfg_t const * p_cfg;
-} mipi_phy_b_ctrl_t;
+};
+
+/** MIPI_PHY instance control block. Please refer to the struct st_mipi_phy_b_ctrl. */
+typedef struct st_mipi_phy_b_ctrl mipi_phy_b_ctrl_t;
 
 /** Private Interface definition for MIPI PHY peripheral */
-typedef struct st_mipi_phy_b_api
+struct st_mipi_phy_b_api
 {
     /** Open MIPI PHY device.
      * @param[in,out]  p_ctrl       Pointer to MIPI PHY interface control block.
@@ -69,15 +80,21 @@ typedef struct st_mipi_phy_b_api
      * @param[in]     p_ctrl        Pointer to MIPI PHY interface control block.
      */
     fsp_err_t (* close)(mipi_phy_b_ctrl_t * const p_ctrl);
-} mipi_phy_b_api_t;
+};
+
+/** Private Interface definition for MIPI PHY peripheral. Please refer to the struct st_mipi_phy_b_api. */
+typedef struct st_mipi_phy_b_api mipi_phy_b_api_t;
 
 /** This structure encompasses everything that is needed to use an instance of this interface. */
-typedef struct st_mipi_phy_b_instance
+struct st_mipi_phy_b_instance
 {
     mipi_phy_b_ctrl_t      * p_ctrl;   ///< Pointer to the control structure for this instance
     mipi_phy_b_cfg_t const * p_cfg;    ///< Pointer to the configuration structure for this instance
     mipi_phy_b_api_t const * p_api;    ///< Pointer to the API structure for this instance
-} mipi_phy_instance_t;
+};
+
+/** This structure encompasses everything that is needed to use an instance of this interface. Please refer to the struct st_mipi_phy_b_instance. */
+typedef struct st_mipi_phy_b_instance mipi_phy_instance_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -98,6 +115,8 @@ extern const mipi_phy_b_api_t g_mipi_phy;
  **********************************************************************************************************************/
 fsp_err_t r_mipi_phy_b_open(mipi_phy_b_ctrl_t * const p_api_ctrl, mipi_phy_b_cfg_t const * const p_cfg);
 fsp_err_t r_mipi_phy_b_close(mipi_phy_b_ctrl_t * const p_api_ctrl);
+
+/** @endcond */
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

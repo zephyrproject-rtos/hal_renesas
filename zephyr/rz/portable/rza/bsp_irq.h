@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -197,10 +197,17 @@ __STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
     return gp_renesas_isr_context[irq];
 }
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
  * @internal
- * @addtogroup BSP_MCU_PRV Internal BSP Documentation
- * @ingroup RENESAS_INTERNAL
+ * @addtogroup RZA_BSP_MCU_PRV
+ * @ingroup RZA_RENESAS_INTERNAL
  * @{
  **********************************************************************************************************************/
 
@@ -208,6 +215,12 @@ __STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
 void bsp_irq_cfg(void);                // Used internally by BSP
 
 /** @} (end addtogroup BSP_MCU_PRV) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
