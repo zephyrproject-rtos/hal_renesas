@@ -1,10 +1,10 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-/* Ensure Renesas MCU variation definitions are included to ensure MCU
+/* Ensure Renesas MPU variation definitions are included to ensure MPU
  * specific register variations are handled correctly. */
 #ifndef BSP_FEATURE_H
  #error "INTERNAL ERROR: bsp_feature.h must be included before renesas.h."
@@ -27,7 +27,7 @@ extern "C" {
 
  #include "../../../../mcu/all/bsp_compiler_support.h"
 
-/* Define compiler macros for CPU architecture, used in CMSIS 5. */
+/* Define compiler macros for CPU architecture, used in CMSIS. */
  #if defined(__ICCARM__)
   #if __ARM_ARCH_6M__ || __ARM_ARCH_7M__ || __ARM_ARCH_7EM__ || __ARM_ARCH_8M_BASE__ || __ARM_ARCH_8M_MAIN__
 
@@ -114,6 +114,8 @@ extern "C" {
   #include "R9A07G075M29.h"
  #elif BSP_MCU_GROUP_RZT2H
   #include "R9A09G077.h"
+ #elif BSP_MCU_GROUP_RZT2N
+  #include "R9A07G076.h"
  #else
   #warning Unsupported MCU
  #endif

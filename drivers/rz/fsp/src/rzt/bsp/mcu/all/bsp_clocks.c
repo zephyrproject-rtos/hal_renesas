@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -12,11 +12,6 @@
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-
-/* Key code for writing PRCR register. */
-#define BSP_PRV_PRCR_KEY                                     (0xA500U)
-#define BSP_PRV_PRCR_CGC_UNLOCK                              ((BSP_PRV_PRCR_KEY) | 0x3U)
-#define BSP_PRV_PRCR_LOCK                                    ((BSP_PRV_PRCR_KEY) | 0x0U)
 
 /* Key code for writing  PCMD register. */
 #define BSP_PRV_PCMD_KEY                                     (0xA5U)
@@ -44,6 +39,12 @@
  #define BSP_PRV_STARTUP_SCKCR_FSELCANFD_BITS                ((BSP_CFG_FSELCANFD & 1U) << 20U)
  #define BSP_PRV_STARTUP_SCKCR_PHYSEL_BITS                   ((BSP_CFG_PHYSEL & 1U) << 21U)
  #define BSP_PRV_STARTUP_SCKCR_CLMASEL_BITS                  ((BSP_CFG_CLMASEL & 1U) << 22U)
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR_FSELXSPI0_DIVSELXSPI0_BITS    (BSP_CFG_FSELXSPI0_DIVSELXSPI0 & 0x47U)
+ #define BSP_PRV_STARTUP_SCKCR_FSELXSPI1_DIVSELXSPI1_BITS    ((BSP_CFG_FSELXSPI1_DIVSELXSPI1 & 0x47U) << 8U)
+ #define BSP_PRV_STARTUP_SCKCR_CKIO_BITS                     ((BSP_CFG_CKIO & 7U) << 16U)
+ #define BSP_PRV_STARTUP_SCKCR_FSELCANFD_BITS                ((BSP_CFG_FSELCANFD & 1U) << 20U)
+ #define BSP_PRV_STARTUP_SCKCR_CLMASEL_BITS                  ((BSP_CFG_CLMASEL & 1U) << 22U)
 #endif
 
 /* Calculate the value to write to SCKCR2. */
@@ -68,6 +69,14 @@
  #define BSP_PRV_STARTUP_SCKCR2_CA55SCLK_BITS                ((BSP_CFG_CA55SCLK & 1U) << 12U)
  #define BSP_PRV_STARTUP_SCKCR2_SPI3ASYNCSEL_BITS            ((BSP_CFG_SPI3ASYNCCLK & 3U) << 16U)
  #define BSP_PRV_STARTUP_SCKCR2_SCI5ASYNCSEL_BITS            ((BSP_CFG_SCI5ASYNCCLK & 3U) << 18U)
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR2_CR52CPU0_BITS                (BSP_CFG_CR52C0CLK & 3U)
+ #define BSP_PRV_STARTUP_SCKCR2_CR52CPU1_BITS                ((BSP_CFG_CR52C1CLK & 3U) << 2U)
+ #define BSP_PRV_STARTUP_SCKCR2_CA55CORE0_BITS               ((BSP_CFG_CA55CORE0 & 1U) << 8U)
+ #define BSP_PRV_STARTUP_SCKCR2_CA55CORE1_BITS               ((BSP_CFG_CA55CORE1 & 1U) << 9U)
+ #define BSP_PRV_STARTUP_SCKCR2_CA55SCLK_BITS                ((BSP_CFG_CA55SCLK & 1U) << 12U)
+ #define BSP_PRV_STARTUP_SCKCR2_SPI3ASYNCSEL_BITS            ((BSP_CFG_SPI3ASYNCCLK & 3U) << 16U)
+ #define BSP_PRV_STARTUP_SCKCR2_SCI5ASYNCSEL_BITS            ((BSP_CFG_SCI5ASYNCCLK & 3U) << 18U)
 #endif
 
 /* Calculate the value to write to SCKCR3. */
@@ -81,6 +90,20 @@
  #define BSP_PRV_STARTUP_SCKCR3_SCI3ASYNCSEL_BITS            ((BSP_CFG_SCI3ASYNCCLK & 3U) << 12U)
  #define BSP_PRV_STARTUP_SCKCR3_SCI4ASYNCSEL_BITS            ((BSP_CFG_SCI4ASYNCCLK & 3U) << 14U)
  #define BSP_PRV_STARTUP_SCKCR3_LCDCDIVSEL_BITS              ((BSP_CFG_LCDCDIVSEL & 15U) << 20U)
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR3_SPI0ASYNCSEL_BITS            (BSP_CFG_SPI0ASYNCCLK & 3U)
+ #define BSP_PRV_STARTUP_SCKCR3_SPI1ASYNCSEL_BITS            ((BSP_CFG_SPI1ASYNCCLK & 3U) << 2U)
+ #define BSP_PRV_STARTUP_SCKCR3_SPI2ASYNCSEL_BITS            ((BSP_CFG_SPI2ASYNCCLK & 3U) << 4U)
+ #define BSP_PRV_STARTUP_SCKCR3_SCI0ASYNCSEL_BITS            ((BSP_CFG_SCI0ASYNCCLK & 3U) << 6U)
+ #define BSP_PRV_STARTUP_SCKCR3_SCI1ASYNCSEL_BITS            ((BSP_CFG_SCI1ASYNCCLK & 3U) << 8U)
+ #define BSP_PRV_STARTUP_SCKCR3_SCI2ASYNCSEL_BITS            ((BSP_CFG_SCI2ASYNCCLK & 3U) << 10U)
+ #define BSP_PRV_STARTUP_SCKCR3_SCI3ASYNCSEL_BITS            ((BSP_CFG_SCI3ASYNCCLK & 3U) << 12U)
+ #define BSP_PRV_STARTUP_SCKCR3_SCI4ASYNCSEL_BITS            ((BSP_CFG_SCI4ASYNCCLK & 3U) << 14U)
+ #define BSP_PRV_STARTUP_SCKCR3_ETH0REFCLKSEL_BITS           ((BSP_CFG_ETH0_REFCLK_SOURCE & 1U) << 24U)
+ #define BSP_PRV_STARTUP_SCKCR3_ETH1REFCLKSEL_BITS           ((BSP_CFG_ETH1_REFCLK_SOURCE & 1U) << 25U)
+ #define BSP_PRV_STARTUP_SCKCR3_ETH2REFCLKSEL_BITS           ((BSP_CFG_ETH2_REFCLK_SOURCE & 1U) << 26U)
+ #define BSP_PRV_STARTUP_SCKCR3_ETH3REFCLKSEL_BITS           ((BSP_CFG_ETH3_REFCLK_SOURCE & 1U) << 27U)
+ #define BSP_PRV_STARTUP_SCKCR3_ETH4REFCLKSEL_BITS           ((BSP_CFG_ETH4_REFCLK_SOURCE & 1U) << 28U)
 #endif
 
 /* Calculate the value to write to SCKCR4. */
@@ -98,7 +121,26 @@
  #define BSP_PRV_STARTUP_SCKCR4_SCIE10ASYNCSEL_BITS          ((BSP_CFG_SCIE10ASYNCCLK & 3U) << 20U)
  #define BSP_PRV_STARTUP_SCKCR4_SCIE11ASYNCSEL_BITS          ((BSP_CFG_SCIE11ASYNCCLK & 3U) << 22U)
  #define BSP_PRV_STARTUP_SCKCR4_ENCOUTCLK_BITS               ((BSP_CFG_ENCOUTCLK & 1U) << 24U)
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR4_SCIE0ASYNCSEL_BITS           (BSP_CFG_SCIE0ASYNCCLK & 3U)
+ #define BSP_PRV_STARTUP_SCKCR4_SCIE1ASYNCSEL_BITS           ((BSP_CFG_SCIE1ASYNCCLK & 3U) << 2U)
+ #define BSP_PRV_STARTUP_SCKCR4_SCIE2ASYNCSEL_BITS           ((BSP_CFG_SCIE2ASYNCCLK & 3U) << 4U)
+ #define BSP_PRV_STARTUP_SCKCR4_SCIE3ASYNCSEL_BITS           ((BSP_CFG_SCIE3ASYNCCLK & 3U) << 6U)
+ #define BSP_PRV_STARTUP_SCKCR4_SCIE4ASYNCSEL_BITS           ((BSP_CFG_SCIE4ASYNCCLK & 3U) << 8U)
+ #define BSP_PRV_STARTUP_SCKCR4_SCIE5ASYNCSEL_BITS           ((BSP_CFG_SCIE5ASYNCCLK & 3U) << 10U)
+ #define BSP_PRV_STARTUP_SCKCR4_SCIE6ASYNCSEL_BITS           ((BSP_CFG_SCIE6ASYNCCLK & 3U) << 12U)
+ #define BSP_PRV_STARTUP_SCKCR4_SCIE7ASYNCSEL_BITS           ((BSP_CFG_SCIE7ASYNCCLK & 3U) << 14U)
+ #define BSP_PRV_STARTUP_SCKCR4_ENCOUTCLK_BITS               ((BSP_CFG_ENCOUTCLK & 1U) << 24U)
+ #define BSP_PRV_STARTUP_SCKCR4_DDRDIVSEL_DDRCLKSEL_BITS     ((BSP_CFG_DDRDIVSEL_DDRCLKSEL & 15U) << 28U)
 #endif
+
+/* Calculate the value to write to SCKCR5. */
+#if (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR5_NANDCCLKSEL_BITS             (BSP_CFG_NANDCCLKSEL & 15U)
+ #define BSP_PRV_STARTUP_SCKCR5_SDHI0CLKSEL_BITS             ((BSP_CFG_SDHI0CLKSEL & 1U) << 8U)
+ #define BSP_PRV_STARTUP_SCKCR5_SDHI1CLKSEL_BITS             ((BSP_CFG_SDHI1CLKSEL & 1U) << 10U)
+#endif
+
 #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
  #define BSP_PRV_STARTUP_SCKCR                               (BSP_PRV_STARTUP_SCKCR_FSELXSPI0_DIVSELXSPI0_BITS | \
                                                               BSP_PRV_STARTUP_SCKCR_FSELXSPI1_DIVSELXSPI1_BITS | \
@@ -122,6 +164,13 @@
                                                               BSP_PRV_STARTUP_SCKCR_FSELCANFD_BITS |             \
                                                               BSP_PRV_STARTUP_SCKCR_PHYSEL_BITS |                \
                                                               BSP_PRV_STARTUP_SCKCR_CLMASEL_BITS)
+
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR                               (BSP_PRV_STARTUP_SCKCR_FSELXSPI0_DIVSELXSPI0_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR_FSELXSPI1_DIVSELXSPI1_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR_CKIO_BITS |                  \
+                                                              BSP_PRV_STARTUP_SCKCR_FSELCANFD_BITS |             \
+                                                              BSP_PRV_STARTUP_SCKCR_CLMASEL_BITS)
 #endif
 #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
  #define BSP_PRV_STARTUP_SCKCR2                              (BSP_PRV_STARTUP_SCKCR2_FSELCPU0_BITS |      \
@@ -140,6 +189,14 @@
                                                               BSP_PRV_STARTUP_SCKCR2_CA55SCLK_BITS |     \
                                                               BSP_PRV_STARTUP_SCKCR2_SPI3ASYNCSEL_BITS | \
                                                               BSP_PRV_STARTUP_SCKCR2_SCI5ASYNCSEL_BITS)
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR2                              (BSP_PRV_STARTUP_SCKCR2_CR52CPU0_BITS |     \
+                                                              BSP_PRV_STARTUP_SCKCR2_CR52CPU1_BITS |     \
+                                                              BSP_PRV_STARTUP_SCKCR2_CA55CORE0_BITS |    \
+                                                              BSP_PRV_STARTUP_SCKCR2_CA55CORE1_BITS |    \
+                                                              BSP_PRV_STARTUP_SCKCR2_CA55SCLK_BITS |     \
+                                                              BSP_PRV_STARTUP_SCKCR2_SPI3ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR2_SCI5ASYNCSEL_BITS)
 #endif
 
 #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
@@ -154,7 +211,22 @@
                                                               BSP_PRV_STARTUP_SCKCR3_SCI3ASYNCSEL_BITS | \
                                                               BSP_PRV_STARTUP_SCKCR3_SCI4ASYNCSEL_BITS | \
                                                               BSP_PRV_STARTUP_SCKCR3_LCDCDIVSEL_BITS)
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR3                              (BSP_PRV_STARTUP_SCKCR3_SPI0ASYNCSEL_BITS |  \
+                                                              BSP_PRV_STARTUP_SCKCR3_SPI1ASYNCSEL_BITS |  \
+                                                              BSP_PRV_STARTUP_SCKCR3_SPI2ASYNCSEL_BITS |  \
+                                                              BSP_PRV_STARTUP_SCKCR3_SCI0ASYNCSEL_BITS |  \
+                                                              BSP_PRV_STARTUP_SCKCR3_SCI1ASYNCSEL_BITS |  \
+                                                              BSP_PRV_STARTUP_SCKCR3_SCI2ASYNCSEL_BITS |  \
+                                                              BSP_PRV_STARTUP_SCKCR3_SCI3ASYNCSEL_BITS |  \
+                                                              BSP_PRV_STARTUP_SCKCR3_SCI4ASYNCSEL_BITS |  \
+                                                              BSP_PRV_STARTUP_SCKCR3_ETH0REFCLKSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR3_ETH1REFCLKSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR3_ETH2REFCLKSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR3_ETH3REFCLKSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR3_ETH4REFCLKSEL_BITS)
 #endif
+
 #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
  #define BSP_PRV_STARTUP_SCKCR4                              (0U)
 #elif (2 == BSP_FEATURE_CGC_SCKCR_TYPE)
@@ -171,6 +243,27 @@
                                                               BSP_PRV_STARTUP_SCKCR4_SCIE10ASYNCSEL_BITS | \
                                                               BSP_PRV_STARTUP_SCKCR4_SCIE11ASYNCSEL_BITS | \
                                                               BSP_PRV_STARTUP_SCKCR4_ENCOUTCLK_BITS)
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR4                              (BSP_PRV_STARTUP_SCKCR4_SCIE0ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR4_SCIE1ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR4_SCIE2ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR4_SCIE3ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR4_SCIE4ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR4_SCIE5ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR4_SCIE6ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR4_SCIE7ASYNCSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR4_ENCOUTCLK_BITS |     \
+                                                              BSP_PRV_STARTUP_SCKCR4_DDRDIVSEL_DDRCLKSEL_BITS)
+#endif
+
+#if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR5                              (0U)
+#elif (2 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR5                              (0U)
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #define BSP_PRV_STARTUP_SCKCR5                              (BSP_PRV_STARTUP_SCKCR5_NANDCCLKSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR5_SDHI0CLKSEL_BITS | \
+                                                              BSP_PRV_STARTUP_SCKCR5_SDHI1CLKSEL_BITS)
 #endif
 
 #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
@@ -214,24 +307,19 @@
 
 /* Calculate the value to write to PLL3_VCO_CTR */
 #if BSP_FEATURE_CGC_PLL3_STANDBY_STATE_SUPPORTED
- #define BSP_PRV_STARTUP_PLL3_VCO_CTR0      ((BSP_CFG_PLL3P << 16) | \
-                                             (BSP_CFG_PLL3M << 0))
+ #define BSP_PRV_STARTUP_PLL3_VCO_CTR0         ((BSP_CFG_PLL3P << 16) | \
+                                                (BSP_CFG_PLL3M << 0))
 
- #define BSP_PRV_STARTUP_PLL3_VCO_CTR1      ((BSP_CFG_PLL3K << 16) | \
-                                             (BSP_CFG_PLL3S << 0))
+ #define BSP_PRV_STARTUP_PLL3_VCO_CTR1         ((BSP_CFG_PLL3K << 16) | \
+                                                (BSP_CFG_PLL3S << 0))
 #endif
 
-/* Frequencies of clocks. */
-#define BSP_PRV_CPU_FREQ_1000_MHZ           (1000000000U) // CPU frequency is 1000 MHz
-#define BSP_PRV_CPU_FREQ_800_MHZ            (800000000U)  // CPU frequency is 800 MHz
-#define BSP_PRV_CPU_FREQ_600_MHZ            (600000000U)  // CPU frequency is 600 MHz
-#define BSP_PRV_CPU_FREQ_500_MHZ            (500000000U)  // CPU frequency is 500 MHz
-
 /* Command sequence for enabling CLMA. */
-#define BSP_PRV_CTL0_ENABLE_TARGET_CMD      (0x01)
-#define BSP_PRV_CTL0_ENABLE_REVERSED_CMD    (0xFE)
+#define BSP_PRV_CTL0_ENABLE_TARGET_CMD         (0x01)
+#define BSP_PRV_CTL0_ENABLE_REVERSED_CMD       (0xFE)
+#define BSP_PRV_CTL0_ENABLE_SETTING_TIMEOUT    (10U)
 
-#define BSP_PRV_LOCO_STABILIZATION_COUNT    (40000)
+#define BSP_PRV_LOCO_STABILIZATION_COUNT       (40000)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -254,10 +342,17 @@ static void bsp_prv_clock_set_hard_reset(void);
 
 #endif
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZT
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
  * @internal
- * @addtogroup BSP_MCU_PRV Internal BSP Documentation
- * @ingroup RENESAS_INTERNAL
+ * @addtogroup RZT_BSP_MCU_PRV
+ * @ingroup RZT_RENESAS_INTERNAL
  * @{
  **********************************************************************************************************************/
 
@@ -303,29 +398,51 @@ void SystemCoreClockUpdate (void)
   #endif
     SystemCoreClock = BSP_PRV_CPU_FREQ_600_MHZ << ca55core;
  #endif
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+ #if defined(BSP_CFG_CORE_CR52)
+  #if (0 == BSP_CFG_CORE_CR52)
+    uint32_t cr52cpu = R_SYSC_S->SCKCR2_b.CR52CPU0;
+  #elif (1 == BSP_CFG_CORE_CR52)
+    uint32_t cr52cpu = R_SYSC_S->SCKCR2_b.CR52CPU1;
+  #endif
+    SystemCoreClock = BSP_PRV_CPU_FREQ_400_MHZ << cr52cpu;
+ #elif defined(BSP_CFG_CORE_CA55)
+  #if (0 == BSP_CFG_CORE_CA55)
+    uint32_t ca55core = R_SYSC_S->SCKCR2_b.CA55CORE0;
+  #elif (1 == BSP_CFG_CORE_CA55)
+    uint32_t ca55core = R_SYSC_S->SCKCR2_b.CA55CORE1;
+  #endif
+    SystemCoreClock = BSP_PRV_CPU_FREQ_600_MHZ << ca55core;
+ #endif
 #endif
 }
 
 /*******************************************************************************************************************//**
- * Applies system core clock source and divider changes.  The MCU is expected to be in high speed mode during this
+ * Applies system core clock source and divider changes.  The MPU is expected to be in high speed mode during this
  * configuration and the CGC registers are expected to be unlocked in PRCR.
  *
  * @param[in] sckcr                  Value to set in SCKCR register
  * @param[in] sckcr2                 Value to set in SCKCR2 register
  * @param[in] sckcr3                 Value to set in SCKCR3 register
  * @param[in] sckcr4                 Value to set in SCKCR4 register
+ * @param[in] sckcr5                 Value to set in SCKCR5 register
  **********************************************************************************************************************/
-void bsp_prv_clock_set (uint32_t sckcr, uint32_t sckcr2, uint32_t sckcr3, uint32_t sckcr4)
+void bsp_prv_clock_set (uint32_t sckcr, uint32_t sckcr2, uint32_t sckcr3, uint32_t sckcr4, uint32_t sckcr5)
 {
-    volatile uint32_t dummy;
     sckcr  = sckcr & BSP_PRV_SCKCR_MASK;
     sckcr2 = sckcr2 & BSP_PRV_SCKCR2_MASK;
 #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
     FSP_PARAMETER_NOT_USED(sckcr3);
     FSP_PARAMETER_NOT_USED(sckcr4);
+    FSP_PARAMETER_NOT_USED(sckcr5);
 #elif (2 == BSP_FEATURE_CGC_SCKCR_TYPE)
     sckcr3 = sckcr3 & BSP_PRV_SCKCR3_MASK;
     sckcr4 = sckcr4 & BSP_PRV_SCKCR4_MASK;
+    FSP_PARAMETER_NOT_USED(sckcr5);
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+    sckcr3 = sckcr3 & BSP_PRV_SCKCR3_MASK;
+    sckcr4 = sckcr4 & BSP_PRV_SCKCR4_MASK;
+    sckcr5 = sckcr5 & BSP_PRV_SCKCR5_MASK;
 #endif
 
 #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
@@ -343,30 +460,38 @@ void bsp_prv_clock_set (uint32_t sckcr, uint32_t sckcr2, uint32_t sckcr3, uint32
     R_SYSC_S->SCKCR2 = sckcr2;
 
     /** In order to secure processing after clock frequency is changed,
-     *  dummy read the same register at least eight times.
+     *  dummy read the same register at least a specified number of times.
      *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+#if (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+#endif
 
     R_SYSC_NS->SCKCR = sckcr;
 
     /** In order to secure processing after clock frequency is changed,
-     *  dummy read the same register at least eight times.
+     *  dummy read the same register at least a specified number of times.
      *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+#if (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+#endif
 
 #if (2 == BSP_FEATURE_CGC_SCKCR_TYPE)
     R_SYSC_NS->SCKCR3 = sckcr3;
@@ -374,31 +499,99 @@ void bsp_prv_clock_set (uint32_t sckcr, uint32_t sckcr2, uint32_t sckcr3, uint32
     /** In order to secure processing after clock frequency is changed,
      *  dummy read the same register at least eight times.
      *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
 
     R_SYSC_NS->SCKCR4 = sckcr4;
 
     /** In order to secure processing after clock frequency is changed,
      *  dummy read the same register at least eight times.
      *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-#endif
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+#elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+    R_SYSC_NS->SCKCR3 = sckcr3;
 
-    FSP_PARAMETER_NOT_USED(dummy);
+    /** In order to secure processing after clock frequency is changed,
+     *  dummy read the same register at least ten times.
+     *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+
+    R_SYSC_NS->SCKCR4 = sckcr4;
+
+    /** In order to secure processing after clock frequency is changed,
+     *  dummy read the same register at least thirty times. (Match the number of dummy reads for DDR)
+     *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+
+    R_SYSC_NS->SCKCR5 = sckcr5;
+
+    /** In order to secure processing after clock frequency is changed,
+     *  dummy read the same register at least ten times.
+     *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+#endif
 
     /* Clock is now at requested frequency. */
 
@@ -410,12 +603,15 @@ void bsp_prv_clock_set (uint32_t sckcr, uint32_t sckcr2, uint32_t sckcr3, uint32
 
 static void bsp_prv_clock_set_hard_reset (void)
 {
-    volatile uint32_t dummy;
-    uint32_t          sckcr  = BSP_PRV_STARTUP_SCKCR & BSP_PRV_SCKCR_MASK;
-    uint32_t          sckcr2 = BSP_PRV_STARTUP_SCKCR2 & BSP_PRV_SCKCR2_MASK;
+    uint32_t sckcr  = BSP_PRV_STARTUP_SCKCR & BSP_PRV_SCKCR_MASK;
+    uint32_t sckcr2 = BSP_PRV_STARTUP_SCKCR2 & BSP_PRV_SCKCR2_MASK;
  #if (2 == BSP_FEATURE_CGC_SCKCR_TYPE)
     uint32_t sckcr3 = BSP_PRV_STARTUP_SCKCR3 & BSP_PRV_SCKCR3_MASK;
     uint32_t sckcr4 = BSP_PRV_STARTUP_SCKCR4 & BSP_PRV_SCKCR4_MASK;
+ #elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+    uint32_t sckcr3 = BSP_PRV_STARTUP_SCKCR3 & BSP_PRV_SCKCR3_MASK;
+    uint32_t sckcr4 = BSP_PRV_STARTUP_SCKCR4 & BSP_PRV_SCKCR4_MASK;
+    uint32_t sckcr5 = BSP_PRV_STARTUP_SCKCR5 & BSP_PRV_SCKCR5_MASK;
  #endif
 
  #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
@@ -433,30 +629,38 @@ static void bsp_prv_clock_set_hard_reset (void)
     R_SYSC_S->SCKCR2 = sckcr2;
 
     /** In order to secure processing after clock frequency is changed,
-     *  dummy read the same register at least eight times.
+     *  dummy read the same register at least a specified number of times.
      *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
-    dummy = R_SYSC_S->SCKCR2;
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+ #if (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+    FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+ #endif
 
     R_SYSC_NS->SCKCR = sckcr;
 
     /** In order to secure processing after clock frequency is changed,
-     *  dummy read the same register at least eight times.
+     *  dummy read the same register at least a specified number of times.
      *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
-    dummy = R_SYSC_NS->SCKCR;
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+ #if (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR);
+ #endif
 
  #if (2 == BSP_FEATURE_CGC_SCKCR_TYPE)
     R_SYSC_NS->SCKCR3 = sckcr3;
@@ -464,31 +668,99 @@ static void bsp_prv_clock_set_hard_reset (void)
     /** In order to secure processing after clock frequency is changed,
      *  dummy read the same register at least eight times.
      *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
-    dummy = R_SYSC_NS->SCKCR3;
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
 
     R_SYSC_NS->SCKCR4 = sckcr4;
 
     /** In order to secure processing after clock frequency is changed,
      *  dummy read the same register at least eight times.
      *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
-    dummy = R_SYSC_NS->SCKCR4;
- #endif
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+ #elif (3 == BSP_FEATURE_CGC_SCKCR_TYPE)
+    R_SYSC_NS->SCKCR3 = sckcr3;
 
-    FSP_PARAMETER_NOT_USED(dummy);
+    /** In order to secure processing after clock frequency is changed,
+     *  dummy read the same register at least ten times.
+     *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR3);
+
+    R_SYSC_NS->SCKCR4 = sckcr4;
+
+    /** In order to secure processing after clock frequency is changed,
+     *  dummy read the same register at least thirty times. (Match the number of dummy reads for DDR)
+     *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR4);
+
+    R_SYSC_NS->SCKCR5 = sckcr5;
+
+    /** In order to secure processing after clock frequency is changed,
+     *  dummy read the same register at least ten times.
+     *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+    FSP_REGISTER_READ(R_SYSC_NS->SCKCR5);
+ #endif
 
     /* Clock is now at requested frequency. */
 
@@ -503,18 +775,24 @@ static void bsp_prv_clock_set_hard_reset (void)
  **********************************************************************************************************************/
 void bsp_clock_init (void)
 {
-    volatile uint32_t dummy = 0;
+    bsp_regiser_protect_semaphore_take(BSP_REG_PROTECT_PRCR_CGC);
 
     /* Unlock CGC protection registers. */
-    R_RWP_NS->PRCRN = (uint16_t) BSP_PRV_PRCR_CGC_UNLOCK;
-    R_RWP_S->PRCRS  = (uint16_t) BSP_PRV_PRCR_CGC_UNLOCK;
+    R_RWP_NS->PRCRN = ((R_RWP_NS->PRCRN | BSP_REG_PROTECT_PRCR_KEY) | BSP_REG_PROTECT_PRCR_CGC);
+    R_RWP_S->PRCRS  = ((R_RWP_S->PRCRS | BSP_REG_PROTECT_PRCR_KEY) | BSP_REG_PROTECT_PRCR_CGC);
+
+    BSP_SEMAPHORE_INTERNAL_CPU_RELEASE_FOR_PROTECTION;
 
     /* The SystemCoreClock needs to be updated before calling R_BSP_SoftwareDelay. */
     SystemCoreClockUpdate();
 
     /* Set source clock and dividers. */
 #if BSP_CFG_SOFT_RESET_SUPPORTED
-    bsp_prv_clock_set(BSP_PRV_STARTUP_SCKCR, BSP_PRV_STARTUP_SCKCR2, BSP_PRV_STARTUP_SCKCR3, BSP_PRV_STARTUP_SCKCR4);
+    bsp_prv_clock_set(BSP_PRV_STARTUP_SCKCR,
+                      BSP_PRV_STARTUP_SCKCR2,
+                      BSP_PRV_STARTUP_SCKCR3,
+                      BSP_PRV_STARTUP_SCKCR4,
+                      BSP_PRV_STARTUP_SCKCR5);
 #else
     bsp_prv_clock_set_hard_reset();
 #endif
@@ -614,8 +892,13 @@ void bsp_clock_init (void)
     R_CLMA0->CMPH = BSP_CFG_CLMA0_CMPH;
 
     /* Enabling CLMA0 operation. */
+    volatile uint32_t timeout_clma0 = BSP_PRV_CTL0_ENABLE_SETTING_TIMEOUT;
+
     do
     {
+        /* If the setting that enables CLMA0 times out, the assertion will fail. */
+        FSP_ASSERT_NOT_RETURN_VALUE(0 != timeout_clma0);
+
         R_CLMA0->PCMD = BSP_PRV_PCMD_KEY;
 
         R_CLMA0->CTL0 = BSP_PRV_CTL0_ENABLE_TARGET_CMD;
@@ -625,8 +908,10 @@ void bsp_clock_init (void)
         if (1 != R_CLMA0->CTL0)
         {
             /* Check the value of PROTSR register. */
-            dummy = R_CLMA0->PROTSR;
+            FSP_REGISTER_READ(R_CLMA0->PROTSR);
         }
+
+        timeout_clma0--;
     } while (1 == R_CLMA0->PROTSR_b.PRERR);
 #endif
 
@@ -637,8 +922,13 @@ void bsp_clock_init (void)
     R_CLMA1->CMPH = BSP_CFG_CLMA1_CMPH;
 
     /* Enabling CLMA1 operation. */
+    volatile uint32_t timeout_clma1 = BSP_PRV_CTL0_ENABLE_SETTING_TIMEOUT;
+
     do
     {
+        /* If the setting that enables CLMA1 times out, the assertion will fail. */
+        FSP_ASSERT_NOT_RETURN_VALUE(0 != timeout_clma1);
+
         R_CLMA1->PCMD = BSP_PRV_PCMD_KEY;
 
         R_CLMA1->CTL0 = BSP_PRV_CTL0_ENABLE_TARGET_CMD;
@@ -648,8 +938,10 @@ void bsp_clock_init (void)
         if (1 != R_CLMA1->CTL0)
         {
             /* Check the value of PROTSR register. */
-            dummy = R_CLMA1->PROTSR;
+            FSP_REGISTER_READ(R_CLMA1->PROTSR);
         }
+
+        timeout_clma1--;
     } while (1 == R_CLMA1->PROTSR_b.PRERR);
 #endif
 
@@ -660,8 +952,13 @@ void bsp_clock_init (void)
     R_CLMA2->CMPH = BSP_CFG_CLMA2_CMPH;
 
     /* Enabling CLMA2 operation. */
+    volatile uint32_t timeout_clma2 = BSP_PRV_CTL0_ENABLE_SETTING_TIMEOUT;
+
     do
     {
+        /* If the setting that enables CLMA2 times out, the assertion will fail. */
+        FSP_ASSERT_NOT_RETURN_VALUE(0 != timeout_clma2);
+
         R_CLMA2->PCMD = BSP_PRV_PCMD_KEY;
 
         R_CLMA2->CTL0 = BSP_PRV_CTL0_ENABLE_TARGET_CMD;
@@ -671,8 +968,10 @@ void bsp_clock_init (void)
         if (1 != R_CLMA2->CTL0)
         {
             /* Check the value of PROTSR register. */
-            dummy = R_CLMA2->PROTSR;
+            FSP_REGISTER_READ(R_CLMA2->PROTSR);
         }
+
+        timeout_clma2--;
     } while (1 == R_CLMA2->PROTSR_b.PRERR);
 #endif
 
@@ -683,8 +982,13 @@ void bsp_clock_init (void)
     R_CLMA3->CMPH = BSP_CFG_CLMA3_CMPH;
 
     /* Enabling CLMA3 operation. */
+    volatile uint32_t timeout_clma3 = BSP_PRV_CTL0_ENABLE_SETTING_TIMEOUT;
+
     do
     {
+        /* If the setting that enables CLMA3 times out, the assertion will fail. */
+        FSP_ASSERT_NOT_RETURN_VALUE(0 != timeout_clma3);
+
         R_CLMA3->PCMD = BSP_PRV_PCMD_KEY;
 
         R_CLMA3->CTL0 = BSP_PRV_CTL0_ENABLE_TARGET_CMD;
@@ -694,8 +998,10 @@ void bsp_clock_init (void)
         if (1 != R_CLMA3->CTL0)
         {
             /* Check the value of PROTSR register. */
-            dummy = R_CLMA3->PROTSR;
+            FSP_REGISTER_READ(R_CLMA3->PROTSR);
         }
+
+        timeout_clma3--;
     } while (1 == R_CLMA3->PROTSR_b.PRERR);
 #endif
 
@@ -706,8 +1012,13 @@ void bsp_clock_init (void)
     R_CLMA4->CMPH = BSP_CFG_CLMA4_CMPH;
 
     /* Enabling CLMA4 operation. */
+    volatile uint32_t timeout_clma4 = BSP_PRV_CTL0_ENABLE_SETTING_TIMEOUT;
+
     do
     {
+        /* If the setting that enables CLMA4 times out, the assertion will fail. */
+        FSP_ASSERT_NOT_RETURN_VALUE(0 != timeout_clma4);
+
         R_CLMA4->PCMD = BSP_PRV_PCMD_KEY;
 
         R_CLMA4->CTL0 = BSP_PRV_CTL0_ENABLE_TARGET_CMD;
@@ -717,8 +1028,10 @@ void bsp_clock_init (void)
         if (1 != R_CLMA4->CTL0)
         {
             /* Check the value of PROTSR register. */
-            dummy = R_CLMA4->PROTSR;
+            FSP_REGISTER_READ(R_CLMA4->PROTSR);
         }
+
+        timeout_clma4--;
     } while (1 == R_CLMA4->PROTSR_b.PRERR);
 #endif
 
@@ -729,8 +1042,13 @@ void bsp_clock_init (void)
     R_CLMA5->CMPH = BSP_CFG_CLMA5_CMPH;
 
     /* Enabling CLMA5 operation. */
+    volatile uint32_t timeout_clma5 = BSP_PRV_CTL0_ENABLE_SETTING_TIMEOUT;
+
     do
     {
+        /* If the setting that enables CLMA5 times out, the assertion will fail. */
+        FSP_ASSERT_NOT_RETURN_VALUE(0 != timeout_clma5);
+
         R_CLMA5->PCMD = BSP_PRV_PCMD_KEY;
 
         R_CLMA5->CTL0 = BSP_PRV_CTL0_ENABLE_TARGET_CMD;
@@ -740,8 +1058,10 @@ void bsp_clock_init (void)
         if (1 != R_CLMA5->CTL0)
         {
             /* Check the value of PROTSR register. */
-            dummy = R_CLMA5->PROTSR;
+            FSP_REGISTER_READ(R_CLMA5->PROTSR);
         }
+
+        timeout_clma5--;
     } while (1 == R_CLMA5->PROTSR_b.PRERR);
 #endif
 
@@ -752,8 +1072,13 @@ void bsp_clock_init (void)
     R_CLMA6->CMPH = BSP_CFG_CLMA6_CMPH;
 
     /* Enabling CLMA6 operation. */
+    volatile uint32_t timeout_clma6 = BSP_PRV_CTL0_ENABLE_SETTING_TIMEOUT;
+
     do
     {
+        /* If the setting that enables CLMA6 times out, the assertion will fail. */
+        FSP_ASSERT_NOT_RETURN_VALUE(0 != timeout_clma6);
+
         R_CLMA6->PCMD = BSP_PRV_PCMD_KEY;
 
         R_CLMA6->CTL0 = BSP_PRV_CTL0_ENABLE_TARGET_CMD;
@@ -763,16 +1088,20 @@ void bsp_clock_init (void)
         if (1 != R_CLMA6->CTL0)
         {
             /* Check the value of PROTSR register. */
-            dummy = R_CLMA6->PROTSR;
+            FSP_REGISTER_READ(R_CLMA6->PROTSR);
         }
+
+        timeout_clma6--;
     } while (1 == R_CLMA6->PROTSR_b.PRERR);
 #endif
 
-    /* Lock CGC and LPM protection registers. */
-    R_RWP_NS->PRCRN = (uint16_t) BSP_PRV_PRCR_LOCK;
-    R_RWP_S->PRCRS  = (uint16_t) BSP_PRV_PRCR_LOCK;
+    FSP_HARDWARE_REGISTER_WAIT(BSP_SEMAPHORE_INTERNAL_CPU_STATE_READ_FOR_PROTECTION, BSP_RESOURCE_STATE_NOT_BEING_USED);
 
-    FSP_PARAMETER_NOT_USED(dummy);
+    /* Lock CGC and LPM protection registers. */
+    R_RWP_NS->PRCRN = ((R_RWP_NS->PRCRN | BSP_REG_PROTECT_PRCR_KEY) & (uint16_t) (~BSP_REG_PROTECT_PRCR_CGC));
+    R_RWP_S->PRCRS  = ((R_RWP_S->PRCRS | BSP_REG_PROTECT_PRCR_KEY) & (uint16_t) (~BSP_REG_PROTECT_PRCR_CGC));
+
+    BSP_SEMAPHORE_INTERNAL_CPU_RELEASE_FOR_PROTECTION;
 }
 
 /*******************************************************************************************************************//**
@@ -785,8 +1114,7 @@ void bsp_clock_init (void)
 #if (1 == BSP_FEATURE_CGC_SCKCR_TYPE)
 void bsp_prv_clock_temporaliy_set_system_clock (uint32_t sckcr2)
 {
-    volatile uint32_t dummy            = 0;
-    uint32_t          sckcr2_cpu_clock = R_SYSC_S->SCKCR2;
+    uint32_t sckcr2_cpu_clock = R_SYSC_S->SCKCR2;
 
     /* Check if FSELCPU0 bit of sckcr2 variable is 00b and CPU0 clock is 800MHz. (Or 600MHz) */
     if (!(BSP_PRV_SCKCR2_FSELCPU0_MASK & sckcr2))
@@ -815,19 +1143,22 @@ void bsp_prv_clock_temporaliy_set_system_clock (uint32_t sckcr2)
         /** In order to secure processing after clock frequency is changed,
          *  dummy read the same register at least eight times.
          *  Refer to "Notes on Clock Generation Circuit" in the RZ microprocessor manual. */
-        dummy = R_SYSC_S->SCKCR2;
-        dummy = R_SYSC_S->SCKCR2;
-        dummy = R_SYSC_S->SCKCR2;
-        dummy = R_SYSC_S->SCKCR2;
-        dummy = R_SYSC_S->SCKCR2;
-        dummy = R_SYSC_S->SCKCR2;
-        dummy = R_SYSC_S->SCKCR2;
-        dummy = R_SYSC_S->SCKCR2;
+        FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+        FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+        FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+        FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+        FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+        FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+        FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
+        FSP_REGISTER_READ(R_SYSC_S->SCKCR2);
     }
-
-    FSP_PARAMETER_NOT_USED(dummy);
 }
 
 #endif
 
 /** @} (end addtogroup BSP_MCU_PRV) */
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
