@@ -1,17 +1,30 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZV
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @ingroup BSP_MCU
- * @defgroup BSP_MCU_RZV2N RZV2N
+ * @ingroup RZV_BSP_MCU
+ * @defgroup RZV_BSP_MPU_RZV2N RZV2N
  * @includedoc config_bsp_rzv2n_fsp.html
  * @{
  **********************************************************************************************************************/
 
-/** @} (end defgroup BSP_MCU_RZV2N) */
+/** @} (end defgroup RZV_BSP_MPU_RZV2N) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 #ifndef BSP_MCU_INFO_H
 #define BSP_MCU_INFO_H
@@ -20,7 +33,7 @@
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
 
-/* BSP MCU Specific Includes. */
+/* BSP MPU Specific Includes. */
 #include "bsp_elc.h"
 #include "bsp_dmac.h"
 #include "bsp_mhu_b.h"

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -29,8 +29,15 @@
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
 /**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZV2N
+ * @addtogroup RZV_BSP_MPU_RZV2N
  * @{
  *********************************************************************************************************************/
 
@@ -91,6 +98,12 @@
 #define CRC_SNOOP_DIRECTION_SCI_B8_RDR        (CRC_SNOOP_DIRECTION_RECEIVE)
 #define CRC_SNOOP_DIRECTION_SCI_B9_RDR        (CRC_SNOOP_DIRECTION_RECEIVE)
 
-/** @} (end addtogroup BSP_MPU_RZV2N) */
+/** @} (end addtogroup RZV_BSP_MPU_RZV2N) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 #endif                                 /* BSP_CRC_SNOOP_H */

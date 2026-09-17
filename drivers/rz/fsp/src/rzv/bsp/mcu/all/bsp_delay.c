@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -32,8 +32,15 @@
  * Private global variables and functions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZV
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZV_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -132,7 +139,13 @@ void R_BSP_SoftwareDelay (uint32_t delay, bsp_delay_units_t units)
     }
 }
 
-/** @} (end addtogroup BSP_MCU) */
+/** @} (end addtogroup RZV_BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /*******************************************************************************************************************//**
  *        This assembly language routine performs the loops according to the number passed to R0.

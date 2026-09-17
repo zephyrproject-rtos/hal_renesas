@@ -1,16 +1,11 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #ifndef R_SPI_B_H
 #define R_SPI_B_H
-
-/*******************************************************************************************************************//**
- * @addtogroup SPI_B
- * @{
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes
@@ -22,6 +17,18 @@ FSP_HEADER
 
 /***********************************************************************************************************************
  * Macro definitions
+ **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZV
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZV_SPI_B
+ * @{
  **********************************************************************************************************************/
 
 /*************************************************************************************************
@@ -94,12 +101,49 @@ typedef enum e_spi_b_clock_delay_count
     SPI_B_DELAY_COUNT_8                ///< Set RSPCK delay count to 8 RSPCK
 } spi_b_delay_count_t;
 
+#ifndef BSP_OVERRIDE_SPI_B_CLOCK_SOURCE_T
+
 /** SPI communication clock source. */
 typedef enum e_spi_b_clock_source
 {
     SPI_B_CLOCK_SOURCE_SCISPICLK,
     SPI_B_CLOCK_SOURCE_PCLK
 } spi_b_clock_source_t;
+
+#endif
+
+/** SPI master receive clock. */
+typedef enum e_spi_b_master_receive_clock
+{
+    SPI_B_MASTER_RECEIVE_CLOCK_ANALOG_DELAY,  ///< SPI Master Receive Clock with Analog Delay
+    SPI_B_MASTER_RECEIVE_CLOCK_DEGITAL_DELAY, ///< SPI Master Receive Clock with Digital Delay
+} spi_b_master_receive_clock_t;
+
+/** SPI max analog delay. */
+typedef enum e_spi_b_analog_delay
+{
+    SPI_B_ANALOG_DELAY_NODELAY,        ///< No delay
+    SPI_B_ANALOG_DELAY_1_1_NS,         ///< 1.1 ns (max)
+    SPI_B_ANALOG_DELAY_2_2_NS,         ///< 2.2 ns (max)
+    SPI_B_ANALOG_DELAY_3_3_NS,         ///< 3.3 ns (max)
+    SPI_B_ANALOG_DELAY_4_4_NS,         ///< 4.4 ns (max)
+    SPI_B_ANALOG_DELAY_5_5_NS,         ///< 5.5 ns (max)
+    SPI_B_ANALOG_DELAY_6_6_NS,         ///< 6.6 ns (max)
+    SPI_B_ANALOG_DELAY_7_7_NS,         ///< 7.7 ns (max)
+} spi_b_analog_delay_t;
+
+/** SPI digital delay. */
+typedef enum e_spi_b_digital_delay
+{
+    SPI_B_DIGITAL_DELAY_CLOCK_0,       ///< 0 PCLKSPIn
+    SPI_B_DIGITAL_DELAY_CLOCK_1,       ///< 1 PCLKSPIn
+    SPI_B_DIGITAL_DELAY_CLOCK_2,       ///< 2 PCLKSPIn
+    SPI_B_DIGITAL_DELAY_CLOCK_3,       ///< 3 PCLKSPIn
+    SPI_B_DIGITAL_DELAY_CLOCK_4,       ///< 4 PCLKSPIn
+    SPI_B_DIGITAL_DELAY_CLOCK_5,       ///< 5 PCLKSPIn
+    SPI_B_DIGITAL_DELAY_CLOCK_6,       ///< 6 PCLKSPIn
+    SPI_B_DIGITAL_DELAY_CLOCK_7,       ///< 7 PCLKSPIn
+} spi_b_digital_delay_t;
 
 /** SSL Signal Level Keeping Enable/Disable. */
 typedef enum e_spi_b_ssl_level_keep
@@ -109,14 +153,17 @@ typedef enum e_spi_b_ssl_level_keep
 } spi_b_ssl_level_keep_t;
 
 /** SPI Clock Divider settings. */
-typedef struct
+struct st_rspck_div_setting
 {
     uint8_t spbr;                      ///< SPBR register setting
     uint8_t brdv : 2;                  ///< BRDV setting in SPCMD0
-} rspck_div_setting_t;
+};
+
+/** SPI Clock Divider settings. Please refer to the struct st_rspck_div_setting. */
+typedef struct st_rspck_div_setting rspck_div_setting_t;
 
 /** Extended SPI interface configuration */
-typedef struct st_spi_b_extended_cfg
+struct st_spi_b_extended_cfg
 {
     spi_b_ssl_mode_t               spi_clksyn;                            ///< Select SPI or Clock Synchronous mode operation
     spi_b_communication_t          spi_comm;                              ///< Select full-duplex or transmit-only communication
@@ -134,10 +181,17 @@ typedef struct st_spi_b_extended_cfg
     uint8_t                        transmit_fifo_threshold;               ///< Transmit FIFO threshold (0~15)
     uint8_t                        receive_fifo_threshold;                ///< Receive FIFO threshold  (0~15)
     uint8_t                        receive_data_ready_detect_adjustment;  ///< Receive data ready detect timing (0~255 counts of operation clock)
-} spi_b_extended_cfg_t;
+    spi_b_master_receive_clock_t   master_receive_clock;                  ///< SPI master receive clock
+    spi_b_analog_delay_t           analog_delay;                          ///< SPI max analog delay
+    spi_b_digital_delay_t          digital_delay;                         ///< SPI digital delay
+    void                         * p_reg;                                 ///< Register base address for specified channel
+};
+
+/** Extended SPI interface configuration. Please refer to the struct st_spi_b_extended_cfg. */
+typedef struct st_spi_b_extended_cfg spi_b_extended_cfg_t;
 
 /** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref spi_api_t::open is called. */
-typedef struct st_spi_b_instance_ctrl
+struct st_spi_b_instance_ctrl
 {
     uint32_t          open;            ///< Indicates whether the open() API has been successfully called.
     spi_cfg_t const * p_cfg;           ///< Pointer to instance configuration
@@ -154,8 +208,11 @@ typedef struct st_spi_b_instance_ctrl
     spi_callback_args_t * p_callback_memory;
 
     /* Pointer to context to be passed into callback function */
-    void const * p_context;
-} spi_b_instance_ctrl_t;
+    void * p_context;
+};
+
+/** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref spi_api_t::open is called. Please refer to the struct st_spi_b_instance_ctrl. */
+typedef struct st_spi_b_instance_ctrl spi_b_instance_ctrl_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -193,12 +250,18 @@ fsp_err_t R_SPI_B_Close(spi_ctrl_t * const p_api_ctrl);
 fsp_err_t R_SPI_B_CalculateBitrate(uint32_t bitrate, spi_b_clock_source_t clock_source, rspck_div_setting_t * spck_div);
 fsp_err_t R_SPI_B_CallbackSet(spi_ctrl_t * const          p_api_ctrl,
                               void (                    * p_callback)(spi_callback_args_t *),
-                              void const * const          p_context,
+                              void * const                p_context,
                               spi_callback_args_t * const p_callback_memory);
 
 /*******************************************************************************************************************//**
  * @} (end ingroup SPI_B)
  **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

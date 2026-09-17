@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -74,15 +74,15 @@ __STATIC_INLINE void bsp_cache_operate_all (uint8_t operate)
         "LDR  r4, =0x3FF                           \n"
         "ANDS r4, r4, r1, LSR #3                   \n" /* R4 is the max number on the way size (right aligned) */
         "CLZ  r5, r4                               \n" /* R5 is the bit position of the way size increment */
-        "LDR  r7, =0x7FFF                          \n"
-        "ANDS r7, r7, r1, LSR #13                  \n" /* R7 is the max number of the index size (right aligned) */
+        "LDR  r8, =0x7FFF                          \n"
+        "ANDS r8, r8, r1, LSR #13                  \n" /* r8 is the max number of the index size (right aligned) */
         "Way_Loop:                                 \n"
         "MOV  r9, r4                               \n" /* R9 working copy of the max way size (right aligned) */
 
         "Set_Loop:                                 \n"
         "LSL  r12, r9, r5                          \n"
         "ORR  r11, r10, r12                        \n" /* Factor in the Way number and cache number into R11 */
-        "LSL  r12, r7, r2                          \n"
+        "LSL  r12, r8, r2                          \n"
         "ORR  r11, r11, r12                        \n" /* Factor in the Set number */
         "CMP  r0, #0                               \n"
         "BNE  Dccsw                                \n"
@@ -98,7 +98,7 @@ __STATIC_INLINE void bsp_cache_operate_all (uint8_t operate)
         "Count:                                    \n"
         "SUBS r9, r9, #1                           \n" /* Decrement the Way number */
         "BGE  Set_Loop                             \n"
-        "SUBS r7, r7, #1                           \n" /* Decrement the Set number */
+        "SUBS r8, r8, #1                           \n" /* Decrement the Set number */
         "BGE  Way_Loop                             \n"
         "Skip:                                     \n"
         "ADD  r10, r10, #2                         \n" /* increment the cache number */
@@ -107,7 +107,7 @@ __STATIC_INLINE void bsp_cache_operate_all (uint8_t operate)
 
         "Complete:                                 \n"
         "DSB                                       \n"
-        ::"r" (operate) : "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", "r9", "r10", "r11", "r12");
+        ::"r" (operate) : "r0", "r1", "r2", "r3", "r4", "r5", "r6", "r8", "r9", "r10", "r11", "r12");
 }
 
 /*******************************************************************************************************************//**
@@ -162,8 +162,15 @@ __STATIC_INLINE void R_BSP_CacheDisableData (void)
         ::[sctlr_c_bit] "i" (BSP_PRV_SCTLR_C_BIT) : "r0", "r1");
 }
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZV_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -319,7 +326,13 @@ __STATIC_INLINE void R_BSP_CacheCleanInvalidateRangeData (void * addr, uint32_t 
     }
 }
 
-/** @} (end addtogroup BSP_MCU) */
+/** @} (end addtogroup RZV_BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /*******************************************************************************************************************//**
  * Enable branch predictor.

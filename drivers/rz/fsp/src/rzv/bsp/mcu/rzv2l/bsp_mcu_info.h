@@ -1,17 +1,30 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @ingroup BSP_MCU
- * @defgroup BSP_MCU_RZV2L RZV2L
+ * @ingroup RZV_BSP_MCU
+ * @defgroup RZV_BSP_MPU_RZV2L RZV2L
  * @includedoc config_bsp_rzv2l_fsp.html
  * @{
  **********************************************************************************************************************/
 
-/** @} (end defgroup BSP_MCU_RZV2L) */
+/** @} (end defgroup RZV_BSP_MPU_RZV2L) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 #ifndef BSP_MCU_INFO_H
 #define BSP_MCU_INFO_H
@@ -20,7 +33,7 @@
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
 
-/* BSP MCU Specific Includes. */
+/* BSP MPU Specific Includes. */
 #include "bsp_irq_id.h"
 #include "bsp_feature.h"
 #include "bsp_slave_address.h"

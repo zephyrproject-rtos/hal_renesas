@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -726,6 +726,7 @@ typedef struct
             __IOM uint32_t DVTYP   : 1;
         } DATBAS0_b;
     };
+    __IM uint8_t RESERVED21[4];
     union
     {
         __IOM uint32_t DATBAS1;
@@ -743,6 +744,7 @@ typedef struct
             __IOM uint32_t DVTYP   : 1;
         } DATBAS1_b;
     };
+    __IM uint8_t RESERVED22[4];
     union
     {
         __IOM uint32_t DATBAS2;
@@ -760,6 +762,7 @@ typedef struct
             __IOM uint32_t DVTYP   : 1;
         } DATBAS2_b;
     };
+    __IM uint8_t RESERVED23[4];
     union
     {
         __IOM uint32_t DATBAS3;
@@ -777,6 +780,7 @@ typedef struct
             __IOM uint32_t DVTYP   : 1;
         } DATBAS3_b;
     };
+    __IM uint8_t RESERVED24[4];
     union
     {
         __IOM uint32_t DATBAS4;
@@ -794,6 +798,7 @@ typedef struct
             __IOM uint32_t DVTYP   : 1;
         } DATBAS4_b;
     };
+    __IM uint8_t RESERVED25[4];
     union
     {
         __IOM uint32_t DATBAS5;
@@ -811,6 +816,7 @@ typedef struct
             __IOM uint32_t DVTYP   : 1;
         } DATBAS5_b;
     };
+    __IM uint8_t RESERVED26[4];
     union
     {
         __IOM uint32_t DATBAS6;
@@ -828,6 +834,7 @@ typedef struct
             __IOM uint32_t DVTYP   : 1;
         } DATBAS6_b;
     };
+    __IM uint8_t RESERVED27[4];
     union
     {
         __IOM uint32_t DATBAS7;
@@ -845,7 +852,21 @@ typedef struct
             __IOM uint32_t DVTYP   : 1;
         } DATBAS7_b;
     };
-    __IM uint8_t RESERVED21[108];
+    __IM uint8_t RESERVED28[64];
+    union
+    {
+        __IOM uint32_t EXDATBAS;
+        struct
+        {
+            __IOM uint32_t EDSTAD : 7;
+            uint32_t              : 9;
+            __IOM uint32_t EDDYAD : 8;
+            uint32_t              : 5;
+            __IOM uint32_t EDNACK : 2;
+            __IOM uint32_t EDTYP  : 1;
+        } EXDATBAS_b;
+    };
+    __IM uint8_t RESERVED29[12];
     union
     {
         __IOM uint32_t SDATBAS0;
@@ -888,7 +909,7 @@ typedef struct
             uint32_t               : 9;
         } SDATBAS2_b;
     };
-    __IM uint8_t RESERVED22[20];
+    __IM uint8_t RESERVED30[20];
     union
     {
         __IOM uint32_t MSDCT0;
@@ -1009,21 +1030,7 @@ typedef struct
             uint32_t              : 16;
         } MSDCT7_b;
     };
-    __IM uint8_t RESERVED23[32];
-    union
-    {
-        __IOM uint32_t EXDATBAS;
-        struct
-        {
-            __IOM uint32_t EDSTAD : 7;
-            uint32_t              : 9;
-            __IOM uint32_t EDDYAD : 8;
-            uint32_t              : 5;
-            __IOM uint32_t EDNACK : 2;
-            __IOM uint32_t EDTYP  : 1;
-        } EXDATBAS_b;
-    };
-    __IM uint8_t RESERVED24[12];
+    __IM uint8_t RESERVED31[48];
     union
     {
         __IOM uint32_t SVDCT;
@@ -1055,7 +1062,7 @@ typedef struct
             __IOM uint32_t SDCTPIDH : 32;
         } SDCTPIDH_b;
     };
-    __IM uint8_t RESERVED25[4];
+    __IM uint8_t RESERVED32[4];
     union
     {
         __IOM uint32_t SVDVAD0;
@@ -1098,7 +1105,7 @@ typedef struct
             __IM uint32_t SDYADV : 1;
         } SVDVAD2_b;
     };
-    __IM uint8_t RESERVED26[20];
+    __IM uint8_t RESERVED33[20];
     union
     {
         __IOM uint32_t CSECMD;
@@ -1216,7 +1223,7 @@ typedef struct
             uint32_t             : 24;
         } CETSS_b;
     };
-    __IM uint8_t RESERVED27[4];
+    __IM uint8_t RESERVED34[4];
     union
     {
         __IM uint32_t BITCNT;
@@ -1226,7 +1233,7 @@ typedef struct
             uint32_t           : 27;
         } BITCNT_b;
     };
-    __IM uint8_t RESERVED28[16];
+    __IM uint8_t RESERVED35[16];
     union
     {
         __IM uint32_t NQSTLV;
@@ -1249,7 +1256,7 @@ typedef struct
             uint32_t             : 16;
         } NDBSTLV0_b;
     };
-    __IM uint8_t RESERVED29[36];
+    __IM uint8_t RESERVED36[36];
     union
     {
         __IM uint32_t NRSQSTLV;
@@ -1259,7 +1266,7 @@ typedef struct
             uint32_t            : 24;
         } NRSQSTLV_b;
     };
-    __IM uint8_t RESERVED30[8];
+    __IM uint8_t RESERVED37[8];
     union
     {
         __IM uint32_t PRSTDBG;
@@ -1281,7 +1288,7 @@ typedef struct
             uint32_t             : 24;
         } MSERRCNT_b;
     };
-    __IM uint8_t RESERVED31[12];
+    __IM uint8_t RESERVED38[12];
     union
     {
         __IM uint32_t SC1CPT;

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -46,10 +46,17 @@ static void bsp_prv_static_gear_control_pre_setting(fsp_priv_clock_divider_t div
 static void bsp_prv_static_gear_control_post_setting(fsp_priv_clock_divider_t divider, uint32_t clock_status[]);
 static void bsp_prv_clock_frequency_calculation(fsp_priv_clock_t clock);
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZV
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
  * @internal
- * @addtogroup BSP_MCU_PRV Internal BSP Documentation
- * @ingroup RENESAS_INTERNAL
+ * @addtogroup RZV_BSP_MCU_PRV
+ * @ingroup RZV_RENESAS_INTERNAL
  * @{
  **********************************************************************************************************************/
 
@@ -2468,10 +2475,10 @@ void bsp_prv_clock_divider_set (fsp_priv_clock_divider_t divider, uint32_t clock
     }
 }
 
-/** @} (end addtogroup BSP_MCU_PRV) */
+/** @} (end addtogroup RZV_BSP_MCU_PRV) */
 
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZV_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -2869,4 +2876,10 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
     return FSP_SUCCESS;
 }
 
-/** @} (end addtogroup BSP_MCU) */
+/** @} (end addtogroup RZV_BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif

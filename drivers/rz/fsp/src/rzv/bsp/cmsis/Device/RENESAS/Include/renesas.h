@@ -1,10 +1,10 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
-/* Ensure Renesas MCU variation definitions are included to ensure MCU
+/* Ensure Renesas MPU variation definitions are included to ensure MPU
  * specific register variations are handled correctly. */
 #ifndef BSP_FEATURE_H
  #error "INTERNAL ERROR: bsp_feature.h must be included before renesas.h."
@@ -54,7 +54,7 @@ extern "C" {
   #if __has_include("renesas_internal.h")
    #include "renesas_internal.h"
   #else
-   #warning "Unsupported MCU"
+   #warning "Unsupported MPU"
   #endif
  #endif
 

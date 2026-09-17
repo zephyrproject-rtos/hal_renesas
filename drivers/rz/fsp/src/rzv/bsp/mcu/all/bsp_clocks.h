@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -61,12 +61,14 @@ FSP_HEADER
  * @param      ip       fsp_ip_t enum value for the unit to be reset.
  * @param      channel  The channel. Use ch 0 for units without channels. Only single bit can be set.
  **********************************************************************************************************************/
+#ifndef R_BSP_MODULE_RSTON
 #define R_BSP_MODULE_RSTON(ip, channel)          {FSP_CRITICAL_SECTION_DEFINE;                                    \
                                                   FSP_CRITICAL_SECTION_ENTER;                                     \
                                                   BSP_RST_REG_ ## ip(channel) = 0x00000000U                       \
                                                                                 | (BSP_RST_BIT_ ## ip(channel) << \
                                                                                    16U);                          \
                                                   FSP_CRITICAL_SECTION_EXIT;}
+#endif
 
 /***********************************************************************************************************************
  * Reset deassertion

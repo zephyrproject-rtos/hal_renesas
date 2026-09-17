@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -10,18 +10,23 @@
  * Description  : bsp_sleep header
  *********************************************************************************************************************/
 
-/******************************************************************************************************************//**
- * @ingroup BSP_MCU
- * @defgroup BSP_MCU_RZV2L RZV2L
- * @includedoc config_bsp_rzv2l_fsp.html
- * @{
- *********************************************************************************************************************/
-
 #ifndef BSP_SLEEP_H
 #define BSP_SLEEP_H
 
 /**********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
+ *********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
+/******************************************************************************************************************//**
+ * @addtogroup RZV_BSP_MPU_RZV2L
+ * @{
  *********************************************************************************************************************/
 
 /**********************************************************************************************************************
@@ -36,7 +41,8 @@
                                                                      SCB_AIRCR_SYSRESETREQ_Msk);             \
 }
 
-#define R_BSP_WAIT_CM33_RESET()            {while ((R_SYSC->SYS_LP_CM33CTL0 & R_SYSC_SYS_LP_CM33CTL0_SYSRESETREQ_Msk) == \
+ #define R_BSP_WAIT_CM33_RESET()            {while ((R_SYSC->SYS_LP_CM33CTL0 &                  \
+                                                     R_SYSC_SYS_LP_CM33CTL0_SYSRESETREQ_Msk) == \
                                                    0U)                                                                   \
                                             { /* wait */};                                                               \
 }
@@ -61,6 +67,12 @@
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
 
-#endif                                 /* BSP_SLEEP_H */
+/** @} (end defgroup RZV_BSP_MPU_RZV2L) */
 
-/** @} (end defgroup BSP_MCU_RZV2L) */
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
+#endif                                 /* BSP_SLEEP_H */
