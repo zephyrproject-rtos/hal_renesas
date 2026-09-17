@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -29,8 +29,15 @@ FSP_HEADER
 /** Maximum period value allowed for GTM. */
 #define GTM_MAX_PERIOD          ((uint64_t) UINT32_MAX + 1ULL)
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZV
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup GTM
+ * @addtogroup RZV_GTM
  * @{
  **********************************************************************************************************************/
 
@@ -53,7 +60,7 @@ typedef enum e_gtm_timer_mode
 } gtm_timer_mode_t;
 
 /** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref timer_api_t::open is called. */
-typedef struct st_gtm_instance_ctrl
+struct st_gtm_instance_ctrl
 {
     uint32_t            open;                           // Whether or not channel is open
     const timer_cfg_t * p_cfg;                          // Pointer to initial configurations
@@ -62,16 +69,22 @@ typedef struct st_gtm_instance_ctrl
 
     void (* p_callback)(timer_callback_args_t * p_arg); // Pointer to callback
     timer_callback_args_t * p_callback_memory;          // Pointer to pre-allocated callback argument
-    void const            * p_context;                  // Pointer to context to be passed into callback function
-} gtm_instance_ctrl_t;
+    void * p_context;                                   // Pointer to context to be passed into callback function
+};
+
+/** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref timer_api_t::open is called. Please refer to the struct st_gtm_instance_ctrl. */
+typedef struct st_gtm_instance_ctrl gtm_instance_ctrl_t;
 
 /** Optional GTM extension data structure.*/
-typedef struct st_gtm_extended_cfg
+struct st_gtm_extended_cfg
 {
     gtm_giws_type_t  generate_interrupt_when_starts; // Controls enabling/disabling of interrupt requests when start
     gtm_timer_mode_t gtm_mode;                       // Select GTM timer mode
     void           * p_reg;                          // Register base address for specified channel
-} gtm_extended_cfg_t;
+};
+
+/** Optional GTM extension data structure. Please refer to the struct st_gtm_extended_cfg. */
+typedef struct st_gtm_extended_cfg gtm_extended_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -96,7 +109,7 @@ fsp_err_t R_GTM_Stop(timer_ctrl_t * const p_ctrl);
 fsp_err_t R_GTM_Open(timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_cfg);
 fsp_err_t R_GTM_CallbackSet(timer_ctrl_t * const          p_api_ctrl,
                             void (                      * p_callback)(timer_callback_args_t * p_arg),
-                            void const * const            p_context,
+                            void * const                  p_context,
                             timer_callback_args_t * const p_callback_memory);
 fsp_err_t R_GTM_CompareMatchSet(timer_ctrl_t * const        p_ctrl,
                                 uint32_t const              compare_match_value,
@@ -105,6 +118,12 @@ fsp_err_t R_GTM_CompareMatchSet(timer_ctrl_t * const        p_ctrl,
 /*******************************************************************************************************************//**
  * @} (end defgroup GTM)
  **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 

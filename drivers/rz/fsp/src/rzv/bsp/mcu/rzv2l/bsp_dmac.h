@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -29,8 +29,15 @@
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZV
+{
+  #endif
+ #endif
+
 /**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZV2L
+ * @addtogroup RZV_BSP_MPU_RZV2L
  * @{
  *********************************************************************************************************************/
 
@@ -44,9 +51,10 @@
 #define ACTIVATION_SOURCE_CLEAR_Msk  (R_DMAC_B0_EX_DMARS0_CH0_RID_Msk | R_DMAC_B0_EX_DMARS0_CH0_MID_Msk)
 
 
-#define R_BSP_DMAC_DREQ_DETECT_METHOD_SELECT(dmac_reg, channel,                                                                \
-                                             detection, activation)       { /* No configuration required for this device. */;  \
-}                                                                                                                              \
+#define R_BSP_DMAC_DREQ_DETECT_METHOD_SELECT(dmac_reg, channel,                                                              \
+                                             detection,                                                                      \
+                                             activation)                 { /* No configuration required for this device. */; \
+}                                                                                                                            \
 
 #define R_BSP_DMAC_B_TRANSFER_END_DETECT_METHOD_SELECT(unit, channel,                                                          \
                                                        dmaint_detect)     { /* No configuration required for this device. */;  \
@@ -63,9 +71,13 @@
 	                                                                      { /* No clearing required for this device. */; \
 }                                                                                                                        \
 
+#define R_BSP_DMAC_EXTERNAL_OUTPUT_ACTIVE_LEVEL_SET(unit, channel, ack_active_level, tend_active_level) \
+    { /* No clearing required for this device. */;                                                      \
+    }                                                                                                   \
+
 typedef enum e_dmac_trigger_event
 {
-    DMAC_TRIGGER_EVENT_SOFTWARE_TRIGGER   = 0 | ACK_MODE_MASK_DACK_OUTPUT,
+    DMAC_TRIGGER_EVENT_SOFTWARE_TRIGGER   = 0,
     DMAC_TRIGGER_EVENT_GTM_OSTM0TINT      = 35 | ACK_MODE_BUS_CYCLE_MODE | DETECTION_RISING_EDGE,
     DMAC_TRIGGER_EVENT_GTM_OSTM1TINT      = 39 | ACK_MODE_BUS_CYCLE_MODE | DETECTION_RISING_EDGE,
     DMAC_TRIGGER_EVENT_GTM_OSTM2TINT      = 43 | ACK_MODE_BUS_CYCLE_MODE | DETECTION_RISING_EDGE,
@@ -307,6 +319,12 @@ typedef enum e_dmac_b_external_output_pin
         *p_target_register = reg_value;                                                                             \
     } while (0)
 
-/** @} (end addtogroup BSP_MPU_RZV2L) */
+/** @} (end addtogroup RZV_BSP_MPU_RZV2L) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 #endif                                 /* BSP_DMAC_H */

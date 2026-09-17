@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -29,8 +29,15 @@
  * Exported global functions (to be accessed by other files)
  *********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
 /**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZV2H
+ * @addtogroup RZV_BSP_MPU_RZV2H
  * @{
  *********************************************************************************************************************/
 
@@ -206,6 +213,12 @@
     MHU_MSG35_S_IRQn
 #endif
 
-/** @} (end addtogroup BSP_MPU_RZV2H) */
+/** @} (end addtogroup RZV_BSP_MPU_RZV2H) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 #endif                                 /* BSP_MHU_B_H */

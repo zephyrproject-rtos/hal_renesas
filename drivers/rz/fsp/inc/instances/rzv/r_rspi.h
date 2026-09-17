@@ -1,16 +1,11 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #ifndef R_RSPI_H
 #define R_RSPI_H
-
-/*******************************************************************************************************************//**
- * @addtogroup RSPI
- * @{
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes
@@ -22,6 +17,18 @@ FSP_HEADER
 
 /***********************************************************************************************************************
  * Macro definitions
+ **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZV_RSPI
+ * @{
  **********************************************************************************************************************/
 
 /*************************************************************************************************
@@ -86,14 +93,17 @@ typedef enum
 } rspi_rx_trigger_level_t;
 
 /** RSPI Clock Divider settings. */
-typedef struct
+struct st_rspi_rspck_div_setting
 {
     uint8_t spbr;                      ///< SPBR register setting
     uint8_t brdv : 2;                  ///< BRDV setting in SPCMD0
-} rspi_rspck_div_setting_t;
+};
+
+/** RSPI Clock Divider settings. Please refer to the struct st_rspi_rspck_div_setting. */
+typedef struct st_rspi_rspck_div_setting rspi_rspck_div_setting_t;
 
 /** Extended RSPI interface configuration */
-typedef struct st_rspi_extended_cfg
+struct st_rspi_extended_cfg
 {
     rspi_ssl_polarity_t           ssl_polarity;       ///< Select SSLn signal polarity
     rspi_mosi_idle_value_fixing_t mosi_idle;          ///< Select MOSI idle fixed value and selection
@@ -105,10 +115,13 @@ typedef struct st_rspi_extended_cfg
     rspi_rx_trigger_level_t       rx_trigger_level;   ///< Receiver FIFO trigger level
     rspi_tx_trigger_level_t       tx_trigger_level;   ///< Transmitter FIFO trigger level
     void                        * p_reg;              ///< Register base address for specified channel
-} rspi_extended_cfg_t;
+};
+
+/** Extended RSPI interface configuration. Please refer to the struct st_rspi_extended_cfg. */
+typedef struct st_rspi_extended_cfg rspi_extended_cfg_t;
 
 /** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref spi_api_t::open is called. */
-typedef struct st_rspi_instance_ctrl
+struct st_rspi_instance_ctrl
 {
     uint32_t              open;        ///< Indicates whether the open() API has been successfully called.
     spi_cfg_t const     * p_cfg;       ///< Pointer to instance configuration
@@ -125,10 +138,13 @@ typedef struct st_rspi_instance_ctrl
     spi_callback_args_t * p_callback_memory;
 
     /* Pointer to context to be passed into callback function */
-    void const  * p_context;
+    void        * p_context;
     uint32_t      rxfifo_trigger_bytes; ///< Receive buffer data triggering number
     volatile bool transfer_is_pending;  ///< Transfer is pending
-} rspi_instance_ctrl_t;
+};
+
+/** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref spi_api_t::open is called. Please refer to the struct st_rspi_instance_ctrl. */
+typedef struct st_rspi_instance_ctrl rspi_instance_ctrl_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -167,12 +183,18 @@ fsp_err_t R_RSPI_CalculateBitrate(uint32_t bitrate, rspi_rspck_div_setting_t * s
 
 fsp_err_t R_RSPI_CallbackSet(spi_ctrl_t * const          p_api_ctrl,
                              void (                    * p_callback)(spi_callback_args_t *),
-                             void const * const          p_context,
+                             void * const                p_context,
                              spi_callback_args_t * const p_callback_memory);
 
 /*******************************************************************************************************************//**
  * @} (end ingroup RSPI)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

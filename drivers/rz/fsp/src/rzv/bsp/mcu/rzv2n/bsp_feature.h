@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -72,7 +72,7 @@
 #define BSP_FEATURE_CANFD_TXMB_CHANNEL_OFFSET                 (64U)
 #define BSP_FEATURE_CANFD_RXMB_MAX                            (96U)
 #define BSP_FEATURE_CANFD_NUM_COMMON_FIFOS                    (18U)
-#define BSP_FEATURE_CANFD_ERROR_GLOBAL_CH0_ECC_REG_POS        (26U)
+#define BSP_FEATURE_CANFD_ERROR_GLOBAL_CH0_ECC_REG_POS        (28U)
 
 /* CPG-Related Definitions */
 #define BSP_FEATURE_CPG_HAS_ICLK                              (1U)
@@ -126,6 +126,7 @@
 /* DMAC-Related Definitions */
 #define BSP_FEATURE_DMAC_MAX_CHANNEL                          (16U)
 #define BSP_FEATURE_DMAC_MAX_UNIT                             (5U)
+#define BSP_FEATURE_DMAC_B_64BIT_SYSTEM                       (0U)
 
 /* GPT-Related Definitions */
 #define BSP_FEATURE_GPT_VALID_CHANNEL_MASK                    (0xFFFFU)
@@ -146,8 +147,9 @@
 #define BSP_FEATURE_GTM_SOURCE_CLOCK                          (FSP_PRIV_CLOCK_P1CLK)
 
 /* I3C-Related Definitions */
-#define BSP_FEATURE_I3C_B_MAX_DEV_COUNT                       (4U)
-#define BSP_FEATURE_I3C_B_NTDTBP0_DEPTH                       (2U)
+#define BSP_FEATURE_I3C_B_MAX_DEV_COUNT                       (8U)
+#define BSP_FEATURE_I3C_B_NTDTBP0_DEPTH                       (16U)
+#define BSP_FEATURE_I3C_B_IBI_DATA_DEPTH                      (8U)
 #define BSP_FEATURE_I3C_B_NUM_CHANNELS                        (1U)
 #define BSP_FEATURE_I3C_B_MSTP_OFFSET                         (9U)
 
@@ -224,7 +226,7 @@
 #define BSP_FEATURE_RTC_CLOCK_SOURCE_UNSELECTABLE             (1)
 
 /* SCI-Related Definitions */
-#define BSP_FEATURE_SCI_CHANNELS                              (0x3FFU)
+#define BSP_FEATURE_SCI_CHANNELS_MASK                         (0x3FFU)
 #define BSP_FEATURE_SCI_UART_FIFO_CHANNELS                    (0x3FFU)
 #define BSP_FEATURE_SCI_UART_FIFO_DEPTH                       (32U)
 #define BSP_FEATURE_SCI_UART_SUPPORT_HALF_DATA_FUNCTION       (1)
@@ -233,14 +235,16 @@
 
 /* SCIF-Related Definitions */
 #define BSP_FEATURE_SCIF_MAX_CHANNEL                          (1U)
-#define BSP_FEATURE_SCIF_CHANNELS                             (0x01U)
+#define BSP_FEATURE_SCIF_CHANNELS_MASK                        (0x01U)
 #define BSP_FEATURE_SCIF_RTSCTS_SUPPORT                       (0)
 #define BSP_FEATURE_SCIF_CKS2_LIMITATION                      (0)
 #define BSP_FEATURE_SCIF_CLOCK                                (FSP_PRIV_CLOCK_P1CLK)
 
 /* SPI-Related Definitions */
-#define BSP_FEATURE_SPI_CLK                                   (FSP_PRIV_CLOCK_P4CLK)
 #define BSP_FEATURE_SPI_MAX_CHANNEL                           (3U)
+#define BSP_FEATURE_SPI_PCLK                                  (FSP_PRIV_CLOCK_P4CLK)
+#define BSP_FEATURE_SPI_TCLK(source)    (FSP_PRIV_CLOCK_P4CLK)
+#define BSP_FEATURE_SPI_B_DIFFERENT_TCLK_PATH_EACH_CHANNEL    (0)
 
 /* TrustZone-Related Definitions */
 #define BSP_FEATURE_TZ_HAS_TRUSTZONE                          (1U)

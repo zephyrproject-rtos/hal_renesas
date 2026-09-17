@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -10,8 +10,15 @@
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
 /******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZV_BSP_MCU
  * @{
  *********************************************************************************************************************/
 
@@ -61,7 +68,7 @@ FSP_HEADER
                                                                                     16U);                           \
                                                   BSP_MSTP_REG_ ## ip(channel);                                     \
                                                   R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US,              \
-                                                                      BSP_DELAY_UNITS_MICROSECONDS);
+                                                                BSP_DELAY_UNITS_MICROSECONDS);                \
 FSP_CRITICAL_SECTION_EXIT;}
  #else
   #define R_BSP_MSTP_STOP(ip, channel)           {FSP_CRITICAL_SECTION_DEFINE;                                      \
@@ -73,7 +80,14 @@ FSP_CRITICAL_SECTION_EXIT;}
                                                   FSP_CRITICAL_SECTION_EXIT;}
  #endif
 
-/** @} (end addtogroup BSP_MCU) */
+/** @} (end addtogroup RZV_BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
  #ifndef BSP_MSTP_REG_FSP_IP_GTM
   #define BSP_MSTP_REG_FSP_IP_GTM(channel)       R_CPG->CPG_BUS_REG0_MSTOP
  #endif

@@ -1,17 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @ingroup BSP_MCU
- * @defgroup BSP_MCU_RZV2H RZV2H
- * @includedoc config_bsp_rzv2h_fsp.html
- * @{
- **********************************************************************************************************************/
-
-/** @} (end defgroup BSP_MCU_RZV2H) */
 
 #ifndef BSP_IRQ_GIC_H
 #define BSP_IRQ_GIC_H
@@ -19,6 +10,26 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZV_BSP_MCU
+ * @{
+ **********************************************************************************************************************/
+
+/** @} (end defgroup RZV_BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions

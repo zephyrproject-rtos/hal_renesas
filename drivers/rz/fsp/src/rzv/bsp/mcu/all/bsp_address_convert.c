@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -38,13 +38,26 @@ r_bsp_address_convert_table_t g_address_convert_table_array[] =
     {BSP_PRV_ADDRESS_TABLE_END,    BSP_PRV_ADDRESS_TABLE_END,BSP_PRV_ADDRESS_TABLE_END}
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZV
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZV_BSP_MCU
  *
  * @{
  **********************************************************************************************************************/
 
-/** @} (end addtogroup BSP_MCU) */
+/** @} (end addtogroup RZV_BSP_MCU) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /*******************************************************************************************************************//**
  * Converts the cpu address specified in the argument to the bus address.
