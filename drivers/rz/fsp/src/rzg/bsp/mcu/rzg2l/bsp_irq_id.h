@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -51,6 +51,18 @@
 #define DMAC_B0_DMAERR_IRQn      DMAC_DMAERR_S_IRQn
 #define DMAC_B1_DMAERR_IRQn      DMAC_DMAERR_NS_IRQn
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
+/**********************************************************************************************************************
+ * @addtogroup RZG_BSP_MPU_RZG2L
+ * @{
+ *********************************************************************************************************************/
+
 /**********************************************************************************************************************
  * Typedef definitions
  *********************************************************************************************************************/
@@ -61,11 +73,6 @@
 
 /**********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
- *********************************************************************************************************************/
-
-/**********************************************************************************************************************
- * @addtogroup BSP_MPU_RZG2L
- * @{
  *********************************************************************************************************************/
 
 typedef enum IRQn
@@ -429,7 +436,7 @@ typedef enum IRQn
     SRC_CEF_IRQn            = 344,     /* IRQ No:344, SRC_CEF */
     SRC_UDF_IRQn            = 345,     /* IRQ No:345, SRC_UDF */
     SRC_OVF_IRQn            = 346,     /* IRQ No:346, SRC_OVF */
-    ADC_INTAD_IRQn          = 347,     /* IRQ No:347, INTAD */
+    ADC0_INTAD_IRQn         = 347,     /* IRQ No:347, ADC0_INTAD */
     RIIC0_RI_IRQn           = 348,     /* IRQ No:348, INTRIICRI0 */
     RIIC0_TI_IRQn           = 349,     /* IRQ No:349, INTRIICTI0 */
     RIIC0_TEI_IRQn          = 350,     /* IRQ No:350, INTRIICTEI0 */
@@ -565,5 +572,11 @@ typedef enum IRQn
 } IRQn_Type;
 
 /** @} (end addtogroup BSP_MPU_RZG2L) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 #endif                                 /* BSP_IRQ_ID_H */

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -91,22 +91,30 @@ void cmtw_oc1_int_isr(void);
 /** CMTW Implementation of General Timer Driver  */
 const timer_api_t g_timer_on_cmtw =
 {
-    .open         = R_CMTW_Open,
-    .stop         = R_CMTW_Stop,
-    .start        = R_CMTW_Start,
-    .reset        = R_CMTW_Reset,
-    .enable       = R_CMTW_Enable,
-    .disable      = R_CMTW_Disable,
-    .periodSet    = R_CMTW_PeriodSet,
-    .dutyCycleSet = R_CMTW_DutyCycleSet,
-    .infoGet      = R_CMTW_InfoGet,
-    .statusGet    = R_CMTW_StatusGet,
-    .callbackSet  = R_CMTW_CallbackSet,
-    .close        = R_CMTW_Close
+    .open            = R_CMTW_Open,
+    .stop            = R_CMTW_Stop,
+    .start           = R_CMTW_Start,
+    .reset           = R_CMTW_Reset,
+    .enable          = R_CMTW_Enable,
+    .disable         = R_CMTW_Disable,
+    .periodSet       = R_CMTW_PeriodSet,
+    .dutyCycleSet    = R_CMTW_DutyCycleSet,
+    .compareMatchSet = R_CMTW_CompareMatchSet,
+    .infoGet         = R_CMTW_InfoGet,
+    .statusGet       = R_CMTW_StatusGet,
+    .callbackSet     = R_CMTW_CallbackSet,
+    .close           = R_CMTW_Close
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup CMTW
+ * @addtogroup RZN_CMTW
  * @{
  **********************************************************************************************************************/
 
@@ -138,9 +146,10 @@ fsp_err_t R_CMTW_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 #endif
 
-    uint32_t base_address = (uint32_t) R_CMTW0 + (p_cfg->channel * ((uint32_t) R_CMTW1 - (uint32_t) R_CMTW0));
-    p_instance_ctrl->p_reg = (R_CMTW0_Type *) base_address;
     p_instance_ctrl->p_cfg = p_cfg;
+
+    cmtw_extended_cfg_t * p_extend = (cmtw_extended_cfg_t *) p_cfg->p_extend;
+    p_instance_ctrl->p_reg = (R_CMTW0_Type *) p_extend->p_reg;
 
     /* Power on the CMTW channel. */
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
@@ -274,8 +283,15 @@ fsp_err_t R_CMTW_Enable (timer_ctrl_t * const p_ctrl)
 
     uint32_t cmwior = p_instance_ctrl->p_reg->CMWIOR;
 
-    cmwior |= (p_extend->ic0_control & CMTW_PRV_CMWIOR_IC0E_VALUE_MASK) << CMTW_PRV_CMWIOR_IC0E_OFFSET;
-    cmwior |= (p_extend->ic1_control & CMTW_PRV_CMWIOR_IC1E_VALUE_MASK) << CMTW_PRV_CMWIOR_IC1E_OFFSET;
+    /* Select input capture operation (edge setting). */
+    cmwior |=
+        ((p_extend->capture_ic0_source & CMTW_PRV_CMWIOR_IC0_VALUE_MASK) << CMTW_PRV_CMWIOR_IC0_OFFSET) |
+        ((p_extend->capture_ic1_source & CMTW_PRV_CMWIOR_IC1_VALUE_MASK) << CMTW_PRV_CMWIOR_IC1_OFFSET);
+
+    /* Enable input capture operation */
+    cmwior |=
+        ((p_extend->ic0_control & CMTW_PRV_CMWIOR_IC0E_VALUE_MASK) << CMTW_PRV_CMWIOR_IC0E_OFFSET) |
+        ((p_extend->ic1_control & CMTW_PRV_CMWIOR_IC1E_VALUE_MASK) << CMTW_PRV_CMWIOR_IC1E_OFFSET);
 
     p_instance_ctrl->p_reg->CMWIOR = (uint16_t) cmwior & CMTW_PRV_CMWIOR_MASK;
 
@@ -303,10 +319,16 @@ fsp_err_t R_CMTW_Disable (timer_ctrl_t * const p_ctrl)
 
     uint32_t cmwior = p_instance_ctrl->p_reg->CMWIOR;
 
-    cmwior &= (uint32_t) ~(1 << CMTW_PRV_CMWIOR_IC0E_OFFSET);
-    cmwior &= (uint32_t) ~(1 << CMTW_PRV_CMWIOR_IC1E_OFFSET);
+    /* Disable input capture operation */
+    cmwior &= (uint32_t) ~((CMTW_PRV_CMWIOR_IC0_VALUE_MASK << CMTW_PRV_CMWIOR_IC0_OFFSET) |
+                           (CMTW_PRV_CMWIOR_IC1_VALUE_MASK << CMTW_PRV_CMWIOR_IC1_OFFSET) |
+                           (1 << CMTW_PRV_CMWIOR_IC0E_OFFSET) |
+                           (1 << CMTW_PRV_CMWIOR_IC1E_OFFSET));
 
     p_instance_ctrl->p_reg->CMWIOR = (uint16_t) cmwior & CMTW_PRV_CMWIOR_MASK;
+
+    /* Stop timer */
+    p_instance_ctrl->p_reg->CMWSTR = CMTW_PRV_CMWSTR_STOP_TIMER;
 
     return FSP_SUCCESS;
 }
@@ -356,6 +378,24 @@ fsp_err_t R_CMTW_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(duty_cycle_counts);
     FSP_PARAMETER_NOT_USED(pin);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Set value for compare match feature. Implements @ref timer_api_t::compareMatchSet.
+ *
+ * @note This API should be used when timer is stop counting. And shall not be used along with PWM operation.
+ *
+ * @retval FSP_ERR_UNSUPPORTED         CMTW compare match set is not supported.
+ **********************************************************************************************************************/
+fsp_err_t R_CMTW_CompareMatchSet (timer_ctrl_t * const        p_ctrl,
+                                  uint32_t const              compare_match_value,
+                                  timer_compare_match_t const match_channel)
+{
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+    FSP_PARAMETER_NOT_USED(compare_match_value);
+    FSP_PARAMETER_NOT_USED(match_channel);
 
     return FSP_ERR_UNSUPPORTED;
 }
@@ -497,7 +537,7 @@ fsp_err_t R_CMTW_OutputDisable (timer_ctrl_t * const p_ctrl, cmtw_io_pin_t pin)
  **********************************************************************************************************************/
 fsp_err_t R_CMTW_CallbackSet (timer_ctrl_t * const          p_ctrl,
                               void (                      * p_callback)(timer_callback_args_t *),
-                              void const * const            p_context,
+                              void * const                  p_context,
                               timer_callback_args_t * const p_callback_memory)
 {
     cmtw_instance_ctrl_t * p_instance_ctrl = (cmtw_instance_ctrl_t *) p_ctrl;
@@ -558,6 +598,11 @@ fsp_err_t R_CMTW_Close (timer_ctrl_t * const p_ctrl)
 }
 
 /** @} (end addtogroup CMTW) */
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -682,15 +727,6 @@ static void r_cmtw_hardware_cfg (cmtw_instance_ctrl_t * const p_instance_ctrl, t
 
     r_cmtw_enable_irq(p_extend->compare_oc0_irq, p_extend->compare_oc0_ipl, p_instance_ctrl);
     r_cmtw_enable_irq(p_extend->compare_oc1_irq, p_extend->compare_oc1_ipl, p_instance_ctrl);
-
-    /* Set input capture if requested */
-    cmwior |=
-        ((p_extend->capture_ic0_source & CMTW_PRV_CMWIOR_IC0_VALUE_MASK) << CMTW_PRV_CMWIOR_IC0_OFFSET) |
-        ((p_extend->capture_ic1_source & CMTW_PRV_CMWIOR_IC1_VALUE_MASK) << CMTW_PRV_CMWIOR_IC1_OFFSET);
-
-    cmwior |=
-        ((p_extend->ic0_control & CMTW_PRV_CMWIOR_IC0E_VALUE_MASK) << CMTW_PRV_CMWIOR_IC0E_OFFSET) |
-        ((p_extend->ic1_control & CMTW_PRV_CMWIOR_IC1E_VALUE_MASK) << CMTW_PRV_CMWIOR_IC1E_OFFSET);
 
     r_cmtw_enable_irq(p_extend->capture_ic0_irq, p_extend->capture_ic0_ipl, p_instance_ctrl);
     r_cmtw_enable_irq(p_extend->capture_ic1_irq, p_extend->capture_ic1_ipl, p_instance_ctrl);

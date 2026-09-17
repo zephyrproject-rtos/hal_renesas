@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -46,33 +46,6 @@ void gtm_int_isr(IRQn_Type const intid);
  * Private global variables
  **********************************************************************************************************************/
 
-/* GTM base address */
-static const uint32_t volatile * p_gtm_base_address[BSP_FEATURE_GTM_MAX_CHANNEL] =
-{
-    (uint32_t *) R_GTM0,
-#if BSP_FEATURE_GTM_MAX_CHANNEL > 1
-    (uint32_t *) R_GTM1,
- #if BSP_FEATURE_GTM_MAX_CHANNEL > 2
-    (uint32_t *) R_GTM2,
-  #if BSP_FEATURE_GTM_MAX_CHANNEL > 3
-    (uint32_t *) R_GTM3,
-   #if BSP_FEATURE_GTM_MAX_CHANNEL > 4
-    (uint32_t *) R_GTM4,
-    #if BSP_FEATURE_GTM_MAX_CHANNEL > 5
-    (uint32_t *) R_GTM5,
-     #if BSP_FEATURE_GTM_MAX_CHANNEL > 6
-    (uint32_t *) R_GTM6,
-      #if BSP_FEATURE_GTM_MAX_CHANNEL > 7
-    (uint32_t *) R_GTM7,
-      #endif
-     #endif
-    #endif
-   #endif
-  #endif
- #endif
-#endif
-};
-
 /***********************************************************************************************************************
  * Global Variables
  **********************************************************************************************************************/
@@ -95,8 +68,15 @@ const timer_api_t g_timer_on_gtm =
     .close           = R_GTM_Close
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup GTM
+ * @addtogroup RZV_GTM
  * @{
  **********************************************************************************************************************/
 
@@ -130,8 +110,11 @@ fsp_err_t R_GTM_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_c
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 #endif
 
-    /* calculate base address for specified channel */
-    p_instance_ctrl->p_reg = (R_GTM0_Type *) p_gtm_base_address[p_cfg->channel];
+    /* Get extended configuration structure pointer. */
+    gtm_extended_cfg_t * p_extend = (gtm_extended_cfg_t *) p_cfg->p_extend;
+
+    /* Set the base address for specified channel. */
+    p_instance_ctrl->p_reg = (R_GTM0_Type *) p_extend->p_reg;
 
     p_instance_ctrl->p_cfg = p_cfg;
 
@@ -388,7 +371,7 @@ fsp_err_t R_GTM_StatusGet (timer_ctrl_t * const p_ctrl, timer_status_t * const p
  **********************************************************************************************************************/
 fsp_err_t R_GTM_CallbackSet (timer_ctrl_t * const          p_api_ctrl,
                              void (                      * p_callback)(timer_callback_args_t *),
-                             void const * const            p_context,
+                             void * const                  p_context,
                              timer_callback_args_t * const p_callback_memory)
 {
     gtm_instance_ctrl_t * p_ctrl = (gtm_instance_ctrl_t *) p_api_ctrl;
@@ -465,6 +448,12 @@ fsp_err_t R_GTM_Close (timer_ctrl_t * const p_ctrl)
 
 /** @} (end addtogroup GTM) */
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /***********************************************************************************************************************
  * Private Functions
  **********************************************************************************************************************/
@@ -488,7 +477,10 @@ static fsp_err_t r_gtm_open_param_checking (gtm_instance_ctrl_t * p_instance_ctr
 {
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_cfg);
-    FSP_ASSERT(NULL != p_cfg->p_extend);
+
+    gtm_extended_cfg_t * p_extend = (gtm_extended_cfg_t *) p_cfg->p_extend;
+    FSP_ASSERT(p_extend != NULL);
+    FSP_ASSERT(NULL != p_extend->p_reg);
     FSP_ERROR_RETURN(GTM_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
 
     /* Enable IRQ if user supplied a callback function,
@@ -539,11 +531,25 @@ static fsp_err_t r_gtm_common_preamble (gtm_instance_ctrl_t * p_instance_ctrl)
  **********************************************************************************************************************/
 static void r_gtm_period_register_set (gtm_instance_ctrl_t * p_instance_ctrl, uint32_t period_counts)
 {
+    /* Reference usage note section "Timer Period".
+     * Since the value of max counts exceeds the type range, 0 means the maximum counts.
+     * When 0 is given, set all bits to 1 to avoid underflow. */
+    uint32_t period_counts_reg;
+
+    if (!period_counts)
+    {
+        period_counts_reg = UINT32_MAX;
+    }
+    else
+    {
+        period_counts_reg = period_counts - 1U;
+    }
+
     /* Store the period value so it can be retrieved later. */
     p_instance_ctrl->period = period_counts;
 
     /* Set counter to period. */
-    p_instance_ctrl->p_reg->OSTMnCMP = period_counts;
+    p_instance_ctrl->p_reg->OSTMnCMP = period_counts_reg;
 }
 
 /*******************************************************************************************************************//**

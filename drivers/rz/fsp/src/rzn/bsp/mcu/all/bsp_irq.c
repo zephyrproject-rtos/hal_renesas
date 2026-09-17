@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -12,6 +12,7 @@
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+#define BSP_IRQ_UINT32_MAX    (0xFFFFFFFFU)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -212,7 +213,7 @@ void * bsp_prv_irq_gpt_combined_isr_table_allocate (uint32_t groupIndex)
  * Get bit shift value of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn registers.
  *
  * @param[in]   channel       GPT_INT channel number
- * @param[in]   event_source  Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source  Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  *
  * @return      Bit shift value.
  **********************************************************************************************************************/

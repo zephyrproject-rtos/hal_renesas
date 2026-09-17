@@ -3,18 +3,10 @@ Flexible Software Package (FSP)
 
 Origin:
    Renesas Electronics Corporation
-   RZ/A: https://github.com/renesas/rza-fsp
-   RZ/G: https://github.com/renesas/rzg-fsp
-   RZ/V: https://github.com/renesas/rzv-fsp
-   RZ/N: https://github.com/renesas/rzn-fsp
-   RZ/T: https://github.com/renesas/rzt-fsp
+   RZ: https://github.com/renesas/rz-fsp
 
 Status:
-   RZ/A FSP: version v3.5.0
-   RZ/G FSP: version v3.1.0
-   RZ/V FSP: version v3.0.0
-   RZ/N FSP: version v2.1.0
-   RZ/T FSP: version v2.2.0
+   RZ FSP: version v4.2.0
 
 Purpose:
    Flexible Software Package (FSP) for Renesas RZ MPU Family.
@@ -27,20 +19,8 @@ Dependencies:
     None.
 
 URL:
-   https://github.com/renesas/rza-fsp
-   Commit: efa73c09f98e6d124d98692fffc1091eac0bbe47
-
-   https://github.com/renesas/rzg-fsp
-   Commit: 48efef301dc699fdf46ea8df274dbc0f3587e222
-
-   https://github.com/renesas/rzv-fsp
-   Commit: dbc49dea2a0fe4b2cc7c7f1de40a6f6aadf4b980
-
-   https://github.com/renesas/rzn-fsp
-   Commit: dcdc687a97844038f909186c938aab98c056175d
-
-   https://github.com/renesas/rzt-fsp
-   Commit: e66ab13216949c9ce5a09555171c422d5a323f1b
+   https://github.com/renesas/rz-fsp
+   Commit: 5d78050085fbff44d88da9820d560603a0b6cc1f
 
 
 Maintained-by:
@@ -62,12 +42,6 @@ Patch List:
    * Use r_timer_api.h of rzv-fsp to support compare match
    Impacted files:
       drivers/rz/fsp/inc/api/r_timer_api.h
-
-   * Rename GPT capture compare ISR from gpt_capture_a_isr, gpt_capture_b_isr to 
-     gpt_capture_compare_a_isr, gpt_capture_compare_b_isr respectively
-   Impacted files:
-      drivers/rz/fsp/src/rzt/r_gpt/r_gpt.c
-      drivers/rz/fsp/src/rzn/r_gpt/r_gpt.c
 
    * Rename adc_scan_end_isr, g_adc_on_adc to adc_c_scan_end_isr, g_adc_on_adc_c with _c suffix
      respectively to match with ADC_C FSP driver and make the Zephyr ADC driver generic
@@ -102,29 +76,6 @@ Patch List:
       drivers/rz/fsp/src/rzn/r_ioport/r_ioport.c
       drivers/rz/fsp/src/rzt/r_ioport/r_ioport.c
 
-   * Add p_reg member to extended configuration structures to hold register base address for
-     specified unit/channel in various FSP drivers to make them generic across RZ series MPUs
-   Impacted files:
-      drivers/rz/fsp/inc/instances/rza/r_adc_c.h
-      drivers/rz/fsp/inc/instances/rza/r_dmac.h
-      drivers/rz/fsp/inc/instances/rza/r_gtm.h
-      drivers/rz/fsp/inc/instances/rza/r_riic_master.h
-      drivers/rz/fsp/inc/instances/rza/r_rspi.h
-      drivers/rz/fsp/inc/instances/rza/r_scif_uart.h
-      drivers/rz/fsp/inc/instances/rzn/r_dmac.h
-      drivers/rz/fsp/inc/instances/rzn/r_gpt.h
-      drivers/rz/fsp/inc/instances/rzt/r_dmac.h
-      drivers/rz/fsp/inc/instances/rzt/r_gpt.h
-      drivers/rz/fsp/inc/instances/rzv/r_adc_c.h
-      drivers/rz/fsp/inc/instances/rzv/r_dmac_b.h
-      drivers/rz/fsp/inc/instances/rzv/r_gpt.h
-      drivers/rz/fsp/inc/instances/rzv/r_gtm.h
-      drivers/rz/fsp/inc/instances/rzv/r_mhu_ns.h
-      drivers/rz/fsp/inc/instances/rzv/r_riic_master.h
-      drivers/rz/fsp/inc/instances/rzv/r_rspi.h
-      drivers/rz/fsp/inc/instances/rzv/r_scif_uart.h
-      drivers/rz/fsp/inc/instances/rzv/r_sci_b_uart.h
-
    * Disable advanced features of RZ/N2H, RZ/T2H in bsp_feature.h including
      TZC-400 (BSP_FEATURE_TZC400_SUPPORTED), DDR (BSP_FEATURE_DDR_SUPPORTED),
      Address Expander (BSP_FEATURE_ADDRESS_EXPANDER_SUPPORTED) since they are not required at
@@ -132,3 +83,10 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rzn/bsp/mcu/rzn2h/bsp_feature.h
       drivers/rz/fsp/src/rzt/bsp/mcu/rzt2h/bsp_feature.h
+
+   * Remove p_api_ctrl parameter of the R_SCI_B_UART_BaudCalculate function to avoid a build error,
+     this change does not impact the source logic since the parameter is not used
+   Impacted files:
+      drivers/rz/fsp/inc/instances/rzg/r_sci_b_uart.h
+      drivers/rz/fsp/src/rzg/r_sci_b_uart/r_sci_b_uart.c
+	  

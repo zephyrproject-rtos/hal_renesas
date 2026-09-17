@@ -1,13 +1,8 @@
 /*
-* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup XSPI_QSPI
- * @{
- **********************************************************************************************************************/
 
 #ifndef R_XSPI_QSPI_H
 #define R_XSPI_QSPI_H
@@ -34,6 +29,18 @@ FSP_HEADER
 
 /***********************************************************************************************************************
  * Macro definitions
+ **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZT
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZT_XSPI_QSPI
+ * @{
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -94,13 +101,16 @@ typedef enum e_xspi_qspi_cs_pulldown_clocks
     XSPI_QSPI_CS_PULLDOWN_CLOCKS_1,                ///< CS negating Extend 1 cycle
 } xspi_qspi_cs_pulldown_clocks_t;
 
-/* Memory mapped timing */
-typedef struct st_qspi_timing_setting
+/** Memory mapped timing */
+struct st_qspi_timing_setting
 {
     xspi_qspi_command_interval_clocks_t command_to_command_interval; ///< Interval between 2 consecutive commands
     xspi_qspi_cs_pullup_clocks_t        cs_pullup_lag;               ///< Duration to de-assert CS line after the last command
     xspi_qspi_cs_pulldown_clocks_t      cs_pulldown_lead;            ///< Duration to assert CS line before the first command
-} xspi_qspi_timing_setting_t;
+};
+
+/** Memory mapped timing. Please refer to the struct st_qspi_timing_setting. */
+typedef struct st_qspi_timing_setting xspi_qspi_timing_setting_t;
 
 /* Prefetch function settings */
 typedef enum e_xspi_qspi_prefetch_function
@@ -116,8 +126,8 @@ typedef enum e_xspi_qspi_io_voltage
     XSPI_QSPI_IO_VOLTAGE_3_3V = 0x01,  ///< IO voltage 3.3V
 } xspi_qspi_io_voltage_t;
 
-/* Address space settings */
-typedef struct st_qspi_address_space
+/** Address space settings */
+struct st_qspi_address_space
 {
     uint32_t unit0_cs0_end_address;    ///< xSPI unit0 cs0 end address
     uint32_t unit0_cs1_start_address;  ///< xSPI unit0 cs1 start address
@@ -125,7 +135,10 @@ typedef struct st_qspi_address_space
     uint32_t unit1_cs0_end_address;    ///< xSPI unit1 cs0 end address
     uint32_t unit1_cs1_start_address;  ///< xSPI unit1 cs1 start address
     uint32_t unit1_cs1_end_address;    ///< xSPI unit1 cs1 end address
-} xspi_qspi_address_space_t;
+};
+
+/** Address space settings. Please refer to the struct st_qspi_address_space. */
+typedef struct st_qspi_address_space xspi_qspi_address_space_t;
 
 /* OTFD AES Type. */
 typedef enum e_xspi_qspi_otfd_aes_key_type
@@ -134,26 +147,30 @@ typedef enum e_xspi_qspi_otfd_aes_key_type
     XSPI_QSPI_OTFD_AES_KEY_TYPE_256 = 2U,
 } xspi_qspi_otfd_aes_key_type_t;
 
-/* This structure is used to hold all the OTFD related configuration. */
-typedef struct st_xspi_qspi_otfd_cfg
+/** This structure is used to hold all the OTFD related configuration. */
+struct st_xspi_qspi_otfd_cfg
 {
     xspi_qspi_otfd_aes_key_type_t key_type;
     uint32_t * p_start_addr;
     uint32_t * p_end_addr;
     uint32_t * p_key;
     uint32_t * p_iv;
-} xspi_qspi_otfd_cfg_t;
+};
 
-/* Extended configuration. */
-typedef struct st_xspi_qspi_extended_cfg
+/** This structure is used to hold all the OTFD related configuration. Please refer to the struct st_xspi_qspi_otfd_cfg. */
+typedef struct st_xspi_qspi_otfd_cfg xspi_qspi_otfd_cfg_t;
+
+/** Extended configuration. */
+struct st_xspi_qspi_extended_cfg
 {
     uint8_t                            unit;              ///< Unit number of xSPI
     xspi_qspi_chip_select_t            chip_select;       ///< Device number to be used for memory device
-    xspi_qspi_memory_size_t            memory_size;       ///< Size of memory device
+    uint32_t                           memory_size;       ///< Size of memory device
     xspi_qspi_timing_setting_t const * p_timing_settings; ///< Memory mapped timing settings
     xspi_qspi_prefetch_function_t      prefetch_en;       ///< Prefetch function settings
     xspi_qspi_io_voltage_t             io_voltage;        ///< Voltage setting of xSPI IO domain
-    xspi_qspi_address_space_t const  * p_address_space;   ///< Address space settings when custom address space enabled
+    xspi_qspi_address_space_t const  * p_address_space;   ///< Memory mapped address space settings
+    void * p_reg;                                         ///< Register base address for specified channel
 
 #if XSPI_QSPI_CFG_DMAC_SUPPORT_ENABLE
     transfer_instance_t const * p_lower_lvl_transfer;     ///< DMAC Transfer instance used for data transmission
@@ -162,10 +179,13 @@ typedef struct st_xspi_qspi_extended_cfg
 #if XSPI_QSPI_CFG_OTFD_SUPPORT_ENABLE
     xspi_qspi_otfd_cfg_t const * p_otfd_cfg;              ///< OTFD Configuration. Set to NULL if unused.
 #endif
-} xspi_qspi_extended_cfg_t;
+};
 
-/** Instance control block. DO NOT INITIALIZE.  Initialization occurs when @ref spi_flash_api_t::open is called */
-typedef struct st_xspi_qspi_instance_ctrl
+/** Extended configuration. Please refer to the struct st_xspi_qspi_extended_cfg. */
+typedef struct st_xspi_qspi_extended_cfg xspi_qspi_extended_cfg_t;
+
+/** Instance control block. DO NOT INITIALIZE.  Initialization occurs when @ref RZT::spi_flash_api_t::open is called */
+struct st_xspi_qspi_instance_ctrl
 {
     spi_flash_cfg_t const * p_cfg;            // Pointer to initial configuration
     spi_flash_data_lines_t  data_lines;       // Data lines
@@ -178,7 +198,10 @@ typedef struct st_xspi_qspi_instance_ctrl
 #endif
 
     spi_flash_protocol_t spi_protocol;        // Current SPI protocol selected
-} xspi_qspi_instance_ctrl_t;
+};
+
+/** Instance control block. DO NOT INITIALIZE.  Initialization occurs when @ref RZT::spi_flash_api_t::open is called. Please refer to the struct st_xspi_qspi_instance_ctrl. */
+typedef struct st_xspi_qspi_instance_ctrl xspi_qspi_instance_ctrl_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -191,13 +214,14 @@ extern const spi_flash_api_t g_spi_flash_on_xspi_qspi;
 /** @endcond */
 
 fsp_err_t R_XSPI_QSPI_Open(spi_flash_ctrl_t * p_ctrl, spi_flash_cfg_t const * const p_cfg);
-fsp_err_t R_XSPI_QSPI_Close(spi_flash_ctrl_t * p_ctrl);
 fsp_err_t R_XSPI_QSPI_DirectWrite(spi_flash_ctrl_t    * p_ctrl,
                                   uint8_t const * const p_src,
                                   uint32_t const        bytes,
                                   bool const            read_after_write);
 fsp_err_t R_XSPI_QSPI_DirectRead(spi_flash_ctrl_t * p_ctrl, uint8_t * const p_dest, uint32_t const bytes);
-fsp_err_t R_XSPI_QSPI_SpiProtocolSet(spi_flash_ctrl_t * p_ctrl, spi_flash_protocol_t spi_protocol);
+fsp_err_t R_XSPI_QSPI_DirectTransfer(spi_flash_ctrl_t                  * p_ctrl,
+                                     spi_flash_direct_transfer_t * const p_transfer,
+                                     spi_flash_direct_transfer_dir_t     direction);
 fsp_err_t R_XSPI_QSPI_XipEnter(spi_flash_ctrl_t * p_ctrl);
 fsp_err_t R_XSPI_QSPI_XipExit(spi_flash_ctrl_t * p_ctrl);
 fsp_err_t R_XSPI_QSPI_Write(spi_flash_ctrl_t    * p_ctrl,
@@ -207,16 +231,20 @@ fsp_err_t R_XSPI_QSPI_Write(spi_flash_ctrl_t    * p_ctrl,
 fsp_err_t R_XSPI_QSPI_Erase(spi_flash_ctrl_t * p_ctrl, uint8_t * const p_device_address, uint32_t byte_count);
 fsp_err_t R_XSPI_QSPI_StatusGet(spi_flash_ctrl_t * p_ctrl, spi_flash_status_t * const p_status);
 fsp_err_t R_XSPI_QSPI_BankSet(spi_flash_ctrl_t * p_ctrl, uint32_t bank);
-fsp_err_t R_XSPI_QSPI_DirectTransfer(spi_flash_ctrl_t                  * p_ctrl,
-                                     spi_flash_direct_transfer_t * const p_transfer,
-                                     spi_flash_direct_transfer_dir_t     direction);
+fsp_err_t R_XSPI_QSPI_SpiProtocolSet(spi_flash_ctrl_t * p_ctrl, spi_flash_protocol_t spi_protocol);
 fsp_err_t R_XSPI_QSPI_AutoCalibrate(spi_flash_ctrl_t * p_ctrl);
+fsp_err_t R_XSPI_QSPI_Close(spi_flash_ctrl_t * p_ctrl);
+
+/*******************************************************************************************************************//**
+ * @} (end defgroup XSPI_QSPI)
+ **********************************************************************************************************************/
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 
 #endif
-
-/*******************************************************************************************************************//**
- * @} (end defgroup XSPI_QSPI)
- **********************************************************************************************************************/

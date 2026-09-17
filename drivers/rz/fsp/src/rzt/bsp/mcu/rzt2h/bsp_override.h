@@ -1,15 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup BSP_MCU_RZT2H
- * @{
- **********************************************************************************************************************/
-
-/** @} (end addtogroup BSP_MCU_RZT2H) */
 
 #ifndef BSP_OVERRIDE_H
 #define BSP_OVERRIDE_H
@@ -62,6 +55,10 @@
  #include "bsp_address_expander.h"
 #endif
 
+#if BSP_CFG_ESD_BOOT || BSP_CFG_EMMC_BOOT
+ #include "bsp_sdhi.h"
+#endif
+
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
@@ -77,15 +74,21 @@ FSP_HEADER
 #define BSP_OVERRIDE_CGC_DIVIDER_CFG_T
 #define BSP_OVERRIDE_CGC_CLOCK_CHANGE_T
 #define BSP_OVERRIDE_CGC_CLOCKS_CFG_T
+#define BSP_OVERRIDE_DISPLAY_IN_FORMAT_T
+#define BSP_OVERRIDE_DISPLAY_INPUT_CFG_T
+#define BSP_OVERRIDE_DISPLAY_DATA_SWAP_T
 #define BSP_OVERRIDE_ELC_PERIPHERAL_T
 #define BSP_OVERRIDE_ERROR_EVENT_T
 #define BSP_OVERRIDE_ETHER_EVENT_T
 #define BSP_OVERRIDE_ETHER_CALLBACK_ARGS_T
 #define BSP_OVERRIDE_ETHER_PHY_LSI_TYPE_T
+#define BSP_OVERRIDE_ETHER_SWITCH_EVENT_T
 #define BSP_OVERRIDE_ETHER_SWITCH_CALLBACK_ARGS_T
 #define BSP_OVERRIDE_POE3_STATE_T
+#define BSP_OVERRIDE_POE3_ACTIVE_LEVEL_T
 #define BSP_OVERRIDE_POEG_STATE_T
 #define BSP_OVERRIDE_POEG_TRIGGER_T
+#define BSP_OVERRIDE_TIMER_EVENT_T
 #define BSP_OVERRIDE_TRANSFER_MODE_T
 #define BSP_OVERRIDE_TRANSFER_SIZE_T
 #define BSP_OVERRIDE_TRANSFER_ADDR_MODE_T
@@ -103,6 +106,13 @@ FSP_HEADER
 #define IOPORT_PFC_OFFSET      (4U)
 #define IOPORT_DRCTL_OFFSET    (10U)
 #define IOPORT_RSELP_OFFSET    (16U)
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZT
+{
+  #endif
+ #endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -277,32 +287,41 @@ typedef enum e_cgc_clock
     CGC_CLOCK_PLL4 = 5,                ///< The PLL4 oscillator
 } cgc_clock_t;
 
-typedef struct st_cgc_pll_ssc_cfg
+struct st_cgc_pll_ssc_cfg
 {
     uint8_t pll_ssc_enable : 1;               ///< SSC function enable
     uint8_t pll_ssc_modulation_freq_ctrl;     ///< Modulation frequency control parameter for SSC
     uint8_t pll_ssc_modulation_rate_ctrl : 6; ///< Modulation rate control parameter for SSC
-} cgc_pll_ssc_cfg_t;
+};
 
-typedef struct st_cgc_pll_vco_cfg
+/* Please refer to the struct st_cgc_pll_ssc_cfg. */
+typedef struct st_cgc_pll_ssc_cfg cgc_pll_ssc_cfg_t;
+
+struct st_cgc_pll_vco_cfg
 {
     uint8_t  pll_divider_p : 6;                 ///< PLL P-divider
     uint16_t pll_divider_m : 10;                ///< PLL M-divider
     uint8_t  pll_divider_s : 3;                 ///< PLL S-divider
     uint16_t pll_divider_delta_sigma_modulator; ///< PLL Delta-Sigma Modulator
-} cgc_pll_vco_cfg_t;
+};
+
+/* Please refer to the struct st_cgc_pll_vco_cfg. */
+typedef struct st_cgc_pll_vco_cfg cgc_pll_vco_cfg_t;
+
+/** Clock configuration structure - Used as an input parameter to the cgc_api_t::clockStart function for the PLL clock. */
+struct st_cgc_pll_cfg
+{
+    cgc_pll_ssc_cfg_t pll0_ssc_cfg;    ///< SSC settings of PLL0 (for RZ/T2H and RZ/T2N).
+    cgc_pll_ssc_cfg_t pll2_ssc_cfg;    ///< SSC settings of PLL2 (for RZ/T2H and RZ/T2N).
+    cgc_pll_vco_cfg_t pll3_vco_cfg;    ///< VCO settings of PLL3 (for RZ/T2H).
+};
 
 /** Clock configuration structure - Dummy definition because it is not used in this MPU.
- * Set NULL as an input parameter to the @ref cgc_api_t::clockStart function for the PLL clock. */
-typedef struct st_cgc_pll_cfg
-{
-    cgc_pll_ssc_cfg_t pll0_ssc_cfg;
-    cgc_pll_ssc_cfg_t pll2_ssc_cfg;
-    cgc_pll_vco_cfg_t pll3_vco_cfg;
-} cgc_pll_cfg_t;
+ * Set NULL as an input parameter to the cgc_api_t::clockStart function for the PLL clock. Please refer to the struct st_cgc_pll_cfg. */
+typedef struct st_cgc_pll_cfg cgc_pll_cfg_t;
 
 /** Clock configuration structure */
-typedef struct st_cgc_divider_cfg
+struct st_cgc_divider_cfg
 {
     union
     {
@@ -389,7 +408,10 @@ typedef struct st_cgc_divider_cfg
             uint32_t                                : 7;
         } sckcr4_b;
     };
-} cgc_divider_cfg_t;
+};
+
+/** Clock configuration structure. Please refer to the struct st_cgc_divider_cfg. */
+typedef struct st_cgc_divider_cfg cgc_divider_cfg_t;
 
 /** Clock options */
 typedef enum e_cgc_clock_change
@@ -400,7 +422,7 @@ typedef enum e_cgc_clock_change
 } cgc_clock_change_t;
 
 /** Clock configuration */
-typedef struct st_cgc_clocks_cfg
+struct st_cgc_clocks_cfg
 {
     cgc_divider_cfg_t  divider_cfg;    ///< Clock dividers structure
     cgc_pll_ssc_cfg_t  pll0_ssc_cfg;   ///< Configuration of PLL0 SSC function setting
@@ -410,7 +432,69 @@ typedef struct st_cgc_clocks_cfg
     cgc_clock_change_t pll0_state;     ///< State of PLL0
     cgc_clock_change_t pll2_state;     ///< State of PLL2
     cgc_clock_change_t pll3_state;     ///< State of PLL3
-} cgc_clocks_cfg_t;
+};
+
+/** Clock configuration. Please refer to the struct st_cgc_clocks_cfg. */
+typedef struct st_cgc_clocks_cfg cgc_clocks_cfg_t;
+
+/*==============================================
+ * DISPLAY API Overrides
+ *==============================================*/
+
+typedef enum e_display_in_format
+{
+    DISPLAY_IN_FORMAT_32BITS_ARGB8888 = 0,                         ///< ARGB8888, 32 bits
+    DISPLAY_IN_FORMAT_32BITS_RGB888   = 1,                         ///< RGB888,   32 bits
+    DISPLAY_IN_FORMAT_16BITS_RGB565   = 2,                         ///< RGB565,   16 bits
+    DISPLAY_IN_FORMAT_16BITS_ARGB1555 = 3,                         ///< ARGB1555, 16 bits
+    DISPLAY_IN_FORMAT_16BITS_ARGB4444 = 4,                         ///< ARGB4444, 16 bits
+
+    DISPLAY_IN_FORMAT_CLUT8 = 5,                                   ///< CLUT8
+    DISPLAY_IN_FORMAT_CLUT4 = 6,                                   ///< CLUT4
+    DISPLAY_IN_FORMAT_CLUT1 = 7,                                   ///< CLUT1
+
+    DISPLAY_IN_FORMAT_32BITS_RGBA8888                        = 8,  ///< RGBA8888,                        32 bits
+    DISPLAY_IN_FORMAT_24BITS_BGR888                          = 9,  ///< BGR888,                          24 bits
+    DISPLAY_IN_FORMAT_24BITS_RGB888                          = 10, ///< RGB888,                          24 bits
+    DISPLAY_IN_FORMAT_32BITS_ABGR8888                        = 11, ///< ABGR8888,                        32 bits
+    DISPLAY_IN_FORMAT_24BITS_YCBCR444_INTERLEAVED            = 12, ///< YCbCr444 interleaved,             24 bits
+    DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE0_UYVY = 13, ///< YCbCr422 interleaved type0 UYVY,  16 bits
+    DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE0_YUY2 = 14, ///< YCbCr422 interleaved type0 YUY2,  16 bits
+    DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE0_YVYU = 15, ///< YCbCr422 interleaved type0 YVYU,  16 bits
+    DISPLAY_IN_FORMAT_16BITS_YCBCR422_INTERLEAVED_TYPE1      = 16, ///< YCbCr420 interleaved type1,       16 bits
+    DISPLAY_IN_FORMAT_16BITS_YCBCR420_INTERLEAVED            = 17, ///< YCbCr420 interleaved,             12 bits
+    DISPLAY_IN_FORMAT_16BITS_YCBCR420_PLANAR                 = 18, ///< YCbCr420 planar,                  16bits
+
+    /** All other options start at this value. */
+    DISPLAY_IN_FORMAT_CUSTOM = 0x80,
+} display_in_format_t;
+
+typedef enum e_display_data_swap
+{
+    DISPLAY_DATA_SWAP_8BIT  = 1,
+    DISPLAY_DATA_SWAP_16BIT = 2,
+    DISPLAY_DATA_SWAP_32BIT = 4,
+    DISPLAY_DATA_SWAP_64BIT = 8,
+} display_data_swap_t;
+
+/** Graphics plane input configuration structure */
+struct st_display_input_cfg
+{
+    uint32_t          * p_base;        ///< Base address to the frame buffer
+    uint32_t          * p_base_cb;     ///< Base address to the frame buffer for Cb plane
+    uint32_t          * p_base_cr;     ///< Base address to the frame buffer for Cr plane
+    uint16_t            hsize;         ///< Horizontal pixels in a line
+    uint16_t            vsize;         ///< Vertical pixels in a frame
+    int16_t             coordinate_x;  ///< Coordinate X
+    int16_t             coordinate_y;  ///< Coordinate Y
+    uint16_t            hstride;       ///< Memory stride (bytes) in a line
+    uint16_t            hstride_cbcr;  ///< Memory stride (bytes) in a line for Cb and Cr plane
+    display_in_format_t format;        ///< Input format setting
+    display_data_swap_t data_swap;     ///< Input data swap_Setting
+};
+
+/** Graphics plane input configuration structure. Please refer to the struct st_display_input_cfg. */
+typedef struct st_display_input_cfg display_input_cfg_t;
 
 /*==============================================
  * ELC API Overrides
@@ -2670,7 +2754,7 @@ typedef enum e_ether_event
 } ether_event_t;
 
 /** Ether Callback function parameter data */
-typedef struct st_ether_callback_args
+struct st_ether_callback_args
 {
     uint32_t      channel;             ///< Device channel number
     ether_event_t event;               ///< Event code
@@ -2678,8 +2762,11 @@ typedef struct st_ether_callback_args
     uint32_t status_ether;             ///< Interrupt status of SDB or PMT
     uint32_t status_link;              ///< Link status
 
-    void const * p_context;            ///< Placeholder for user data.
-} ether_callback_args_t;
+    void * p_context;                  ///< Placeholder for user data.
+};
+
+/** Ether Callback function parameter data. Please refer to the struct st_ether_callback_args. */
+typedef struct st_ether_callback_args ether_callback_args_t;
 
 /*==============================================
  * ETHER SWITCH API Overrides
@@ -2692,15 +2779,18 @@ typedef enum e_ether_switch_event
 } ether_switch_event_t;
 
 /** Ether Switch Callback function parameter data */
-typedef struct st_ether_switch_callback_args
+struct st_ether_switch_callback_args
 {
     uint32_t             channel;      ///< Device channel number
     ether_switch_event_t event;        ///< Event code
 
     uint32_t status_link;              ///< Link status bit0:port0. bit1:port1. bit2:port2, bit3:port3
 
-    void const * p_context;            ///< Placeholder for user data.
-} ether_switch_callback_args_t;
+    void * p_context;                  ///< Placeholder for user data.
+};
+
+/** Ether Switch Callback function parameter data. Please refer to the struct st_ether_switch_callback_args. */
+typedef struct st_ether_switch_callback_args ether_switch_callback_args_t;
 
 /*==============================================
  * ETHER PHY API Overrides
@@ -2760,6 +2850,14 @@ typedef enum e_poe3_state
     POE3_STATE_DSMIF8_1_ERROR_REQUEST = 1U << 29,               ///< Timer output disabled due to DSMIF8 Error1
     POE3_STATE_DSMIF9_1_ERROR_REQUEST = 1U << 30,               ///< Timer output disabled due to DSMIF9 Error1
 } poe3_state_t;
+
+/** POE3 active level for short circuit detection. */
+typedef enum e_poe3_active_level
+{
+    POE3_ACTIVE_LEVEL_HIGH         = 1U,    ///< High level is set as the active level to detect a short circuit.
+    POE3_ACTIVE_LEVEL_LOW          = 0U,    ///< Low level is set as the active level to detect a short circuit.
+    POE3_ACTIVE_LEVEL_SETTING_NONE = 0xFFU, ///< The active level of the pin is set by the timer peripheral side, not by POE3.
+} poe3_active_level_t;
 
 /*==============================================
  * POEG API Overrides
@@ -2840,6 +2938,29 @@ typedef enum e_poeg_trigger
 } poeg_trigger_t;
 
 /*==============================================
+ * Timer API Overrides
+ *==============================================*/
+
+/** Events that can trigger a callback function */
+typedef enum e_timer_event
+{
+    TIMER_EVENT_CYCLE_END,                     ///< Requested timer delay has expired or timer has wrapped around
+    TIMER_EVENT_CREST = TIMER_EVENT_CYCLE_END, ///< Timer crest event (counter is at a maximum, triangle-wave PWM only)
+    TIMER_EVENT_CAPTURE_A,                     ///< A capture has occurred on signal A
+    TIMER_EVENT_CAPTURE_B,                     ///< A capture has occurred on signal B
+    TIMER_EVENT_CAPTURE_C,                     ///< A capture has occurred on signal C
+    TIMER_EVENT_CAPTURE_D,                     ///< A capture has occurred on signal D
+    TIMER_EVENT_TROUGH,                        ///< Timer trough event (counter is 0, triangle-wave PWM only)
+    TIMER_EVENT_COMPARE_A,                     ///< A compare has occurred on signal A
+    TIMER_EVENT_COMPARE_B,                     ///< A compare has occurred on signal B
+    TIMER_EVENT_COMPARE_C,                     ///< A compare has occurred on signal C
+    TIMER_EVENT_COMPARE_D,                     ///< A compare has occurred on signal D
+    TIMER_EVENT_COMPARE_E,                     ///< A compare has occurred on signal E
+    TIMER_EVENT_COMPARE_F,                     ///< A compare has occurred on signal F
+    TIMER_EVENT_DEAD_TIME,                     ///< Dead time event
+} timer_event_t;
+
+/*==============================================
  * Transfer API Overrides
  *==============================================*/
 
@@ -2875,7 +2996,7 @@ typedef enum e_transfer_size
 /** Address mode specifies whether to modify (increment or decrement) pointer after each transfer. */
 typedef enum e_transfer_addr_mode
 {
-    /** Address pointer is incremented by associated @ref transfer_size_t after each transfer. */
+    /** Address pointer is incremented by associated @ref RZT::transfer_size_t after each transfer. */
     TRANSFER_ADDR_MODE_INCREMENTED = 0,
 
     /** Address pointer remains fixed after each transfer. */
@@ -2883,14 +3004,17 @@ typedef enum e_transfer_addr_mode
 } transfer_addr_mode_t;
 
 /** Callback function parameter data. */
-typedef struct st_transfer_callback_args_t
+struct st_transfer_callback_args
 {
     transfer_event_t event;            ///< Event code
-    void const     * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in ::transfer_cfg_t.
-} transfer_callback_args_t;
+    void           * p_context;        ///< Placeholder for user data. Set in transfer_api_t::open function in RZT::transfer_cfg_t.
+};
+
+/** Callback function parameter data. Please refer to the struct st_transfer_callback_args. */
+typedef struct st_transfer_callback_args transfer_callback_args_t;
 
 /** This structure specifies the properties of the transfer. */
-typedef struct st_transfer_info
+struct st_transfer_info
 {
     /** Select what happens to destination pointer after each transfer. */
     transfer_addr_mode_t dest_addr_mode;
@@ -2898,7 +3022,7 @@ typedef struct st_transfer_info
     /** Select what happens to source pointer after each transfer. */
     transfer_addr_mode_t src_addr_mode;
 
-    /** Select mode from @ref transfer_mode_t. */
+    /** Select mode from @ref RZT::transfer_mode_t. */
     transfer_mode_t mode;
 
     /** Source pointer. */
@@ -2920,14 +3044,17 @@ typedef struct st_transfer_info
     void const * p_next1_src;
     void       * p_next1_dest;
     uint32_t     next1_length;
-} transfer_info_t;
+};
+
+/** This structure specifies the properties of the transfer. Please refer to the struct st_transfer_info. */
+typedef struct st_transfer_info transfer_info_t;
 
 /*=========================================================
  * ADC API Override using other override definitions
  *=========================================================*/
 
 /** ADC Information Structure for Transfer Interface */
-typedef struct st_adc_info
+struct st_adc_info
 {
     volatile const void * p_address;         ///< The address to start reading the data from
     uint32_t              length;            ///< The total number of transfers to read
@@ -2938,7 +3065,10 @@ typedef struct st_adc_info
     uint32_t              calibration_data2; ///< Temperature sensor calibration data2
     int16_t               slope_microvolts;  ///< Temperature sensor slope in microvolts/degrees C
     bool calibration_ongoing;                ///< Calibration is in progress.
-} adc_info_t;
+};
+
+/** ADC Information Structure for Transfer Interface. Please refer to the struct st_adc_info. */
+typedef struct st_adc_info adc_info_t;
 
 /***********************************************************************************************************************
  * Exported global variables
@@ -2947,6 +3077,12 @@ typedef struct st_adc_info
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

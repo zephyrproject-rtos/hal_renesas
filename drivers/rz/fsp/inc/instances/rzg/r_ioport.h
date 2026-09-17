@@ -1,13 +1,8 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup IOPORT
- * @{
- **********************************************************************************************************************/
 
 #ifndef R_IOPORT_H
 #define R_IOPORT_H
@@ -32,17 +27,32 @@ FSP_HEADER
 /* Private definition to set enumeration values. */
 #define IOPORT_PRV_PFS_PSEL_OFFSET    (24)
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZG
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZG_IOPORT
+ * @{
+ **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** IOPORT private control block. DO NOT MODIFY. Initialization occurs when R_IOPORT_Open() is called. */
-typedef struct st_ioport_instance_ctrl
+struct st_ioport_instance_ctrl
 {
     uint32_t             open;
     void const         * p_context;
     ioport_cfg_t const * p_cfg;
-} ioport_instance_ctrl_t;
+};
+
+/** IOPORT private control block. DO NOT MODIFY. Initialization occurs when R_IOPORT_Open() is called. Please refer to the struct st_ioport_instance_ctrl. */
+typedef struct st_ioport_instance_ctrl ioport_instance_ctrl_t;
 
 #ifndef BSP_OVERRIDE_IOPORT_PERIPHERAL_T
 
@@ -464,48 +474,201 @@ typedef enum e_ioport_noise_filter_dreq_port_offset
 
 #endif
 
+#ifndef BSP_OVERRIDE_IOPORT_CLONE_CHANNEL_NUM_RIIC_PORT_T
+
+/** Superset of clone channel number for RIIC functions.  */
+typedef enum e_ioport_clone_channel_num_riic_port
+{
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P20 = 3, /* Clone channel number of RIIC */
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P21 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P50 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P51 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P52 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P53 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P54 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P55 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P56 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P60 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P61 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P62 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P63 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P64 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P65 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P66 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P76 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P77 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P80 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P81 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P82 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P83 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P84 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RIIC_P85 = 2,
+} ioport_clone_channel_num_riic_port_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_IOPORT_CLONE_CHANNEL_NUM_RSCI_PORT_T
+
+/** Superset of clone channel number for RSCI functions.  */
+typedef enum e_ioport_clone_channel_num_rsci_port
+{
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P50 = 1, /* Clone channel number of RSCI */
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P51 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P52 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P53 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P54 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P55 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P56 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P60 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P61 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P62 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P63 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P64 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P65 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P66 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P70 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P71 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P72 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P73 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P74 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P75 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P76 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P77 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P80 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P81 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P82 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P83 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P84 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_RSCI_P85 = 3,
+} ioport_clone_channel_num_rsci_port_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_IOPORT_CLONE_CHANNEL_NUM_RSPI_PORT_T
+
+/** Superset of clone channel number for RSPI functions.  */
+typedef enum e_ioport_clone_channel_num_rspi_port
+{
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P50 = 1, /* Clone channel number of RSPI */
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P51 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P52 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P53 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P54 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P55 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P56 = 1,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P60 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P61 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P62 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P63 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P64 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P65 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P66 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P77 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P80 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P81 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P82 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P83 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P84 = 2,
+    IOPORT_CLONE_CHANNEL_NUM_RSPI_P85 = 2,
+} ioport_clone_channel_num_rspi_port_t;
+
+ #endif
+
+#ifndef BSP_OVERRIDE_IOPORT_CLONE_CHANNEL_NUM_SCIF_PORT_T
+
+/** Superset of clone channel number for SCIF functions.  */
+typedef enum e_ioport_clone_channel_num_scif_port
+{
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P50 = 3, /* Clone channel number of SCIF */
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P51 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P52 = 3,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P53 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P54 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P55 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P56 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P60 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P61 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P62 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P63 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P64 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P65 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P66 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P70 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P72 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P73 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P74 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P75 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P76 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P77 = 4,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P80 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P81 = 5,
+    IOPORT_CLONE_CHANNEL_NUM_SCIF_P82 = 5,
+} ioport_clone_channel_num_scif_port_t;
+
+#endif
+
 /** Single port configuration
  *  @note Event link must be configured by the ELC
  */
-typedef struct st_ioport_event_single
+struct st_ioport_event_single
 {
     ioport_event_control_t          event_control;  ///< Event link control for single port
     ioport_event_direction_t        direction;      ///< Event direction for single port
     uint16_t                        port_num;       ///< Port number specified to single port
     ioport_event_output_operation_t operation;      ///< Single port operation select
     ioport_event_detection_t        edge_detection; ///< Edge detection select
-} ioport_event_single_t;
+};
+
+/** Single port configuration. Please refer to the struct st_ioport_event_single.
+ *  @note Event link must be configured by the ELC
+ */
+typedef struct st_ioport_event_single ioport_event_single_t;
 
 /** Output port group configuration
  *  @note Event link must be configured by the ELC
  */
-typedef struct st_ioport_event_group_output
+struct st_ioport_event_group_output
 {
     uint8_t pin_select;                        ///< Port number specified to output port group
     ioport_event_output_operation_t operation; ///< Port group operation select
-} ioport_event_group_output_t;
+};
+
+/** Output port group configuration. Please refer to the struct st_ioport_event_group_output.
+ *  @note Event link must be configured by the ELC
+ */
+typedef struct st_ioport_event_group_output ioport_event_group_output_t;
 
 /** Input port group configuration
  *  @note Event link must be configured by the ELC
  */
-typedef struct st_ioport_event_group_input
+struct st_ioport_event_group_input
 {
     ioport_event_control_t   event_control;     ///< Event link control for input port group
     ioport_event_detection_t edge_detection;    ///< Edge detection select
     ioport_event_control_t   overwrite_control; ///< Buffer register overwrite control
     uint8_t pin_select;                         ///< Port number specified to input port group
     uint8_t buffer_init_value;                  ///< Buffer register initial value
-} ioport_event_group_input_t;
+};
+
+/** Input port group configuration. Please refer to the struct st_ioport_event_group_input.
+ *  @note Event link must be configured by the ELC
+ */
+typedef struct st_ioport_event_group_input ioport_event_group_input_t;
 
 /** IOPORT extended configuration for event link function
  *  @note Event link must be configured by the ELC
  */
-typedef struct  st_ioport_extend_cfg
+struct st_ioport_extend_cfg
 {
     ioport_event_group_output_t const * p_port_group_output_cfg; ///< Pointer to output port group configuration
     ioport_event_group_input_t const  * p_port_group_input_cfg;  ///< Pointer to input port group configuration
     ioport_event_single_t const       * p_single_port_cfg;       ///< Pointer to single input port configuration
-} ioport_extend_cfg_t;
+};
+
+/** IOPORT extended configuration for event link function. Please refer to the struct st_ioport_extend_cfg.
+ *  @note Event link must be configured by the ELC
+ */
+typedef struct st_ioport_extend_cfg ioport_extend_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -544,6 +707,11 @@ fsp_err_t R_IOPORT_PortWrite(ioport_ctrl_t * const p_ctrl, bsp_io_port_t port, i
 /*******************************************************************************************************************//**
  * @} (end defgroup IOPORT)
  **********************************************************************************************************************/
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

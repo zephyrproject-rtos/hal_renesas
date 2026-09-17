@@ -1,16 +1,11 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #ifndef R_SCIF_UART_H
 #define R_SCIF_UART_H
-
-/*******************************************************************************************************************//**
- * @addtogroup SCIF_UART
- * @{
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes
@@ -27,6 +22,18 @@ FSP_HEADER
  **********************************************************************************************************************/
 #define SCIF_UART_INVALID_16BIT_PARAM    (0xFFFFU)
 #define SCIF_UART_INVALID_8BIT_PARAM     (0xFFU)
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZV_SCIF_UART
+ * @{
+ **********************************************************************************************************************/
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -116,7 +123,7 @@ typedef enum e_scif_uart_rts_trigger
 } scif_uart_rts_trigger_t;
 
 /** UART instance control block. */
-typedef struct st_scif_uart_instance_ctrl
+struct st_scif_uart_instance_ctrl
 {
     /* Parameters to control UART peripheral device */
     uint32_t open;                     // Used to determine if the channel is configured
@@ -148,11 +155,14 @@ typedef struct st_scif_uart_instance_ctrl
     uart_callback_args_t * p_callback_memory;          // Pointer to pre-allocated callback argument
 
     /* Pointer to context to be passed into callback function */
-    void const * p_context;
-} scif_uart_instance_ctrl_t;
+    void * p_context;
+};
+
+/** UART instance control block. Please refer to the struct st_scif_uart_instance_ctrl. */
+typedef struct st_scif_uart_instance_ctrl scif_uart_instance_ctrl_t;
 
 /** Register settings to achieve a desired baud rate and modulation duty. */
-typedef struct st_scif_baud_setting
+struct st_scif_baud_setting
 {
     struct
     {
@@ -163,18 +173,24 @@ typedef struct st_scif_baud_setting
     }       semr_baudrate_bits_b;
     uint8_t brr;                       ///< Bit Rate Register setting
     uint8_t mddr;                      ///< Modulation Duty Register setting
-} scif_baud_setting_t;
+};
+
+/** Register settings to achieve a desired baud rate and modulation duty. Please refer to the struct st_scif_baud_setting. */
+typedef struct st_scif_baud_setting scif_baud_setting_t;
 
 /** Configuration settings for controlling the DE signal for RS-485. */
-typedef struct st_scif_uart_rs485_setting
+struct st_scif_uart_rs485_setting
 {
     scif_uart_rs485_enable_t      enable;         ///< Enable the DE signal.
     scif_uart_rs485_de_polarity_t polarity;       ///< DE signal polarity.
     bsp_io_port_pin_t            de_control_pin; ///< UART Driver Enable pin.
-} scif_uart_rs485_setting_t;
+};
+
+/** Configuration settings for controlling the DE signal for RS-485. Please refer to the struct st_scif_uart_rs485_setting. */
+typedef struct st_scif_uart_rs485_setting scif_uart_rs485_setting_t;
 
 /** UART on SCIF device Configuration */
-typedef struct st_scif_uart_extended_cfg
+struct st_scif_uart_extended_cfg
 {
     uint8_t                        bri_ipl;       ///< Break interrupt priority
     IRQn_Type                      bri_irq;       ///< Break interrupt IRQ number
@@ -190,7 +206,10 @@ typedef struct st_scif_uart_extended_cfg
     scif_uart_flow_control_t flow_control;        ///< CTS/RTS function
     scif_uart_rs485_setting_t rs485_setting;       ///< RS-485 settings.
     void                    * p_reg;              ///< Register base address for specified channel
-} scif_uart_extended_cfg_t;
+};
+
+/** UART on SCIF device Configuration. Please refer to the struct st_scif_uart_extended_cfg. */
+typedef struct st_scif_uart_extended_cfg scif_uart_extended_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -216,13 +235,21 @@ fsp_err_t R_SCIF_UART_BaudCalculate(uart_ctrl_t * const         p_api_ctrl,
                                     scif_baud_setting_t * const p_baud_setting);
 fsp_err_t R_SCIF_UART_CallbackSet(uart_ctrl_t * const          p_api_ctrl,
                                   void (                     * p_callback)(uart_callback_args_t * p_arg),
-                                  void const * const           p_context,
+                                  void * const                 p_context,
                                   uart_callback_args_t * const p_callback_memory);
 fsp_err_t R_SCIF_UART_ReadStop(uart_ctrl_t * const p_api_ctrl, uint32_t * remaining_bytes);
+fsp_err_t R_SCIF_UART_ReceiveSuspend(uart_ctrl_t * const p_api_ctrl);
+fsp_err_t R_SCIF_UART_ReceiveResume(uart_ctrl_t * const p_api_ctrl);
 
 /*******************************************************************************************************************//**
  * @} (end addtogroup SCIF_UART)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

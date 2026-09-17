@@ -1,11 +1,15 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
+#ifdef __cplusplus
+            extern "C" {
+            #endif
+
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_memory_cfg.h"
 #include "bsp_mcu_device_cfg.h"
@@ -19,4 +23,8 @@
 
 /* Used to create CR52_SEL values for the interrupt initialization table g_interrupt_event_link_select. */
 #define BSP_PRV_CR52_SEL_ENUM(vector)    (ELC_ ## vector)
+
+#ifdef __cplusplus
+            }
+            #endif
 #endif /* BSP_MCU_FAMILY_CFG_H_ */

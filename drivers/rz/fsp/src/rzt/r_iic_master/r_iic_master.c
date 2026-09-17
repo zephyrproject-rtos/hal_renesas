@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -71,9 +71,9 @@
 #define IIC_MASTER_SCKCR2_CPU1CLK_MASK              (0x0000000CU)
 #define IIC_MASTER_SCKCR2_CPU1CLK_OFFSET            (2U)
 
-/* Worst case ratio of (CPUnCLK/PCLKL) = 16 approximately.
+/* Worst case ratio of (CPUnCLK/PCLKL) = 24 approximately.
  */
-#define IIC_MASTER_PERIPHERAL_REG_MAX_WAIT          (0x10U)
+#define IIC_MASTER_PERIPHERAL_REG_MAX_WAIT          (0x18U)
 
 #define IIC_MASTER_HARDWARE_REGISTER_WAIT(reg, required_value, timeout) \
     while ((timeout))                                                   \
@@ -168,8 +168,15 @@ i2c_master_api_t const g_i2c_master_on_iic =
     .callbackSet     = R_IIC_MASTER_CallbackSet
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZT
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup IIC_MASTER
+ * @addtogroup RZT_IIC_MASTER
  * @{
  **********************************************************************************************************************/
 
@@ -182,7 +189,7 @@ i2c_master_api_t const g_i2c_master_on_iic =
  *
  * @retval  FSP_SUCCESS                       Requested clock rate was set exactly.
  * @retval  FSP_ERR_ALREADY_OPEN              Module is already open.
- * @retval  FSP_ERR_IP_CHANNEL_NOT_PRESENT    Channel is not available on this MCU.
+ * @retval  FSP_ERR_IP_CHANNEL_NOT_PRESENT    Channel is not available on this MPU.
  * @retval  FSP_ERR_INVALID_ARGUMENT          Invalid input parameter.
  * @retval  FSP_ERR_ASSERTION                 Parameter check failure due to one or more reasons below:
  *                                            1. p_ctrl or p_cfg is NULL.
@@ -205,6 +212,12 @@ fsp_err_t R_IIC_MASTER_Open (i2c_master_ctrl_t * const p_ctrl, i2c_master_cfg_t 
 
     FSP_ERROR_RETURN(BSP_FEATURE_IIC_VALID_CHANNEL_MASK & (1 << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 
+    /* If rate is configured as Fast mode plus, check whether the channel supports it */
+    if (I2C_MASTER_RATE_FASTPLUS == p_cfg->rate)
+    {
+        FSP_ASSERT((BSP_FEATURE_IIC_FAST_MODE_PLUS & (1U << p_cfg->channel)));
+    }
+
  #if IIC_MASTER_CFG_DMAC_ENABLE
     if ((NULL != p_cfg->p_transfer_rx) || (NULL != p_cfg->p_transfer_tx))
     {
@@ -213,25 +226,19 @@ fsp_err_t R_IIC_MASTER_Open (i2c_master_ctrl_t * const p_ctrl, i2c_master_cfg_t 
     }
  #endif
 #endif
-#if IIC_MASTER_CFG_DMAC_ENABLE
-    fsp_err_t err = FSP_SUCCESS;
+
+    iic_master_extended_cfg_t * p_extend = (iic_master_extended_cfg_t *) p_cfg->p_extend;
+
+#if IIC_MASTER_CFG_PARAM_CHECKING_ENABLE
+    FSP_ASSERT(p_extend);
+    FSP_ASSERT(p_extend->p_reg);
 #endif
 
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_RESET);
     R_BSP_MODULE_START(FSP_IP_IIC, p_cfg->channel);
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_RESET);
 
-    if (p_cfg->channel != BSP_FEATURE_IIC_SAFETY_CHANNEL)
-    {
-        /* Non-Safety Peripheral */
-        p_instance_ctrl->p_reg =
-            (R_IIC0_Type *) ((uintptr_t) R_IIC0 + (p_cfg->channel * ((uintptr_t) R_IIC1 - (uintptr_t) R_IIC0)));
-    }
-    else
-    {
-        /* Safety Peripheral */
-        p_instance_ctrl->p_reg = (R_IIC0_Type *) BSP_FEATURE_IIC_SAFETY_CHANNEL_BASE_ADDRESS;
-    }
+    p_instance_ctrl->p_reg = (R_IIC0_Type *) p_extend->p_reg;
 
     /* Record the pointer to the configuration structure for later use */
     p_instance_ctrl->p_cfg             = p_cfg;
@@ -248,7 +255,7 @@ fsp_err_t R_IIC_MASTER_Open (i2c_master_ctrl_t * const p_ctrl, i2c_master_cfg_t 
 #if IIC_MASTER_CFG_DMAC_ENABLE
 
     /* Open the IIC transfer interface if available */
-    err = iic_master_transfer_open(p_cfg);
+    fsp_err_t err = iic_master_transfer_open(p_cfg);
     if (FSP_SUCCESS != err)
     {
         /* module stop */
@@ -404,7 +411,7 @@ fsp_err_t R_IIC_MASTER_SlaveAddressSet (i2c_master_ctrl_t * const    p_ctrl,
  **********************************************************************************************************************/
 fsp_err_t R_IIC_MASTER_CallbackSet (i2c_master_ctrl_t * const          p_ctrl,
                                     void (                           * p_callback)(i2c_master_callback_args_t *),
-                                    void const * const                 p_context,
+                                    void * const                       p_context,
                                     i2c_master_callback_args_t * const p_callback_memory)
 {
     iic_master_instance_ctrl_t * p_instance_ctrl = (iic_master_instance_ctrl_t *) p_ctrl;
@@ -502,6 +509,12 @@ fsp_err_t R_IIC_MASTER_Close (i2c_master_ctrl_t * const p_ctrl)
 /*******************************************************************************************************************//**
  * @} (end addtogroup IIC_MASTER)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Private Functions
@@ -777,15 +790,15 @@ static void iic_master_open_hw_master (iic_master_instance_ctrl_t * const p_inst
  *
  * @param[in]       p_instance_ctrl  Pointer to control structure of specific device.
  *
- * @retval  FSP_SUCCESS       Data transfer success.
- * @retval  FSP_ERR_IN_USE    If data transfer is in progress.
+ * @retval  FSP_SUCCESS             Data transfer success.
+ * @retval  FSP_ERR_IN_USE          If data transfer is in progress.
  **********************************************************************************************************************/
 static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t timeout_count = 0;
     uint32_t cpufsel       = 0;
 
-#if (2U == BSP_FEATURE_CGC_SCKCR_TYPE)
+#if (2U == BSP_FEATURE_CGC_SCKCR_TYPE) || (3U == BSP_FEATURE_CGC_SCKCR_TYPE)
  #if defined(BSP_CFG_CORE_CA55)
 
     /* IICn operates using PCLKL. The ratio CPUnCLK (System Clock)/PCLKL gives the CPU cycles for 1 ICBRL count.
@@ -796,7 +809,7 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
      * CPUnCLK * ICBRL * 1/PCLKL * 1/4
      *
      * When CA55 is operating, cpufsel becomes 0U or 1U.
-     * When cpufsel is 0U, CA55CLK/PCLKL is 9.6. Similarly, 1U is 19.2.
+     * When cpufsel is 0U, CA55CLK/PCLKL is 12 (or 9.6). Similarly, 1U is 24 (or 19.2).
      * Compute the bus free time using the following equation.
      * Note that CPU0CLK/PCLKL is rounded up so that bus free time obtained by the computation is not smaller than the original bus free time.
      */
@@ -828,7 +841,7 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
         (uint32_t) ((R_SYSC_S->SCKCR2 & R_SYSC_S_SCKCR2_CR52CPU1_Msk) >> R_SYSC_S_SCKCR2_CR52CPU1_Pos);
   #endif
  #endif
-    timeout_count = ((10U << cpufsel) * p_instance_ctrl->p_reg->ICBRL) >> 2U;
+    timeout_count = ((12U << cpufsel) * p_instance_ctrl->p_reg->ICBRL) >> 2U;
 #elif (1U == BSP_FEATURE_CGC_SCKCR_TYPE)
 
     /* IICn operates using PCLKL. The ratio CPUnCLK (System Clock)/PCLKL gives the CPU cycles for 1 ICBRL count.
@@ -893,14 +906,17 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
      * Only Set/Clear TMOS here to select long or short mode.
      * (see Section 'I2C Bus Mode Register 2 (ICMR2)' of the RZ microprocessor manual).
      */
+    iic_master_extended_cfg_t * p_extend = (iic_master_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+
     p_instance_ctrl->p_reg->ICMR2 = (uint8_t) (IIC_MASTER_BUS_MODE_REGISTER_2_MASK |
-                                               (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT ==
-                                                          ((iic_master_extended_cfg_t *) p_instance_ctrl->p_cfg->
-                                                           p_extend)->timeout_mode)
+                                               (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT == (p_extend->timeout_mode))
                                                |
-                                               (uint8_t) (((iic_master_extended_cfg_t *) p_instance_ctrl->p_cfg->
-                                                           p_extend)->
-                                                          timeout_scl_low << R_IIC0_ICMR2_TMOL_Pos));
+                                               (uint8_t) (p_extend->timeout_scl_low << R_IIC0_ICMR2_TMOL_Pos));
+
+    /* Set the response as ACK */
+    p_instance_ctrl->p_reg->ICMR3_b.ACKWP = 1; /* Write Enable */
+    p_instance_ctrl->p_reg->ICMR3_b.ACKBT = 0; /* Write */
+    p_instance_ctrl->p_reg->ICMR3_b.ACKWP = 0;
 
     /* Enable timeout function */
     p_instance_ctrl->p_reg->ICFER_b.TMOE = 1U;
@@ -968,13 +984,11 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
  **********************************************************************************************************************/
 static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_instance_ctrl)
 {
-    volatile uint8_t dummy_read;
-
     /* First receive interrupt: Handle the special case of 1 or 2 byte read here */
     if (false == p_instance_ctrl->dummy_read_completed)
     {
         /* Enable WAIT for 1 or 2 byte read */
-        if (2U <= p_instance_ctrl->total)
+        if (2U >= p_instance_ctrl->total)
         {
             p_instance_ctrl->p_reg->ICMR3_b.WAIT = 1;
         }
@@ -987,6 +1001,7 @@ static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_instance_ctrl)
              */
             p_instance_ctrl->p_reg->ICMR3_b.ACKWP = 1; /* Write enable ACKBT */
             p_instance_ctrl->p_reg->ICMR3_b.ACKBT = 1;
+            p_instance_ctrl->p_reg->ICMR3_b.ACKWP = 0;
         }
 
 #if IIC_MASTER_CFG_DMAC_ENABLE
@@ -1012,8 +1027,7 @@ static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_instance_ctrl)
 #endif
 
         /* Do a dummy read to clock the data into the ICDRR. */
-        dummy_read = p_instance_ctrl->p_reg->ICDRR;
-        FSP_PARAMETER_NOT_USED(dummy_read);
+        FSP_REGISTER_READ(p_instance_ctrl->p_reg->ICDRR);
 
         /* Update the counter */
         p_instance_ctrl->dummy_read_completed = true;
@@ -1084,6 +1098,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_instance_ctrl)
         /* We are done loading ICDRT, wait for TEND to send a stop/restart */
         if (0U == p_instance_ctrl->remain)
         {
+            /* Disable the Transmit Data Empty Interrupt. */
             p_instance_ctrl->p_reg->ICIER_b.TIE = 0U;
 
             /* Wait for the value to reflect at the peripheral.
@@ -1192,7 +1207,7 @@ static void iic_master_err_master (iic_master_instance_ctrl_t * p_instance_ctrl)
 {
     /* Clear all the event flags except the receive data full, transmit end and transmit data empty flags*/
     uint8_t errs_events = IIC_MASTER_STATUS_REGISTER_2_ERR_MASK & p_instance_ctrl->p_reg->ICSR2;
-    p_instance_ctrl->p_reg->ICSR2 = (uint8_t) ~IIC_MASTER_STATUS_REGISTER_2_ERR_MASK;
+    p_instance_ctrl->p_reg->ICSR2 &= (uint8_t) ~IIC_MASTER_STATUS_REGISTER_2_ERR_MASK;
 
     /* Wait for the value to reflect at the peripheral.
      * See 'Note' under Table "Interrupt sources" of the RZ microprocessor manual */
@@ -1238,18 +1253,10 @@ static void iic_master_err_master (iic_master_instance_ctrl_t * p_instance_ctrl)
          * See item '[4]' under 'Figure Example master transmission flow' of the RZ microprocessor manual. */
 
         /* Request IIC to issue the stop condition */
-        p_instance_ctrl->p_reg->ICSR2 &= (uint8_t) ~(IIC_MASTER_ICSR2_STOP_BIT);
-
-        /* Wait for the value to reflect at the peripheral.
-         * See 'Note' under Table "Interrupt sources" of the RZ microprocessor manual. */
-        timeout_count = IIC_MASTER_PERIPHERAL_REG_MAX_WAIT;
-        IIC_MASTER_HARDWARE_REGISTER_WAIT(p_instance_ctrl->p_reg->ICSR2_b.STOP, 0U, timeout_count);
-
         p_instance_ctrl->p_reg->ICCR2 = (uint8_t) IIC_MASTER_ICCR2_SP_BIT_MASK; /* It is safe to write 0's to other bits. */
         /* Allow timeouts to be generated on the low value of SCL using either long or short mode */
         p_instance_ctrl->p_reg->ICMR2 = (uint8_t) 0x02U |
-                                        (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT ==
-                                                   ((iic_master_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->
+                                        (uint8_t) (((iic_master_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->
                                                    timeout_mode);
         p_instance_ctrl->p_reg->ICFER_b.TMOE = 1;
 
@@ -1321,6 +1328,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_insta
          */
         p_instance_ctrl->p_reg->ICMR3_b.ACKWP = 1; /* Write enable ACKBT */
         p_instance_ctrl->p_reg->ICMR3_b.ACKBT = 1;
+        p_instance_ctrl->p_reg->ICMR3_b.ACKWP = 0;
     }
     /* If next data = final byte, send STOP or RESTART */
     else if (1U == p_instance_ctrl->remain)
@@ -1339,6 +1347,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_insta
              * For restart condition, clear bit by software.
              */
             p_instance_ctrl->p_reg->ICMR3_b.ACKBT = 0;
+            p_instance_ctrl->p_reg->ICMR3_b.ACKWP = 0;
 
             /* Request IIC to issue the restart condition */
             p_instance_ctrl->p_reg->ICCR2 = (uint8_t) IIC_MASTER_ICCR2_RS_BIT_MASK;
@@ -1544,7 +1553,6 @@ static fsp_err_t iic_master_transfer_configure (transfer_instance_t const * p_tr
     /* Set default transfer info and open receive transfer module, if enabled. */
  #if (IIC_MASTER_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(NULL != p_transfer->p_api);
-    FSP_ASSERT(NULL != p_transfer->p_ctrl);
     FSP_ASSERT(NULL != p_transfer->p_cfg);
     FSP_ASSERT(NULL != p_transfer->p_cfg->p_info);
  #endif
@@ -1562,8 +1570,7 @@ static fsp_err_t iic_master_transfer_configure (transfer_instance_t const * p_tr
         p_info->dest_addr_mode = TRANSFER_ADDR_MODE_FIXED;
     }
 
-    transfer_cfg_t * p_cfg = (transfer_cfg_t *) p_transfer->p_cfg;
-    err = p_transfer->p_api->open(p_transfer->p_ctrl, p_cfg);
+    err = p_transfer->p_api->open(p_transfer->p_ctrl, p_transfer->p_cfg);
     FSP_ERROR_RETURN((FSP_SUCCESS == err), err);
 
     return FSP_SUCCESS;

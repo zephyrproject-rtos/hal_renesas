@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -8,7 +8,7 @@
 #define R_I2C_MASTER_API_H
 
 /*******************************************************************************************************************//**
- * @ingroup RENESAS_INTERFACES
+ * @ingroup RENESAS_CONNECTIVITY_INTERFACES
  * @defgroup I2C_MASTER_API I2C Master Interface
  * @brief Interface for I2C master communication.
  *
@@ -17,8 +17,6 @@
  *        - Interrupt driven transmit/receive processing
  *        - Callback function support which can return an event code
  *
- * Implemented by:
- * - @ref RIIC_MASTER
  *
  * @{
  **********************************************************************************************************************/
@@ -45,9 +43,10 @@ FSP_HEADER
 /** Communication speed options */
 typedef enum e_i2c_master_rate
 {
-    I2C_MASTER_RATE_STANDARD = 100000, ///< 100 kHz
-    I2C_MASTER_RATE_FAST     = 400000, ///< 400 kHz
-    I2C_MASTER_RATE_FASTPLUS = 1000000 ///< 1 MHz
+    I2C_MASTER_RATE_STANDARD  = 100000,  ///< 100 kHz
+    I2C_MASTER_RATE_FAST      = 400000,  ///< 400 kHz
+    I2C_MASTER_RATE_FASTPLUS  = 1000000, ///< 1 MHz
+    I2C_MASTER_RATE_HIGHSPEED = 3400000  ///< 3.4 MHz
 } i2c_master_rate_t;
 
 /** Addressing mode options */
@@ -62,13 +61,15 @@ typedef enum e_i2c_master_event
 {
     I2C_MASTER_EVENT_ABORTED     = 1,  ///< A transfer was aborted
     I2C_MASTER_EVENT_RX_COMPLETE = 2,  ///< A receive operation was completed successfully
-    I2C_MASTER_EVENT_TX_COMPLETE = 3   ///< A transmit operation was completed successfully
+    I2C_MASTER_EVENT_TX_COMPLETE = 3,  ///< A transmit operation was completed successfully
+    I2C_MASTER_EVENT_START       = 4,  ///< I2C sent a start condition
+    I2C_MASTER_EVENT_BYTE_ACK    = 5,  ///< I2C finished sending/receiving 1 data byte
 } i2c_master_event_t;
 
 /** I2C callback parameter definition */
 typedef struct st_i2c_master_callback_args
 {
-    void const       * p_context;      ///< Pointer to user-provided context
+    void             * p_context;      ///< Pointer to user-provided context
     i2c_master_event_t event;          ///< Event code
 } i2c_master_callback_args_t;
 
@@ -92,21 +93,19 @@ typedef struct st_i2c_master_cfg
     IRQn_Type              tei_irq;                           ///< Transmit end IRQ number
     IRQn_Type              eri_irq;                           ///< Error IRQ number
 
-    /** DTC support */
-    transfer_instance_t const * p_transfer_tx;                ///< DTC instance for I2C transmit.Set to NULL if unused.
-    transfer_instance_t const * p_transfer_rx;                ///< DTC instance for I2C receive. Set to NULL if unused.
+    /** Transfer API support */
+    transfer_instance_t const * p_transfer_tx;                ///< Transfer instance for I2C transmit. Set to NULL if unused.
+    transfer_instance_t const * p_transfer_rx;                ///< Transfer instance for I2C receive. Set to NULL if unused.
 
     /** Parameters to control software behavior */
     void (* p_callback)(i2c_master_callback_args_t * p_args); ///< Pointer to callback function
-    void const * p_context;                                   ///< Pointer to the user-provided context
+    void * p_context;                                         ///< Pointer to the user-provided context
 
     /** Implementation-specific configuration */
     void const * p_extend;                                    ///< Any configuration data needed by the hardware
 } i2c_master_cfg_t;
 
 /** I2C control block.  Allocate an instance specific control block to pass into the I2C API calls.
- * @par Implemented as
- * - iic_master_instance_ctrl_t
  */
 typedef void i2c_master_ctrl_t;
 
@@ -114,8 +113,6 @@ typedef void i2c_master_ctrl_t;
 typedef struct st_i2c_master_api
 {
     /** Opens the I2C Master driver and initializes the hardware.
-     * @par Implemented as
-     * - @ref R_RIIC_MASTER_Open()
      *
      * @param[in] p_ctrl    Pointer to control block. Must be declared by user. Elements are set here.
      * @param[in] p_cfg     Pointer to configuration structure.
@@ -123,10 +120,8 @@ typedef struct st_i2c_master_api
     fsp_err_t (* open)(i2c_master_ctrl_t * const p_ctrl, i2c_master_cfg_t const * const p_cfg);
 
     /** Performs a read operation on an I2C Master device.
-     * @par Implemented as
-     * - @ref R_RIIC_MASTER_Read()
      *
-     * @param[in] p_ctrl    Pointer to control block set in i2c_api_master_t::open call.
+     * @param[in] p_ctrl    Pointer to control block set in i2c_master_api_t::open call.
      * @param[in] p_dest    Pointer to the location to store read data.
      * @param[in] bytes     Number of bytes to read.
      * @param[in] restart   Specify if the restart condition should be issued after reading.
@@ -135,10 +130,8 @@ typedef struct st_i2c_master_api
                        bool const restart);
 
     /** Performs a write operation on an I2C Master device.
-     * @par Implemented as
-     * - @ref R_RIIC_MASTER_Write()
      *
-     * @param[in] p_ctrl    Pointer to control block set in i2c_api_master_t::open call.
+     * @param[in] p_ctrl    Pointer to control block set in i2c_master_api_t::open call.
      * @param[in] p_src     Pointer to the location to get write data from.
      * @param[in] bytes     Number of bytes to write.
      * @param[in] restart   Specify if the restart condition should be issued after writing.
@@ -147,18 +140,14 @@ typedef struct st_i2c_master_api
                         bool const restart);
 
     /** Performs a reset of the peripheral.
-     * @par Implemented as
-     * - @ref R_RIIC_MASTER_Abort()
      *
-     * @param[in] p_ctrl    Pointer to control block set in i2c_api_master_t::open call.
+     * @param[in] p_ctrl    Pointer to control block set in i2c_master_api_t::open call.
      */
     fsp_err_t (* abort)(i2c_master_ctrl_t * const p_ctrl);
 
     /** Sets address of the slave device without reconfiguring the bus.
-     * @par Implemented as
-     * - @ref R_RIIC_MASTER_SlaveAddressSet()
      *
-     * @param[in] p_ctrl            Pointer to control block set in i2c_api_master_t::open call.
+     * @param[in] p_ctrl            Pointer to control block set in i2c_master_api_t::open call.
      * @param[in] slave_address     Address of the slave device.
      * @param[in] address_mode      Addressing mode.
      */
@@ -167,32 +156,26 @@ typedef struct st_i2c_master_api
 
     /**
      * Specify callback function and optional context pointer and working memory pointer.
-     * @par Implemented as
-     * - @ref R_RIIC_MASTER_CallbackSet()
      *
-     * @param[in]   p_ctrl                   Pointer to the RIIC Master control block.
+     * @param[in]   p_ctrl                   Pointer to the IIC Master control block.
      * @param[in]   p_callback               Callback function
      * @param[in]   p_context                Pointer to send to callback function
      * @param[in]   p_working_memory         Pointer to volatile memory where callback structure can be allocated.
      *                                       Callback arguments allocated here are only valid during the callback.
      */
-    fsp_err_t (* callbackSet)(i2c_master_ctrl_t * const p_api_ctrl, void (* p_callback)(i2c_master_callback_args_t *),
-                              void const * const p_context, i2c_master_callback_args_t * const p_callback_memory);
+    fsp_err_t (* callbackSet)(i2c_master_ctrl_t * const p_ctrl, void (* p_callback)(i2c_master_callback_args_t *),
+                              void * const p_context, i2c_master_callback_args_t * const p_callback_memory);
 
     /** Gets the status of the configured I2C device.
-     * @par Implemented as
-     * - @ref R_RIIC_MASTER_StatusGet()
      *
-     * @param[in]   p_ctrl             Pointer to the RIIC Master control block.
+     * @param[in]   p_ctrl             Pointer to the IIC Master control block.
      * @param[out]  p_status           Pointer to store current status.
      */
-    fsp_err_t (* statusGet)(i2c_master_ctrl_t * const p_api_ctrl, i2c_master_status_t * p_status);
+    fsp_err_t (* statusGet)(i2c_master_ctrl_t * const p_ctrl, i2c_master_status_t * p_status);
 
     /** Closes the driver and releases the I2C Master device.
-     * @par Implemented as
-     * - @ref R_RIIC_MASTER_Close()
      *
-     * @param[in] p_ctrl    Pointer to control block set in i2c_api_master_t::open call.
+     * @param[in] p_ctrl    Pointer to control block set in i2c_master_api_t::open call.
      */
     fsp_err_t (* close)(i2c_master_ctrl_t * const p_ctrl);
 } i2c_master_api_t;
@@ -206,7 +189,7 @@ typedef struct st_i2c_master_instance
 } i2c_master_instance_t;
 
 /******************************************************************************************************************//**
- * @} (end addtogroup I2C_MASTER_API)
+ * @} (end defgroup I2C_MASTER_API)
  *********************************************************************************************************************/
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */

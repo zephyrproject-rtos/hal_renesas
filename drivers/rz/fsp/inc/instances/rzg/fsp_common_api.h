@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -138,6 +138,7 @@ typedef enum e_fsp_err
     FSP_ERR_FCLK                   = 502,                   ///< FCLK must be >= 4 MHz
     FSP_ERR_INVALID_LINKED_ADDRESS = 503,                   ///< Function or data are linked at an invalid region of memory
     FSP_ERR_BLANK_CHECK_FAILED     = 504,                   ///< Blank check operation failed
+    FSP_ERR_HUK_ZEROIZATION        = 505,                   ///< W-HUK zeroization is in progress
 
     /* Start of CAC Specific */
     FSP_ERR_INVALID_CAC_REF_CLOCK = 600,                    ///< Measured clock rate < reference clock rate
@@ -338,6 +339,10 @@ typedef enum e_fsp_err
     FSP_ERR_CRYPTO_SCE_AUTHENTICATION    = 0x10013,  ///< Authentication failed
     FSP_ERR_CRYPTO_SCE_PARAMETER         = 0x10014,  ///< Input date is illegal.
     FSP_ERR_CRYPTO_SCE_PROHIBIT_FUNCTION = 0x10015,  ///< An invalid function call occurred.
+    FSP_ERR_CRYPTO_SCE_PASS_1            = 0x10016,  //   Private SCE return code
+    FSP_ERR_CRYPTO_SCE_PASS_2            = 0x10017,  //   Private SCE return code
+
+    FSP_ERR_CRYPTO_SCE_LBIST_CHECK_BUSY  = 0x100ff,  ///< LBIST Check BUSY
 
     /* Start of Crypto RSIP specific (0x10100) */
     FSP_ERR_CRYPTO_RSIP_RESOURCE_CONFLICT = 0x10100, ///< Hardware resource is busy
@@ -345,6 +350,8 @@ typedef enum e_fsp_err
     FSP_ERR_CRYPTO_RSIP_FAIL              = 0x10102, ///< Internal error
     FSP_ERR_CRYPTO_RSIP_KEY_SET_FAIL      = 0x10103, ///< Input key type is illegal
     FSP_ERR_CRYPTO_RSIP_AUTHENTICATION    = 0x10104, ///< Authentication failed
+
+    FSP_ERR_CRYPTO_RSIP_LBIST_CHECK_BUSY  = 0x101ff, ///< LBIST Check BUSY
 
     /* Start of SF_CRYPTO specific */
     FSP_ERR_CRYPTO_COMMON_NOT_OPENED      = 0x20000, ///< Crypto Framework Common is not opened

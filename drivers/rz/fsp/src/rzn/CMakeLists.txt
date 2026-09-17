@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-zephyr_compile_definitions(_RZN_ORDINAL=1)
+zephyr_compile_definitions(_RZ_ORDINAL=1)
 zephyr_compile_definitions(BSP_CFG_RAM_EXECUTION=1)
 
 set(srcs

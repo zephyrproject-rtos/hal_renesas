@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -37,10 +37,17 @@ static fsp_priv_clock_t bsp_prv_clock_convert_selector_to_clock(fsp_priv_clock_s
 static fsp_priv_clock_t bsp_prv_clock_convert_divider_to_clock(fsp_priv_clock_divider_t divider);
 static fsp_err_t        bsp_prv_clock_check_pll(fsp_priv_clock_t clock);
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
  * @internal
- * @addtogroup BSP_MCU_PRV Internal BSP Documentation
- * @ingroup RENESAS_INTERNAL
+ * @addtogroup RZA_BSP_MCU_PRV
+ * @ingroup RZA_RENESAS_INTERNAL
  * @{
  **********************************************************************************************************************/
 
@@ -268,7 +275,7 @@ void bsp_clock_init (void)
      * We need to stop the PLL5 before changing the settings.
      * Also, we need to disable the SSCG mode when enabling the PLL5.
      *
-     * Refer to the User's Manual at section of "Procedure for Switching Clocks by the Static Switching Frequency
+     * Refer to the Hardware Manual at section of "Procedure for Switching Clocks by the Static Switching Frequency
      * Dividers and Selectors" for more details.
      */
     R_CPG->CPG_SIPLL5_STBY = (uint32_t) (R_CPG_CPG_SIPLL5_STBY_SSCG_EN_WEN_Msk | R_CPG_CPG_SIPLL5_STBY_RESETB_WEN_Msk);
@@ -378,7 +385,7 @@ fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel
                                        0U);
 
             /* Select the 266MHz source once before changing to the desired settings (see section
-             * 'Source Clock Setting (SDHI) Register (CPG_PL2SDHI_DSEL)' of the user's manual). */
+             * 'Source Clock Setting (SDHI) Register (CPG_PL2SDHI_DSEL)' of the hardware manual). */
             R_CPG->CPG_PL2SDHI_DSEL = (uint32_t) (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI0_WEN_Msk |
                                                   (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI0_SET_Msk &
                                                    (BSP_CLOCKS_SOURCE_CLOCK_PLL2_266 <<
@@ -428,7 +435,7 @@ fsp_err_t bsp_prv_clock_selector_set (fsp_priv_clock_t clock, uint32_t clock_sel
                                        0U);
 
             /* Select the 266MHz source once before changing to the desired settings (see section
-             * 'Source Clock Setting (SDHI) Register (CPG_PL2SDHI_DSEL)' of the user's manual). */
+             * 'Source Clock Setting (SDHI) Register (CPG_PL2SDHI_DSEL)' of the hardware manual). */
             R_CPG->CPG_PL2SDHI_DSEL = (uint32_t) (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI1_WEN_Msk |
                                                   (R_CPG_CPG_PL2SDHI_DSEL_SEL_SDHI1_SET_Msk &
                                                    (BSP_CLOCKS_SOURCE_CLOCK_PLL2_266 <<
@@ -1133,7 +1140,7 @@ static fsp_err_t bsp_prv_clock_check_pll (fsp_priv_clock_t clock)
 /** @} (end addtogroup BSP_MCU_PRV) */
 
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZA_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -1229,3 +1236,9 @@ fsp_err_t R_BSP_ClockDividerSet (fsp_priv_clock_divider_t divider, uint32_t cloc
 }
 
 /** @} (end addtogroup BSP_MCU_PRV) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif

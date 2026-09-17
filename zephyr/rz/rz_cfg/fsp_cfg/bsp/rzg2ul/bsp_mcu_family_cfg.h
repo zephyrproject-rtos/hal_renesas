@@ -10,15 +10,17 @@
 extern "C" {
 #endif
 
+#define BSP_MCU_GROUP_RZG2UL (1)
+#define BSP_SUPPORT_CORE_CM33 (1)
+#define BSP_CORTEX_VECTOR_TABLE_ENTRIES    (16U)
+#define BSP_VECTOR_TABLE_MAX_ENTRIES       (496U)
+#define BSP_CFG_INLINE_IRQ_FUNCTIONS       (1)
+
 #include "bsp_mcu_device_pn_cfg.h"
 #include "bsp_mcu_device_cfg.h"
 #include "bsp_override.h"
 #include "bsp_mcu_info.h"
 #include "bsp_clock_cfg.h"
-#define BSP_MCU_GROUP_RZG2UL (1)
-#define BSP_CORTEX_VECTOR_TABLE_ENTRIES    (16U)
-#define BSP_VECTOR_TABLE_MAX_ENTRIES       (496U)
-#define BSP_CFG_INLINE_IRQ_FUNCTIONS       (1)
 
 #if defined(_RZG2L_TZ_SECURE)
  #define BSP_TZ_SECURE_BUILD           (1)

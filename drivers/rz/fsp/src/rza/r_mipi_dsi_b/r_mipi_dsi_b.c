@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -87,8 +87,15 @@ static uint32_t  dsi_cmd_sequence_register_b(mipi_dsi_cmd_t * p_cmd);
 static uint32_t  dsi_cmd_sequence_register_c(mipi_dsi_cmd_t * p_cmd);
 static uint32_t  dsi_cmd_sequence_register_d(mipi_dsi_cmd_t * p_cmd);
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup MIPI_DSI_B
+ * @addtogroup RZA_MIPI_DSI_B
  * @{
  **********************************************************************************************************************/
 
@@ -267,7 +274,7 @@ fsp_err_t R_MIPI_DSI_B_Close (mipi_dsi_ctrl_t * const p_api_ctrl)
 /******************************************************************************************************************//**
  * Start video output.
  * Initialize Video Output Registers
- * Perform sequence steps from section 34.4.2.4.(1) in RZ/A3M hardware manual.
+ * Perform sequence steps from "Start of Video-Input Operation" in the MIPI DSI section of the relevant hardware manual.
  *
  * @retval   FSP_SUCCESS                Data is successfully written to the D/A Converter.
  * @retval   FSP_ERR_ASSERTION          p_api_ctrl is NULL.
@@ -565,6 +572,12 @@ fsp_err_t R_MIPI_DSI_B_StatusGet (mipi_dsi_ctrl_t * const p_api_ctrl, mipi_dsi_s
  * @} (end addtogroup MIPI_DSI_B)
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
+
 /*******************************************************************************************************************//**
  * Stop DSI operation. Basic parameter checking to be performed by caller.
  *
@@ -767,7 +780,7 @@ static void dsi_call_callback (mipi_dsi_b_instance_ctrl_t * p_ctrl, mipi_dsi_cal
 
 /*******************************************************************************************************************//**
  * Enter Reset
- * Perform sequence from section 34.4.2.1.(2) in RZ/A3M hardware manual.
+ * Perform sequence steps from "Reset" in the MIPI DSI section of the relevant hardware manual.
  **********************************************************************************************************************/
 static void dsi_enter_reset ()
 {
@@ -783,7 +796,8 @@ static void dsi_enter_reset ()
 
 /*******************************************************************************************************************//**
  * Initialize timing registers from configuration data
- * - Perform sequence step (F) from section 34.4.2.1.(1) in RZ/A3M hardware manual.
+ * - Perform sequence steps from "Power on Reset and Initial Settings for All Operations"
+ * - in the MIPI DSI section of the relevant hardware manual.
  *
  * @param[in]     p_cfg     Pointer to MIPI DSI configuration structure
  **********************************************************************************************************************/
@@ -843,7 +857,7 @@ static uint8_t dsi_pow (uint8_t base, uint8_t expon)
 
 /*******************************************************************************************************************//**
  * Exit Reset
- * Perform sequence steps 34.4.2.1.(2) in RZ/A3M hardware manual.
+ * Perform sequence steps from "Software Reset" in the MIPI DSI section of the relevant hardware manual.
  *
  * NOTE: Calling this function is prohibited without first calling dsi_enter_reset(), which sets RSTCR.SWRST to 1
  *
@@ -869,7 +883,7 @@ static void dsi_exit_reset (mipi_dsi_cfg_t const * const p_cfg)
 
 /*******************************************************************************************************************//**
  * Initialize High Speed Clock
- * Perform sequence steps from section 34.4.2.2 in RZ/A3M hardware manual.
+ * Perform sequence steps from "Start/Stop of HS Clock" in the MIPI DSI section of the relevant hardware manual.
  *
  * @param[in]     p_ctrl     Pointer to MIPI DSI instance control block
  **********************************************************************************************************************/
@@ -896,7 +910,7 @@ static void dsi_hs_clock_start (mipi_dsi_b_instance_ctrl_t * p_ctrl)
 
 /***********************************************************************************************************************
  * De-initialize High Speed Clock
- * Perform sequence steps from section 34.4.2.2 in RZ/A3M hardware manual.
+ * Perform sequence steps from "Start/Stop of HS Clock" in the MIPI DSI section of the relevant hardware manual.
  *
  * @param[in]     p_ctrl     Pointer to MIPI DSI instance control block
  **********************************************************************************************************************/
@@ -904,8 +918,8 @@ static void dsi_hs_clock_stop (mipi_dsi_b_instance_ctrl_t * p_ctrl)
 {
     mipi_dsi_cfg_t const * p_cfg = p_ctrl->p_cfg;
 
-    R_MIPI_DSI->HSCLKSETR_b.HSCLKRUN = 0;
     p_ctrl->clock_state              = MIPI_DSI_CLOCK_STATE_STOPPING;
+    R_MIPI_DSI->HSCLKSETR_b.HSCLKRUN = 0;
 
     while ((R_MIPI_DSI->PLSR_b.CLHS2LP != p_cfg->continuous_clock) &&
            (p_ctrl->clock_state != MIPI_DSI_CLOCK_STATE_IDLE))
@@ -919,7 +933,7 @@ static void dsi_hs_clock_stop (mipi_dsi_b_instance_ctrl_t * p_ctrl)
 
 /***********************************************************************************************************************
  * Initialize Video Output Registers
- * Perform sequence steps 4 and 6 from section 34.4.2.4.(1) in RZ/A3M hardware manual.
+ * Perform sequence steps from "Start of Video-Input Operation" in the MIPI DSI section of the relevant hardware manual.
  *
  * @param[in]     p_cfg     Pointer to MIPI DSI configuration structure
  **********************************************************************************************************************/
@@ -953,7 +967,10 @@ static void dsi_init_video (mipi_dsi_cfg_t const * p_cfg)
     R_MIPI_DSI->VICH1SET1R =
         ((p_cfg->video_mode_delay << R_MIPI_DSI_VICH1SET1R_DLY_Pos) & R_MIPI_DSI_VICH1SET1R_DLY_Msk);
 
-    R_MIPI_DSI->VICH1SET0R          = p_cfg->hsa_no_lp | p_cfg->hbp_no_lp | p_cfg->hfp_no_lp;
+    R_MIPI_DSI->VICH1SET0R =
+        (((uint32_t) p_cfg->hsa_no_lp << R_MIPI_DSI_VICH1SET0R_HSANOLP_Pos) & R_MIPI_DSI_VICH1SET0R_HSANOLP_Msk) |
+        (((uint32_t) p_cfg->hbp_no_lp << R_MIPI_DSI_VICH1SET0R_HBPNOLP_Pos) & R_MIPI_DSI_VICH1SET0R_HBPNOLP_Msk) |
+        (((uint32_t) p_cfg->hfp_no_lp << R_MIPI_DSI_VICH1SET0R_HFPNOLP_Pos) & R_MIPI_DSI_VICH1SET0R_HFPNOLP_Msk);
     R_MIPI_DSI->VICH1SET0R_b.VSTART = (1U << R_MIPI_DSI_VICH1SET0R_VSTART_Pos) & R_MIPI_DSI_VICH1SET0R_VSTART_Msk;
 }
 
@@ -1072,7 +1089,7 @@ void mipi_dsi_vin1 (IRQn_Type const irq) {
     args.p_context    = p_ctrl->p_context;
     dsi_call_callback(p_ctrl, &args);
 
-    /* Perform reset according to RZA3M UM 34.4.2.6.(6) */
+     /* Perform reset according to "Reset" in the MIPI DSI section of the relevant hardware manual. */
     if (vmsr_bits & (R_MIPI_DSI_VICH1SR_VBUFUDF_Msk | R_MIPI_DSI_VICH1SR_VBUFOVF_Msk | R_MIPI_DSI_VICH1SR_TIMERR_Msk))
     {
         dsi_enter_reset();

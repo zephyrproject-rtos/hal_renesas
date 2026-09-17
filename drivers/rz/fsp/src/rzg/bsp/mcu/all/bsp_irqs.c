@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -25,6 +25,7 @@
 #define BSP_PRV_SPI_SEL_ALL_DISABLE    (0x3FFFFFFFU)
 #define BSP_PRV_SPI_SEL_SETTING_NUM    (3)
 #define BSP_PRV_SPI_SEL_LENGTH         (10UL)
+#define BSP_PRV_SPI_SEL_FACTOR_NUM     (BSP_ICU_VECTOR_MAX_ENTRIES - BSP_FEATURE_ICU_FIXED_INTSEL_COUNT)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -49,17 +50,30 @@ const bsp_interrupt_event_t g_interrupt_event_link_select[BSP_ICU_VECTOR_MAX_ENT
  * Private global variables and functions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZG
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZG_BSP_MCU
  *
  * @{
  **********************************************************************************************************************/
 
 /** @} (end addtogroup BSP_MCU) */
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
  * This function provides clock to DMA Controller (see section 'Precaution when use the peripheral modules
- * which can initiate DMA Controller.' in the user's manual for detail) and enables IM33.
+ * which can initiate DMA Controller.' in the hardware manual for detail) and enables IM33.
  * It also enables any interrupt in a non-secure state.
  **********************************************************************************************************************/
 void bsp_irq_cfg_s (void)
@@ -76,11 +90,18 @@ void bsp_irq_cfg_s (void)
         {
             uint32_t sel_num = (sel_register_num * BSP_PRV_SPI_SEL_SETTING_NUM) + sel_bit_num;
 
-            spi_sel &= ~(R_INTC_INTM33SEL0_M33SPI0_SEL0_Msk << (BSP_PRV_SPI_SEL_LENGTH * sel_bit_num));
-            spi_sel |=
-                (uint32_t) ((g_interrupt_event_link_select[sel_num] == IRQSEL_NONE) ?
-                            BSP_PRV_DISABLE_SPI_SEL :
-                            g_interrupt_event_link_select[sel_num]) << (BSP_PRV_SPI_SEL_LENGTH * sel_bit_num);
+            if (BSP_PRV_SPI_SEL_FACTOR_NUM > sel_num)
+            {
+                spi_sel &= ~(R_INTC_INTM33SEL0_M33SPI0_SEL0_Msk << (BSP_PRV_SPI_SEL_LENGTH * sel_bit_num));
+                spi_sel |=
+                    (uint32_t) ((g_interrupt_event_link_select[sel_num] == IRQSEL_NONE) ?
+                                BSP_PRV_DISABLE_SPI_SEL :
+                                g_interrupt_event_link_select[sel_num]) << (BSP_PRV_SPI_SEL_LENGTH * sel_bit_num);
+            }
+            else
+            {
+                break;
+            }
         }
 
         intm33selx_addr[sel_register_num] = spi_sel;

@@ -1,13 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup WDT WDT
- * @{
- **********************************************************************************************************************/
 
 #ifndef R_WDT_H
 #define R_WDT_H
@@ -24,29 +19,47 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZA
+{
+#endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZA_WDT
+ * @{
+ **********************************************************************************************************************/
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** WDT private control block. DO NOT MODIFY. Initialization occurs when R_WDT_Open() is called. */
-typedef struct st_wdt_instance_ctrl
+struct st_wdt_instance_ctrl
 {
     uint32_t wdt_open;                                 // Indicates whether the open() API has been successfully
                                                        // called.
     wdt_cfg_t const * p_cfg;                           // Pointer to the configuration block.
-    void const      * p_context;                       // Placeholder for user data.  Passed to the user callback in
+    void * p_context;                                  // Placeholder for user data.  Passed to the user callback in
                                                        // wdt_callback_args_t.
     void (* p_callback)(wdt_callback_args_t * p_args); // Callback provided when a WDT NMI ISR occurs.
     wdt_callback_args_t * p_callback_memory;           // Pointer to non-secure memory that can be used to pass arguments to a callback in non-secure memory.
-} wdt_instance_ctrl_t;
+};
+
+/** WDT private control block. DO NOT MODIFY. Initialization occurs when R_WDT_Open() is called. Please refer to the struct st_wdt_instance_ctrl. */
+typedef struct st_wdt_instance_ctrl wdt_instance_ctrl_t;
 
 /** WDT configuration extension. This extension is required. */
-typedef struct st_wdt_extended_cfg
+struct st_wdt_extended_cfg
 {
     uint16_t  wdt_timeout;             // Timeout value until the counter overflows.
     uint8_t   overflow_ipl;            // WDT Overflow interrupt priority.
     IRQn_Type overflow_irq;            // WDT Overflow interrupt ID.
-} wdt_extended_cfg_t;
+};
+
+/** WDT configuration extension. This extension is required. Please refer to the struct st_wdt_extended_cfg. */
+typedef struct st_wdt_extended_cfg wdt_extended_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -75,14 +88,20 @@ fsp_err_t R_WDT_TimeoutGet(wdt_ctrl_t * const p_ctrl, wdt_timeout_values_t * con
 
 fsp_err_t R_WDT_CallbackSet(wdt_ctrl_t * const          p_ctrl,
                             void (                    * p_callback)(wdt_callback_args_t *),
-                            void const * const          p_context,
+                            void * const                p_context,
                             wdt_callback_args_t * const p_callback_memory);
+
+/*******************************************************************************************************************//**
+ * @} (end defgroup WDT)
+ **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 
 #endif                                 // R_WDT_H
-
-/*******************************************************************************************************************//**
- * @} (end addtogroup WDT)
- **********************************************************************************************************************/

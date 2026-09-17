@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -60,8 +60,15 @@ const external_irq_api_t g_external_irq_on_intc_irq =
     .close       = R_INTC_IRQ_ExternalIrqClose,
 };
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZV
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup INTC_IRQ
+ * @addtogroup RZV_INTC_IRQ
  * @{
  **********************************************************************************************************************/
 
@@ -146,7 +153,7 @@ fsp_err_t R_INTC_IRQ_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, ex
     else
     {
         /* Clear the IRQ state flag after changing the trigger setting to the edge type.
-         * Reference section "Precaution when Changing Interrupt Settings" of the user's manual. */
+         * Reference section "Precaution when Changing Interrupt Settings" of the hardware manual. */
         BSP_INTC_IRQ_CLR_STATE_FLAG(p_ctrl->channel);
     }
 
@@ -221,7 +228,7 @@ fsp_err_t R_INTC_IRQ_ExternalIrqDisable (external_irq_ctrl_t * const p_api_ctrl)
 fsp_err_t R_INTC_IRQ_ExternalIrqCallbackSet (external_irq_ctrl_t * const p_api_ctrl,
                                              void (                    * p_callback)(
                                                  external_irq_callback_args_t *),
-                                             void const * const                   p_context,
+                                             void * const                         p_context,
                                              external_irq_callback_args_t * const p_callback_memory)
 {
     intc_irq_instance_ctrl_t * p_ctrl = p_api_ctrl;
@@ -293,6 +300,12 @@ fsp_err_t R_INTC_IRQ_ExternalIrqClose (external_irq_ctrl_t * const p_api_ctrl)
 /*******************************************************************************************************************//**
  * @} (end addtogroup INTC_IRQ)
  **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /*******************************************************************************************************************//**
  * INTC_IRQ External Interrupt ISR.

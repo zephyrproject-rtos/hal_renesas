@@ -1,13 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup MHU_NS
- * @{
- **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes
@@ -25,12 +20,24 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZV
+{
+  #endif
+ #endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZV_MHU_NS
+ * @{
+ **********************************************************************************************************************/
+
 /*************************************************************************************************
  * Type defines
  *************************************************************************************************/
 
 /** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref mhu_api_t::open is called. */
-typedef struct st_mhu_ns_instance_ctrl
+struct st_mhu_ns_instance_ctrl
 {
     uint32_t          open;             ///< Indicates whether the open() API has been successfully called.
     mhu_cfg_t const * p_cfg;            ///< Pointer to instance configuration
@@ -52,14 +59,20 @@ typedef struct st_mhu_ns_instance_ctrl
     mhu_callback_args_t * p_callback_memory;
 
     /* Pointer to context to be passed into callback function */
-    void const * p_context;
-} mhu_ns_instance_ctrl_t;
+    void * p_context;
+};
+
+/** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref mhu_api_t::open is called. Please refer to the struct st_mhu_ns_instance_ctrl. */
+typedef struct st_mhu_ns_instance_ctrl mhu_ns_instance_ctrl_t;
 
 /** R_MHU_NS extended configuration */
-typedef struct st_mhu_ns_extended_cfg
+struct st_mhu_ns_extended_cfg
 {
     void * p_reg;                      ///< Register base address for specified channel
-} mhu_ns_extended_cfg_t;
+};
+
+/** R_MHU_NS extended configuration. Please refer to the struct st_mhu_ns_extended_cfg. */
+typedef struct st_mhu_ns_extended_cfg mhu_ns_extended_cfg_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -82,16 +95,22 @@ fsp_err_t R_MHU_NS_Close(mhu_ctrl_t * const p_ctrl);
 
 fsp_err_t R_MHU_NS_CallbackSet(mhu_ctrl_t * const          p_api_ctrl,
                                void (                    * p_callback)(mhu_callback_args_t *),
-                               void const * const          p_context,
+                               void * const                p_context,
                                mhu_callback_args_t * const p_callback_memory);
 
 void R_MHU_NS_IsrSub(uint32_t irq);
+
+/*******************************************************************************************************************//**
+ * @} (end defgroup MHU_NS)
+ **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 
 #endif                                 /* R_MHU_NS_H */
-
-/*******************************************************************************************************************//**
- * @} (end defgroup MHU_NS)
- **********************************************************************************************************************/

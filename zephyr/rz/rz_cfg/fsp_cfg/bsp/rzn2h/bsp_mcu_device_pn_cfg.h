@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -15,5 +15,5 @@
 
 #define BSP_CFG_CORE_CR52 (0)
 #define BSP_VECTOR_TABLE_MAX_ENTRIES (544)
-#define BSP_CFG_SEMAPHORE_ENABLE (1)
+#define BSP_CFG_SEMAPHORE_ENABLE (0)
 #endif /* BSP_MCU_DEVICE_PN_CFG_H_ */

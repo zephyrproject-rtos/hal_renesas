@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -19,8 +19,8 @@
 #ifndef SPIBSC_CFG_PARAM_CHECKING_ENABLE
  #define SPIBSC_CFG_PARAM_CHECKING_ENABLE       true
 #endif
-#ifndef SPIBSC_CFG_ALREADY_INITIALIZED
- #define SPIBSC_CFG_ALREADY_INITIALIZED         1
+#ifndef SPIBSC_CFG_INITIALIZATION
+ #define SPIBSC_CFG_INITIALIZATION              0
 #endif
 #ifndef SPIBSC_CFG_CODE_SECTION
  #define SPIBSC_CFG_CODE_SECTION                ".text.spibsc"
@@ -93,8 +93,11 @@ typedef struct st_spibsc_mmap_cfg
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
+#if SPIBSC_CFG_INITIALIZATION == 1
 static fsp_err_t spibsc_configure_mmap_sub(spibsc_instance_ctrl_t * p_ctrl,
                                            xspi_op_t const * const  rop) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
+
+#endif
 static void spibsc_start_mmap_internal(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(
     SPIBSC_CFG_CODE_SECTION);
 static void      spibsc_test_tend(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
@@ -102,13 +105,21 @@ static fsp_err_t spibsc_exec_op(spibsc_instance_ctrl_t * p_ctrl, xspi_op_t const
                                 bool is_write) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
 static int spibsc_stop_mmap_internal(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(
     SPIBSC_CFG_CODE_SECTION);
+
+#if SPIBSC_CFG_INITIALIZATION == 1
 static fsp_err_t spibsc_configure_mmap(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
 static void      spibsc_select_spim(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
+
+#endif
 static fsp_err_t spibsc_write_enable(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
-static void      spibsc_init_phy(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
-static void      spibsc_ip_init(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
-static uint32_t  spibsc_cmncr_set(uint8_t mask, uint8_t value, int pos) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
-static void      spibsc_set_idlelevel(spibsc_instance_ctrl_t * p_ctrl, const xspi_op_t * const op) BSP_PLACE_IN_SECTION(
+
+#if SPIBSC_CFG_INITIALIZATION == 1
+static void spibsc_init_phy(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
+static void spibsc_ip_init(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
+
+#endif
+static uint32_t spibsc_cmncr_set(uint8_t mask, uint8_t value, int pos) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
+static void     spibsc_set_idlelevel(spibsc_instance_ctrl_t * p_ctrl, const xspi_op_t * const op) BSP_PLACE_IN_SECTION(
     SPIBSC_CFG_CODE_SECTION);
 static void test_sslf(spibsc_instance_ctrl_t * p_ctrl) BSP_PLACE_IN_SECTION(SPIBSC_CFG_CODE_SECTION);
 static void send_256(spibsc_instance_ctrl_t * p_ctrl, xspi_transfer_form_t form, uintptr_t buffer,
@@ -129,6 +140,7 @@ static bool spibsc_stop_mmap_temporarily(spibsc_instance_ctrl_t * p_ctrl) BSP_PL
 /***********************************************************************************************************************
  * Private global variables
  **********************************************************************************************************************/
+#if SPIBSC_CFG_INITIALIZATION == 1
 static const spibsc_mmap_cfg_t g_mmap_cfg[] =
 {
     {
@@ -353,7 +365,7 @@ static const uint32_t phyoffset1_init_value = SPIBSC_PHYOFFSET1_SDR << R_SPIBSC_
 static const uint32_t phyoffset2_init_mask = R_SPIBSC_PHYOFFSET2_OCTTMG_Msk;
 
 static const uint32_t phyoffset2_init_value = SPIBSC_PHYOFFSET2_SPI << R_SPIBSC_PHYOFFSET2_OCTTMG_Pos;
-
+#endif
 static const uint32_t smcmr_clearmask =
     R_SPIBSC_SMCMR_CMD_Msk |
     R_SPIBSC_SMCMR_OCMD_Msk;
@@ -455,6 +467,8 @@ static const uint32_t smenr_additional_3byte =
 static const uint32_t smenr_additional_4byte =
     SPIBSC_SMENR_OPDE_4BYTE << R_SPIBSC_SMENR_OPDE_Pos;
 
+#if SPIBSC_CFG_INITIALIZATION == 1
+
 static const uint32_t drcmr_clearmask =
     R_SPIBSC_DRCMR_CMD_Msk |
     R_SPIBSC_DRCMR_OCMD_Msk;
@@ -550,8 +564,17 @@ static const uint32_t drenr_additional_3byte =
 static const uint32_t drenr_additional_4byte =
     SPIBSC_DRENR_OPDE_4BYTE << R_SPIBSC_DRENR_OPDE_Pos;
 
+#endif
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup SPIBSC
+ * @addtogroup RZA_SPIBSC
  * @{
  **********************************************************************************************************************/
 
@@ -602,6 +625,8 @@ fsp_err_t R_SPIBSC_Open (spi_flash_ctrl_t * p_api_ctrl, spi_flash_cfg_t const * 
 #if SPIBSC_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_api_ctrl);
     FSP_ASSERT(NULL != p_cfg);
+    FSP_ASSERT(NULL != p_cfg->p_extend);
+    FSP_ASSERT(NULL != ((spibsc_extended_cfg_t *) p_cfg->p_extend)->p_reg);
     FSP_ERROR_RETURN(SPIBSC_PRV_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
 
     /* Check configuration parameters */
@@ -622,8 +647,6 @@ fsp_err_t R_SPIBSC_Open (spi_flash_ctrl_t * p_api_ctrl, spi_flash_cfg_t const * 
         memcpy(p_erase_list, p_cfg->p_erase_command_list, erase_list_bytes);
     }
 
-    fsp_err_t result = FSP_SUCCESS;
-
     /* Initialize instance control datas */
     ctrl     = *p_ctrl;
     ctrl.cfg = *p_cfg;
@@ -631,14 +654,27 @@ fsp_err_t R_SPIBSC_Open (spi_flash_ctrl_t * p_api_ctrl, spi_flash_cfg_t const * 
     ctrl.p_erase_command_list = (spi_flash_erase_command_t *) p_erase_list;
     ctrl.open                 = SPIBSC_PRV_OPEN;
     ctrl.is_xip_enabled       = false;
-    ctrl.p_reg                = R_SPIBSC;
+    ctrl.p_reg                = ctrl.ext.p_reg;
 
-    if (!SPIBSC_CFG_ALREADY_INITIALIZED)
+#if SPIBSC_CFG_INITIALIZATION == 1
     {
+        fsp_err_t result = FSP_SUCCESS;
+
         /* Initializes the SPIBSC for enabling memory-mapped (external address reading) access mode */
         result = spibsc_configure_mmap(&ctrl);
+
+        if (result != FSP_SUCCESS)
+        {
+            /* Cleanup allocated memory */
+            if (ctrl.p_erase_command_list)
+            {
+                free(ctrl.p_erase_command_list);
+            }
+        }
+
+        FSP_ERROR_RETURN(result == FSP_SUCCESS, result);
     }
-    else
+#else
     {
         /* Obtaining the XIP (Suppressing the operation code phase) status from SPIBSC register */
         uint32_t drenr = MMIO_READ_32(p_ctrl->p_reg->DRENR);
@@ -654,17 +690,7 @@ fsp_err_t R_SPIBSC_Open (spi_flash_ctrl_t * p_api_ctrl, spi_flash_cfg_t const * 
             ctrl.is_xip_enabled = true;
         }
     }
-
-    if (result != FSP_SUCCESS)
-    {
-        /* Cleanup allocated memory */
-        if (ctrl.p_erase_command_list)
-        {
-            free(ctrl.p_erase_command_list);
-        }
-    }
-
-    FSP_ERROR_RETURN(result == FSP_SUCCESS, result);
+#endif
 
     /* Overwrite new instance ctrl object */
     *p_ctrl = ctrl;
@@ -1288,6 +1314,12 @@ fsp_err_t R_SPIBSC_Close (spi_flash_ctrl_t * p_api_ctrl)
  * @} (end addtogroup SPIBSC)
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
  * Enabling write functionality of flash device (internally used).
  *
@@ -1317,10 +1349,11 @@ static fsp_err_t spibsc_write_enable (spibsc_instance_ctrl_t * p_ctrl)
     return FSP_SUCCESS;
 }
 
+#if SPIBSC_CFG_INITIALIZATION == 1
 static void spibsc_select_spim (spibsc_instance_ctrl_t * p_ctrl)
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
-#if (BSP_FEATURE_BSP_SUPPORT_OCTAL_MEMORY)
+ #if (BSP_FEATURE_BSP_SUPPORT_OCTAL_MEMORY)
 
     /* Check if OCTA selected */
     uint32_t ipcont_spi_octa = R_SYSC->SYS_IPCONT_SEL_SPI_OCTA;
@@ -1339,7 +1372,7 @@ static void spibsc_select_spim (spibsc_instance_ctrl_t * p_ctrl)
 
     /* Wait for reset SPI device */
     R_BSP_SoftwareDelay(SPIBSC_PRV_RESET_DURATION_US, BSP_DELAY_UNITS_MICROSECONDS);
-#endif
+ #endif
 
     /* force voltage setting
      * Note: This is required if the boot mode is neither 3 nor 4.
@@ -1350,14 +1383,16 @@ static void spibsc_select_spim (spibsc_instance_ctrl_t * p_ctrl)
 
     /* Supply SPIM clock */
     R_BSP_MODULE_START(FSP_IP_SPI_MULTI, 0);
-#if (BSP_FEATURE_BSP_SUPPORT_OCTAL_MEMORY)
+ #if (BSP_FEATURE_BSP_SUPPORT_OCTAL_MEMORY)
 
     /* Select SPIM for SPI controller */
     ipcont_spi_octa                &= (uint32_t) ~R_SYSC_SYS_IPCONT_SEL_SPI_OCTA_SEL_SPI_OCTA_Msk;
     R_SYSC->SYS_IPCONT_SEL_SPI_OCTA = ipcont_spi_octa;
     R_SYSC->SYS_IPCONT_SEL_SPI_OCTA;
-#endif
+ #endif
 }
+
+#endif
 
 static void spibsc_test_tend (spibsc_instance_ctrl_t * p_ctrl)
 {
@@ -1369,6 +1404,8 @@ static void spibsc_test_tend (spibsc_instance_ctrl_t * p_ctrl)
         }
     }
 }
+
+#if SPIBSC_CFG_INITIALIZATION == 1
 
 static void spibsc_init_phy (spibsc_instance_ctrl_t * p_ctrl)
 {
@@ -1559,6 +1596,8 @@ static fsp_err_t spibsc_configure_mmap (spibsc_instance_ctrl_t * p_ctrl)
 
     return spibsc_configure_mmap_sub(p_ctrl, &rop);
 }
+
+#endif
 
 static uint32_t spibsc_cmncr_set (uint8_t mask, uint8_t value, int pos)
 {
@@ -2119,6 +2158,8 @@ static fsp_err_t spibsc_exec_op (spibsc_instance_ctrl_t * p_ctrl, xspi_op_t cons
     return FSP_SUCCESS;
 }
 
+#if SPIBSC_CFG_INITIALIZATION == 1
+
 /*******************************************************************************************************************//**
  * Configuring memory-mapped read (internally used).
  *
@@ -2337,3 +2378,5 @@ static fsp_err_t spibsc_configure_mmap_sub (spibsc_instance_ctrl_t * p_ctrl, xsp
 
     return FSP_SUCCESS;
 }
+
+#endif

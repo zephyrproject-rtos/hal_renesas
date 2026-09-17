@@ -1,13 +1,8 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
-/*******************************************************************************************************************//**
- * @addtogroup DMAC
- * @{
- **********************************************************************************************************************/
 
 #ifndef R_DMAC_H
 #define R_DMAC_H
@@ -16,14 +11,26 @@
  * Includes
  **********************************************************************************************************************/
 #include "bsp_api.h"
-#include "r_transfer_api.h"
 #include "r_dmac_cfg.h"
+#include "r_transfer_api.h"
 
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
 /***********************************************************************************************************************
  * Macro definitions
+ **********************************************************************************************************************/
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZA
+{
+ #endif
+#endif
+
+/*******************************************************************************************************************//**
+ * @addtogroup RZA_DMAC
+ * @{
  **********************************************************************************************************************/
 
 /** Max configurable number of transfers in TRANSFER_MODE_NORMAL. */
@@ -66,6 +73,17 @@ typedef enum e_dmac_ack_mode
     DMAC_ACK_MODE_MASK_DACK_OUTPUT = 4, ///< Output is masked.
 } dmac_ack_mode_t;
 
+#ifndef BSP_OVERRIDE_DMAC_EXTETNAL_OUTPUT_SIGNAL_ACTIVE_LEVEL_T
+
+/** Active level of the external DMA ACK signal. */
+typedef enum e_dmac_external_output_signal_active_level
+{
+    DMAC_EXTERNAL_OUTPUT_SIGNAL_ACTIVE_LEVEL_LOW_ACTIVE  = 0,
+    DMAC_EXTERNAL_OUTPUT_SIGNAL_ACTIVE_LEVEL_HIGH_ACTIVE = 1,
+} dmac_external_output_signal_active_level_t;
+
+#endif
+
 /** Detection method of the DMA request signal. See RZ/T2M hardware manual Table 14.19 DMA Transfer Request Detection Operation Setting Table. */
 typedef enum e_dmac_detection
 {
@@ -90,12 +108,15 @@ typedef enum e_dmac_continuous_setting
 } dmac_continuous_setting_t;
 
 /** Register set settings. */
-typedef struct st_dmac_next1_register_setting
+struct st_dmac_next1_register_setting
 {
     void const * p_src;                ///< Source pointer.
     void       * p_dest;               ///< Destination pointer.
     uint32_t     length;               ///< Transfer Byte.
-} dmac_next1_register_setting_t;
+};
+
+/** Register set settings. Please refer to the struct st_dmac_next1_register_setting. */
+typedef struct st_dmac_next1_register_setting dmac_next1_register_setting_t;
 
 /** DMAC channel scheduling. */
 typedef enum e_dmac_channel_scheduling
@@ -141,7 +162,7 @@ typedef enum e_dmac_link_interrupt_mask
 
 /** Descriptor structure used in DMAC link mode, and variables of dmac_link_cfg_t must be allocated in the memory area. */
 #if (BSP_FEATURE_DMAC_64BIT_SYSTEM == 1)
-typedef struct st_dmac_link_cfg
+struct st_dmac_link_cfg
 {
     union
     {
@@ -162,9 +183,9 @@ typedef struct st_dmac_link_cfg
     volatile uint32_t channel_interval;                        ///< Channel interval (Set value for CHITVL register).
     volatile uint32_t channel_extension_cfg;                   ///< Channel extension configuration (Set value for CHEXT_n register).
     volatile uint32_t next_link_addr;                          ///< Next link address.
-} dmac_link_cfg_t;
+};
 #else
-typedef struct st_dmac_link_cfg
+struct st_dmac_link_cfg
 {
     union
     {
@@ -185,11 +206,14 @@ typedef struct st_dmac_link_cfg
     volatile uint32_t     channel_interval;                    ///< Channel interval (Set value for CHITVL register).
     volatile uint32_t     channel_extension_cfg;               ///< Channel extension configuration (Set value for CHEXT_n register).
     void * volatile       p_next_link_addr;                    ///< Next link address.
-} dmac_link_cfg_t;
+};
 #endif
 
+/** Descriptor structure used in DMAC link mode, and variables of dmac_link_cfg_t must be allocated in the memory area. */
+typedef struct st_dmac_link_cfg dmac_link_cfg_t;
+
 /** Control block used by driver. DO NOT INITIALIZE - this structure will be initialized in @ref transfer_api_t::open. */
-typedef struct st_dmac_instance_ctrl
+struct st_dmac_instance_ctrl
 {
     uint32_t open;                     // Driver ID
 
@@ -202,12 +226,16 @@ typedef struct st_dmac_instance_ctrl
 
     void (* p_callback)(dmac_callback_args_t *); // Pointer to callback
     dmac_callback_args_t * p_callback_memory;    // Pointer to optional callback argument memory
-    void const           * p_context;
-} dmac_instance_ctrl_t;
+    void                 * p_context;
+};
+
+/** Control block used by driver. DO NOT INITIALIZE - this structure will be initialized in @ref RZA::st_transfer_api::open. Please refer to the struct st_dmac_instance_ctrl. */
+typedef struct st_dmac_instance_ctrl dmac_instance_ctrl_t;
 
 /** DMAC transfer configuration extension. This extension is required. */
-typedef struct st_dmac_extended_cfg
+struct st_dmac_extended_cfg
 {
+    uint8_t   unit;                     ///< Unit number
     uint8_t   channel;                  ///< Channel number
     IRQn_Type dmac_int_irq;             ///< DMAC interrupt number
     uint8_t   dmac_int_ipl;             ///< DMAC interrupt priority
@@ -220,6 +248,11 @@ typedef struct st_dmac_extended_cfg
     IRQn_Type activation_irq_number;
 
     dmac_ack_mode_t          ack_mode;                         ///< DACK output mode
+    dmac_external_input_pin_t                  dreq_input_pin;                   ///< DREQ input pin name
+    dmac_external_output_pin_t                 ack_output_pin;                   ///< DACK output pin name
+    dmac_external_output_pin_t                 tend_output_pin;                  ///< TEND output pin name
+    dmac_external_output_signal_active_level_t ack_output_signal_active_level;   ///< DACK output signal active level
+    dmac_external_output_signal_active_level_t tend_output_signal_active_level;  ///< TEND output signal active level
     dmac_detection_t         detection_mode;                   ///< DMAC request detection method
     dmac_request_direction_t activation_request_source_select; ///< DMAC activation request source
 
@@ -233,14 +266,17 @@ typedef struct st_dmac_extended_cfg
     void (* p_callback)(dmac_callback_args_t * cb_data);
     dmac_callback_args_t * p_callback_memory;
 
-    /** Placeholder for user data.  Passed to the user p_callback in ::transfer_callback_args_t. */
-    void const * p_context;
+    /** Placeholder for user data.  Passed to the user p_callback in RZA::transfer_callback_args_t. */
+    void * p_context;
 
     void * p_reg;                      ///< Register base address for specified unit
-} dmac_extended_cfg_t;
+};
+
+/** DMAC transfer configuration extension. This extension is required. Please refer to the struct st_dmac_extended_cfg. */
+typedef struct st_dmac_extended_cfg dmac_extended_cfg_t;
 
 /** DMAC transfer configuration extension. This extension is required. */
-typedef struct st_dmac_extended_info
+struct st_dmac_extended_info
 {
     /** Select number of source bytes to transfer at once. */
     dmac_transfer_size_t src_size;
@@ -250,7 +286,10 @@ typedef struct st_dmac_extended_info
 
     /** Next1 Register set settings */
     dmac_next1_register_setting_t * p_next1_register_setting;
-} dmac_extended_info_t;
+};
+
+/** DMAC transfer configuration extension. This extension is required. Please refer to the struct st_dmac_extended_info. */
+typedef struct st_dmac_extended_info dmac_extended_info_t;
 
 /**********************************************************************************************************************
  * Exported global variables
@@ -283,15 +322,21 @@ fsp_err_t R_DMAC_Reload(transfer_ctrl_t * const p_api_ctrl,
                         uint32_t const          num_transfers);
 fsp_err_t R_DMAC_CallbackSet(transfer_ctrl_t * const      p_api_ctrl,
                              void (                     * p_callback)(dmac_callback_args_t *),
-                             void const * const           p_context,
+                             void * const                 p_context,
                              dmac_callback_args_t * const p_callback_memory);
 fsp_err_t R_DMAC_LinkDescriptorSet(transfer_ctrl_t * const p_api_ctrl, dmac_link_cfg_t * p_descriptor);
+
+/*******************************************************************************************************************//**
+ * @} (end defgroup DMAC)
+ **********************************************************************************************************************/
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 
 #endif
-
-/*******************************************************************************************************************//**
- * @} (end defgroup DMAC)
- **********************************************************************************************************************/

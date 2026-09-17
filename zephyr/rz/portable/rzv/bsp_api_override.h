@@ -1,15 +1,28 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+namespace RZV
+{
+#endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU_RZV2L
+ * @addtogroup RZV_BSP_MPU_RZV2L
  * @{
  **********************************************************************************************************************/
 
-/** @} (end addtogroup BSP_MCU_RZV2L) */
+/** @} (end addtogroup RZV_BSP_MPU_RZV2L) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 #ifndef BSP_API_OVERRIDE_H
 #define BSP_API_OVERRIDE_H
@@ -25,7 +38,7 @@
  #include "cr/bsp_common.h"
 #endif
 
-/* BSP MCU Specific Includes. */
+/* BSP MPU Specific Includes. */
 #include "bsp_io.h"
 #include "bsp_group_irq.h"
 #include "bsp_clocks.h"
@@ -42,7 +55,7 @@
 //  #include "bsp_mpu.h" /* This file no porting */
 #endif
 
-/* Factory MCU information. */
+/* Factory MPU information. */
 #include "fsp_features.h"
 
 /* BSP Common Includes (Other than bsp_common.h) */
