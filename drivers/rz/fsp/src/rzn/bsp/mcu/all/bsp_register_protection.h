@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -18,12 +18,27 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
+/* Key code for writing PRCR register. */
+#define BSP_REG_PROTECT_PRCR_KEY          (0xA500U)
+
+#define BSP_REG_PROTECT_PRCR_CGC          (0x0001U)
+#define BSP_REG_PROTECT_PRCR_LPC_RESET    (0x0002U)
+#define BSP_REG_PROTECT_PRCR_GPIO         (0x0004U)
+#define BSP_REG_PROTECT_PRCR_SYSTEM       (0x0008U)
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -44,6 +59,11 @@ typedef enum e_bsp_reg_protect
 } bsp_reg_protect_t;
 
 /** @} (end addtogroup BSP_MCU) */
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Exported global variables
@@ -55,6 +75,8 @@ typedef enum e_bsp_reg_protect
 
 /* Public functions defined in bsp.h */
 void bsp_register_protect_open(void);  // Used internally by BSP
+
+void bsp_regiser_protect_semaphore_take(uint16_t prcr_masks);
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

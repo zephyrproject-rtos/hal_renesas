@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -22,8 +22,15 @@ FSP_HEADER
  * Typedef definitions
  **********************************************************************************************************************/
 
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+namespace RZN
+{
+ #endif
+#endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU_RZN2L
+ * @addtogroup RZN_BSP_MCU_RZN2L
  * @{
  **********************************************************************************************************************/
 
@@ -494,6 +501,12 @@ typedef enum e_elc_event_rzn2l
 } elc_event_t;
 
 /** @} (end addtogroup BSP_MCU_RZN2L) */
+
+#ifdef __FOR_FSP_DOCUMENT__
+ #ifdef __cplusplus
+}
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Exported global variables

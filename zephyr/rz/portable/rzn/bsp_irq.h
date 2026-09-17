@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -153,8 +153,15 @@ void     bsp_irq_gpt_combined_interrupt_handler(void);
  * Inline Functions
  **********************************************************************************************************************/
 
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
+
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup RZN_BSP_MCU
  * @{
  **********************************************************************************************************************/
 
@@ -399,7 +406,7 @@ __STATIC_INLINE void R_BSP_IrqGptSelectedClear (IRQn_Type irq)
  * If there is no management table, memory is allocated.
  *
  * @param[in]   irq                 IRQ number
- * @param[in]   event_source        Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source        Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  * @param[in]   p_context           Control structure
  * @param[in]   p_interrupt_handler Interrupt handler
  *
@@ -451,7 +458,7 @@ __STATIC_INLINE fsp_err_t R_BSP_IrqGptCombinedTableSet (IRQn_Type               
  * Get pointer addresses for control structure.
  *
  * @param[in]   irq                 IRQ number
- * @param[in]   event_source        Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source        Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  *
  * @return      Pointer addresses for control structure.
  **********************************************************************************************************************/
@@ -468,7 +475,7 @@ __STATIC_INLINE void * R_BSP_IrqGptCombinedCtrlGet (IRQn_Type irq, bsp_irq_gpt_c
  * Get pointer addresses for interrupt handler.
  *
  * @param[in]   irq                 IRQ number
- * @param[in]   event_source        Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source        Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  *
  * @return      Pointer addresses for interrupt handler.
  **********************************************************************************************************************/
@@ -486,7 +493,7 @@ __STATIC_INLINE fsp_vector_t R_BSP_IrqGptCombinedIsrGet (IRQn_Type irq, bsp_irq_
  * If there are no more values to manage in the management table, memory is free.
  *
  * @param[in]   irq                 IRQ number
- * @param[in]   event_source        Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source        Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqGptCombinedTableClear (IRQn_Type irq, bsp_irq_gpt_combined_event_t event_source)
 {
@@ -531,7 +538,7 @@ __STATIC_INLINE void R_BSP_IrqGptCombinedTableClear (IRQn_Type irq, bsp_irq_gpt_
  * Manipulate GPT_INTMSKn to mask GPT/MTU3 interrupts.
  *
  * @param[in]   irq                 IRQ number
- * @param[in]   event_source        Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source        Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqGptCombinedMaskSet (IRQn_Type irq, bsp_irq_gpt_combined_event_t event_source)
 {
@@ -553,7 +560,7 @@ __STATIC_INLINE void R_BSP_IrqGptCombinedMaskSet (IRQn_Type irq, bsp_irq_gpt_com
  * Manipulate GPT_INTMSKn to unmask the GPT/MTU3 interrupt.
  *
  * @param[in]   irq                 IRQ number
- * @param[in]   event_source        Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source        Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqGptCombinedMaskClear (IRQn_Type irq, bsp_irq_gpt_combined_event_t event_source)
 {
@@ -575,7 +582,7 @@ __STATIC_INLINE void R_BSP_IrqGptCombinedMaskClear (IRQn_Type irq, bsp_irq_gpt_c
  * Read GPT_INTSTATn and return the status of the GPT/MTU3 interrupt.
  *
  * @param[in]   irq                 IRQ number
- * @param[in]   event_source        Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source        Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  *
  * @return      GPT_INTSTATn value.
  **********************************************************************************************************************/
@@ -604,7 +611,7 @@ __STATIC_INLINE uint32_t R_BSP_IrqGptCombinedStatusRead (IRQn_Type irq)
  * Write to GPT_INTCLRn to clear the GPT/MTU3 event occurrence state.
  *
  * @param[in]   irq                 IRQ number
- * @param[in]   event_source        Define the bit shift values ​​of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
+ * @param[in]   event_source        Define the bit shift values of GPT_INTMSKn, GPT_INTCLRn and GPT_INTSTATn as an enum.
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqGptCombinedStatusClear (IRQn_Type irq, bsp_irq_gpt_combined_event_t event_source)
 {
@@ -625,11 +632,23 @@ __STATIC_INLINE void R_BSP_IrqGptCombinedStatusClear (IRQn_Type irq, bsp_irq_gpt
 #endif
 
 /** @} (end addtogroup BSP_MCU) */
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+namespace RZN
+{
+  #endif
+ #endif
 
 /*******************************************************************************************************************//**
  * @internal
- * @addtogroup BSP_MCU_PRV Internal BSP Documentation
- * @ingroup RENESAS_INTERNAL
+ * @addtogroup RZN_BSP_MCU_PRV
+ * @ingroup RZN_RENESAS_INTERNAL
  * @{
  **********************************************************************************************************************/
 
@@ -637,6 +656,12 @@ __STATIC_INLINE void R_BSP_IrqGptCombinedStatusClear (IRQn_Type irq, bsp_irq_gpt
 void bsp_irq_cfg(void);                // Used internally by BSP
 
 /** @} (end addtogroup BSP_MCU_PRV) */
+
+ #ifdef __FOR_FSP_DOCUMENT__
+  #ifdef __cplusplus
+}
+  #endif
+ #endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
