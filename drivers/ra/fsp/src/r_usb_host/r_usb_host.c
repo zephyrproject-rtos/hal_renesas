@@ -208,7 +208,8 @@ static bool        r_usbh_pipe_xfer_out(usbh_instance_ctrl_t * const p_ctrl, uin
 static bool        r_usbh_pipe0_xfer_out(usbh_instance_ctrl_t * const p_ctrl);
 static bool        r_usbh_pipe_xfer_in(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static bool        r_usbh_pipe0_xfer_in(usbh_instance_ctrl_t * const p_ctrl);
-static void        r_usbh_pipe_write_packet(void * p_buf, volatile void * p_fifo, uint32_t len);
+static void        r_usbh_pipe_write_packet(usbh_instance_ctrl_t * const p_ctrl, void * p_buf,
+                                            volatile void * p_fifo, uint32_t len);
 static void        r_usbh_pipe_read_packet(void * p_buf, volatile void * p_fifo, uint32_t len);
 static uint16_t    r_usbh_edpt_max_packet_size(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static uint16_t    r_usbh_edpt0_max_packet_size(usbh_instance_ctrl_t * const p_ctrl);
@@ -1603,21 +1604,43 @@ static inline void r_usbh_pipe_wait_for_ready (usbh_instance_ctrl_t * const p_ct
     }
 }
 
-static void r_usbh_pipe_write_packet (void * p_buf, volatile void * p_fifo, uint32_t len)
+static void r_usbh_pipe_write_packet (usbh_instance_ctrl_t * const p_ctrl,
+                                      void                       * p_buf,
+                                      volatile void              * p_fifo,
+                                      uint32_t                     len)
 {
-    volatile hw_fifo_t * p_reg  = p_fifo;
-    uint8_t            * p_addr = p_buf;
+    volatile uint16_t * p_ff16;
+    volatile uint8_t  * p_ff8;
+    uint8_t           * p_addr = p_buf;
+
+#ifdef USB_HIGH_SPEED_MODULE
+
+    /* The high speed port is 4 bytes wide and carries data in its upper half
+     * while CFIFOSEL.BIGEND is 0: a half word at N+2, a byte at N+3. The full
+     * speed port is 2 bytes wide and takes both at N+0.
+     */
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        p_ff16 = (volatile uint16_t *) ((uintptr_t) p_fifo + 2);
+        p_ff8  = (volatile uint8_t *) ((uintptr_t) p_fifo + 3);
+    }
+    else
+#endif
+    {
+        p_ff16 = (volatile uint16_t *) p_fifo;
+        p_ff8  = (volatile uint8_t *) p_fifo;
+    }
 
     while (len >= 2)
     {
-        p_reg->u16 = *(const uint16_t *) p_addr;
-        p_addr    += 2;
-        len       -= 2;
+        *p_ff16 = *(const uint16_t *) p_addr;
+        p_addr += 2;
+        len    -= 2;
     }
 
     if (len)
     {
-        p_reg->u8 = *(const uint8_t *) p_addr;
+        *p_ff8 = *(const uint8_t *) p_addr;
         ++p_addr;
     }
 }
@@ -1724,7 +1747,7 @@ static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_buf, p_cfifo, len);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_cfifo, len);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1842,7 +1865,7 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_buf, p_reg_d0fifo, len);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_reg_d0fifo, len);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
