@@ -86,6 +86,10 @@
 /* FIFOSEL value */
 #define USB_FIFOSEL_MBW_8_BIT         (0)  /* FIFO Port Access 8-bit width */
 #define USB_FIFOSEL_MBW_16_BIT        (1)  /* FIFO Port Access 16-bit width */
+
+/* Pipes 1 to 5 each take 16 of the 64 byte blocks: two 512 byte buffers. */
+#define USB_PIPEBUF_BLOCK_FIRST       (8)
+#define USB_PIPEBUF_BLOCKS_PER_PIPE   (16)
 #define USB_FIFOSEL_MBW_32_BIT        (2)  /* FIFO Port Access 32-bit width */
 
 /***********************************************************************************************************************
@@ -703,9 +707,41 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     }
 
     /* PIPE Configuration */
-    *p_reg_pipesel  = num;
+    *p_reg_pipesel = num;
+
+#ifdef USB_HIGH_SPEED_MODULE
+
+    /* Reset leaves every pipe sharing the first 64 bytes. The controller fixes
+     * blocks 0 to 3 to the control pipe and 4 to 7 to pipes 6 to 9, so pipes 1
+     * to 5 start at 8.
+     */
+    if (USB_IS_USBHS(p_ctrl->module_number) && num >= 1U && num <= 5U)
+    {
+        /* BUFSIZE counts one buffer; DBLB allocates a second of that size,
+         * so a packet must fit in one.
+         */
+        uint16_t blocks = (uint16_t) ((mps + 63U) / 64U);
+        uint16_t bufsize = (uint16_t) (blocks - 1U);
+
+        R_USB_HS0->PIPEBUF = (uint16_t) ((bufsize << R_USB_HS0_PIPEBUF_BUFSIZE_Pos) |
+                                         (USB_PIPEBUF_BLOCK_FIRST + ((num - 1U) *
+                                                                    USB_PIPEBUF_BLOCKS_PER_PIPE)));
+    }
+#endif
+
+    /* MXPS is 9 bits on the full speed module and 11 here; the narrow mask
+     * turns 512 into 0.
+     */
+#ifdef USB_HIGH_SPEED_MODULE
+    uint16_t mxps_msk = USB_IS_USBHS(p_ctrl->module_number) ?
+                        (uint16_t) R_USB_HS0_PIPEMAXP_MXPS_Msk :
+                        (uint16_t) R_USB_PIPEMAXP_MXPS_Msk;
+#else
+    uint16_t mxps_msk = (uint16_t) R_USB_PIPEMAXP_MXPS_Msk;
+#endif
+
     *p_reg_pipemaxp = ((dev_addr << R_USB_PIPEMAXP_DEVSEL_Pos) & R_USB_PIPEMAXP_DEVSEL_Msk) |
-                      (mps & R_USB_PIPEMAXP_MXPS_Msk);
+                      (mps & mxps_msk);
     *p_reg_pipecfg = pipe_cfg;
     *p_reg_brdysts = R_USB_BRDYSTS_PIPEBRDY_Msk ^ USB_SETBIT(num);
     *p_reg_pipectr = R_USB_PIPE_CTR_ACLRM_Msk | R_USB_PIPE_CTR_SQCLR_Msk;
@@ -1531,8 +1567,9 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
     {
         R_USB_HS0->PIPESEL = num;
 
-        return (uint16_t) ((R_USB_HS0->PIPEMAXP & R_USB_PIPEMAXP_MXPS_Msk) >>
-                           R_USB_PIPEMAXP_MXPS_Pos);
+        /* 11 bits of MXPS here, not 9 */
+        return (uint16_t) ((R_USB_HS0->PIPEMAXP & R_USB_HS0_PIPEMAXP_MXPS_Msk) >>
+                           R_USB_HS0_PIPEMAXP_MXPS_Pos);
     }
     else
 #endif
@@ -1736,6 +1773,7 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
                        (USB_FIFOSEL_MBW_8_BIT << R_USB_D0FIFOSEL_MBW_Pos);
 
     const uint32_t len = USB_MIN(USB_MIN(rem, mps), vld);
+
 
     if (len)
     {
