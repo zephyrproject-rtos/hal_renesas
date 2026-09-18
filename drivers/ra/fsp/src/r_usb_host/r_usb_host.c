@@ -1745,8 +1745,6 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
     const uint32_t rem    = p_pipe->remaining;
     const uint32_t mps    = r_usbh_edpt_max_packet_size(p_ctrl, num);
 
-    r_usbh_pipe_wait_for_ready(p_ctrl, num);
-
     volatile uint16_t * p_reg_d0fifosel;
     volatile uint16_t * p_reg_d0fifoctr;
     volatile void     * p_reg_d0fifo;
@@ -1758,7 +1756,6 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
         p_reg_d0fifosel = &R_USB_HS0->D0FIFOSEL;
         p_reg_d0fifoctr = &R_USB_HS0->D0FIFOCTR;
         p_reg_d0fifo    = (volatile void *) &R_USB_HS0->D0FIFO;
-        vld             = (uint32_t) (R_USB_HS0->CFIFOCTR & R_USB_CFIFOCTR_DTLN_Msk);
     }
     else
 #endif
@@ -1766,11 +1763,16 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
         p_reg_d0fifosel = &R_USB_FS0->D0FIFOSEL;
         p_reg_d0fifoctr = &R_USB_FS0->D0FIFOCTR;
         p_reg_d0fifo    = (volatile void *) &R_USB_FS0->D0FIFO;
-        vld             = (uint32_t) (R_USB_FS0->CFIFOCTR & R_USB_CFIFOCTR_DTLN_Msk);
     }
 
+    /* Select the pipe before waiting for the port; the length is only
+     * readable once it is selected.
+     */
     *p_reg_d0fifosel = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) |
                        (USB_FIFOSEL_MBW_8_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    r_usbh_pipe_wait_for_ready(p_ctrl, num);
+
+    vld = (uint16_t) (*p_reg_d0fifoctr & R_USB_D0FIFOCTR_DTLN_Msk);
 
     const uint32_t len = USB_MIN(USB_MIN(rem, mps), vld);
 
@@ -1808,8 +1810,6 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     const uint32_t mps    = r_usbh_edpt_max_packet_size(p_ctrl, num);
     const uint32_t len    = USB_MIN(rem, mps);
 
-    r_usbh_pipe_wait_for_ready(p_ctrl, num);
-
     volatile uint16_t * p_reg_d0fifosel;
     volatile uint16_t * p_reg_d0fifoctr;
     volatile void     * p_reg_d0fifo;
@@ -1838,6 +1838,7 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
 
     *p_reg_d0fifosel = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) |
                        (USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    r_usbh_pipe_wait_for_ready(p_ctrl, num);
 
     if (len)
     {
