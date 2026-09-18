@@ -2857,16 +2857,19 @@ static inline void r_usbh_interrupt_configure (usbh_instance_ctrl_t * p_ctrl)
 /* Enable and configure the NVIC interrupt(s) for the selected USB module. */
 static inline void r_usbh_interrupt_enable (usbh_instance_ctrl_t * p_ctrl)
 {
+    /* Enable without clearing: a transfer armed while masked can complete
+     * before the unmask, and clearing would discard it.
+     */
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        R_BSP_IrqEnable(p_ctrl->p_cfg->hs_irq);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->hs_irq);
     }
     else
 #endif
     {
-        R_BSP_IrqEnable(p_ctrl->p_cfg->irq);
-        R_BSP_IrqEnable(p_ctrl->p_cfg->irq_r);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->irq);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->irq_r);
     }
 }
 
