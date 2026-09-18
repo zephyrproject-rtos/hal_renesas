@@ -2478,6 +2478,11 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
 
         if (dir == ((*p_reg_dcpcfg & R_USB_DCPCFG_DIR_Msk) >> R_USB_DCPCFG_DIR_Pos))
         {
+            /* DCPCFG may only change at NAK, and the stage just finished
+             * leaves the pipe at BUF: wait for PBUSY to clear, then set NAK.
+             */
+            FSP_HARDWARE_REGISTER_WAIT((*p_reg_dcpctr & R_USB_DCPCTR_PBUSY_Msk), 0);
+            *p_reg_dcpctr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
             *p_reg_dcpctr |= R_USB_DCPCTR_SQSET_Msk;
             *p_reg_dcpcfg  = (dir) ?
                              (*p_reg_dcpcfg & (~R_USB_DCPCFG_DIR_Msk)) :
