@@ -1884,7 +1884,6 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
         if (USB_DIR_OUT == dir)
         {
             /* OUT */
-            FSP_ASSERT((*p_reg_dcpctr & R_USB_DCPCTR_BSTS_Msk) && (*p_reg_usbreq & USB_SETBIT(7)));
             r_usbh_pipe0_xfer_out(p_ctrl);
         }
     }
@@ -1900,7 +1899,11 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
 
         if (dir == ((*p_reg_dcpcfg & R_USB_DCPCFG_DIR_Msk) >> R_USB_DCPCFG_DIR_Pos))
         {
-            FSP_ASSERT((USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos) == (*p_reg_dcpctr & R_USB_DCPCTR_PID_Msk));
+            /* The pipe must be idle before its direction changes, and the
+             * stage just finished leaves it at BUF.
+             */
+            *p_reg_dcpctr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
+            FSP_HARDWARE_REGISTER_WAIT((*p_reg_dcpctr & R_USB_DCPCTR_PBUSY_Msk), 0);
             *p_reg_dcpctr |= R_USB_DCPCTR_SQSET_Msk;
             *p_reg_dcpcfg  = (dir) ?
                              (*p_reg_dcpcfg & (~R_USB_DCPCFG_DIR_Msk)) :
