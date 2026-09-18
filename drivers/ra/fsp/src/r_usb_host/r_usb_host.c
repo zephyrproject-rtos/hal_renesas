@@ -2162,16 +2162,23 @@ static inline void r_usbh_interrupt_configure (usbh_instance_ctrl_t * p_ctrl)
 
 static inline void r_usbh_interrupt_enable (usbh_instance_ctrl_t * p_ctrl)
 {
+    /* Enable without clearing: a transfer armed while masked can complete
+     * before the unmask, and clearing would discard it. R_BSP_IrqCfg()
+     * installs the ISR context.
+     */
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->hs_irq, p_ctrl->p_cfg->hsipl, p_ctrl);
+        R_BSP_IrqCfg(p_ctrl->p_cfg->hs_irq, p_ctrl->p_cfg->hsipl, p_ctrl);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->hs_irq);
     }
     else
 #endif
     {
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->irq, p_ctrl->p_cfg->ipl, p_ctrl);
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->irq_r, p_ctrl->p_cfg->ipl_r, p_ctrl);
+        R_BSP_IrqCfg(p_ctrl->p_cfg->irq, p_ctrl->p_cfg->ipl, p_ctrl);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->irq);
+        R_BSP_IrqCfg(p_ctrl->p_cfg->irq_r, p_ctrl->p_cfg->ipl_r, p_ctrl);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->irq_r);
     }
 }
 
