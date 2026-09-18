@@ -1895,7 +1895,8 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
     {
         R_USB_HS0->PIPESEL = num;
 
-        return (uint16_t) (R_USB_HS0->PIPEMAXP & 0x3FF);
+        return (uint16_t) ((R_USB_HS0->PIPEMAXP & R_USB_HS0_PIPEMAXP_MXPS_Msk) >>
+                           R_USB_HS0_PIPEMAXP_MXPS_Pos);
     }
     else
 #endif
