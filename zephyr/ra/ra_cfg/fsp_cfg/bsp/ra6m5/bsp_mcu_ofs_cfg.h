@@ -17,7 +17,71 @@
 #define WDTSTRT    (1)
 #endif /* CONFIG_WDT_RENESAS_RA_START_IN_BOOT */
 
-#define OFS_IWDT (0xA001A001 | 1 << 1 | 3 << 2 | 15 << 4 | 3 << 8 | 3 << 10 | 1 << 12 | 1 << 14)
+/*
+ * OFS0 IWDT configuration. Derived from the renesas,ra-iwdt devicetree node and Kconfig
+ * when such a node is enabled; otherwise IWDT stays disabled (IWDTSTRT = 1).
+ */
+#if DT_HAS_COMPAT_STATUS_OKAY(renesas_ra_iwdt)
+
+#define IWDT_DT_NODE DT_COMPAT_GET_ANY_STATUS_OKAY(renesas_ra_iwdt)
+
+#define IWDT_OFS_STRT    (IS_ENABLED(CONFIG_WDT_RENESAS_RA_IWDT_AUTO_START_MODE) ? 0 : 1)
+#define IWDT_OFS_RSTIRQS (IS_ENABLED(CONFIG_WDT_RENESAS_RA_IWDT_NMI) ? 0 : 1)
+
+/*
+ * IWDTTOPS[1:0]: timeout period, in IWDTCLK cycles.
+ */
+#define IWDT_OFS_TOPS                                                                            \
+	(COND_CODE_1(DT_NODE_HAS_PROP(IWDT_DT_NODE, timeout_period),                              \
+		(DT_PROP(IWDT_DT_NODE, timeout_period) == 128    ? 0                              \
+		 : DT_PROP(IWDT_DT_NODE, timeout_period) == 512  ? 1                              \
+		 : DT_PROP(IWDT_DT_NODE, timeout_period) == 1024 ? 2                              \
+								  : 3),                            \
+		(3)))
+
+/* IWDTCKS[3:0]: divisor applied to IWDTCLK. Defaults to the longest period. */
+#define IWDT_OFS_CKS                                                                              \
+	(COND_CODE_1(DT_NODE_HAS_PROP(IWDT_DT_NODE, clock_division),                              \
+		(DT_PROP(IWDT_DT_NODE, clock_division) == 1     ? 0x0                            \
+		 : DT_PROP(IWDT_DT_NODE, clock_division) == 16  ? 0x2                            \
+		 : DT_PROP(IWDT_DT_NODE, clock_division) == 32  ? 0x3                            \
+		 : DT_PROP(IWDT_DT_NODE, clock_division) == 64  ? 0x4                            \
+		 : DT_PROP(IWDT_DT_NODE, clock_division) == 128 ? 0xF                            \
+								  : 0x5),                          \
+		(0x5)))
+
+/* IWDTRPES[1:0]: window end position. Defaults to the window open for the whole period. */
+#define IWDT_OFS_RPES                                                                             \
+	(COND_CODE_1(DT_NODE_HAS_PROP(IWDT_DT_NODE, window_end),                                  \
+		(DT_PROP(IWDT_DT_NODE, window_end) == 75   ? 0                                   \
+		 : DT_PROP(IWDT_DT_NODE, window_end) == 50 ? 1                                   \
+		 : DT_PROP(IWDT_DT_NODE, window_end) == 25 ? 2                                   \
+							     : 3),                                \
+		(3)))
+
+/* IWDTRPSS[1:0]: window start position. Defaults to the window open for the whole period. */
+#define IWDT_OFS_RPSS                                                                             \
+	(COND_CODE_1(DT_NODE_HAS_PROP(IWDT_DT_NODE, window_start),                                \
+		(DT_PROP(IWDT_DT_NODE, window_start) == 25   ? 0                                 \
+		 : DT_PROP(IWDT_DT_NODE, window_start) == 50 ? 1                                 \
+		 : DT_PROP(IWDT_DT_NODE, window_start) == 75 ? 2                                 \
+							       : 3),                              \
+		(3)))
+
+#else /* !DT_HAS_COMPAT_STATUS_OKAY(renesas_ra_iwdt) */
+
+#define IWDT_OFS_STRT    (1)
+#define IWDT_OFS_RSTIRQS (1)
+#define IWDT_OFS_TOPS    (3)
+#define IWDT_OFS_CKS     (0x5)
+#define IWDT_OFS_RPES    (3)
+#define IWDT_OFS_RPSS    (3)
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(renesas_ra_iwdt) */
+
+#define OFS_IWDT                                                                                  \
+	(0xA001A001 | IWDT_OFS_STRT << 1 | IWDT_OFS_TOPS << 2 | IWDT_OFS_CKS << 4 |                \
+	 IWDT_OFS_RPES << 8 | IWDT_OFS_RPSS << 10 | IWDT_OFS_RSTIRQS << 12 | 1 << 14)
 #define OFS_WDT  (WDTSTRT << 17 | 3 << 18 | 15 << 20 | 3 << 24 | 3 << 26 | 1 << 28 | 1 << 30)
 #define BSP_CFG_OPTION_SETTING_OFS0  (OFS_IWDT | OFS_WDT)
 #endif /* option_setting_ofs0 */
