@@ -86,6 +86,10 @@
 /* FIFOSEL value */
 #define USB_FIFOSEL_MBW_8_BIT         (0)  /* FIFO Port Access 8-bit width */
 #define USB_FIFOSEL_MBW_16_BIT        (1)  /* FIFO Port Access 16-bit width */
+
+/* Pipes 1 to 5 each take 16 of the 64 byte blocks: two 512 byte buffers. */
+#define USB_PIPEBUF_BLOCK_FIRST       (8)
+#define USB_PIPEBUF_BLOCKS_PER_PIPE   (16)
 #define USB_FIFOSEL_MBW_32_BIT        (2)  /* FIFO Port Access 32-bit width */
 
 /***********************************************************************************************************************
@@ -204,7 +208,8 @@ static bool        r_usbh_pipe_xfer_out(usbh_instance_ctrl_t * const p_ctrl, uin
 static bool        r_usbh_pipe0_xfer_out(usbh_instance_ctrl_t * const p_ctrl);
 static bool        r_usbh_pipe_xfer_in(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static bool        r_usbh_pipe0_xfer_in(usbh_instance_ctrl_t * const p_ctrl);
-static void        r_usbh_pipe_write_packet(void * p_buf, volatile void * p_fifo, uint32_t len);
+static void        r_usbh_pipe_write_packet(usbh_instance_ctrl_t * const p_ctrl, void * p_buf,
+                                            volatile void * p_fifo, uint32_t len);
 static void        r_usbh_pipe_read_packet(void * p_buf, volatile void * p_fifo, uint32_t len);
 static uint16_t    r_usbh_edpt_max_packet_size(usbh_instance_ctrl_t * const p_ctrl, uint32_t num);
 static uint16_t    r_usbh_edpt0_max_packet_size(usbh_instance_ctrl_t * const p_ctrl);
@@ -703,9 +708,41 @@ fsp_err_t R_USBH_EdptOpen (usb_ctrl_t * const p_api_ctrl, uint8_t dev_addr, usb_
     }
 
     /* PIPE Configuration */
-    *p_reg_pipesel  = num;
+    *p_reg_pipesel = num;
+
+#ifdef USB_HIGH_SPEED_MODULE
+
+    /* Reset leaves every pipe sharing the first 64 bytes. The controller fixes
+     * blocks 0 to 3 to the control pipe and 4 to 7 to pipes 6 to 9, so pipes 1
+     * to 5 start at 8.
+     */
+    if (USB_IS_USBHS(p_ctrl->module_number) && num >= 1U && num <= 5U)
+    {
+        /* BUFSIZE counts one buffer; DBLB allocates a second of that size,
+         * so a packet must fit in one.
+         */
+        uint16_t blocks = (uint16_t) ((mps + 63U) / 64U);
+        uint16_t bufsize = (uint16_t) (blocks - 1U);
+
+        R_USB_HS0->PIPEBUF = (uint16_t) ((bufsize << R_USB_HS0_PIPEBUF_BUFSIZE_Pos) |
+                                         (USB_PIPEBUF_BLOCK_FIRST + ((num - 1U) *
+                                                                    USB_PIPEBUF_BLOCKS_PER_PIPE)));
+    }
+#endif
+
+    /* MXPS is 9 bits on the full speed module and 11 here; the narrow mask
+     * turns 512 into 0.
+     */
+#ifdef USB_HIGH_SPEED_MODULE
+    uint16_t mxps_msk = USB_IS_USBHS(p_ctrl->module_number) ?
+                        (uint16_t) R_USB_HS0_PIPEMAXP_MXPS_Msk :
+                        (uint16_t) R_USB_PIPEMAXP_MXPS_Msk;
+#else
+    uint16_t mxps_msk = (uint16_t) R_USB_PIPEMAXP_MXPS_Msk;
+#endif
+
     *p_reg_pipemaxp = ((dev_addr << R_USB_PIPEMAXP_DEVSEL_Pos) & R_USB_PIPEMAXP_DEVSEL_Msk) |
-                      (mps & R_USB_PIPEMAXP_MXPS_Msk);
+                      (mps & mxps_msk);
     *p_reg_pipecfg = pipe_cfg;
     *p_reg_brdysts = R_USB_BRDYSTS_PIPEBRDY_Msk ^ USB_SETBIT(num);
     *p_reg_pipectr = R_USB_PIPE_CTR_ACLRM_Msk | R_USB_PIPE_CTR_SQCLR_Msk;
@@ -1531,8 +1568,9 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
     {
         R_USB_HS0->PIPESEL = num;
 
-        return (uint16_t) ((R_USB_HS0->PIPEMAXP & R_USB_PIPEMAXP_MXPS_Msk) >>
-                           R_USB_PIPEMAXP_MXPS_Pos);
+        /* 11 bits of MXPS here, not 9 */
+        return (uint16_t) ((R_USB_HS0->PIPEMAXP & R_USB_HS0_PIPEMAXP_MXPS_Msk) >>
+                           R_USB_HS0_PIPEMAXP_MXPS_Pos);
     }
     else
 #endif
@@ -1566,21 +1604,43 @@ static inline void r_usbh_pipe_wait_for_ready (usbh_instance_ctrl_t * const p_ct
     }
 }
 
-static void r_usbh_pipe_write_packet (void * p_buf, volatile void * p_fifo, uint32_t len)
+static void r_usbh_pipe_write_packet (usbh_instance_ctrl_t * const p_ctrl,
+                                      void                       * p_buf,
+                                      volatile void              * p_fifo,
+                                      uint32_t                     len)
 {
-    volatile hw_fifo_t * p_reg  = p_fifo;
-    uint8_t            * p_addr = p_buf;
+    volatile uint16_t * p_ff16;
+    volatile uint8_t  * p_ff8;
+    uint8_t           * p_addr = p_buf;
+
+#ifdef USB_HIGH_SPEED_MODULE
+
+    /* The high speed port is 4 bytes wide and carries data in its upper half
+     * while CFIFOSEL.BIGEND is 0: a half word at N+2, a byte at N+3. The full
+     * speed port is 2 bytes wide and takes both at N+0.
+     */
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        p_ff16 = (volatile uint16_t *) ((uintptr_t) p_fifo + 2);
+        p_ff8  = (volatile uint8_t *) ((uintptr_t) p_fifo + 3);
+    }
+    else
+#endif
+    {
+        p_ff16 = (volatile uint16_t *) p_fifo;
+        p_ff8  = (volatile uint8_t *) p_fifo;
+    }
 
     while (len >= 2)
     {
-        p_reg->u16 = *(const uint16_t *) p_addr;
-        p_addr    += 2;
-        len       -= 2;
+        *p_ff16 = *(const uint16_t *) p_addr;
+        p_addr += 2;
+        len    -= 2;
     }
 
     if (len)
     {
-        p_reg->u8 = *(const uint8_t *) p_addr;
+        *p_ff8 = *(const uint8_t *) p_addr;
         ++p_addr;
     }
 }
@@ -1687,7 +1747,7 @@ static bool r_usbh_pipe0_xfer_out (usbh_instance_ctrl_t * const p_ctrl)
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_buf, p_cfifo, len);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_cfifo, len);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1708,8 +1768,6 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
     const uint32_t rem    = p_pipe->remaining;
     const uint32_t mps    = r_usbh_edpt_max_packet_size(p_ctrl, num);
 
-    r_usbh_pipe_wait_for_ready(p_ctrl, num);
-
     volatile uint16_t * p_reg_d0fifosel;
     volatile uint16_t * p_reg_d0fifoctr;
     volatile void     * p_reg_d0fifo;
@@ -1721,7 +1779,6 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
         p_reg_d0fifosel = &R_USB_HS0->D0FIFOSEL;
         p_reg_d0fifoctr = &R_USB_HS0->D0FIFOCTR;
         p_reg_d0fifo    = (volatile void *) &R_USB_HS0->D0FIFO;
-        vld             = (uint32_t) (R_USB_HS0->CFIFOCTR & R_USB_CFIFOCTR_DTLN_Msk);
     }
     else
 #endif
@@ -1729,13 +1786,19 @@ static bool r_usbh_pipe_xfer_in (usbh_instance_ctrl_t * const p_ctrl, uint32_t n
         p_reg_d0fifosel = &R_USB_FS0->D0FIFOSEL;
         p_reg_d0fifoctr = &R_USB_FS0->D0FIFOCTR;
         p_reg_d0fifo    = (volatile void *) &R_USB_FS0->D0FIFO;
-        vld             = (uint32_t) (R_USB_FS0->CFIFOCTR & R_USB_CFIFOCTR_DTLN_Msk);
     }
 
+    /* Select the pipe before waiting for the port; the length is only
+     * readable once it is selected.
+     */
     *p_reg_d0fifosel = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) |
                        (USB_FIFOSEL_MBW_8_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    r_usbh_pipe_wait_for_ready(p_ctrl, num);
+
+    vld = (uint16_t) (*p_reg_d0fifoctr & R_USB_D0FIFOCTR_DTLN_Msk);
 
     const uint32_t len = USB_MIN(USB_MIN(rem, mps), vld);
+
 
     if (len)
     {
@@ -1770,8 +1833,6 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     const uint32_t mps    = r_usbh_edpt_max_packet_size(p_ctrl, num);
     const uint32_t len    = USB_MIN(rem, mps);
 
-    r_usbh_pipe_wait_for_ready(p_ctrl, num);
-
     volatile uint16_t * p_reg_d0fifosel;
     volatile uint16_t * p_reg_d0fifoctr;
     volatile void     * p_reg_d0fifo;
@@ -1800,10 +1861,11 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
 
     *p_reg_d0fifosel = (num << R_USB_D0FIFOSEL_CURPIPE_Pos) |
                        (USB_FIFOSEL_MBW_16_BIT << R_USB_D0FIFOSEL_MBW_Pos);
+    r_usbh_pipe_wait_for_ready(p_ctrl, num);
 
     if (len)
     {
-        r_usbh_pipe_write_packet(p_buf, p_reg_d0fifo, len);
+        r_usbh_pipe_write_packet(p_ctrl, p_buf, p_reg_d0fifo, len);
         p_pipe->buf = (uint8_t *) p_buf + len;
     }
 
@@ -1884,7 +1946,6 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
         if (USB_DIR_OUT == dir)
         {
             /* OUT */
-            FSP_ASSERT((*p_reg_dcpctr & R_USB_DCPCTR_BSTS_Msk) && (*p_reg_usbreq & USB_SETBIT(7)));
             r_usbh_pipe0_xfer_out(p_ctrl);
         }
     }
@@ -1900,7 +1961,11 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
 
         if (dir == ((*p_reg_dcpcfg & R_USB_DCPCFG_DIR_Msk) >> R_USB_DCPCFG_DIR_Pos))
         {
-            FSP_ASSERT((USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos) == (*p_reg_dcpctr & R_USB_DCPCTR_PID_Msk));
+            /* The pipe must be idle before its direction changes, and the
+             * stage just finished leaves it at BUF.
+             */
+            *p_reg_dcpctr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
+            FSP_HARDWARE_REGISTER_WAIT((*p_reg_dcpctr & R_USB_DCPCTR_PBUSY_Msk), 0);
             *p_reg_dcpctr |= R_USB_DCPCTR_SQSET_Msk;
             *p_reg_dcpcfg  = (dir) ?
                              (*p_reg_dcpcfg & (~R_USB_DCPCFG_DIR_Msk)) :
@@ -2159,16 +2224,23 @@ static inline void r_usbh_interrupt_configure (usbh_instance_ctrl_t * p_ctrl)
 
 static inline void r_usbh_interrupt_enable (usbh_instance_ctrl_t * p_ctrl)
 {
+    /* Enable without clearing: a transfer armed while masked can complete
+     * before the unmask, and clearing would discard it. R_BSP_IrqCfg()
+     * installs the ISR context.
+     */
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->hs_irq, p_ctrl->p_cfg->hsipl, p_ctrl);
+        R_BSP_IrqCfg(p_ctrl->p_cfg->hs_irq, p_ctrl->p_cfg->hsipl, p_ctrl);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->hs_irq);
     }
     else
 #endif
     {
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->irq, p_ctrl->p_cfg->ipl, p_ctrl);
-        R_BSP_IrqCfgEnable(p_ctrl->p_cfg->irq_r, p_ctrl->p_cfg->ipl_r, p_ctrl);
+        R_BSP_IrqCfg(p_ctrl->p_cfg->irq, p_ctrl->p_cfg->ipl, p_ctrl);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->irq);
+        R_BSP_IrqCfg(p_ctrl->p_cfg->irq_r, p_ctrl->p_cfg->ipl_r, p_ctrl);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->irq_r);
     }
 }
 
