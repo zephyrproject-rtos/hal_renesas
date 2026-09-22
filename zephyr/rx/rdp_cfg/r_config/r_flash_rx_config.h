@@ -42,30 +42,30 @@
  * type 3 (see section 2.16 in App Note). See section 2.15 in the App Note for
  * details on how to set up code and the linker to execute code from RAM.
  */
-#define FLASH_CFG_CODE_FLASH_ENABLE ((DT_PROP(DT_NODELABEL(code_flash), programming_enable)))
+#define FLASH_CFG_CODE_FLASH_ENABLE ((DT_PROP(DT_NODELABEL(code_flash_ctrl), programming_enable)))
 
 
 /******************************************************************************
  ENABLE BGO/NON-BLOCKING DATA FLASH OPERATIONS
 ******************************************************************************/
 /* Setting this to 0 forces data flash API function to block until completed.
- * Setting to 1 places the module in BGO (background operations) mode. In BGO 
- * mode, data flash operations return immediately after the operation has been 
- * started. Notification of the operation completion is done via the callback 
- * function. 
+ * Setting to 1 places the module in BGO (background operations) mode. In BGO
+ * mode, data flash operations return immediately after the operation has been
+ * started. Notification of the operation completion is done via the callback
+ * function.
  */
-#define FLASH_CFG_DATA_FLASH_BGO   ((DT_PROP(DT_NODELABEL(data_flash), bgo_enable)))
+#define FLASH_CFG_DATA_FLASH_BGO   ((DT_PROP(DT_NODELABEL(data_flash_ctrl), bgo_enable)))
 
 
 /******************************************************************************
  ENABLE BGO/NON-BLOCKING CODE FLASH (ROM) OPERATIONS
 ******************************************************************************/
 /* Setting this to 0 forces ROM API function to block until completed.
- * Setting to 1 places the module in BGO (background operations) mode. In BGO 
+ * Setting to 1 places the module in BGO (background operations) mode. In BGO
  * mode, ROM operations return immediately after the operation has been started.
- * Notification of the operation completion is done via the callback function. 
+ * Notification of the operation completion is done via the callback function.
  * When reprogramming ROM, THE RELOCATABLE VECTOR TABLE AND CORRESPONDING
- * INTERRUPT ROUTINES MUST BE IN RAM.  
+ * INTERRUPT ROUTINES MUST BE IN RAM.
  * See sections 2.17 Usage Notes in the App Note.
  */
 #define FLASH_CFG_CODE_FLASH_BGO   (0)
