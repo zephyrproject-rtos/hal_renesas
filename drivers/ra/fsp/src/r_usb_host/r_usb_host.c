@@ -2793,9 +2793,12 @@ static void r_usbh_process_terminate_xfer (usbh_instance_ctrl_t * const p_ctrl, 
     /* Clear buffer and change it to NAK */
     *p_reg_dxfifoctr = R_USB_CFIFOCTR_BCLR_Msk;
 
-    /* Clear transaction counter */
-    p_reg_pipetr->TRE &= ~R_USB_PIPE_TR_E_TRENB_Msk;
-    p_reg_pipetr->TRE |= R_USB_PIPE_TR_E_TRCLR_Msk;
+    /* Clear transaction counter, which only pipes 1 to 5 have */
+    if (p_reg_pipetr)
+    {
+        p_reg_pipetr->TRE &= ~R_USB_PIPE_TR_E_TRENB_Msk;
+        p_reg_pipetr->TRE |= R_USB_PIPE_TR_E_TRCLR_Msk;
+    }
 
     *p_reg_dxfifosel &= ~R_USB_D0FIFOSEL_CURPIPE_Msk;
     FSP_HARDWARE_REGISTER_WAIT((*p_reg_dxfifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
