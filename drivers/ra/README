@@ -233,3 +233,7 @@ Patch List:
    * Fix GLCDC stop sequence to wait for the background plane to stop before reset
       Impacted files:
          drivers/ra/fsp/src/r_glcdc/r_glcdc.c
+
+   * Update to disable write transaction for memory-map in OSPI_B when enter 1S-4S-4S mode
+      Impacted files:
+         drivers/ra/fsp/src/r_ospi_b/r_ospi_b.c
