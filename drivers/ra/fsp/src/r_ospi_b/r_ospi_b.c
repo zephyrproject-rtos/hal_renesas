@@ -1034,6 +1034,31 @@ static fsp_err_t r_ospi_b_protocol_specific_settings (ospi_b_instance_ctrl_t * p
 
     p_instance_ctrl->p_cmd_set = p_cmd_set;
 
+    /* Disable memory-mapped WRITE access whenever entering 1S-4S-4S mode.
+     * Quad-SPI flashes (e.g. W25Q32JV) only support page-program as 1-1-4
+     * (address on 1 line), so any combination write fired in 1S-4S-4S would
+     * send the address on 4 lines and corrupt programming. */
+    if (SPI_FLASH_PROTOCOL_1S_4S_4S == p_instance_ctrl->spi_protocol)
+    {
+        const uint32_t write_mask =
+            (OSPI_B_DEVICE_NUMBER_0 == p_instance_ctrl->channel)
+            ? ((R_XSPI0_BMCTL0_CH0CS0ACC_Msk | R_XSPI0_BMCTL0_CH1CS0ACC_Msk) &
+               OSPI_B_PRV_BMCTL0_WRITE_ONLY_VALUE)   /* CS0: 0x22 */
+            : ((R_XSPI0_BMCTL0_CH0CS1ACC_Msk | R_XSPI0_BMCTL0_CH1CS1ACC_Msk) &
+               OSPI_B_PRV_BMCTL0_WRITE_ONLY_VALUE);  /* CS1: 0x88 */
+
+        p_reg->BMCTL0 &= ~write_mask;
+    } else {
+        const uint32_t write_mask =
+            (OSPI_B_DEVICE_NUMBER_0 == p_instance_ctrl->channel)
+            ? ((R_XSPI0_BMCTL0_CH0CS0ACC_Msk | R_XSPI0_BMCTL0_CH1CS0ACC_Msk) &
+               OSPI_B_PRV_BMCTL0_WRITE_ONLY_VALUE)   /* CS0: 0x22 */
+            : ((R_XSPI0_BMCTL0_CH0CS1ACC_Msk | R_XSPI0_BMCTL0_CH1CS1ACC_Msk) &
+               OSPI_B_PRV_BMCTL0_WRITE_ONLY_VALUE);  /* CS1: 0x88 */
+
+        p_reg->BMCTL0 |= write_mask;
+    }
+
     /* Update the SPI protocol and latency mode. */
     uint32_t liocfg = p_reg->LIOCFGCS[p_instance_ctrl->channel] &
                       ~(R_XSPI0_LIOCFGCS_LATEMD_Msk | R_XSPI0_LIOCFGCS_PRTMD_Msk);
