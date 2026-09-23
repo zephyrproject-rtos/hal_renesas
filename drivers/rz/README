@@ -89,3 +89,8 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/inc/instances/rzg/r_sci_b_uart.h
       drivers/rz/fsp/src/rzg/r_sci_b_uart/r_sci_b_uart.c
+
+   * Remove the "hal_data.h" include and place the display list body (dl_body) in the Zephyr
+     ".nocache" section instead of the FSP "UNCACHED_BSS" section.
+   Impacted files:
+      drivers/rz/fsp/src/rza/r_lcdc/r_lcdc.c

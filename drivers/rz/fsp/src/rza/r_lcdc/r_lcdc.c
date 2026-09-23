@@ -9,7 +9,6 @@
  **********************************************************************************************************************/
 #include "r_lcdc.h"
 #include "bsp_api.h"
-#include "hal_data.h"
 #include "r_lcdc_cfg.h"
 
 /***********************************************************************************************************************
@@ -150,7 +149,7 @@ static lcdc_ctrl_t r_lcdc_blk =
     .p_context = NULL,
 };
 
-static display_list_data_type dl_body __attribute__((section("UNCACHED_BSS"), __aligned__(16)));
+static display_list_data_type dl_body __attribute__((section(".nocache"), __aligned__(16)));
 static uint32_t               layer_status;
 
 /***********************************************************************************************************************
