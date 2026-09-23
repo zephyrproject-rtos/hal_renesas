@@ -484,6 +484,49 @@ fsp_err_t R_USBH_PortStatusGet (usb_ctrl_t * const p_api_ctrl, usb_status_t * p_
 }
 
 /**
+ * @brief Get a preliminary device speed from the USB data line state (SYSSTS0.LNST).
+ *
+ * Unlike DVSTCTR0.RHST (see ::R_USBH_GetDeviceSpeed), LNST reflects the pull-up currently driving
+ * the bus and is valid as soon as a device is attached, before any bus reset has run. Per the
+ * hardware manual's "Status of USB data bus lines (D+ and D-)" table, an LS pull-up (LNST ==
+ * USB_LS_JSTS) means a low-speed device is attached; an FS pull-up (LNST == USB_FS_JSTS) means a
+ * full-speed or HS-capable device is attached (the HS/FS distinction is only resolved by the reset
+ * chirp handshake, i.e. by RHST after ::R_USBH_PortReset()). Any other line state (SE0/reserved)
+ * means no device is present yet.
+ *
+ * @param[in] p_ctrl    Pointer to the USB host control block.
+ *
+ * @return The preliminary device speed, or ::USB_SPEED_INVALID if no device is attached.
+ */
+static usb_speed_t r_usbh_get_lnst_speed (usbh_instance_ctrl_t * const p_ctrl)
+{
+    uint16_t lnst;
+
+#ifdef USB_HIGH_SPEED_MODULE
+    if (USB_IS_USBHS(p_ctrl->module_number))
+    {
+        lnst = R_USB_HS0->SYSSTS0_b.LNST;
+    }
+    else
+#endif
+    {
+        lnst = R_USB_FS0->SYSSTS0_b.LNST;
+    }
+
+    if (USB_LS_JSTS == lnst)
+    {
+        return USB_SPEED_LS;
+    }
+
+    if (USB_FS_JSTS == lnst)
+    {
+        return USB_SPEED_FS;
+    }
+
+    return USB_SPEED_INVALID;
+}
+
+/**
  * @brief Drive a USB bus reset on the root port.
  *
  * Sets the default control pipe to NAK, asserts the bus reset signal for ~20 ms, then de-asserts it and
@@ -529,9 +572,7 @@ fsp_err_t R_USBH_PortReset (usb_ctrl_t * const p_api_ctrl)
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        const uint16_t lnst = R_USB_HS0->SYSSTS0_b.LNST;
-
-        if (lnst == USB_LS_JSTS)
+        if (USB_SPEED_LS == r_usbh_get_lnst_speed(p_ctrl))
         {
             /* LS device connected: disable high-speed operation*/
             R_USB_HS0->SYSCFG &= ~R_USB_SYSCFG_HSE_Msk;
@@ -1798,6 +1839,7 @@ static inline void r_usbh_event_device_attach_notify (usbh_instance_ctrl_t * con
         {
             .hub_addr = 0,
             .hub_port = 0,
+            .speed    = (uint8_t) r_usbh_get_lnst_speed(p_ctrl),
         }
     };
 
