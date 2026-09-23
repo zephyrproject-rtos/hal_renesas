@@ -969,20 +969,16 @@ fsp_err_t R_SCI_B_UART_ReadStop (uart_ctrl_t * const p_api_ctrl, uint32_t * rema
  * @retval     FSP_ERR_INVALID_ARGUMENT  Baud rate is '0', error in calculated baud rate is larger than requested
  *                                       max error, or requested max error in baud rate is larger than 15%.
  **********************************************************************************************************************/
-fsp_err_t R_SCI_B_UART_BaudCalculate (uart_ctrl_t * const          p_api_ctrl,
-                                      uint32_t                     baudrate,
+fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
                                       bool                         bitrate_modulation,
                                       uint32_t                     baud_rate_error_x_1000,
                                       sci_b_baud_setting_t * const p_baud_setting)
 {
 #if (SCI_B_UART_CFG_PARAM_CHECKING_ENABLE)
-    FSP_ASSERT(p_api_ctrl);
     FSP_ASSERT(p_baud_setting);
     FSP_ERROR_RETURN(SCI_B_UART_MAX_BAUD_RATE_ERROR_X_1000 >= baud_rate_error_x_1000, FSP_ERR_INVALID_ARGUMENT);
     FSP_ERROR_RETURN((0U != baudrate), FSP_ERR_INVALID_ARGUMENT);
 #endif
-
-    FSP_PARAMETER_NOT_USED(p_api_ctrl);
 
     p_baud_setting->baudrate_bits_b.brr  = SCI_B_UART_BRR_MAX;
     p_baud_setting->baudrate_bits_b.brme = 0U;

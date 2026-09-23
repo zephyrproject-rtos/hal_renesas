@@ -83,3 +83,9 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rzn/bsp/mcu/rzn2h/bsp_feature.h
       drivers/rz/fsp/src/rzt/bsp/mcu/rzt2h/bsp_feature.h
+
+   * Remove p_api_ctrl parameter of the R_SCI_B_UART_BaudCalculate function to avoid a build error,
+     this change does not impact the source logic since the parameter is not used
+   Impacted files:
+      drivers/rz/fsp/inc/instances/rzg/r_sci_b_uart.h
+      drivers/rz/fsp/src/rzg/r_sci_b_uart/r_sci_b_uart.c
