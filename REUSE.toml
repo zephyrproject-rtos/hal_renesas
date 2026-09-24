@@ -35,3 +35,14 @@ path = [
 ]
 SPDX-FileCopyrightText = "Copyright (c) 2020 - 2025, Renesas Electronics Corporation and/or its affiliates"
 SPDX-License-Identifier = "LicenseRef-Renesas-Open-License"
+
+# ---------------------------------------------------------------------------
+# Binary blobs — Renesas Open License v1.0 (RA6B1)
+# ---------------------------------------------------------------------------
+[[annotations]]
+path = [
+  "zephyr/blobs/ra6b1/**",
+  "zephyr/blobs/renesas_open_license.txt",
+]
+SPDX-FileCopyrightText = "Copyright (c) 2020 - 2025, Renesas Electronics Corporation and/or its affiliates"
+SPDX-License-Identifier = "LicenseRef-Renesas-Open-License"
