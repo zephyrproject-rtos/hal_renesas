@@ -1895,7 +1895,8 @@ static uint16_t r_usbh_edpt_max_packet_size (usbh_instance_ctrl_t * const p_ctrl
     {
         R_USB_HS0->PIPESEL = num;
 
-        return (uint16_t) (R_USB_HS0->PIPEMAXP & 0x3FF);
+        return (uint16_t) ((R_USB_HS0->PIPEMAXP & R_USB_HS0_PIPEMAXP_MXPS_Msk) >>
+                           R_USB_HS0_PIPEMAXP_MXPS_Pos);
     }
     else
 #endif
@@ -2478,6 +2479,11 @@ static bool r_usbh_process_pipe0_xfer (usbh_instance_ctrl_t * const p_ctrl,
 
         if (dir == ((*p_reg_dcpcfg & R_USB_DCPCFG_DIR_Msk) >> R_USB_DCPCFG_DIR_Pos))
         {
+            /* The pipe must be idle before its direction changes, and the
+             * stage just finished leaves it at BUF.
+             */
+            *p_reg_dcpctr = USB_PIPE_CTR_PID_NAK << R_USB_PIPE_CTR_PID_Pos;
+            FSP_HARDWARE_REGISTER_WAIT((*p_reg_dcpctr & R_USB_DCPCTR_PBUSY_Msk), 0);
             *p_reg_dcpctr |= R_USB_DCPCTR_SQSET_Msk;
             *p_reg_dcpcfg  = (dir) ?
                              (*p_reg_dcpcfg & (~R_USB_DCPCFG_DIR_Msk)) :
@@ -2787,9 +2793,12 @@ static void r_usbh_process_terminate_xfer (usbh_instance_ctrl_t * const p_ctrl, 
     /* Clear buffer and change it to NAK */
     *p_reg_dxfifoctr = R_USB_CFIFOCTR_BCLR_Msk;
 
-    /* Clear transaction counter */
-    p_reg_pipetr->TRE &= ~R_USB_PIPE_TR_E_TRENB_Msk;
-    p_reg_pipetr->TRE |= R_USB_PIPE_TR_E_TRCLR_Msk;
+    /* Clear transaction counter, which only pipes 1 to 5 have */
+    if (p_reg_pipetr)
+    {
+        p_reg_pipetr->TRE &= ~R_USB_PIPE_TR_E_TRENB_Msk;
+        p_reg_pipetr->TRE |= R_USB_PIPE_TR_E_TRCLR_Msk;
+    }
 
     *p_reg_dxfifosel &= ~R_USB_D0FIFOSEL_CURPIPE_Msk;
     FSP_HARDWARE_REGISTER_WAIT((*p_reg_dxfifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), 0);
@@ -2852,16 +2861,19 @@ static inline void r_usbh_interrupt_configure (usbh_instance_ctrl_t * p_ctrl)
 /* Enable and configure the NVIC interrupt(s) for the selected USB module. */
 static inline void r_usbh_interrupt_enable (usbh_instance_ctrl_t * p_ctrl)
 {
+    /* Enable without clearing: a transfer armed while masked can complete
+     * before the unmask, and clearing would discard it.
+     */
 #ifdef USB_HIGH_SPEED_MODULE
     if (USB_IS_USBHS(p_ctrl->module_number))
     {
-        R_BSP_IrqEnable(p_ctrl->p_cfg->hs_irq);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->hs_irq);
     }
     else
 #endif
     {
-        R_BSP_IrqEnable(p_ctrl->p_cfg->irq);
-        R_BSP_IrqEnable(p_ctrl->p_cfg->irq_r);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->irq);
+        R_BSP_IrqEnableNoClear(p_ctrl->p_cfg->irq_r);
     }
 }
 
