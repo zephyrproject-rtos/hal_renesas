@@ -20,3 +20,13 @@ blobs:
     url: https://github.com/renesas/libdave2d/raw/main/libdave2d.a
     description: "Binary libraries with firmware for D/AVE 2D graphics accelerator"
     doc-url: https://github.com/renesas/libdave2d
+  # Entropy library for RA6B1
+  - path: ra6b1/libentropy.a
+    sha256: 8e66059ee33c13ae38de6e45252192a46c1bd5c582761cb5f02bf9c13dc1c1c9
+    type: lib
+    version: '1.0'
+    license-path: zephyr/blobs/renesas_open_license.txt
+    url: https://github.com/renesas/ra6b1_libentropy/raw/main/libentropy.a
+    description: "Entropy library for RA6B1"
+    doc-url: https://github.com/renesas/ra6b1_libentropy
+

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory_ifdef(CONFIG_HAS_RENESAS_RA_FSP ra)
+add_subdirectory_ifdef(CONFIG_HAS_RENESAS_RAFW_FSP ra_wireless)
 add_subdirectory_ifdef(CONFIG_HAS_RENESAS_RZ_FSP rz)
 
 if(CONFIG_HAS_RENESAS_RX_RDP OR CONFIG_HAS_RENESAS_RX_FSP)
