@@ -12,7 +12,7 @@
 #include "rm_touch.h"
 #endif
 
-#if CONFIG_LV_USE_DRAW_DAVE2D
+#if CONFIG_RENESAS_RA_DRW
 #include "dave_base.h"
 #include "dave_driver.h"
 #include "dave_math.h"
