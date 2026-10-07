@@ -7,4 +7,4 @@ if(CONFIG_HAS_RENESAS_RX_RDP OR CONFIG_HAS_RENESAS_RX_FSP)
   add_subdirectory(rx)
 endif()
 
-zephyr_include_directories_ifdef(CONFIG_LV_USE_DRAW_DAVE2D tes/dave2d/inc)
+zephyr_include_directories_ifdef(CONFIG_RENESAS_RA_DRW tes/dave2d/inc)
