@@ -2012,8 +2012,9 @@ static void r_usbh_pipe_write_packet (usbh_instance_ctrl_t * const p_ctrl,
     }
 }
 
-/* Read @p len bytes from the FIFO at @p p_fifo into @p p_buf, using the widest access (32/16/8-bit)
- * allowed by buffer alignment, remaining length and @p access_bytes. */
+/* Read @p len bytes from the FIFO at @p p_fifo into @p p_buf with @p access_bytes wide accesses.
+ * The FIFO must be read with the access size set in MBW, and MBW must not be changed until all data
+ * of the packet is read. The trailing bytes are taken from one last full-width read. */
 static void r_usbh_pipe_read_packet (usbh_instance_ctrl_t * const p_ctrl,
                                      void                       * p_buf,
                                      volatile void              * p_fifo,
@@ -2021,51 +2022,86 @@ static void r_usbh_pipe_read_packet (usbh_instance_ctrl_t * const p_ctrl,
                                      uint32_t                     access_bytes,
                                      uint8_t                      num)
 {
-#ifdef USB_HIGH_SPEED_MODULE
-    volatile uint32_t * p_fifo32 = (volatile uint32_t *) p_fifo;
-    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (access_bytes ==
-                                                          4 ? ((uintptr_t) p_fifo + 2) : (uintptr_t) p_fifo);
-    volatile uint8_t * p_fifo8 = (volatile uint8_t *) (access_bytes ==
-                                                       4 ? ((uintptr_t) p_fifo + 3) : (uintptr_t) p_fifo);
-#else
-    volatile uint16_t * p_fifo16 = (volatile uint16_t *) (p_fifo);
-    volatile uint8_t  * p_fifo8  = (volatile uint8_t *) (p_fifo);
-#endif
+    FSP_PARAMETER_NOT_USED(p_ctrl);
+    FSP_PARAMETER_NOT_USED(num);
+
     uint8_t * p_data = (uint8_t *) p_buf;
 
+    /* Full-width accesses: store the FIFO value straight into the buffer through a pointer when the
+     * destination is aligned (the FIFO data is little-endian like the CPU). An unaligned buffer falls
+     * through to the byte-wise path below. */
 #ifdef USB_HIGH_SPEED_MODULE
-    if ((access_bytes == 4) && ((uintptr_t) p_data % 4 == 0))
+    if ((access_bytes == 4) && (0U == ((uintptr_t) p_data & 3U)))
     {
+        uint32_t * p_dst32 = (uint32_t *) p_data;
         while (len >= 4)
         {
-            *(uint32_t *) p_data = *p_fifo32;
-            p_data              += 4;
-            len -= 4;
+            *p_dst32++ = *(volatile uint32_t *) p_fifo;
+            len       -= 4;
         }
+
+        p_data = (uint8_t *) p_dst32;
     }
+    else
 #endif
-
-    while (len >= 2 && (uintptr_t) p_data % 2 == 0)
+    if ((access_bytes == 2) && (0U == ((uintptr_t) p_data & 1U)))
     {
-        if (access_bytes != 2)
+        uint16_t * p_dst16 = (uint16_t *) p_data;
+        while (len >= 2)
         {
-            fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_16_BIT, num);
+            *p_dst16++ = *(volatile uint16_t *) p_fifo;
+            len       -= 2;
         }
 
-        *(uint16_t *) p_data = *p_fifo16;
-        p_data              += 2;
-        len -= 2;
+        p_data = (uint8_t *) p_dst16;
+    }
+    else
+    {
+        /* Unaligned destination: split each FIFO word into bytes. */
+        while (len >= access_bytes)
+        {
+            uint32_t word;
+#ifdef USB_HIGH_SPEED_MODULE
+            if (access_bytes == 4)
+            {
+                word = *(volatile uint32_t *) p_fifo;
+            }
+            else
+#endif
+            {
+                word = *(volatile uint16_t *) p_fifo;
+            }
+
+            len -= access_bytes;
+            for (uint32_t i = 0; i < access_bytes; i++)
+            {
+                *p_data++ = (uint8_t) word;
+                word    >>= 8;
+            }
+        }
     }
 
-    if (len)
+    /* Trailing bytes (len < access_bytes) come from one last full-width read. */
+    if (len > 0)
     {
-        fifo_set_mbw(p_fifo, USB_FIFOSEL_MBW_8_BIT, num);
-    }
+        uint32_t word;
 
-    while (len--)
-    {
-        *p_data = *p_fifo8;
-        ++p_data;
+#ifdef USB_HIGH_SPEED_MODULE
+        if (access_bytes == 4)
+        {
+            word = *(volatile uint32_t *) p_fifo;
+        }
+        else
+#endif
+        {
+            word = *(volatile uint16_t *) p_fifo;
+        }
+
+        while (len--)
+        {
+            *p_data++ = (uint8_t) word;
+            word    >>= 8;
+        }
     }
 }
 
