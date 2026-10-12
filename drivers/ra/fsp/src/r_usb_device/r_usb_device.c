@@ -1240,6 +1240,15 @@ static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
             }
 
             case USB_CONTROL_STAGE_READ_DATA:
+            {
+                /* notice that this is the end of data stage */
+                *cfifoctr = R_USB_CFIFOCTR_BVAL_Msk;
+
+                /* respond to the IN token with the ZLP, otherwise the host only gets NAKs */
+                *dcpctr = R_USB_PIPE_CTR_PID_BUF;
+                break;
+            }
+
             case USB_CONTROL_STAGE_WRITE_DATA:
             {
                 /* notice that this is the end of data stage */
