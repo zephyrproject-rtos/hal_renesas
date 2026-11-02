@@ -8,23 +8,31 @@
 #define R_MPU_POSMSK_H
 
 /* =========================================================================================================================== */
+/* ================                                 Pos/Mask Cluster Section                                  ================ */
+/* =========================================================================================================================== */
+
+/** @addtogroup PosMask_clusters
+ * @{
+ */
+
+/* =========================================================================================================================== */
 /* ================                                           RPAGE                                           ================ */
 /* =========================================================================================================================== */
 
 /* ==========================================================  ST  =========================================================== */
-#define R_MPU_RPAGE_ST_DCA_Pos     (0UL)          /*!< DCA (Bit 0)                                           */
-#define R_MPU_RPAGE_ST_DCA_Msk     (0x3UL)        /*!< DCA (Bitfield-Mask: 0x03)                             */
-#define R_MPU_RPAGE_ST_ICA_Pos     (2UL)          /*!< ICA (Bit 2)                                           */
-#define R_MPU_RPAGE_ST_ICA_Msk     (0x4UL)        /*!< ICA (Bitfield-Mask: 0x01)                             */
 #define R_MPU_RPAGE_ST_RSPN_Pos    (5UL)          /*!< RSPN (Bit 5)                                          */
 #define R_MPU_RPAGE_ST_RSPN_Msk    (0xffffffe0UL) /*!< RSPN (Bitfield-Mask: 0x7ffffff)                       */
+#define R_MPU_RPAGE_ST_ICA_Pos     (2UL)          /*!< ICA (Bit 2)                                           */
+#define R_MPU_RPAGE_ST_ICA_Msk     (0x4UL)        /*!< ICA (Bitfield-Mask: 0x01)                             */
+#define R_MPU_RPAGE_ST_DCA_Pos     (0UL)          /*!< DCA (Bit 0)                                           */
+#define R_MPU_RPAGE_ST_DCA_Msk     (0x3UL)        /*!< DCA (Bitfield-Mask: 0x03)                             */
 /* ==========================================================  EN  =========================================================== */
-#define R_MPU_RPAGE_EN_V_Pos       (0UL)          /*!< V (Bit 0)                                             */
-#define R_MPU_RPAGE_EN_V_Msk       (0x1UL)        /*!< V (Bitfield-Mask: 0x01)                               */
-#define R_MPU_RPAGE_EN_UAC_Pos     (1UL)          /*!< UAC (Bit 1)                                           */
-#define R_MPU_RPAGE_EN_UAC_Msk     (0xeUL)        /*!< UAC (Bitfield-Mask: 0x07)                             */
 #define R_MPU_RPAGE_EN_REPN_Pos    (5UL)          /*!< REPN (Bit 5)                                          */
 #define R_MPU_RPAGE_EN_REPN_Msk    (0xffffffe0UL) /*!< REPN (Bitfield-Mask: 0x7ffffff)                       */
+#define R_MPU_RPAGE_EN_UAC_Pos     (1UL)          /*!< UAC (Bit 1)                                           */
+#define R_MPU_RPAGE_EN_UAC_Msk     (0xeUL)        /*!< UAC (Bitfield-Mask: 0x07)                             */
+#define R_MPU_RPAGE_EN_V_Pos       (0UL)          /*!< V (Bit 0)                                             */
+#define R_MPU_RPAGE_EN_V_Msk       (0x1UL)        /*!< V (Bitfield-Mask: 0x01)                               */
 
 /** @} */ /* End of group PosMask_clusters */
 

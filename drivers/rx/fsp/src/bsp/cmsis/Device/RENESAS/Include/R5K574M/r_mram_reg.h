@@ -8,6 +8,14 @@
 #define R_MRAM_REG_H
 
 /* =========================================================================================================================== */
+/* ================                            Device Specific Peripheral Section                             ================ */
+/* =========================================================================================================================== */
+
+/** @addtogroup Device_Peripheral_peripherals
+ * @{
+ */
+
+/* =========================================================================================================================== */
 /* ================                                          R_MRAM                                           ================ */
 /* =========================================================================================================================== */
 
@@ -25,9 +33,9 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t              : 7;
-            __IOM uint8_t MPFBEN : 1;  /*!< [0..0] MRAM Pre-Fetch Buffer enable.                                      */
+            __IOM uint8_t MPFBEN : 1;  /*!< [0..0] Code MRAM Prefetch Buffer Enable                                   */
 #else
-            __IOM uint8_t MPFBEN : 1;  /*!< [0..0] MRAM Pre-Fetch Buffer enable.                                      */
+            __IOM uint8_t MPFBEN : 1;  /*!< [0..0] Code MRAM Prefetch Buffer Enable                                   */
             uint8_t              : 7;
 #endif
         } MRCPFB_b;
@@ -44,9 +52,9 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint32_t KEY    : 8;  /*!< [31..24] Key Code                                                         */
             uint32_t              : 14;
-            __IOM uint32_t MRCMHZ : 10; /*!< [9..0] Setting the operating frequency in the order of MHz                */
+            __IOM uint32_t MRCMHZ : 10; /*!< [9..0] Code MRAM Frequency Notifications                                  */
 #else
-            __IOM uint32_t MRCMHZ : 10; /*!< [9..0] Setting the operating frequency in the order of MHz                */
+            __IOM uint32_t MRCMHZ : 10; /*!< [9..0] Code MRAM Frequency Notifications                                  */
             uint32_t              : 14;
             __IOM uint32_t KEY    : 8;  /*!< [31..24] Key Code                                                         */
 #endif
@@ -62,9 +70,9 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint32_t KEY    : 8; /*!< [31..24] Key Code                                                         */
             uint32_t              : 16;
-            __IOM uint32_t MREMHZ : 8; /*!< [7..0] Setting the operating frequency in the order of MHz                */
+            __IOM uint32_t MREMHZ : 8; /*!< [7..0] Extra MRAM Frequency Notifications                                 */
 #else
-            __IOM uint32_t MREMHZ : 8; /*!< [7..0] Setting the operating frequency in the order of MHz                */
+            __IOM uint32_t MREMHZ : 8; /*!< [7..0] Extra MRAM Frequency Notifications                                 */
             uint32_t              : 16;
             __IOM uint32_t KEY    : 8; /*!< [31..24] Key Code                                                         */
 #endif
@@ -81,11 +89,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
             uint16_t               : 6;
-            __IOM uint16_t ECCSELC : 1; /*!< [1..1] MRC ECC Data select                                                */
-            __IOM uint16_t DECDISC : 1; /*!< [0..0] MRC ECC Decoder disable                                            */
+            __IOM uint16_t ECCSELC : 1; /*!< [1..1] Code MRAM ECC Bits Select                                          */
+            __IOM uint16_t DECDISC : 1; /*!< [0..0] Code MRAM ECC Decoder Disable                                      */
 #else
-            __IOM uint16_t DECDISC : 1; /*!< [0..0] MRC ECC Decoder disable                                            */
-            __IOM uint16_t ECCSELC : 1; /*!< [1..1] MRC ECC Data select                                                */
+            __IOM uint16_t DECDISC : 1; /*!< [0..0] Code MRAM ECC Decoder Disable                                      */
+            __IOM uint16_t ECCSELC : 1; /*!< [1..1] Code MRAM ECC Bits Select                                          */
             uint16_t               : 6;
             __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
 #endif
@@ -102,11 +110,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t                : 6;
-            __IOM uint8_t INTENBTC : 1; /*!< [1..1] MRC TED error interrupt enable.                                    */
-            __IOM uint8_t INTENBDC : 1; /*!< [0..0] MRC DEC error interrupt enable.                                    */
+            __IOM uint8_t INTENBTC : 1; /*!< [1..1] Code MRAM TED Error Interrupt Enable                               */
+            __IOM uint8_t INTENBDC : 1; /*!< [0..0] Code MRAM DEC Error Interrupt Enable                               */
 #else
-            __IOM uint8_t INTENBDC : 1; /*!< [0..0] MRC DEC error interrupt enable.                                    */
-            __IOM uint8_t INTENBTC : 1; /*!< [1..1] MRC TED error interrupt enable.                                    */
+            __IOM uint8_t INTENBDC : 1; /*!< [0..0] Code MRAM DEC Error Interrupt Enable                               */
+            __IOM uint8_t INTENBTC : 1; /*!< [1..1] Code MRAM TED Error Interrupt Enable                               */
             uint8_t                : 6;
 #endif
         } MRCRAEINT_b;
@@ -122,11 +130,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t               : 6;
-            __IOM uint8_t TEDERRC : 1; /*!< [1..1] MRC TED error detected.                                            */
-            __IOM uint8_t DECERRC : 1; /*!< [0..0] MRC DEC error detected.                                            */
+            __IOM uint8_t TEDERRC : 1; /*!< [1..1] Code MRAM TED Error Detect Flag                                    */
+            __IOM uint8_t DECERRC : 1; /*!< [0..0] Code MRAM DEC Error Detect Flag                                    */
 #else
-            __IOM uint8_t DECERRC : 1; /*!< [0..0] MRC DEC error detected.                                            */
-            __IOM uint8_t TEDERRC : 1; /*!< [1..1] MRC TED error detected.                                            */
+            __IOM uint8_t DECERRC : 1; /*!< [0..0] Code MRAM DEC Error Detect Flag                                    */
+            __IOM uint8_t TEDERRC : 1; /*!< [1..1] Code MRAM TED Error Detect Flag                                    */
             uint8_t               : 6;
 #endif
         } MRCRAES_b;
@@ -141,11 +149,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint32_t MRCRTEA : 27; /*!< [31..5] MRC read access TED error Address.                                */
+            __IM uint32_t MRCRTEA : 27; /*!< [31..5] Code MRAM Read Access TED Error Address                           */
             uint32_t              : 5;
 #else
             uint32_t              : 5;
-            __IM uint32_t MRCRTEA : 27; /*!< [31..5] MRC read access TED error Address.                                */
+            __IM uint32_t MRCRTEA : 27; /*!< [31..5] Code MRAM Read Access TED Error Address                           */
 #endif
         } MRCRTEA_b;
     };
@@ -157,11 +165,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint32_t MRCRDEA : 27; /*!< [31..5] MRC read access DEC error Address.                                */
+            __IM uint32_t MRCRDEA : 27; /*!< [31..5] Code MRAM Read Access DEC Error Address                           */
             uint32_t              : 5;
 #else
             uint32_t              : 5;
-            __IM uint32_t MRCRDEA : 27; /*!< [31..5] MRC read access DEC error Address.                                */
+            __IM uint32_t MRCRDEA : 27; /*!< [31..5] Code MRAM Read Access DEC Error Address                           */
 #endif
         } MRCRDEA_b;
     };
@@ -169,18 +177,18 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 
     union
     {
-        __IOM uint16_t MREDECC;        /*!< (@ 0x00000030) MRE ECC Decoder Control Register                           */
+        __IOM uint16_t MREDECC;        /*!< (@ 0x00000030) Extra MRAM ECC Decoder Control Register                    */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
             uint16_t               : 6;
-            __IOM uint16_t ECCSELE : 1; /*!< [1..1] MRE ECC Data select                                                */
-            __IOM uint16_t DECDISE : 1; /*!< [0..0] MRE ECC Decoder disable                                            */
+            __IOM uint16_t ECCSELE : 1; /*!< [1..1] Extra MRAM ECC Bits Select                                         */
+            __IOM uint16_t DECDISE : 1; /*!< [0..0] Extra MRAM ECC Decoder Disable                                     */
 #else
-            __IOM uint16_t DECDISE : 1; /*!< [0..0] MRE ECC Decoder disable                                            */
-            __IOM uint16_t ECCSELE : 1; /*!< [1..1] MRE ECC Data select                                                */
+            __IOM uint16_t DECDISE : 1; /*!< [0..0] Extra MRAM ECC Decoder Disable                                     */
+            __IOM uint16_t ECCSELE : 1; /*!< [1..1] Extra MRAM ECC Bits Select                                         */
             uint16_t               : 6;
             __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
 #endif
@@ -190,21 +198,21 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 
     union
     {
-        __IOM uint8_t MRERAINT;        /*!< (@ 0x00000034) Extra MRAM Read Access Error Interrupt Enable
+        __IOM uint8_t MRERAEINT;       /*!< (@ 0x00000034) Extra MRAM Read Access Error Interrupt Enable
                                         *                  Register                                                   */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t                : 6;
-            __IOM uint8_t INTENBTE : 1; /*!< [1..1] MRE TED error interrupt enable.                                    */
-            __IOM uint8_t INTENBDE : 1; /*!< [0..0] MRE DEC error interrupt enable.                                    */
+            __IOM uint8_t INTENBTE : 1; /*!< [1..1] Extra MRAM TED Error Interrupt Enable                              */
+            __IOM uint8_t INTENBDE : 1; /*!< [0..0] Extra MRAM DEC Error Interrupt Enable                              */
 #else
-            __IOM uint8_t INTENBDE : 1; /*!< [0..0] MRE DEC error interrupt enable.                                    */
-            __IOM uint8_t INTENBTE : 1; /*!< [1..1] MRE TED error interrupt enable.                                    */
+            __IOM uint8_t INTENBDE : 1; /*!< [0..0] Extra MRAM DEC Error Interrupt Enable                              */
+            __IOM uint8_t INTENBTE : 1; /*!< [1..1] Extra MRAM TED Error Interrupt Enable                              */
             uint8_t                : 6;
 #endif
-        } MRERAINT_b;
+        } MRERAEINT_b;
     };
     __IM uint8_t  RESERVED10;
     __IM uint16_t RESERVED11;
@@ -217,11 +225,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t               : 6;
-            __IOM uint8_t TEDERRE : 1; /*!< [1..1] MRE TED error detected.                                            */
-            __IOM uint8_t DECERRE : 1; /*!< [0..0] MRE DEC error detected.                                            */
+            __IOM uint8_t TEDERRE : 1; /*!< [1..1] Extra MRAM TED Error Detected                                      */
+            __IOM uint8_t DECERRE : 1; /*!< [0..0] Extra MRAM DEC Error Detected                                      */
 #else
-            __IOM uint8_t DECERRE : 1; /*!< [0..0] MRE DEC error detected.                                            */
-            __IOM uint8_t TEDERRE : 1; /*!< [1..1] MRE TED error detected.                                            */
+            __IOM uint8_t DECERRE : 1; /*!< [0..0] Extra MRAM DEC Error Detected                                      */
+            __IOM uint8_t TEDERRE : 1; /*!< [1..1] Extra MRAM TED Error Detected                                      */
             uint8_t               : 6;
 #endif
         } MRERAES_b;
@@ -236,11 +244,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint32_t MRERTEA : 28; /*!< [31..4] MRE read access TED error Address.                                */
+            __IM uint32_t MRERTEA : 28; /*!< [31..4] Extra MRAM Read Access TED Error Address                          */
             uint32_t              : 4;
 #else
             uint32_t              : 4;
-            __IM uint32_t MRERTEA : 28; /*!< [31..4] MRE read access TED error Address.                                */
+            __IM uint32_t MRERTEA : 28; /*!< [31..4] Extra MRAM Read Access TED Error Address                          */
 #endif
         } MRERTEA_b;
     };
@@ -252,11 +260,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint32_t MRERDEA : 28; /*!< [31..4] MRE read access DEC error Address.                                */
+            __IM uint32_t MRERDEA : 28; /*!< [31..4] Extra MRAM Read Access DEC Error Address                          */
             uint32_t              : 4;
 #else
             uint32_t              : 4;
-            __IM uint32_t MRERDEA : 28; /*!< [31..4] MRE read access DEC error Address.                                */
+            __IM uint32_t MRERDEA : 28; /*!< [31..4] Extra MRAM Read Access DEC Error Address                          */
 #endif
         } MRERDEA_b;
     };
@@ -269,21 +277,21 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t MRCPSEQSA : 1; /*!< [15..15] MBSSC Area Registers Security Attribution                        */
-            __IOM uint16_t MREPSEQSA : 1; /*!< [14..14] MBSSE Area Registers Security Attribution                        */
-            __IOM uint16_t MRCPSA    : 1; /*!< [13..13] MRCP Registers Security Attribution                              */
-            __IOM uint16_t MRDPSA    : 1; /*!< [12..12] MRDP Registers Security Attribution                              */
-            __IOM uint16_t MACITRSA  : 1; /*!< [11..11] MACI Transfer Registers Security Attribution                     */
+            __IOM uint16_t MRCPSEQSA : 1; /*!< [15..15] CPSEQ Area Register Security Attribution                         */
+            __IOM uint16_t MREPSEQSA : 1; /*!< [14..14] EPSEQ Area Register Security Attribution                         */
+            __IOM uint16_t MRCPSA    : 1; /*!< [13..13] Code MRAM Program Register Security Attribution                  */
+            __IOM uint16_t MRDPSA    : 1; /*!< [12..12] Data MRAM Program Register Security Attribution                  */
+            __IOM uint16_t MACITRSA  : 1; /*!< [11..11] MACI Transfer Security Attribution                               */
             __IOM uint16_t MACICMRSA : 1; /*!< [10..10] MACI Command Registers Security Attribution                      */
             __IOM uint16_t MACICMISA : 1; /*!< [9..9] MACI Command Issuing Security Attribution                          */
             uint16_t                 : 4;
-            __IOM uint16_t MPFBENSA  : 1; /*!< [4..4] MRCPFB register Security Attribution                               */
-            __IOM uint16_t MRCFREQSA : 1; /*!< [3..3] MRCFREQ register Security Attribution                              */
-            __IOM uint16_t MRCECCSA  : 1; /*!< [2..2] MRC ECC Register Security Attribution                              */
+            __IOM uint16_t MPFBENSA  : 1; /*!< [4..4] MRCPFB Register Security Attribution                               */
+            __IOM uint16_t MRCFREQSA : 1; /*!< [3..3] MRCFREQ Register Security Attribution                              */
+            __IOM uint16_t MRCECCSA  : 1; /*!< [2..2] Code MRAM ECC Register Security Attribution                        */
             __IOM uint16_t MREFREQSA : 1; /*!< [1..1] MREFREQ Register Security Attribution                              */
-            __IOM uint16_t MREECCSA  : 1; /*!< [0..0] MRE ECC Register Security Attribution                              */
+            __IOM uint16_t MREECCSA  : 1; /*!< [0..0] Extra MRAM ECC Register Security Attribution                       */
 #else
-            __IOM uint16_t MREECCSA  : 1; /*!< [0..0] MRE ECC Register Security Attribution                              */
+            __IOM uint16_t MREECCSA  : 1; /*!< [0..0] Extra MRAM ECC Register Security Attribution                       */
             __IOM uint16_t MREFREQSA : 1; /*!< [1..1] MREFREQ Register Security Attribution                              */
             __IOM uint16_t MRCECCSA  : 1; /*!< [2..2] Code MRAM ECC Register Security Attribution                        */
             __IOM uint16_t MRCFREQSA : 1; /*!< [3..3] MRCFREQ Register Security Attribution                              */
@@ -291,11 +299,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
             uint16_t                 : 4;
             __IOM uint16_t MACICMISA : 1; /*!< [9..9] MACI Command Issuing Security Attribution                          */
             __IOM uint16_t MACICMRSA : 1; /*!< [10..10] MACI Command Registers Security Attribution                      */
-            __IOM uint16_t MACITRSA  : 1; /*!< [11..11] MACI Transfer Registers Security Attribution                     */
-            __IOM uint16_t MRDPSA    : 1; /*!< [12..12] MRDP Registers Security Attribution                              */
-            __IOM uint16_t MRCPSA    : 1; /*!< [13..13] MRCP Registers Security Attribution                              */
-            __IOM uint16_t MREPSEQSA : 1; /*!< [14..14] MBSSE Area Registers Security Attribution                        */
-            __IOM uint16_t MRCPSEQSA : 1; /*!< [15..15] MBSSC Area Registers Security Attribution                        */
+            __IOM uint16_t MACITRSA  : 1; /*!< [11..11] MACI Transfer Security Attribution                               */
+            __IOM uint16_t MRDPSA    : 1; /*!< [12..12] Data MRAM Program Register Security Attribution                  */
+            __IOM uint16_t MRCPSA    : 1; /*!< [13..13] Code MRAM Program Register Security Attribution                  */
+            __IOM uint16_t MREPSEQSA : 1; /*!< [14..14] EPSEQ Area Register Security Attribution                         */
+            __IOM uint16_t MRCPSEQSA : 1; /*!< [15..15] CPSEQ Area Register Security Attribution                         */
 #endif
         } MSAR_b;
     };
@@ -310,11 +318,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t              : 6;
-            __IM uint8_t WHUKEXE : 1;  /*!< [1..1] W-HUK Zeroization Executing Status                                 */
-            __IM uint8_t WHUKZF  : 1;  /*!< [0..0] W-HUK Zero Flag Status.                                            */
+            __IM uint8_t WHUKEXE : 1;  /*!< [1..1] W-HUK Zeroization Executing Status Flag                            */
+            __IM uint8_t WHUKZF  : 1;  /*!< [0..0] W-HUK Zero Status Flag                                             */
 #else
-            __IM uint8_t WHUKZF  : 1;  /*!< [0..0] W-HUK Zero Flag Status.                                            */
-            __IM uint8_t WHUKEXE : 1;  /*!< [1..1] W-HUK Zeroization Executing Status                                 */
+            __IM uint8_t WHUKZF  : 1;  /*!< [0..0] W-HUK Zero Status Flag                                             */
+            __IM uint8_t WHUKEXE : 1;  /*!< [1..1] W-HUK Zeroization Executing Status Flag                            */
             uint8_t              : 6;
 #endif
         } MREZS_b;
@@ -331,9 +339,9 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
             uint16_t              : 5;
-            __IOM uint16_t WHUKZE : 3; /*!< [2..0] W-HUK zeroization execute.                                         */
+            __IOM uint16_t WHUKZE : 3; /*!< [2..0] W-HUK Zeroization Execute                                          */
 #else
-            __IOM uint16_t WHUKZE : 3; /*!< [2..0] W-HUK zeroization execute.                                         */
+            __IOM uint16_t WHUKZE : 3; /*!< [2..0] W-HUK Zeroization Execute                                          */
             uint16_t              : 5;
             __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
 #endif
@@ -350,8 +358,8 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t             : 3;
-            __IM uint8_t  CMDLK : 1;   /*!< [4..4] Command Lock                                                       */
-            __IOM uint8_t MREAE : 1;   /*!< [3..3] Extra MRAM Access Error                                            */
+            __IM uint8_t  CMDLK : 1;   /*!< [4..4] Command Lock Flag                                                  */
+            __IOM uint8_t MREAE : 1;   /*!< [3..3] Extra MRAM Access Violation Flag                                   */
             uint8_t             : 3;
 #else
             uint8_t             : 3;
@@ -373,7 +381,7 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t               : 3;
             __IOM uint8_t CMDLKIE : 1; /*!< [4..4] Command Lock Interrupt Enable                                      */
-            __IOM uint8_t MREAEIE : 1; /*!< [3..3] MRE Access Error Interrupt Enable                                  */
+            __IOM uint8_t MREAEIE : 1; /*!< [3..3] Extra MRAM Access Violation Interrupt Enable                       */
             uint8_t               : 3;
 #else
             uint8_t               : 3;
@@ -394,9 +402,9 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t              : 7;
-            __IOM uint8_t MRDYIE : 1;  /*!< [0..0] MRDY Interrupt Enable                                              */
+            __IOM uint8_t MRDYIE : 1;  /*!< [0..0] Extra MRAM Ready Interrupt Enable                                  */
 #else
-            __IOM uint8_t MRDYIE : 1;  /*!< [0..0] MRDY Interrupt Enable                                              */
+            __IOM uint8_t MRDYIE : 1;  /*!< [0..0] Extra MRAM Ready Interrupt Enable                                  */
             uint8_t              : 7;
 #endif
         } MRDYIE_b;
@@ -407,15 +415,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 
     union
     {
-        __IOM uint32_t MSADDR;         /*!< (@ 0x00002030) MRE Start Address Register                                 */
+        __IOM uint32_t MSADDR;          /*!< (@ 0x00002030) MACI Command Start Address Register                        */
 
         struct
         {
-#if defined(__BIG) && defined(__GNUC__)
-            __IOM uint32_t MSADDR : 32; /*!< [31..0] Start Address of MRAM Sequencer Command Target Area               */
-#else
-            __IOM uint32_t MSADDR : 32; /*!< [31..0] Start Address of MRAM Sequencer Command Target Area               */
-#endif
+            __IOM uint32_t MSADDR : 32; /*!< [31..0] Start Address for MACI Command Processing                         */
         } MSADDR_b;
     };
     __IM uint32_t RESERVED28[5];
@@ -510,19 +514,18 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t                : 8;
-            __IM uint32_t ILGCOMERR : 1; /*!< [23..23] Illegal Command Error                                            */
-            uint32_t                : 1;
-            __IM uint32_t SECERR    : 1; /*!< [21..21] Security Error                                                   */
-            __IM uint32_t OTERR     : 1; /*!< [20..20] Other Error                                                      */
-            __IM uint32_t PZFERR    : 1; /*!< [19..19] TrustZone Filter Error                                           */
+            __IM uint32_t ILGCOMERR : 1; /*!< [23..23] Illegal Command Error Flag                                       */
+            uint32_t                : 2;
+            __IM uint32_t OTERR     : 1; /*!< [20..20] Other Error Flag                                                 */
+            __IM uint32_t PZFERR    : 1; /*!< [19..19] Protect Zone Filter Error Flag                                   */
             uint32_t                : 3;
-            __IM uint32_t MRDY      : 1; /*!< [15..15] MRE Ready                                                        */
-            __IM uint32_t ILGLERR   : 1; /*!< [14..14] Illegal Error                                                    */
+            __IM uint32_t MRDY      : 1; /*!< [15..15] Extra MRAM Ready Flag                                            */
+            __IM uint32_t ILGLERR   : 1; /*!< [14..14] Illegal Command Error Flag                                       */
             uint32_t                : 1;
-            __IM uint32_t PRGERR    : 1; /*!< [12..12] Programming Error                                                */
+            __IM uint32_t PRGERR    : 1; /*!< [12..12] Programming Error Flag                                           */
             uint32_t                : 6;
-            __IM uint32_t CFGSETERR : 1; /*!< [5..5] Config Program Error                                               */
-            __IM uint32_t PROTERR   : 1; /*!< [4..4] Update error in protected area                                     */
+            __IM uint32_t CFGSETERR : 1; /*!< [5..5] Configuration Set Error Flag                                       */
+            __IM uint32_t PROTERR   : 1; /*!< [4..4] Protected Error Flag                                               */
             uint32_t                : 4;
 #else
             uint32_t                : 4;
@@ -536,8 +539,7 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
             uint32_t                : 3;
             __IM uint32_t PZFERR    : 1; /*!< [19..19] Protect Zone Filter Error Flag                                   */
             __IM uint32_t OTERR     : 1; /*!< [20..20] Other Error Flag                                                 */
-            __IM uint32_t SECERR    : 1; /*!< [21..21] Security Error Flag                                              */
-            uint32_t                : 1;
+            uint32_t                : 2;
             __IM uint32_t ILGCOMERR : 1; /*!< [23..23] Illegal Command Error Flag                                       */
             uint32_t                : 8;
 #endif
@@ -552,7 +554,7 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
-            __IOM uint16_t MENTRY : 1; /*!< [7..7] Extra MRAM Mode Entry                                              */
+            __IOM uint16_t MENTRY : 1; /*!< [7..7] Extra MRAM Program Mode Entry                                      */
             uint16_t              : 7;
 #else
             uint16_t              : 7;
@@ -573,9 +575,9 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
             uint16_t              : 7;
-            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-up Initialization                                              */
+            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-Up Initialization                                              */
 #else
-            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-up Initialization                                              */
+            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-Up Initialization                                              */
             uint16_t              : 7;
             __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
 #endif
@@ -591,11 +593,11 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint16_t CMDR  : 8;   /*!< [15..8] Command Register                                                  */
-            __IM uint16_t PCMDR : 8;   /*!< [7..0] Previous Command Register                                          */
+            __IM uint16_t CMDR  : 8;   /*!< [15..8] Command Flag                                                      */
+            __IM uint16_t PCMDR : 8;   /*!< [7..0] Pre-command Flag                                                   */
 #else
-            __IM uint16_t PCMDR : 8;   /*!< [7..0] Previous Command Register                                          */
-            __IM uint16_t CMDR  : 8;   /*!< [15..8] Command Register                                                  */
+            __IM uint16_t PCMDR : 8;   /*!< [7..0] Pre-command Flag                                                   */
+            __IM uint16_t CMDR  : 8;   /*!< [15..8] Command Flag                                                      */
 #endif
         } MCMDR_b;
     };
@@ -609,23 +611,19 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint32_t BTFLG  : 1;  /*!< [31..31] Flag of Start-Up area select for Boot Swap                       */
-            __IM uint32_t BTSIZE : 2;  /*!< [30..29] Size of Start-Up area select for Boot Swap                       */
+            __IM uint32_t BTFLG  : 1;  /*!< [31..31] Startup Area Select Flag                                         */
+            __IM uint32_t BTSIZE : 2;  /*!< [30..29] Startup Area Size Select                                         */
             uint32_t             : 13;
-            __IM uint32_t FSPR   : 1;  /*!< [15..15] Protection Flag of programing to set the Start-Up Area
-                                        *   Select setting                                                            */
-            __IM uint32_t FSPRS : 1;   /*!< [14..14] Protection Flag of programing to set the Start-Up Size
-                                        *   Select setting                                                            */
-            uint32_t : 14;
+            __IM uint32_t FSPR   : 1;  /*!< [15..15] Protection Status Flag of Startup Area Selection                 */
+            __IM uint32_t FSPRS  : 1;  /*!< [14..14] Protection Status Flag of Startup Area Size Selection            */
+            uint32_t             : 14;
 #else
-            uint32_t            : 14;
-            __IM uint32_t FSPRS : 1;   /*!< [14..14] Protection Flag of programing to set the Start-Up Size
-                                        *   Select setting                                                            */
-            __IM uint32_t FSPR : 1;    /*!< [15..15] Protection Flag of programing to set the Start-Up Area
-                                        *   Select setting                                                            */
+            uint32_t             : 14;
+            __IM uint32_t FSPRS  : 1;  /*!< [14..14] Protection Status Flag of Startup Area Size Selection            */
+            __IM uint32_t FSPR   : 1;  /*!< [15..15] Protection Status Flag of Startup Area Selection                 */
             uint32_t             : 13;
-            __IM uint32_t BTSIZE : 2;  /*!< [30..29] Size of Start-Up area select for Boot Swap                       */
-            __IM uint32_t BTFLG  : 1;  /*!< [31..31] Flag of Start-Up area select for Boot Swap                       */
+            __IM uint32_t BTSIZE : 2;  /*!< [30..29] Startup Area Size Select                                         */
+            __IM uint32_t BTFLG  : 1;  /*!< [31..31] Startup Area Select Flag                                         */
 #endif
         } MSUASMON_b;
     };
@@ -640,9 +638,9 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY : 8;    /*!< [15..8] Key Code                                                          */
             uint16_t           : 6;
-            __IOM uint16_t SAS : 2;    /*!< [1..0] Start Up Area Select                                               */
+            __IOM uint16_t SAS : 2;    /*!< [1..0] Startup Area Select                                                */
 #else
-            __IOM uint16_t SAS : 2;    /*!< [1..0] Start Up Area Select                                               */
+            __IOM uint16_t SAS : 2;    /*!< [1..0] Startup Area Select                                                */
             uint16_t           : 6;
             __IOM uint16_t KEY : 8;    /*!< [15..8] Key Code                                                          */
 #endif
@@ -659,9 +657,9 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t              : 7;
-            __IM uint8_t RSTTRER : 1;  /*!< [0..0] Status of the MACI reset transfer.                                 */
+            __IM uint8_t RSTTRER : 1;  /*!< [0..0] MACI Reset Transfer Status                                         */
 #else
-            __IM uint8_t RSTTRER : 1;  /*!< [0..0] Status of the MACI reset transfer.                                 */
+            __IM uint8_t RSTTRER : 1;  /*!< [0..0] MACI Reset Transfer Status                                         */
             uint8_t              : 7;
 #endif
         } MRSTTRST_b;
@@ -678,122 +676,145 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t              : 7;
-            __IOM uint8_t MHSPEN : 1;  /*!< [0..0] MRAM high speed program mode enable.                               */
+            __IOM uint8_t MHSPEN : 1;  /*!< [0..0] MRAM High Speed Program Mode Enable                                */
 #else
-            __IOM uint8_t MHSPEN : 1;  /*!< [0..0] MRAM high speed program mode enable.                               */
+            __IOM uint8_t MHSPEN : 1;  /*!< [0..0] MRAM High Speed Program Mode Enable                                */
             uint8_t              : 7;
 #endif
         } MRPSC_b;
     };
     __IM uint8_t  RESERVED49;
     __IM uint16_t RESERVED50;
-    __IM uint32_t RESERVED51[511];
 
     union
     {
-        __IOM uint16_t MRCPC0;         /*!< (@ 0x00003000) MRC Program Control Register                               */
+        __IOM uint16_t MREEECC;        /*!< (@ 0x00002804) Extra MRAM ECC Encoder Control Register                    */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
             uint16_t               : 7;
-            __IOM uint16_t MRCPNEN : 1; /*!< [0..0] MRC write enable for Non-Secure                                    */
+            __IOM uint16_t ECCBYPE : 1; /*!< [0..0] Extra MRAM ECC encoder outputs bypass enable                       */
 #else
-            __IOM uint16_t MRCPNEN : 1; /*!< [0..0] MRC write enable for Non-Secure                                    */
+            __IOM uint16_t ECCBYPE : 1; /*!< [0..0] Extra MRAM ECC encoder outputs bypass enable                       */
             uint16_t               : 7;
             __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
 #endif
-        } MRCPC0_b;
+        } MREEECC_b;
     };
-    __IM uint16_t RESERVED52;
+    __IM uint16_t RESERVED51;
+    __IM uint32_t RESERVED52[510];
 
     union
     {
-        __IOM uint16_t MRCPC1;         /*!< (@ 0x00003004) MRC Program Control Register for Secure                    */
+        __IOM uint16_t MRCPCNS;        /*!< (@ 0x00003000) Code MRAM Program Control Register for Non-Secure
+                                        *                  Application                                                */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
-            uint16_t               : 7;
-            __IOM uint16_t MRCPSEN : 1; /*!< [0..0] MRC write enable for Secure                                        */
+            __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
+            uint16_t              : 7;
+            __IOM uint16_t MRCPEN : 1; /*!< [0..0] Code MRAM Program Enable                                           */
 #else
-            __IOM uint16_t MRCPSEN : 1; /*!< [0..0] MRC write enable for Secure                                        */
-            uint16_t               : 7;
-            __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
+            __IOM uint16_t MRCPEN : 1; /*!< [0..0] Code MRAM Program Enable                                           */
+            uint16_t              : 7;
+            __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
 #endif
-        } MRCPC1_b;
+        } MRCPCNS_b;
     };
     __IM uint16_t RESERVED53;
 
     union
     {
-        __IOM uint16_t MRCBPROT0;      /*!< (@ 0x00003008) Code MRAM Block Protection Register                        */
+        __IOM uint16_t MRCPCS;         /*!< (@ 0x00003004) Code MRAM Program Control Register for Secure
+                                        *                  Application                                                */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t KEY   : 8;  /*!< [15..8] Key Code                                                          */
-            uint16_t             : 7;
-            __IOM uint16_t BPCN0 : 1;  /*!< [0..0] Block Protection cancel for non-secure                             */
+            __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
+            uint16_t              : 7;
+            __IOM uint16_t MRCPEN : 1; /*!< [0..0] Code MRAM Program Enable                                           */
 #else
-            __IOM uint16_t BPCN0 : 1;  /*!< [0..0] Block Protection cancel for non-secure                             */
-            uint16_t             : 7;
-            __IOM uint16_t KEY   : 8;  /*!< [15..8] Key Code                                                          */
+            __IOM uint16_t MRCPEN : 1; /*!< [0..0] Code MRAM Program Enable                                           */
+            uint16_t              : 7;
+            __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
 #endif
-        } MRCBPROT0_b;
+        } MRCPCS_b;
     };
     __IM uint16_t RESERVED54;
 
     union
     {
-        __IOM uint16_t MRCBPROT1;      /*!< (@ 0x0000300C) Code MRAM Block Protection Register for Secure             */
+        __IOM uint16_t MRCBPROTNS;     /*!< (@ 0x00003008) Code MRAM Block Protection Register for Non-Secure
+                                        *                  Application                                                */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t KEY   : 8;  /*!< [15..8] Key Code                                                          */
-            uint16_t             : 7;
-            __IOM uint16_t BPCN1 : 1;  /*!< [0..0] Block Protection cancel for secure                                 */
+            __IOM uint16_t KEY  : 8;   /*!< [15..8] Key Code                                                          */
+            uint16_t            : 7;
+            __IOM uint16_t BPCN : 1;   /*!< [0..0] Code MRAM Block Protection Cancel                                  */
 #else
-            __IOM uint16_t BPCN1 : 1;  /*!< [0..0] Block Protection cancel for secure                                 */
-            uint16_t             : 7;
-            __IOM uint16_t KEY   : 8;  /*!< [15..8] Key Code                                                          */
+            __IOM uint16_t BPCN : 1;   /*!< [0..0] Code MRAM Block Protection Cancel                                  */
+            uint16_t            : 7;
+            __IOM uint16_t KEY  : 8;   /*!< [15..8] Key Code                                                          */
 #endif
-        } MRCBPROT1_b;
+        } MRCBPROTNS_b;
     };
     __IM uint16_t RESERVED55;
 
     union
     {
-        __IOM uint8_t MRCPS;           /*!< (@ 0x00003010) MRC Program Status Register                                */
+        __IOM uint16_t MRCBPROTS;      /*!< (@ 0x0000300C) Code MRAM Block Protection Register for Secure
+                                        *                  Application                                                */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint8_t  PRGBSYC   : 1; /*!< [7..7] MRCA program busy                                                  */
-            __IM uint8_t  ABUFFULL  : 1; /*!< [6..6] Address Buffer Full for MRCA                                       */
-            __IM uint8_t  ABUFEMP   : 1; /*!< [5..5] Address Buffer Empty for MRCA                                      */
-            __IM uint8_t  PRGBSYCB  : 1; /*!< [4..4] MRCB Program Busy                                                  */
-            __IM uint8_t  ABUFFULLB : 1; /*!< [3..3] Address Buffer Full                                                */
-            __IM uint8_t  ABUFEMPB  : 1; /*!< [2..2] Address Buffer Empty                                               */
-            __IOM uint8_t ECCERRC   : 1; /*!< [1..1] ECC Error                                                          */
-            __IOM uint8_t PRGERRC   : 1; /*!< [0..0] Programming Error                                                  */
+            __IOM uint16_t KEY  : 8;   /*!< [15..8] Key Code                                                          */
+            uint16_t            : 7;
+            __IOM uint16_t BPCN : 1;   /*!< [0..0] Code MRAM Block Protection Cancel                                  */
 #else
-            __IOM uint8_t PRGERRC   : 1; /*!< [0..0] Programming Error                                                  */
-            __IOM uint8_t ECCERRC   : 1; /*!< [1..1] ECC Error                                                          */
-            __IM uint8_t  ABUFEMPB  : 1; /*!< [2..2] Address Buffer Empty                                               */
-            __IM uint8_t  ABUFFULLB : 1; /*!< [3..3] Address Buffer Full                                                */
-            __IM uint8_t  PRGBSYCB  : 1; /*!< [4..4] MRCB Program Busy                                                  */
-            __IM uint8_t  ABUFEMP   : 1; /*!< [5..5] Address Buffer Empty for MRCA                                      */
-            __IM uint8_t  ABUFFULL  : 1; /*!< [6..6] Address Buffer Full for MRCA                                       */
-            __IM uint8_t  PRGBSYC   : 1; /*!< [7..7] MRCA program busy                                                  */
+            __IOM uint16_t BPCN : 1;   /*!< [0..0] Code MRAM Block Protection Cancel                                  */
+            uint16_t            : 7;
+            __IOM uint16_t KEY  : 8;   /*!< [15..8] Key Code                                                          */
+#endif
+        } MRCBPROTS_b;
+    };
+    __IM uint16_t RESERVED56;
+
+    union
+    {
+        __IOM uint8_t MRCPS;           /*!< (@ 0x00003010) Code MRAM Program Status Register                          */
+
+        struct
+        {
+#if defined(__BIG) && defined(__GNUC__)
+            __IM uint8_t  PRGBSYC   : 1; /*!< [7..7] MRC0 Programming Status Flag                                       */
+            __IM uint8_t  ABUFFULL  : 1; /*!< [6..6] MRC0 Address Buffer Full Flag                                      */
+            __IM uint8_t  ABUFEMP   : 1; /*!< [5..5] MRC0 Address Buffer Empty Flag                                     */
+            __IM uint8_t  PRGBSYCB  : 1; /*!< [4..4] MRC1 Programming Status Flag                                       */
+            __IM uint8_t  ABUFFULLB : 1; /*!< [3..3] MRC1 Address Buffer Full Flag                                      */
+            __IM uint8_t  ABUFEMPB  : 1; /*!< [2..2] MRC1 Address Buffer Empty Flag                                     */
+            __IOM uint8_t ECCERRC   : 1; /*!< [1..1] ECC Error Flag                                                     */
+            __IOM uint8_t PRGERRC   : 1; /*!< [0..0] Programming Error Flag                                             */
+#else
+            __IOM uint8_t PRGERRC   : 1; /*!< [0..0] Programming Error Flag                                             */
+            __IOM uint8_t ECCERRC   : 1; /*!< [1..1] ECC Error Flag                                                     */
+            __IM uint8_t  ABUFEMPB  : 1; /*!< [2..2] MRC1 Address Buffer Empty Flag                                     */
+            __IM uint8_t  ABUFFULLB : 1; /*!< [3..3] MRC1 Address Buffer Full Flag                                      */
+            __IM uint8_t  PRGBSYCB  : 1; /*!< [4..4] MRC1 Programming Status Flag                                       */
+            __IM uint8_t  ABUFEMP   : 1; /*!< [5..5] MRC0 Address Buffer Empty Flag                                     */
+            __IM uint8_t  ABUFFULL  : 1; /*!< [6..6] MRC0 Address Buffer Full Flag                                      */
+            __IM uint8_t  PRGBSYC   : 1; /*!< [7..7] MRC0 Programming Status Flag                                       */
 #endif
         } MRCPS_b;
     };
-    __IM uint8_t  RESERVED56;
-    __IM uint16_t RESERVED57;
+    __IM uint8_t  RESERVED57;
+    __IM uint16_t RESERVED58;
 
     union
     {
@@ -803,16 +824,16 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint8_t MRCAEIE : 1; /*!< [7..7] MRC program Access Error Interrupt Enable                          */
+            __IOM uint8_t MRCAEIE : 1; /*!< [7..7] Program Access Error Interrupt Enable                              */
             uint8_t               : 7;
 #else
             uint8_t               : 7;
-            __IOM uint8_t MRCAEIE : 1; /*!< [7..7] MRC program Access Error Interrupt Enable                          */
+            __IOM uint8_t MRCAEIE : 1; /*!< [7..7] Program Access Error Interrupt Enable                              */
 #endif
         } MRCPAEINT_b;
     };
-    __IM uint8_t  RESERVED58;
-    __IM uint16_t RESERVED59;
+    __IM uint8_t  RESERVED59;
+    __IM uint16_t RESERVED60;
 
     union
     {
@@ -821,15 +842,15 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint32_t MCPEA : 27;  /*!< [31..5] MRC Program Error Address.                                        */
+            __IM uint32_t MCPEA : 27;  /*!< [31..5] Code MRAM Program Error Address                                   */
             uint32_t            : 5;
 #else
             uint32_t            : 5;
-            __IM uint32_t MCPEA : 27;  /*!< [31..5] MRC Program Error Address.                                        */
+            __IM uint32_t MCPEA : 27;  /*!< [31..5] Code MRAM Program Error Address                                   */
 #endif
         } MRCPEA_b;
     };
-    __IM uint32_t RESERVED60[5];
+    __IM uint32_t RESERVED61[5];
 
     union
     {
@@ -840,65 +861,65 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
             uint16_t              : 6;
-            __IOM uint16_t MRCBFL : 1; /*!< [1..1] Flush FIFO and MDATAR for MRCB                                     */
-            __IOM uint16_t MRCFL  : 1; /*!< [0..0] Flush FIFO and MDATAR for MRCA                                     */
+            __IOM uint16_t MRCBFL : 1; /*!< [1..1] Flush Write Data Buffer for MRC1                                   */
+            __IOM uint16_t MRCFL  : 1; /*!< [0..0] Flush Write Data Buffer for MRC0                                   */
 #else
-            __IOM uint16_t MRCFL  : 1; /*!< [0..0] Flush FIFO and MDATAR for MRCA                                     */
-            __IOM uint16_t MRCBFL : 1; /*!< [1..1] Flush FIFO and MDATAR for MRCB                                     */
+            __IOM uint16_t MRCFL  : 1; /*!< [0..0] Flush Write Data Buffer for MRC0                                   */
+            __IOM uint16_t MRCBFL : 1; /*!< [1..1] Flush Write Data Buffer for MRC1                                   */
             uint16_t              : 6;
             __IOM uint16_t KEY    : 8; /*!< [15..8] Key Code                                                          */
 #endif
         } MRCFLR_b;
     };
-    __IM uint16_t RESERVED61;
-    __IM uint32_t RESERVED62[3];
+    __IM uint16_t RESERVED62;
+    __IM uint32_t RESERVED63[3];
 
     union
     {
-        __IOM uint8_t MRCPRICR;        /*!< (@ 0x00003040) MRC Program Ready Interrupt Control Register               */
+        __IOM uint8_t MRCPRICR;        /*!< (@ 0x00003040) Code MRAM Program Ready Interrupt Control Register         */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint8_t MRCPRRIE  : 1; /*!< [7..7] MRC Program Ready Interrupt Enable                                 */
+            __IOM uint8_t MRCPRRIE  : 1; /*!< [7..7] Program Ready Interrupt Enable                                     */
             uint8_t                 : 6;
-            __IOM uint8_t MRCINTSEL : 1; /*!< [0..0] MRC Program Ready Interrupt Select                                 */
+            __IOM uint8_t MRCINTSEL : 1; /*!< [0..0] Program Ready Interrupt Request Source Select                      */
 #else
-            __IOM uint8_t MRCINTSEL : 1; /*!< [0..0] MRC Program Ready Interrupt Select                                 */
+            __IOM uint8_t MRCINTSEL : 1; /*!< [0..0] Program Ready Interrupt Request Source Select                      */
             uint8_t                 : 6;
-            __IOM uint8_t MRCPRRIE  : 1; /*!< [7..7] MRC Program Ready Interrupt Enable                                 */
+            __IOM uint8_t MRCPRRIE  : 1; /*!< [7..7] Program Ready Interrupt Enable                                     */
 #endif
         } MRCPRICR_b;
     };
-    __IM uint8_t  RESERVED63;
-    __IM uint16_t RESERVED64;
-    __IM uint32_t RESERVED65[243];
+    __IM uint8_t  RESERVED64;
+    __IM uint16_t RESERVED65;
+    __IM uint32_t RESERVED66[243];
 
     union
     {
-        __IOM uint8_t MRDPS;           /*!< (@ 0x00003410) MRAM Program Control                                       */
+        __IOM uint8_t MRDPS;           /*!< (@ 0x00003410) Data MRAM Program Status Register                          */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint8_t PRGBSYD   : 1; /*!< [7..7] MRD Program Busy                                                   */
-            __IM uint8_t ABUFFULLD : 1; /*!< [6..6] Address Buffer Full                                                */
-            __IM uint8_t ABUFEMPD  : 1; /*!< [5..5] Address Buffer Empty                                               */
+            __IM uint8_t PRGBSYD   : 1; /*!< [7..7] Data MRAM Programming Status Flag                                  */
+            __IM uint8_t ABUFFULLD : 1; /*!< [6..6] Data MRAM Address Buffer Full Flag                                 */
+            __IM uint8_t ABUFEMPD  : 1; /*!< [5..5] Data MRAM Address Buffer Empty Flag                                */
             uint8_t                : 3;
-            __IOM uint8_t ECCERRD  : 1; /*!< [1..1] MRD ECC Error                                                      */
-            __IOM uint8_t PRGERRD  : 1; /*!< [0..0] MRD Programming Error                                              */
+            __IOM uint8_t ECCERRD  : 1; /*!< [1..1] ECC Error Flag                                                     */
+            __IOM uint8_t PRGERRD  : 1; /*!< [0..0] Programming Error Flag                                             */
 #else
-            __IOM uint8_t PRGERRD  : 1; /*!< [0..0] MRD Programming Error                                              */
-            __IOM uint8_t ECCERRD  : 1; /*!< [1..1] MRD ECC Error                                                      */
+            __IOM uint8_t PRGERRD  : 1; /*!< [0..0] Programming Error Flag                                             */
+            __IOM uint8_t ECCERRD  : 1; /*!< [1..1] ECC Error Flag                                                     */
             uint8_t                : 3;
-            __IM uint8_t ABUFEMPD  : 1; /*!< [5..5] Address Buffer Empty                                               */
-            __IM uint8_t ABUFFULLD : 1; /*!< [6..6] Address Buffer Full                                                */
-            __IM uint8_t PRGBSYD   : 1; /*!< [7..7] MRD Program Busy                                                   */
+            __IM uint8_t ABUFEMPD  : 1; /*!< [5..5] Data MRAM Address Buffer Empty Flag                                */
+            __IM uint8_t ABUFFULLD : 1; /*!< [6..6] Data MRAM Address Buffer Full Flag                                 */
+            __IM uint8_t PRGBSYD   : 1; /*!< [7..7] Data MRAM Programming Status Flag                                  */
 #endif
         } MRDPS_b;
     };
-    __IM uint8_t  RESERVED66;
-    __IM uint16_t RESERVED67;
+    __IM uint8_t  RESERVED67;
+    __IM uint16_t RESERVED68;
 
     union
     {
@@ -908,16 +929,16 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint8_t MRDAEIE : 1; /*!< [7..7] MRD Program Access Error Interrupt Enable                          */
+            __IOM uint8_t MRDAEIE : 1; /*!< [7..7] Data MRAM Program Access Error Interrupt Enable                    */
             uint8_t               : 7;
 #else
             uint8_t               : 7;
-            __IOM uint8_t MRDAEIE : 1; /*!< [7..7] MRD Program Access Error Interrupt Enable                          */
+            __IOM uint8_t MRDAEIE : 1; /*!< [7..7] Data MRAM Program Access Error Interrupt Enable                    */
 #endif
         } MRDPAEINT_b;
     };
-    __IM uint8_t  RESERVED68;
-    __IM uint16_t RESERVED69;
+    __IM uint8_t  RESERVED69;
+    __IM uint16_t RESERVED70;
 
     union
     {
@@ -926,15 +947,15 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IM uint32_t MDPEA : 28;  /*!< [31..4] MRD Program Error Address.                                        */
+            __IM uint32_t MDPEA : 28;  /*!< [31..4] Data MRAM Program Error Address                                   */
             uint32_t            : 4;
 #else
             uint32_t            : 4;
-            __IM uint32_t MDPEA : 28;  /*!< [31..4] MRD Program Error Address.                                        */
+            __IM uint32_t MDPEA : 28;  /*!< [31..4] Data MRAM Program Error Address                                   */
 #endif
         } MRDPEA_b;
     };
-    __IM uint32_t RESERVED70[5];
+    __IM uint32_t RESERVED71[5];
 
     union
     {
@@ -945,16 +966,16 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY   : 8;  /*!< [15..8] Key Code                                                          */
             uint16_t             : 7;
-            __IOM uint16_t MRDFL : 1;  /*!< [0..0] Flush FIFO and MDATAR for MRD                                      */
+            __IOM uint16_t MRDFL : 1;  /*!< [0..0] Flush Write Data Buffer for Data MRAM                              */
 #else
-            __IOM uint16_t MRDFL : 1;  /*!< [0..0] Flush FIFO and MDATAR for MRD                                      */
+            __IOM uint16_t MRDFL : 1;  /*!< [0..0] Flush Write Data Buffer for Data MRAM                              */
             uint16_t             : 7;
             __IOM uint16_t KEY   : 8;  /*!< [15..8] Key Code                                                          */
 #endif
         } MRDFLR_b;
     };
-    __IM uint16_t RESERVED71;
-    __IM uint32_t RESERVED72[3];
+    __IM uint16_t RESERVED72;
+    __IM uint32_t RESERVED73[3];
 
     union
     {
@@ -963,36 +984,144 @@ typedef struct                         /*!< (@ 0x8709C000) R_MRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint8_t MRDPRRIE : 1; /*!< [7..7] MRD Program Ready Interrupt Enable                                 */
+            __IOM uint8_t MRDPRRIE : 1; /*!< [7..7] Data MRAM Program Ready Interrupt Enable                           */
             uint8_t                : 7;
 #else
             uint8_t                : 7;
-            __IOM uint8_t MRDPRRIE : 1; /*!< [7..7] MRD Program Ready Interrupt Enable                                 */
+            __IOM uint8_t MRDPRRIE : 1; /*!< [7..7] Data MRAM Program Ready Interrupt Enable                           */
 #endif
         } MRDPRICR_b;
     };
-    __IM uint8_t  RESERVED73;
-    __IM uint16_t RESERVED74;
-    __IM uint32_t RESERVED75[240];
+    __IM uint8_t  RESERVED74;
+    __IM uint16_t RESERVED75;
+    __IM uint32_t RESERVED76[240];
 
     union
     {
-        __IOM uint16_t MRCEECC;        /*!< (@ 0x00003804) MRC ECC Encoder Control                                    */
+        __IOM uint16_t MRCEECC;        /*!< (@ 0x00003804) Code MRAM ECC Encoder Control Register                     */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
             uint16_t               : 7;
-            __IOM uint16_t ECCBYPC : 1; /*!< [0..0] MRC ECC encoder outputs bypass enable                              */
+            __IOM uint16_t ECCBYPC : 1; /*!< [0..0] Code MRAM ECC encoder outputs bypass enable                        */
 #else
-            __IOM uint16_t ECCBYPC : 1; /*!< [0..0] MRC ECC encoder outputs bypass enable                              */
+            __IOM uint16_t ECCBYPC : 1; /*!< [0..0] Code MRAM ECC encoder outputs bypass enable                        */
             uint16_t               : 7;
             __IOM uint16_t KEY     : 8; /*!< [15..8] Key Code                                                          */
 #endif
         } MRCEECC_b;
     };
-    __IM uint16_t RESERVED76;
+    __IM uint16_t RESERVED77;
 } R_MRAM_Type;                         /*!< Size = 14344 (0x3808)                                                     */
 
-#endif /* MRAM_REG_H */
+/* =========================================================================================================================== */
+/* ================                                        R_NVMCONST                                         ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief NVM Data (R_NVMCONST)
+ */
+
+typedef struct                         /*!< (@ 0x86C10000) R_NVMCONST Structure                                       */
+{
+    __IM uint32_t RESERVED[2830];
+
+    union
+    {
+        __IM uint32_t PNR0;            /*!< (@ 0x00002C38) Part Numbering Register 0                                  */
+
+        struct
+        {
+            __IM uint32_t PNR : 32;    /*!< [31..0] Part Number                                                       */
+        } PNR0_b;
+    };
+
+    union
+    {
+        __IM uint32_t PNR1;            /*!< (@ 0x00002C3C) Part Numbering Register 1                                  */
+
+        struct
+        {
+            __IM uint32_t PNR : 32;    /*!< [31..0] Part Number                                                       */
+        } PNR1_b;
+    };
+
+    union
+    {
+        __IM uint32_t PNR2;            /*!< (@ 0x00002C40) Part Numbering Register 2                                  */
+
+        struct
+        {
+            __IM uint32_t PNR : 32;    /*!< [31..0] Part Number                                                       */
+        } PNR2_b;
+    };
+
+    union
+    {
+        __IM uint32_t PNR3;            /*!< (@ 0x00002C44) Part Numbering Register 3                                  */
+
+        struct
+        {
+            __IM uint32_t PNR : 32;    /*!< [31..0] Part Number                                                       */
+        } PNR3_b;
+    };
+
+    union
+    {
+        __IM uint8_t MCUVER;           /*!< (@ 0x00002C48) MCU Version Register                                       */
+
+        struct
+        {
+            __IM uint8_t MCUVE : 8;    /*!< [7..0] MCU Version                                                        */
+        } MCUVER_b;
+    };
+    __IM uint8_t  RESERVED1;
+    __IM uint16_t RESERVED2;
+    __IM uint32_t RESERVED3[768237];
+
+    union
+    {
+        __IM uint32_t UIDR0;           /*!< (@ 0x002F1000) Unique ID Register 0                                       */
+
+        struct
+        {
+            __IM uint32_t UID : 32;    /*!< [31..0] Unique ID                                                         */
+        } UIDR0_b;
+    };
+
+    union
+    {
+        __IM uint32_t UIDR1;           /*!< (@ 0x002F1004) Unique ID Register 1                                       */
+
+        struct
+        {
+            __IM uint32_t UID : 32;    /*!< [31..0] Unique ID                                                         */
+        } UIDR1_b;
+    };
+
+    union
+    {
+        __IM uint32_t UIDR2;           /*!< (@ 0x002F1008) Unique ID Register 2                                       */
+
+        struct
+        {
+            __IM uint32_t UID : 32;    /*!< [31..0] Unique ID                                                         */
+        } UIDR2_b;
+    };
+
+    union
+    {
+        __IM uint32_t UIDR3;           /*!< (@ 0x002F100C) Unique ID Register 3                                       */
+
+        struct
+        {
+            __IM uint32_t UID : 32;    /*!< [31..0] Unique ID                                                         */
+        } UIDR3_b;
+    };
+} R_NVMCONST_Type;                     /*!< Size = 3084304 (0x2f1010)                                                 */
+
+/** @} */ /* End of group Device_Peripheral_peripherals */
+
+#endif /* R_MRAM_REG_H */

@@ -226,8 +226,7 @@ extern "C" {
  #define R_SPI_B0_BASE          (0x8745C000UL + BASE_NS_OFFSET)
  #define R_SPI_B1_BASE          (0x8745C100UL + BASE_NS_OFFSET)
  #define R_SPI_B2_BASE          (0x8745C200UL + BASE_NS_OFFSET)
- #define R_SRAM_BASE            0x8701C000UL
- #define R_SRAM_NS_BASE         0x0701C000UL
+ #define R_SRAM_BASE            (0x8701C000UL + BASE_NS_OFFSET)
  #define R_SSI0_BASE            (0x8785D000UL + BASE_NS_OFFSET)
  #define R_SSI1_BASE            (0x8785D100UL + BASE_NS_OFFSET)
  #define R_SYSTEM_BASE          (0x87019000UL + BASE_NS_OFFSET)
@@ -369,7 +368,6 @@ extern "C" {
  #define R_SPI_B1          ((R_SPI_B0_Type *) R_SPI_B1_BASE)
  #define R_SPI_B2          ((R_SPI_B0_Type *) R_SPI_B2_BASE)
  #define R_SRAM            ((R_SRAM_Type *) R_SRAM_BASE)
- #define R_SRAM_NS         ((R_SRAM_NS_Type *) R_SRAM_NS_BASE)
  #define R_SSI0            ((R_SSI0_Type *) R_SSI0_BASE)
  #define R_SSI1            ((R_SSI0_Type *) R_SSI1_BASE)
  #define R_SYSTEM          ((R_SYSTEM_Type *) R_SYSTEM_BASE)

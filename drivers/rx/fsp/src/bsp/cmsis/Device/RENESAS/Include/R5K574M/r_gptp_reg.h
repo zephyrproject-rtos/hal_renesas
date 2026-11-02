@@ -42,9 +42,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 30;
+            __IOM uint32_t TE1 : 1;    /*!< [1..1] TE1                                                                */
+            __IOM uint32_t TE0 : 1;    /*!< [0..0] TE0                                                                */
+#else
             __IOM uint32_t TE0 : 1;    /*!< [0..0] TE0                                                                */
             __IOM uint32_t TE1 : 1;    /*!< [1..1] TE1                                                                */
             uint32_t           : 30;
+#endif
         } PTPTMEC_b;
     };
 
@@ -54,9 +60,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 30;
+            __IOM uint32_t TD1 : 1;    /*!< [1..1] TD1                                                                */
+            __IOM uint32_t TD0 : 1;    /*!< [0..0] TD0                                                                */
+#else
             __IOM uint32_t TD0 : 1;    /*!< [0..0] TD0                                                                */
             __IOM uint32_t TD1 : 1;    /*!< [1..1] TD1                                                                */
             uint32_t           : 30;
+#endif
         } PTPTMDC_b;
     };
     __IM uint32_t RESERVED1[2];
@@ -80,8 +92,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 2;
+            __IOM uint32_t TOVPL : 30; /*!< [29..0] TOVPL                                                             */
+#else
             __IOM uint32_t TOVPL : 30; /*!< [29..0] TOVPL                                                             */
             uint32_t             : 2;
+#endif
         } PTPTOVC0L_b;
     };
 
@@ -103,8 +120,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t TOVPU : 16; /*!< [15..0] TOVPU                                                             */
+#else
             __IOM uint32_t TOVPU : 16; /*!< [15..0] TOVPU                                                             */
             uint32_t             : 16;
+#endif
         } PTPTOVC0U_b;
     };
     __IM uint32_t RESERVED3;
@@ -139,8 +161,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 2;
+            __IOM uint32_t GPTPL : 30; /*!< [29..0] GPTPL                                                             */
+#else
             __IOM uint32_t GPTPL : 30; /*!< [29..0] GPTPL                                                             */
             uint32_t             : 2;
+#endif
         } PTPGPTPTM0L_b;
     };
 
@@ -162,8 +189,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t GPTPU : 16; /*!< [15..0] GPTPU                                                             */
+#else
             __IOM uint32_t GPTPU : 16; /*!< [15..0] GPTPU                                                             */
             uint32_t             : 16;
+#endif
         } PTPGPTPTM0U_b;
     };
     __IM uint32_t RESERVED5;
@@ -187,8 +219,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 2;
+            __IOM uint32_t TOVPL : 30; /*!< [29..0] TOVPL                                                             */
+#else
             __IOM uint32_t TOVPL : 30; /*!< [29..0] TOVPL                                                             */
             uint32_t             : 2;
+#endif
         } PTPTOVC1L_b;
     };
 
@@ -210,8 +247,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t TOVPU : 16; /*!< [15..0] TOVPU                                                             */
+#else
             __IOM uint32_t TOVPU : 16; /*!< [15..0] TOVPU                                                             */
             uint32_t             : 16;
+#endif
         } PTPTOVC1U_b;
     };
     __IM uint32_t RESERVED7;
@@ -246,8 +288,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 2;
+            __IOM uint32_t GPTPL : 30; /*!< [29..0] GPTPL                                                             */
+#else
             __IOM uint32_t GPTPL : 30; /*!< [29..0] GPTPL                                                             */
             uint32_t             : 2;
+#endif
         } PTPGPTPTM1L_b;
     };
 
@@ -269,8 +316,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t GPTPU : 16; /*!< [15..0] GPTPU                                                             */
+#else
             __IOM uint32_t GPTPU : 16; /*!< [15..0] GPTPU                                                             */
             uint32_t             : 16;
+#endif
         } PTPGPTPTM1U_b;
     };
     __IM uint32_t RESERVED9[89];
@@ -282,6 +334,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 15;
+            __IOM uint32_t MCCR  : 1;  /*!< [16..16] MCCR                                                             */
+            uint32_t             : 12;
+            __IOM uint32_t MCTNS : 1;  /*!< [3..3] MCTNS                                                              */
+            __IOM uint32_t MCTTS : 1;  /*!< [2..2] MCTTS                                                              */
+            __IOM uint32_t MCNEE : 1;  /*!< [1..1] MCNEE                                                              */
+            __IOM uint32_t MCPEE : 1;  /*!< [0..0] MCPEE                                                              */
+#else
             __IOM uint32_t MCPEE : 1;  /*!< [0..0] MCPEE                                                              */
             __IOM uint32_t MCNEE : 1;  /*!< [1..1] MCNEE                                                              */
             __IOM uint32_t MCTTS : 1;  /*!< [2..2] MCTTS                                                              */
@@ -289,6 +350,7 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
             uint32_t             : 12;
             __IOM uint32_t MCCR  : 1;  /*!< [16..16] MCCR                                                             */
             uint32_t             : 15;
+#endif
         } PTPMCCC0_b;
     };
 
@@ -316,11 +378,20 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
     union
     {
-        __IOM uint32_t PTPMCCM0U;       /*!< (@ 0x0000020C) Media Clock Capture Monitoring Register Um (PTPMCCMUm)
-                                         *                  (m = 0, 1)                                                 */
+        __IOM uint32_t PTPMCCM0U;      /*!< (@ 0x0000020C) Media Clock Capture Monitoring Register Um (PTPMCCMUm)
+                                        *                  (m = 0, 1)                                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 6;
+            __IOM uint32_t MCCN   : 2;  /*!< [25..24] MCCN                                                             */
+            uint32_t              : 5;
+            __IOM uint32_t MCSWC  : 1;  /*!< [18..18] MCSWC                                                            */
+            __IOM uint32_t MCNEC  : 1;  /*!< [17..17] MCNEC                                                            */
+            __IOM uint32_t MCPEC  : 1;  /*!< [16..16] MCPEC                                                            */
+            __IOM uint32_t MCCTVU : 16; /*!< [15..0] MCCTVU                                                            */
+#else
             __IOM uint32_t MCCTVU : 16; /*!< [15..0] MCCTVU                                                            */
             __IOM uint32_t MCPEC  : 1;  /*!< [16..16] MCPEC                                                            */
             __IOM uint32_t MCNEC  : 1;  /*!< [17..17] MCNEC                                                            */
@@ -328,6 +399,7 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
             uint32_t              : 5;
             __IOM uint32_t MCCN   : 2;  /*!< [25..24] MCCN                                                             */
             uint32_t              : 6;
+#endif
         } PTPMCCM0U_b;
     };
 
@@ -338,6 +410,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 15;
+            __IOM uint32_t MCCR  : 1;  /*!< [16..16] MCCR                                                             */
+            uint32_t             : 12;
+            __IOM uint32_t MCTNS : 1;  /*!< [3..3] MCTNS                                                              */
+            __IOM uint32_t MCTTS : 1;  /*!< [2..2] MCTTS                                                              */
+            __IOM uint32_t MCNEE : 1;  /*!< [1..1] MCNEE                                                              */
+            __IOM uint32_t MCPEE : 1;  /*!< [0..0] MCPEE                                                              */
+#else
             __IOM uint32_t MCPEE : 1;  /*!< [0..0] MCPEE                                                              */
             __IOM uint32_t MCNEE : 1;  /*!< [1..1] MCNEE                                                              */
             __IOM uint32_t MCTTS : 1;  /*!< [2..2] MCTTS                                                              */
@@ -345,6 +426,7 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
             uint32_t             : 12;
             __IOM uint32_t MCCR  : 1;  /*!< [16..16] MCCR                                                             */
             uint32_t             : 15;
+#endif
         } PTPMCCC1_b;
     };
 
@@ -372,11 +454,20 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
     union
     {
-        __IOM uint32_t PTPMCCM1U;       /*!< (@ 0x0000021C) Media Clock Capture Monitoring Register Um (PTPMCCMUm)
-                                         *                  (m = 0, 1)                                                 */
+        __IOM uint32_t PTPMCCM1U;      /*!< (@ 0x0000021C) Media Clock Capture Monitoring Register Um (PTPMCCMUm)
+                                        *                  (m = 0, 1)                                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 6;
+            __IOM uint32_t MCCN   : 2;  /*!< [25..24] MCCN                                                             */
+            uint32_t              : 5;
+            __IOM uint32_t MCSWC  : 1;  /*!< [18..18] MCSWC                                                            */
+            __IOM uint32_t MCNEC  : 1;  /*!< [17..17] MCNEC                                                            */
+            __IOM uint32_t MCPEC  : 1;  /*!< [16..16] MCPEC                                                            */
+            __IOM uint32_t MCCTVU : 16; /*!< [15..0] MCCTVU                                                            */
+#else
             __IOM uint32_t MCCTVU : 16; /*!< [15..0] MCCTVU                                                            */
             __IOM uint32_t MCPEC  : 1;  /*!< [16..16] MCPEC                                                            */
             __IOM uint32_t MCNEC  : 1;  /*!< [17..17] MCNEC                                                            */
@@ -384,6 +475,7 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
             uint32_t              : 5;
             __IOM uint32_t MCCN   : 2;  /*!< [25..24] MCCN                                                             */
             uint32_t              : 6;
+#endif
         } PTPMCCM1U_b;
     };
     __IM uint32_t RESERVED10[56];
@@ -395,11 +487,19 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t MRPL  : 16; /*!< [31..16] MRPL                                                             */
+            uint32_t             : 13;
+            __IOM uint32_t MRTNS : 1;  /*!< [2..2] MRTNS                                                              */
+            __IOM uint32_t MRAMS : 1;  /*!< [1..1] MRAMS                                                              */
+            __IOM uint32_t MRTTS : 1;  /*!< [0..0] MRTTS                                                              */
+#else
             __IOM uint32_t MRTTS : 1;  /*!< [0..0] MRTTS                                                              */
             __IOM uint32_t MRAMS : 1;  /*!< [1..1] MRAMS                                                              */
             __IOM uint32_t MRTNS : 1;  /*!< [2..2] MRTNS                                                              */
             uint32_t             : 13;
             __IOM uint32_t MRPL  : 16; /*!< [31..16] MRPL                                                             */
+#endif
         } PTPMCRC0_b;
     };
 
@@ -427,16 +527,24 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
     union
     {
-        __IOM uint32_t PTPMCRTC0U;      /*!< (@ 0x0000030C) Media Clock Recovery Time Configuration Register
-                                         *                  Um (PTPMCRTCUm) (m = 0, 1)                                 */
+        __IOM uint32_t PTPMCRTC0U;     /*!< (@ 0x0000030C) Media Clock Recovery Time Configuration Register
+                                        *                  Um (PTPMCRTCUm) (m = 0, 1)                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t MRBCR  : 1;  /*!< [31..31] MRBCR                                                            */
+            uint32_t              : 10;
+            __IOM uint32_t MCRN   : 3;  /*!< [20..18] MCRN                                                             */
+            __IOM uint32_t MRTT   : 2;  /*!< [17..16] MRTT                                                             */
+            __IOM uint32_t MCCTVU : 16; /*!< [15..0] MCCTVU                                                            */
+#else
             __IOM uint32_t MCCTVU : 16; /*!< [15..0] MCCTVU                                                            */
             __IOM uint32_t MRTT   : 2;  /*!< [17..16] MRTT                                                             */
             __IOM uint32_t MCRN   : 3;  /*!< [20..18] MCRN                                                             */
             uint32_t              : 10;
             __IOM uint32_t MRBCR  : 1;  /*!< [31..31] MRBCR                                                            */
+#endif
         } PTPMCRTC0U_b;
     };
 
@@ -447,11 +555,19 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t MRPL  : 16; /*!< [31..16] MRPL                                                             */
+            uint32_t             : 13;
+            __IOM uint32_t MRTNS : 1;  /*!< [2..2] MRTNS                                                              */
+            __IOM uint32_t MRAMS : 1;  /*!< [1..1] MRAMS                                                              */
+            __IOM uint32_t MRTTS : 1;  /*!< [0..0] MRTTS                                                              */
+#else
             __IOM uint32_t MRTTS : 1;  /*!< [0..0] MRTTS                                                              */
             __IOM uint32_t MRAMS : 1;  /*!< [1..1] MRAMS                                                              */
             __IOM uint32_t MRTNS : 1;  /*!< [2..2] MRTNS                                                              */
             uint32_t             : 13;
             __IOM uint32_t MRPL  : 16; /*!< [31..16] MRPL                                                             */
+#endif
         } PTPMCRC1_b;
     };
 
@@ -479,16 +595,24 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
     union
     {
-        __IOM uint32_t PTPMCRTC1U;      /*!< (@ 0x0000031C) Media Clock Recovery Time Configuration Register
-                                         *                  Um (PTPMCRTCUm) (m = 0, 1)                                 */
+        __IOM uint32_t PTPMCRTC1U;     /*!< (@ 0x0000031C) Media Clock Recovery Time Configuration Register
+                                        *                  Um (PTPMCRTCUm) (m = 0, 1)                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t MRBCR  : 1;  /*!< [31..31] MRBCR                                                            */
+            uint32_t              : 10;
+            __IOM uint32_t MCRN   : 3;  /*!< [20..18] MCRN                                                             */
+            __IOM uint32_t MRTT   : 2;  /*!< [17..16] MRTT                                                             */
+            __IOM uint32_t MCCTVU : 16; /*!< [15..0] MCCTVU                                                            */
+#else
             __IOM uint32_t MCCTVU : 16; /*!< [15..0] MCCTVU                                                            */
             __IOM uint32_t MRTT   : 2;  /*!< [17..16] MRTT                                                             */
             __IOM uint32_t MCRN   : 3;  /*!< [20..18] MCRN                                                             */
             uint32_t              : 10;
             __IOM uint32_t MRBCR  : 1;  /*!< [31..31] MRBCR                                                            */
+#endif
         } PTPMCRTC1U_b;
     };
     __IM uint32_t RESERVED11[56];
@@ -500,9 +624,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 30;
+            __IOM uint32_t MRS : 1;    /*!< [1..1] MRS                                                                */
+            __IOM uint32_t PE  : 1;    /*!< [0..0] PE                                                                 */
+#else
             __IOM uint32_t PE  : 1;    /*!< [0..0] PE                                                                 */
             __IOM uint32_t MRS : 1;    /*!< [1..1] MRS                                                                */
             uint32_t           : 30;
+#endif
         } PTPMCPC0_b;
     };
 
@@ -513,9 +643,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 30;
+            __IOM uint32_t MRS : 1;    /*!< [1..1] MRS                                                                */
+            __IOM uint32_t PE  : 1;    /*!< [0..0] PE                                                                 */
+#else
             __IOM uint32_t PE  : 1;    /*!< [0..0] PE                                                                 */
             __IOM uint32_t MRS : 1;    /*!< [1..1] MRS                                                                */
             uint32_t           : 30;
+#endif
         } PTPMCPC1_b;
     };
     __IM uint32_t RESERVED12[62];
@@ -527,10 +663,17 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
+            uint32_t             : 3;
+            __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
+#else
             __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
             uint32_t             : 3;
             __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
             uint32_t             : 27;
+#endif
         } PTPCCC00_b;
     };
 
@@ -552,10 +695,17 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
+            uint32_t             : 3;
+            __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
+#else
             __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
             uint32_t             : 3;
             __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
             uint32_t             : 27;
+#endif
         } PTPCCC10_b;
     };
 
@@ -577,10 +727,17 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
+            uint32_t             : 3;
+            __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
+#else
             __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
             uint32_t             : 3;
             __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
             uint32_t             : 27;
+#endif
         } PTPCCC20_b;
     };
 
@@ -602,10 +759,17 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
+            uint32_t             : 3;
+            __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
+#else
             __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
             uint32_t             : 3;
             __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
             uint32_t             : 27;
+#endif
         } PTPCCC30_b;
     };
 
@@ -627,10 +791,17 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
+            uint32_t             : 3;
+            __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
+#else
             __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
             uint32_t             : 3;
             __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
             uint32_t             : 27;
+#endif
         } PTPCCC40_b;
     };
 
@@ -652,10 +823,17 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
+            uint32_t             : 3;
+            __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
+#else
             __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
             uint32_t             : 3;
             __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
             uint32_t             : 27;
+#endif
         } PTPCCC50_b;
     };
 
@@ -677,10 +855,17 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
+            uint32_t             : 3;
+            __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
+#else
             __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
             uint32_t             : 3;
             __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
             uint32_t             : 27;
+#endif
         } PTPCCC60_b;
     };
 
@@ -702,10 +887,17 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
+            uint32_t             : 3;
+            __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
+#else
             __IOM uint32_t CCTNS : 1;  /*!< [0..0] CCTNS                                                              */
             uint32_t             : 3;
             __IOM uint32_t CCOPS : 1;  /*!< [4..4] CCOPS                                                              */
             uint32_t             : 27;
+#endif
         } PTPCCC70_b;
     };
 
@@ -723,43 +915,67 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
     union
     {
-        __IOM uint32_t PTPIS0;          /*!< (@ 0x00000700) Interrupt Status Register 0 (PTPIS0)                       */
+        __IOM uint32_t PTPIS0;         /*!< (@ 0x00000700) Interrupt Status Register 0 (PTPIS0)                       */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 15;
+            __IOM uint32_t MCCOES0 : 1; /*!< [16..16] MCCOES0                                                          */
+            uint32_t               : 14;
+            __IOM uint32_t MCCS1   : 1; /*!< [1..1] MCCS1                                                              */
+            __IOM uint32_t MCCS0   : 1; /*!< [0..0] MCCS0                                                              */
+#else
             __IOM uint32_t MCCS0   : 1; /*!< [0..0] MCCS0                                                              */
             __IOM uint32_t MCCS1   : 1; /*!< [1..1] MCCS1                                                              */
             uint32_t               : 14;
             __IOM uint32_t MCCOES0 : 1; /*!< [16..16] MCCOES0                                                          */
             uint32_t               : 15;
+#endif
         } PTPIS0_b;
     };
 
     union
     {
-        __IOM uint32_t PTPIE0;          /*!< (@ 0x00000704) Interrupt Enable Register 0 (PTPIE0)                       */
+        __IOM uint32_t PTPIE0;         /*!< (@ 0x00000704) Interrupt Enable Register 0 (PTPIE0)                       */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 15;
+            __IOM uint32_t MCCOEE0 : 1; /*!< [16..16] MCCOEE0                                                          */
+            uint32_t               : 14;
+            __IOM uint32_t MCCE1   : 1; /*!< [1..1] MCCE1                                                              */
+            __IOM uint32_t MCCE0   : 1; /*!< [0..0] MCCE0                                                              */
+#else
             __IOM uint32_t MCCE0   : 1; /*!< [0..0] MCCE0                                                              */
             __IOM uint32_t MCCE1   : 1; /*!< [1..1] MCCE1                                                              */
             uint32_t               : 14;
             __IOM uint32_t MCCOEE0 : 1; /*!< [16..16] MCCOEE0                                                          */
             uint32_t               : 15;
+#endif
         } PTPIE0_b;
     };
 
     union
     {
-        __IOM uint32_t PTPID0;          /*!< (@ 0x00000708) Interrupt Disable Register 0 (PTPID0)                      */
+        __IOM uint32_t PTPID0;         /*!< (@ 0x00000708) Interrupt Disable Register 0 (PTPID0)                      */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 15;
+            __IOM uint32_t MCCOED0 : 1; /*!< [16..16] MCCOED0                                                          */
+            uint32_t               : 14;
+            __IOM uint32_t MCCD1   : 1; /*!< [1..1] MCCD1                                                              */
+            __IOM uint32_t MCCD0   : 1; /*!< [0..0] MCCD0                                                              */
+#else
             __IOM uint32_t MCCD0   : 1; /*!< [0..0] MCCD0                                                              */
             __IOM uint32_t MCCD1   : 1; /*!< [1..1] MCCD1                                                              */
             uint32_t               : 14;
             __IOM uint32_t MCCOED0 : 1; /*!< [16..16] MCCOED0                                                          */
             uint32_t               : 15;
+#endif
         } PTPID0_b;
     };
     __IM uint32_t RESERVED14;
@@ -770,9 +986,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 30;
+            __IOM uint32_t MCRMS1 : 1; /*!< [1..1] MCRMS1                                                             */
+            __IOM uint32_t MCRMS0 : 1; /*!< [0..0] MCRMS0                                                             */
+#else
             __IOM uint32_t MCRMS0 : 1; /*!< [0..0] MCRMS0                                                             */
             __IOM uint32_t MCRMS1 : 1; /*!< [1..1] MCRMS1                                                             */
             uint32_t              : 30;
+#endif
         } PTPIS1_b;
     };
 
@@ -782,9 +1004,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 30;
+            __IOM uint32_t MCRME1 : 1; /*!< [1..1] MCRME1                                                             */
+            __IOM uint32_t MCRME0 : 1; /*!< [0..0] MCRME0                                                             */
+#else
             __IOM uint32_t MCRME0 : 1; /*!< [0..0] MCRME0                                                             */
             __IOM uint32_t MCRME1 : 1; /*!< [1..1] MCRME1                                                             */
             uint32_t              : 30;
+#endif
         } PTPIE1_b;
     };
 
@@ -794,9 +1022,15 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 30;
+            __IOM uint32_t MCRMD1 : 1; /*!< [1..1] MCRMD1                                                             */
+            __IOM uint32_t MCRMD0 : 1; /*!< [0..0] MCRMD0                                                             */
+#else
             __IOM uint32_t MCRMD0 : 1; /*!< [0..0] MCRMD0                                                             */
             __IOM uint32_t MCRMD1 : 1; /*!< [1..1] MCRMD1                                                             */
             uint32_t              : 30;
+#endif
         } PTPID1_b;
     };
     __IM uint32_t RESERVED15[25];
@@ -807,27 +1041,45 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 14;
+            __IOM uint32_t MCRSL1 : 1; /*!< [17..17] MCRSL1                                                           */
+            __IOM uint32_t MCRSL0 : 1; /*!< [16..16] MCRSL0                                                           */
+            uint32_t              : 14;
+            __IOM uint32_t TRSL1  : 1; /*!< [1..1] TRSL1                                                              */
+            __IOM uint32_t TRSL0  : 1; /*!< [0..0] TRSL0                                                              */
+#else
             __IOM uint32_t TRSL0  : 1; /*!< [0..0] TRSL0                                                              */
             __IOM uint32_t TRSL1  : 1; /*!< [1..1] TRSL1                                                              */
             uint32_t              : 14;
             __IOM uint32_t MCRSL0 : 1; /*!< [16..16] MCRSL0                                                           */
             __IOM uint32_t MCRSL1 : 1; /*!< [17..17] MCRSL1                                                           */
             uint32_t              : 14;
+#endif
         } PTPSCR0_b;
     };
 
     union
     {
-        __IOM uint32_t PTPSCR1;         /*!< (@ 0x00000784) Security Configuration Register 1 (PTPSCR1)                */
+        __IOM uint32_t PTPSCR1;        /*!< (@ 0x00000784) Security Configuration Register 1 (PTPSCR1)                */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 14;
+            __IOM uint32_t MRRRSL1 : 1; /*!< [17..17] MRRRSL1                                                          */
+            __IOM uint32_t MRRRSL0 : 1; /*!< [16..16] MRRRSL0                                                          */
+            uint32_t               : 14;
+            __IOM uint32_t MRRSL1  : 1; /*!< [1..1] MRRSL1                                                             */
+            __IOM uint32_t MRRSL0  : 1; /*!< [0..0] MRRSL0                                                             */
+#else
             __IOM uint32_t MRRSL0  : 1; /*!< [0..0] MRRSL0                                                             */
             __IOM uint32_t MRRSL1  : 1; /*!< [1..1] MRRSL1                                                             */
             uint32_t               : 14;
             __IOM uint32_t MRRRSL0 : 1; /*!< [16..16] MRRRSL0                                                          */
             __IOM uint32_t MRRRSL1 : 1; /*!< [17..17] MRRRSL1                                                          */
             uint32_t               : 14;
+#endif
         } PTPSCR1_b;
     };
 
@@ -837,11 +1089,19 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 15;
+            __IOM uint32_t VRSL   : 1; /*!< [16..16] VRSL                                                             */
+            uint32_t              : 14;
+            __IOM uint32_t CCRSL1 : 1; /*!< [1..1] CCRSL1                                                             */
+            __IOM uint32_t CCRSL0 : 1; /*!< [0..0] CCRSL0                                                             */
+#else
             __IOM uint32_t CCRSL0 : 1; /*!< [0..0] CCRSL0                                                             */
             __IOM uint32_t CCRSL1 : 1; /*!< [1..1] CCRSL1                                                             */
             uint32_t              : 14;
             __IOM uint32_t VRSL   : 1; /*!< [16..16] VRSL                                                             */
             uint32_t              : 15;
+#endif
         } PTPSCR2_b;
     };
     __IM uint32_t RESERVED16[541];
@@ -852,8 +1112,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 31;
+            __IOM uint32_t REFSEL : 1; /*!< [0..0] Reference Timer Select                                             */
+#else
             __IOM uint32_t REFSEL : 1; /*!< [0..0] Reference Timer Select                                             */
             uint32_t              : 31;
+#endif
         } POTCFGR_b;
     };
 
@@ -863,8 +1128,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 31;
+            __IOM uint32_t START : 1;  /*!< [0..0] Timer Start                                                        */
+#else
             __IOM uint32_t START : 1;  /*!< [0..0] Timer Start                                                        */
             uint32_t             : 31;
+#endif
         } POTCR0_b;
     };
     __IOM uint32_t POTSTR0U;           /*!< (@ 0x00001008) Pulse Output Start Time Setting Register U0                */
@@ -885,8 +1155,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 31;
+            __IOM uint32_t START : 1;  /*!< [0..0] Timer Start                                                        */
+#else
             __IOM uint32_t START : 1;  /*!< [0..0] Timer Start                                                        */
             uint32_t             : 31;
+#endif
         } POTCR1_b;
     };
     __IOM uint32_t POTSTR1U;           /*!< (@ 0x00001038) Pulse Output Start Time Setting Register U1                */
@@ -907,8 +1182,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 31;
+            __IOM uint32_t START : 1;  /*!< [0..0] Timer Start                                                        */
+#else
             __IOM uint32_t START : 1;  /*!< [0..0] Timer Start                                                        */
             uint32_t             : 31;
+#endif
         } POTCR2_b;
     };
     __IOM uint32_t POTSTR2U;           /*!< (@ 0x00001068) Pulse Output Start Time Setting Register U2                */
@@ -929,8 +1209,13 @@ typedef struct                         /*!< (@ 0x874E0000) R_GPTP Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 31;
+            __IOM uint32_t START : 1;  /*!< [0..0] Timer Start                                                        */
+#else
             __IOM uint32_t START : 1;  /*!< [0..0] Timer Start                                                        */
             uint32_t             : 31;
+#endif
         } POTCR3_b;
     };
     __IOM uint32_t POTSTR3U;           /*!< (@ 0x00001098) Pulse Output Start Time Setting Register U3                */

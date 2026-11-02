@@ -1045,7 +1045,6 @@ typedef struct                         /*!< (@ 0x8701D000) R_BUS Structure      
 #endif
         } EXHLDEN_b;
     };
-
     __IM uint8_t           RESERVED10;
     __IM uint16_t          RESERVED11;
     __IM uint32_t          RESERVED12[210];
@@ -1053,33 +1052,16 @@ typedef struct                         /*!< (@ 0x8701D000) R_BUS Structure      
     __IM uint32_t          RESERVED13[235];
     __IOM R_BUS_OAD_Type   OAD;        /*!< (@ 0x00001000) Bus Operation After Detection Registers                    */
     __IM uint16_t          RESERVED14;
-    __IM uint32_t          RESERVED15[58];
-
-    union
-    {
-        __IOM uint32_t BUSMABTXSPIMBI; /*!< (@ 0x00001100) Bus Master Arbitration Control Register                    */
-
-        struct
-        {
-#if defined(__BIG) && defined(__GNUC__)
-            uint32_t            : 31;
-            __IOM uint32_t ARBS : 1;   /*!< [0..0] Arbitration Select for XSPIMBI                                     */
-#else
-            __IOM uint32_t ARBS : 1;   /*!< [0..0] Arbitration Select for XSPIMBI                                     */
-            uint32_t            : 31;
-#endif
-        } BUSMABTXSPIMBI_b;
-    };
-    __IM uint32_t RESERVED16[63];
+    __IM uint32_t          RESERVED15[122];
 
     union
     {
         __IOM R_BUS_BUSSABT0_Type BUSSABT0; /*!< (@ 0x00001200) Bus Slave Arbitration Control 0 Registers                  */
         __IOM R_BUS_BUSSABT1_Type BUSSABT1; /*!< (@ 0x00001200) Bus Slave Arbitration Control 1 Registers                  */
     };
-    __IM uint32_t            RESERVED17[345];
-    __IOM R_BUS_BUSERRb_Type BUSERRb[7];    /*!< (@ 0x00001800) Bus Error Registers                                        */
-    __IM uint32_t            RESERVED18[164];
+    __IM uint32_t            RESERVED16[345];
+    __IOM R_BUS_BUSERRb_Type BUSERRb[13];   /*!< (@ 0x00001800) Bus Error Registers                                        */
+    __IM uint32_t            RESERVED17[140];
     __IOM R_BUS_MBWERR_Type  MBWERR;        /*!< (@ 0x00001B00) Master Bufferable Write Error Registers                    */
 } R_BUS_Type;                               /*!< Size = 6924 (0x1b0c)                                                      */
 

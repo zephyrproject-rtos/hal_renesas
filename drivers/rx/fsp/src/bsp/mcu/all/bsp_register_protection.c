@@ -75,7 +75,14 @@ void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
 
         /** When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
          * disable writes. */
-        R_SYSTEM->PRCR = (uint16_t) ((R_SYSTEM->PRCR | BSP_PRV_PRCR_KEY) & (uint16_t) (~g_prcr_masks[regs_to_protect]));
+
+#if !BSP_PZ_NONSECURE_BUILD
+        R_SYSTEM->PRCR_S =
+            (uint16_t) ((R_SYSTEM->PRCR_S | BSP_PRV_PRCR_KEY) & (uint16_t) (~g_prcr_masks[regs_to_protect]));
+#else
+        R_SYSTEM->PRCR_NS =
+            (uint16_t) ((R_SYSTEM->PRCR_NS | BSP_PRV_PRCR_KEY) & (uint16_t) (~g_prcr_masks[regs_to_protect]));
+#endif
     }
 
     /** Restore the interrupt state */
@@ -101,7 +108,12 @@ void R_BSP_RegisterProtectDisable (bsp_reg_protect_t regs_to_unprotect)
 
         /** When writing to the PRCR register the upper 8-bits must be the correct key. Set lower bits to 0 to
          * disable writes. */
-        R_SYSTEM->PRCR = (uint16_t) ((R_SYSTEM->PRCR | BSP_PRV_PRCR_KEY) | g_prcr_masks[regs_to_unprotect]);
+
+#if !BSP_PZ_NONSECURE_BUILD
+        R_SYSTEM->PRCR_S = (uint16_t) ((R_SYSTEM->PRCR_S | BSP_PRV_PRCR_KEY) | g_prcr_masks[regs_to_unprotect]);
+#else
+        R_SYSTEM->PRCR_NS = (uint16_t) ((R_SYSTEM->PRCR_NS | BSP_PRV_PRCR_KEY) | g_prcr_masks[regs_to_unprotect]);
+#endif
     }
 
     /** Increment the protect counter */

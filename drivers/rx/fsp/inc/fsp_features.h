@@ -125,6 +125,13 @@ typedef enum e_fsp_ip
     FSP_IP_SCI_B        = 92,          ///< Serial Communications Interface
     FSP_IP_I3C          = 93,          ///< I3C Bus Interface
     FSP_IP_SPI_B        = 94,          ///< Serial Peripheral Interface
+    FSP_IP_ENDAT        = 95,          ///< EnDat 2.2
+    FSP_IP_ENDAT3       = 96,          ///< EnDat 3
+    FSP_IP_BISS         = 97,          ///< BiSS-C
+    FSP_IP_BISSL        = 98,          ///< BiSS-Line
+    FSP_IP_HDSL         = 99,          ///< HIPERFACE DSL
+    FSP_IP_AFMT         = 100,         ///< A-format
+    FSP_IP_FFT          = 101,         ///< FFT Accelerator
 } fsp_ip_t;
 
 /** Signals that can be mapped to an interrupt. */

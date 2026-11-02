@@ -57,6 +57,10 @@
 #define BSP_CFG_ICACHE_ENABLED (0)
 #endif
 
+#ifndef BSP_CFG_IOPORT_VOLTAGE_MODE_VCC
+#define BSP_CFG_IOPORT_VOLTAGE_MODE_VCC (0)
+#endif
+
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
 #define BSP_PRV_IELS_ENUM(vector) (ICU_##vector)
@@ -135,6 +139,16 @@
 #endif
 
 /* ProtectZone Settings */
+#define BSP_PZ_CFG_INIT_SECURE_ONLY                                            \
+  (BSP_CFG_CLOCKS_SECURE || (!BSP_CFG_CLOCKS_OVERRIDE))
+#define BSP_PZ_CFG_SKIP_INIT                                                   \
+  (BSP_PZ_NONSECURE_BUILD && BSP_PZ_CFG_INIT_SECURE_ONLY)
+
+/* The number of SSC Table Entries. */
+#ifndef BSP_PZ_CFG_SSC_NUM
+#define BSP_PZ_CFG_SSC_NUM (1)
+#endif
+
 #define BSP_PZ_CFG_EXCEPTION_RESPONSE (0)
 
 /* Peripheral Security Attribution Register (PSAR) Settings */

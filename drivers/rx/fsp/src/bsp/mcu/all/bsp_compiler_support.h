@@ -20,28 +20,24 @@ extern "C" {
  * Macro definitions
  **********************************************************************************************************************/
  #if defined(__CCRX__)                 /* CCRX compiler */
-  #define BSP_SECTION_HEAP                  ".bss._g_heap"
-  #define BSP_SECTION_STACK                 ".bss._g_main_stack"
   #define BSP_UNINIT_SECTION_PREFIX
   #define BSP_DONT_REMOVE
   #define BSP_ATTRIBUTE_STACKLESS           __attribute__((naked))
   #define BSP_FORCE_INLINE                  __attribute__((always_inline))
  #elif defined(__GNUC__)               /* GCC compiler */
-  #define BSP_SECTION_HEAP                  ".bss._g_heap"
-  #define BSP_SECTION_STACK                 ".bss._g_main_stack"
   #define BSP_UNINIT_SECTION_PREFIX
   #define BSP_DONT_REMOVE                   __attribute__((used))
   #define BSP_ATTRIBUTE_STACKLESS           __attribute__((naked))
   #define BSP_FORCE_INLINE                  __attribute__((always_inline))
  #elif defined(__ICCRX__)              /* IAR compiler */
-  #define BSP_SECTION_HEAP                  ".bss"
-  #define BSP_SECTION_STACK                 ".bss"
   #define BSP_UNINIT_SECTION_PREFIX
   #define BSP_DONT_REMOVE                   __root
   #define BSP_ATTRIBUTE_STACKLESS
   #define BSP_FORCE_INLINE                  _Pragma("inline=forced")
  #endif
 
+ #define BSP_SECTION_HEAP                   ".ram_noinit"
+ #define BSP_SECTION_STACK                  ".ram_noinit"
  #define BSP_SECTION_NOINIT                 BSP_UNINIT_SECTION_PREFIX ".noinit"
  #define BSP_SECTION_FIXED_VECTORS          ".fixed_vectors"
  #define BSP_SECTION_APPLICATION_VECTORS    ".application_vectors"
@@ -90,6 +86,8 @@ extern "C" {
   #define __WAIT()         __wait()
   #define __WFI()          __wait()
   #define __DSB()
+  #define __SET_IVC(x)     bsp_set_ivc((uint32_t) x)
+
  #elif defined(__GNUC__)               /* GCC scompiler */
   #define __BKPT(x)        __asm volatile ("brk" : : :)
   #define __GET_ISP(x)     __asm volatile ("mvfc isp, %0" : "=r" (x))
@@ -107,6 +105,7 @@ extern "C" {
         __sync_synchronize();   \
         __asm__ __volatile__ ("nop\n\tnop\n\tnop" ::: "memory");                      \
 } while (0)
+  #define __SET_IVC(x)     __asm volatile ("mvtc %0, ivc" : : "r" (x) :)
  #elif defined(__ICCRX__)              /* IAR compiler */
   #define __BKPT(x)        __asm volatile ("brk" : : :)
   #define __GET_ISP(x)     __asm volatile ("mvfc isp, %0" : "=r" (x))
@@ -121,6 +120,7 @@ extern "C" {
   #define __WAIT()         __asm volatile ("wait")
   #define __WFI()          __asm volatile ("wait")
   #define __DSB()
+  #define __SET_IVC(x)     __asm volatile ("mvtc %0, ivc" : : "r" (x) :)
  #endif
 
  #if defined(__CCRX__)                 /* CCRX compiler */
@@ -166,6 +166,10 @@ extern "C" {
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
+ #if defined(__CCRX__)
+void bsp_set_ivc(uint32_t x);
+
+ #endif
 
 /** @} (end of addtogroup BSP_MCU) */
 

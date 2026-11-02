@@ -8,11 +8,19 @@
 #define R_SRAM_REG_H
 
 /* =========================================================================================================================== */
+/* ================                            Device Specific Peripheral Section                             ================ */
+/* =========================================================================================================================== */
+
+/** @addtogroup Device_Peripheral_peripherals
+ * @{
+ */
+
+/* =========================================================================================================================== */
 /* ================                                          R_SRAM                                           ================ */
 /* =========================================================================================================================== */
 
 /**
- * @brief SRAM Control (R_SRAM)
+ * @brief SRAM (R_SRAM)
  */
 
 typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure                                           */
@@ -24,18 +32,36 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Code                                                    */
+            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Word                                                    */
             uint16_t          : 7;
             __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
 #else
             __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
             uint16_t          : 7;
-            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Code                                                    */
+            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Word                                                    */
 #endif
         } SRAMPRCR_S_b;
     };
     __IM uint16_t RESERVED;
-    __IM uint32_t RESERVED1;
+
+    union
+    {
+        __IOM uint16_t SRAMPRCR_NS;    /*!< (@ 0x00000004) SRAM Protection Control Register for Non-Secure            */
+
+        struct
+        {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Word                                                    */
+            uint16_t          : 7;
+            __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
+#else
+            __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
+            uint16_t          : 7;
+            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Word                                                    */
+#endif
+        } SRAMPRCR_NS_b;
+    };
+    __IM uint16_t RESERVED1;
 
     union
     {
@@ -45,9 +71,9 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t            : 7;
-            __IOM uint8_t WTEN : 1;    /*!< [0..0] wait enable                                                        */
+            __IOM uint8_t WTEN : 1;    /*!< [0..0] SRAM wait enable                                                   */
 #else
-            __IOM uint8_t WTEN : 1;    /*!< [0..0] wait enable                                                        */
+            __IOM uint8_t WTEN : 1;    /*!< [0..0] SRAM wait enable                                                   */
             uint8_t            : 7;
 #endif
         } SRAMWTSC_b;
@@ -63,9 +89,9 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Test Enable / ECC Bypass Select                                */
+            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Bypass Select                                                  */
             uint8_t               : 2;
-            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-Bit Error Information Update Enable                          */
+            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-bit Error Update Enable                                      */
             __IOM uint8_t ECCMOD  : 2; /*!< [3..2] ECC Operating Mode Select                                          */
             uint8_t               : 1;
             __IOM uint8_t OAD     : 1; /*!< [0..0] Operation after error detection                                    */
@@ -73,9 +99,9 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
             __IOM uint8_t OAD     : 1; /*!< [0..0] Operation after error detection                                    */
             uint8_t               : 1;
             __IOM uint8_t ECCMOD  : 2; /*!< [3..2] ECC Operating Mode Select                                          */
-            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-Bit Error Information Update Enable                          */
+            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-bit Error Update Enable                                      */
             uint8_t               : 2;
-            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Test Enable / ECC Bypass Select                                */
+            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Bypass Select                                                  */
 #endif
         } SRAMCR0_b;
     };
@@ -89,9 +115,9 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Test Enable / ECC Bypass Select                                */
+            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Bypass Select                                                  */
             uint8_t               : 2;
-            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-Bit Error Information Update Enable                          */
+            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-bit Error Update Enable                                      */
             __IOM uint8_t ECCMOD  : 2; /*!< [3..2] ECC Operating Mode Select                                          */
             uint8_t               : 1;
             __IOM uint8_t OAD     : 1; /*!< [0..0] Operation after error detection                                    */
@@ -99,9 +125,9 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
             __IOM uint8_t OAD     : 1; /*!< [0..0] Operation after error detection                                    */
             uint8_t               : 1;
             __IOM uint8_t ECCMOD  : 2; /*!< [3..2] ECC Operating Mode Select                                          */
-            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-Bit Error Information Update Enable                          */
+            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-bit Error Update Enable                                      */
             uint8_t               : 2;
-            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Test Enable / ECC Bypass Select                                */
+            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Bypass Select                                                  */
 #endif
         } SRAMCR1_b;
     };
@@ -111,15 +137,15 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
     union
     {
-        __IOM uint8_t SRAMECCRGN0;     /*!< (@ 0x00000030) SRAM ECC Region Control Register                           */
+        __IOM uint8_t SRAMECCRGN0;     /*!< (@ 0x00000030) SRAM ECC Region Control Register 0                         */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t              : 4;
-            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target Region select                                           */
+            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target region select                                           */
 #else
-            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target Region select                                           */
+            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target region select                                           */
             uint8_t              : 4;
 #endif
         } SRAMECCRGN0_b;
@@ -129,15 +155,15 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
     union
     {
-        __IOM uint8_t SRAMECCRGN1;     /*!< (@ 0x00000034) SRAM ECC Region Control Register                           */
+        __IOM uint8_t SRAMECCRGN1;     /*!< (@ 0x00000034) SRAM ECC Region Control Register 1                         */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t              : 4;
-            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target Region select                                           */
+            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target region select                                           */
 #else
-            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target Region select                                           */
+            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target region select                                           */
             uint8_t              : 4;
 #endif
         } SRAMECCRGN1_b;
@@ -193,42 +219,13 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
     };
     __IM uint16_t RESERVED17;
     __IM uint32_t RESERVED18;
-    __IM uint32_t SRAMEAR00;           /*!< (@ 0x00000050) SRAM Error Address Register 00                             */
-    __IM uint32_t SRAMEAR01;           /*!< (@ 0x00000054) SRAM Error Address Register 01                             */
+    __IM uint32_t SRAMEAR00;           /*!< (@ 0x00000050) SRAM0 Error Address 0 Register                             */
+    __IM uint32_t SRAMEAR01;           /*!< (@ 0x00000054) SRAM0 Error Address 1 Register                             */
     __IM uint32_t RESERVED19[2];
-    __IM uint32_t SRAMEAR10;           /*!< (@ 0x00000060) SRAM Error Address Register 10                             */
-    __IM uint32_t SRAMEAR11;           /*!< (@ 0x00000064) SRAM Error Address Register 11                             */
+    __IM uint32_t SRAMEAR10;           /*!< (@ 0x00000060) SRAM1 Error Address 0 Register                             */
+    __IM uint32_t SRAMEAR11;           /*!< (@ 0x00000064) SRAM1 Error Address 1 Register                             */
 } R_SRAM_Type;                         /*!< Size = 104 (0x68)                                                         */
 
-/* =========================================================================================================================== */
-/* ================                                         R_SRAM_NS                                         ================ */
-/* =========================================================================================================================== */
-
-/**
- * @brief SRAM Control (R_SRAM_NS)
- */
-
-typedef struct                         /*!< (@ 0x0701C000) R_SRAM_NS Structure                                        */
-{
-    __IM uint16_t RESERVED[2];
-
-    union
-    {
-        __IOM uint16_t SRAMPRCR_NS;    /*!< (@ 0x00000004) SRAM Protection Control Register for Non-Secure            */
-
-        struct
-        {
-#if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Code                                                    */
-            uint16_t          : 7;
-            __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
-#else
-            __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
-            uint16_t          : 7;
-            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Code                                                    */
-#endif
-        } SRAMPRCR_NS_b;
-    };
-} R_SRAM_NS_Type;                      /*!< Size = 6 (0x6)                                                            */
+/** @} */ /* End of group Device_Peripheral_peripherals */
 
 #endif /* R_SRAM_REG_H */

@@ -48,6 +48,8 @@ typedef enum e_bsp_io_dir
     BSP_IO_DIRECTION_OUTPUT            ///< Output
 } bsp_io_direction_t;
 
+#ifndef BSP_OVERRIDE_BSP_IO_PORT_T
+
 /** Superset list of all possible IO ports. */
 typedef enum e_bsp_io_port
 {
@@ -69,6 +71,10 @@ typedef enum e_bsp_io_port
     BSP_IO_PORT_15 = 0x0F00,           ///< IO port 15
     BSP_IO_PORT_16 = 0x1000,           ///< IO port 16
 } bsp_io_port_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_BSP_IO_PORT_PIN_T
 
 /** Superset list of all possible IO port pins. */
 typedef enum e_bsp_io_port_pin_t
@@ -364,6 +370,8 @@ typedef enum e_bsp_io_port_pin_t
     BSP_IO_PORT_FF_PIN_FF = 0xFFFF,    ///< Invalid IO port
 } bsp_io_port_pin_t;
 
+#endif
+
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
@@ -424,6 +432,7 @@ __STATIC_INLINE void R_BSP_PinCfg (bsp_io_port_pin_t pin, uint32_t cfg)
 __STATIC_INLINE void R_BSP_PinAccessEnable (void)
 {
 #if BSP_CFG_PFS_PROTECT
+
     /** Get the current state of interrupts */
     FSP_CRITICAL_SECTION_DEFINE;
     FSP_CRITICAL_SECTION_ENTER;
@@ -431,8 +440,13 @@ __STATIC_INLINE void R_BSP_PinAccessEnable (void)
     /** If this is first entry then allow writing of PFS. */
     if (0 == g_protect_pfswe_counter)
     {
-        R_PMISC->PWPRS = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
-        R_PMISC->PWPRS = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
+ #if !BSP_PZ_NONSECURE_BUILD
+        R_PMISC->PWPR_S = 0;                               ///< Clear BOWI bit - writing to PFSWE bit enabled
+        R_PMISC->PWPR_S = 1U << BSP_IO_PWPR_PFSWE_OFFSET;  ///< Set PFSWE bit - writing to PFS register enabled
+ #else
+        R_PMISC->PWPR_NS = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
+        R_PMISC->PWPR_NS = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
+ #endif
     }
 
     /** Increment the protect counter */
@@ -450,6 +464,7 @@ __STATIC_INLINE void R_BSP_PinAccessEnable (void)
 __STATIC_INLINE void R_BSP_PinAccessDisable (void)
 {
 #if BSP_CFG_PFS_PROTECT
+
     /** Get the current state of interrupts */
     FSP_CRITICAL_SECTION_DEFINE;
     FSP_CRITICAL_SECTION_ENTER;
@@ -464,8 +479,13 @@ __STATIC_INLINE void R_BSP_PinAccessDisable (void)
     /** Is it safe to disable writing of PFS? */
     if (0 == g_protect_pfswe_counter)
     {
-        R_PMISC->PWPRS = 0;                             ///< Clear PFSWE bit - writing to PFSWE bit enabled
-        R_PMISC->PWPRS = 1U << BSP_IO_PWPR_B0WI_OFFSET; ///< Set BOWI bit - writing to PFS register enabled
+ #if !BSP_PZ_NONSECURE_BUILD
+        R_PMISC->PWPR_S = 0;                              ///< Clear PFSWE bit - writing to PFSWE bit enabled
+        R_PMISC->PWPR_S = 1U << BSP_IO_PWPR_B0WI_OFFSET;  ///< Set BOWI bit - writing to PFS register enabled
+ #else
+        R_PMISC->PWPR_NS = 0;                             ///< Clear PFSWE bit - writing to PFSWE bit enabled
+        R_PMISC->PWPR_NS = 1U << BSP_IO_PWPR_B0WI_OFFSET; ///< Set BOWI bit - writing to PFS register enabled
+ #endif
     }
 
     /** Restore the interrupt state */

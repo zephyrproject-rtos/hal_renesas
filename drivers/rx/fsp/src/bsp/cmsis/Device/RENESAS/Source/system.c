@@ -19,15 +19,23 @@
  * Macro definitions
  **********************************************************************************************************************/
 #if BSP_CFG_DCACHE_ENABLED || BSP_CFG_ICACHE_ENABLED
- #define BSP_PRV_MPU_PAGE_SIZE    (0x20) // MPU page size
- #define BSP_PRV_RSPAGE_DCA       (0x3)  // Enable D-Cache, write-back method
- #define BSP_PRV_RSPAGE_ICA       (0x4)  // Enable I-Cache
- #define BSP_PRV_REPAGE_V         (0x1)  // Enable area
- #define BSP_PRV_REPAGE_UAC       (0xE)  // r, w, x permitted
+ #define BSP_PRV_MPU_PAGE_SIZE      (0x20) // MPU page size
+ #define BSP_PRV_RSPAGE_DCA         (0x3)  // Enable D-Cache, write-back method
+ #define BSP_PRV_RSPAGE_ICA         (0x4)  // Enable I-Cache
+ #define BSP_PRV_REPAGE_V           (0x1)  // Enable area
+ #define BSP_PRV_REPAGE_UAC         (0xE)  // r, w, x permitted
 
 /* The RX74M/RX74N MPU has RPAGE[8]. */
- #define BSP_PRV_MPU_MAX_SLOTS    (8U)
+ #if BSP_MCU_GROUP_RX74M || BSP_MCU_GROUP_RX74N
+  #define BSP_PRV_MPU_MAX_SLOTS     (8U)
+ #elif BSP_MCU_GROUP_RX74T
+  #define BSP_PRV_MPU_MAX_SLOTS     (2U)
+ #endif
 #endif
+
+#define BSP_PRV_PRCR_KEY            (0xA500U)
+#define BSP_PRV_PRCR_PRC1_UNLOCK    ((BSP_PRV_PRCR_KEY) | 0x2U)
+#define BSP_PRV_PRCR_LOCK           ((BSP_PRV_PRCR_KEY) | 0x0U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -168,8 +176,26 @@ void SystemInit (void)
     /* Call pre clock initialization hook. */
     R_BSP_WarmStart(BSP_WARM_START_RESET);
 
+#if !BSP_PZ_CFG_SKIP_INIT
+
     /* Configure system clocks. */
     bsp_clock_init();
+#endif
+
+#if BSP_FEATURE_IOPORT_HAS_LVOCR
+ #if !BSP_PZ_NONSECURE_BUILD
+
+    /* Unlock LVOCR register. */
+    R_SYSTEM->PRCR_S = (uint16_t) BSP_PRV_PRCR_PRC1_UNLOCK;
+
+    /* Set LVOCR according to BSP configuration.
+     * Configure prior to warm start post clock. */
+    R_SYSTEM->LVOCR = ((BSP_CFG_IOPORT_VOLTAGE_MODE_VCC << R_SYSTEM_LVOCR_LVO0E_Pos) & R_SYSTEM_LVOCR_LVO0E_Msk);
+
+    /* Lock LVOCR register. */
+    R_SYSTEM->PRCR_S = (uint16_t) BSP_PRV_PRCR_LOCK;
+ #endif
+#endif
 
     /* Call post clock initialization hook. */
     R_BSP_WarmStart(BSP_WARM_START_POST_CLOCK);
@@ -179,19 +205,34 @@ void SystemInit (void)
     /* Initialize data placed in internal memories. */
     SystemRuntimeInit(0);
 #endif
+#if BSP_PZ_NONSECURE_BUILD
+
+    /* Register the Non-Secure SystemCoreClock address via SSC. */
+    r_bsp_ns_system_core_clock_init();
+#else
 
     /* Initialize SystemCoreClock variable. */
     SystemCoreClockUpdate();
+#endif
 
 #if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_TAMPICR1
 
+    /* For PZ project, it should be called by the secure application, whether RTC module is to be configured as secure or not. */
+ #if !BSP_PZ_NONSECURE_BUILD
+
     /* Perform RTC reset sequence to avoid unintended operation. */
     R_BSP_Init_RTC();
+ #endif
 #endif
 
 #if !BSP_CFG_PFS_PROTECT && defined(R_PMISC)
-    R_PMISC->PWPRS = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
-    R_PMISC->PWPRS = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
+ #if !BSP_PZ_NONSECURE_BUILD
+    R_PMISC->PWPR_S = 0;                               ///< Clear BOWI bit - writing to PFSWE bit enabled
+    R_PMISC->PWPR_S = 1U << BSP_IO_PWPR_PFSWE_OFFSET;  ///< Set PFSWE bit - writing to PFS register enabled
+ #else
+    R_PMISC->PWPR_NS = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
+    R_PMISC->PWPR_NS = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
+ #endif
 #endif
 
 #if BSP_PZ_SECURE_BUILD
@@ -225,7 +266,11 @@ void SystemInit (void)
     bsp_init_mpu();
 #endif
 
-#if BSP_CFG_ICACHE_ENABLED
+#if ((BSP_PZ_SECURE_BUILD && (0 == (BSP_PZ_CFG_CACHESAR & R_CPSCU_CACHESAR_CACHESA_Msk))) ||   \
+    (BSP_PZ_NONSECURE_BUILD && (0 != (BSP_PZ_CFG_CACHESAR & R_CPSCU_CACHESAR_CACHESA_Msk))) || \
+    (!BSP_PZ_SECURE_BUILD && !BSP_PZ_NONSECURE_BUILD))
+
+ #if BSP_CFG_ICACHE_ENABLED
 
     /* Invalidate I-Cache */
     R_CACHE->IFCACTL = (uint32_t) ((R_CACHE->IFCACTL & ~R_CACHE_IFCACTL_FL_Msk) | (1U << R_CACHE_IFCACTL_FL_Pos));
@@ -235,18 +280,24 @@ void SystemInit (void)
 
     /* Enable I-Cache. */
     R_CACHE->IFCACTL = (uint32_t) ((R_CACHE->IFCACTL & ~R_CACHE_IFCACTL_EN_Msk) | (1U << R_CACHE_IFCACTL_EN_Pos));
-#endif
+ #endif
 
-#if BSP_CFG_DCACHE_ENABLED
+ #if BSP_CFG_DCACHE_ENABLED
 
     /* Invalidate D-Cache */
     R_BSP_CacheInvalidate();
 
     /* Enable D-Cache. */
     R_BSP_CacheEnable();
+ #endif
 #endif
 
-#if BSP_FEATURE_BSP_HAS_ESWM_DOMAIN
+#if !BSP_PZ_NONSECURE_BUILD
+ #if BSP_FEATURE_BSP_HAS_ESWM_DOMAIN
+  #if ((BSP_PZ_SECURE_BUILD && (0 == (BSP_PZ_CFG_PGCSAR & R_SYSTEM_PGCSAR_NONSEC6_Msk))) || \
+    (BSP_PZ_NONSECURE_BUILD && (0 != (BSP_PZ_CFG_PGCSAR & R_SYSTEM_PGCSAR_NONSEC6_Msk))) || \
+    (!BSP_PZ_SECURE_BUILD && !BSP_PZ_NONSECURE_BUILD))
+
     FSP_HARDWARE_REGISTER_WAIT(R_SYSTEM->PDCTRESWM_b.PDCSF, 0);
 
     if (1 == R_SYSTEM->PDCTRESWM_b.PDPGSF)
@@ -263,11 +314,12 @@ void SystemInit (void)
             0);
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_OM_LPC_BATT_SWR);
     }
-#endif
+  #endif
+ #endif
 
     /* Call Post C runtime initialization hook. */
     R_BSP_WarmStart(BSP_WARM_START_POST_C);
-
+#endif
 #if BSP_CFG_C_RUNTIME_INIT
 
     /* Initialize data placed in external memories. */
