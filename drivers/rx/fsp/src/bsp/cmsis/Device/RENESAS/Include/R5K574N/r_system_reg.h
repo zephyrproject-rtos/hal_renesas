@@ -37,7 +37,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t KEY  : 8;   /*!< [15..8] SYSCR0 Key Code                                                   */
             uint16_t            : 7;
-            __IOM uint16_t ROME : 1;   /*!< [0..0] On-chip MRAM Enable                                                */
+            __IOM uint16_t ROME : 1;   /*!< [0..0] On-Chip Code MRAM Enable                                           */
 #else
             __IOM uint16_t ROME : 1;   /*!< [0..0] On-Chip Code MRAM Enable                                           */
             uint16_t            : 7;
@@ -646,29 +646,21 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint8_t MOCOUTCR;        /*!< (@ 0x00000061) MOCO User Trimming Control Register                        */
+        __IOM uint8_t MOCOUTCR;         /*!< (@ 0x00000061) MOCO User Trimming Control Register                        */
 
         struct
         {
-#if defined(__BIG) && defined(__GNUC__)
             __IOM uint8_t MOCOUTRM : 8; /*!< [7..0] MOCO User Trimming                                                 */
-#else
-            __IOM uint8_t MOCOUTRM : 8; /*!< [7..0] MOCO User Trimming                                                 */
-#endif
         } MOCOUTCR_b;
     };
 
     union
     {
-        __IOM uint8_t HOCOUTCR;        /*!< (@ 0x00000062) HOCO User Trimming Control Register                        */
+        __IOM uint8_t HOCOUTCR;         /*!< (@ 0x00000062) HOCO User Trimming Control Register                        */
 
         struct
         {
-#if defined(__BIG) && defined(__GNUC__)
             __IOM uint8_t HOCOUTRM : 8; /*!< [7..0] HOCO User Trimming                                                 */
-#else
-            __IOM uint8_t HOCOUTRM : 8; /*!< [7..0] HOCO User Trimming                                                 */
-#endif
         } HOCOUTCR_b;
     };
     __IM uint8_t  RESERVED26;
@@ -966,11 +958,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
         struct
         {
-#if defined(__BIG) && defined(__GNUC__)
             __IOM uint16_t SWRR : 16;  /*!< [15..0] Software Reset                                                    */
-#else
-            __IOM uint16_t SWRR : 16;  /*!< [15..0] Software Reset                                                    */
-#endif
         } SWRR_b;
     };
     __IM uint16_t RESERVED40;
@@ -1627,14 +1615,14 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t               : 30;
             __IOM uint32_t NONSEC1 : 1; /*!< [1..1] PVD2 Security Attribute Setting (Target registers: Registers
-                                         *   for PVD2)                                                                 */
-            __IOM uint32_t NONSEC0 : 1; /*!< [0..0] PVD1 Security Attribute Setting (Target registers: Registers
                                          *   for PVD1)                                                                 */
+            __IOM uint32_t NONSEC0 : 1; /*!< [0..0] PVD1 Security Attribute Setting (Target registers: Registers
+                                         *   for PVD2)                                                                 */
 #else
             __IOM uint32_t NONSEC0 : 1; /*!< [0..0] PVD1 Security Attribute Setting (Target registers: Registers
-                                         *   for PVD1)                                                                 */
-            __IOM uint32_t NONSEC1 : 1; /*!< [1..1] PVD2 Security Attribute Setting (Target registers: Registers
                                          *   for PVD2)                                                                 */
+            __IOM uint32_t NONSEC1 : 1; /*!< [1..1] PVD2 Security Attribute Setting (Target registers: Registers
+                                         *   for PVD1)                                                                 */
             uint32_t : 30;
 #endif
         } PVDSAR_b;
@@ -1695,7 +1683,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t               : 25;
-            __IOM uint32_t NONSEC6 : 1; /*!< [6..6] Non-secure Attribute bit 6 Target register: PDCTRGEN2              */
+            __IOM uint32_t NONSEC6 : 1; /*!< [6..6] Security Attribution 6 (Target register: PSSTCR5, PDCTRESWM)       */
             __IOM uint32_t NONSEC5 : 1; /*!< [5..5] Security Attribution 5 (Target register: PSSTCR4)                  */
             uint32_t               : 1;
             __IOM uint32_t NONSEC3 : 1; /*!< [3..3] Security Attribution 3 (Target register: PSSTCR2)                  */
@@ -1774,62 +1762,62 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
                                          *   DPSIEGR1.DIRQ10EG)(Target source: IRQ10-DS pin)                           */
             __IOM uint32_t DPFSA9 : 1;  /*!< [9..9] Deep Software Standby Interrupt Source Security Attribution
                                          *   9 (Target register: DPSIER1.DIRQ9E, DPSIFR1.DIRQ9F, DPSIEGR1.DIRQ9EG)(Tar
-                                         *   get source: IRQ9-DS pin)                                                   */
+                                         *   get source: IRQ9-DS pin)                                                  */
             __IOM uint32_t DPFSA8 : 1;  /*!< [8..8] Deep Software Standby Interrupt Source Security Attribution
                                          *   8 (Target register: DPSIER1.DIRQ8E, DPSIFR1.DIRQ8F, DPSIEGR1.DIRQ8EG)(Tar
-                                         *   get source: IRQ8-DS pin)                                                   */
+                                         *   get source: IRQ8-DS pin)                                                  */
             __IOM uint32_t DPFSA7 : 1;  /*!< [7..7] Deep Software Standby Interrupt Source Security Attribution
                                          *   7 (Target register: DPSIER0.DIRQ7E, DPSIFR0.DIRQ7F, DPSIEGR0.DIRQ7EG)(Tar
-                                         *   get source: IRQ7-DS pin)                                                   */
+                                         *   get source: IRQ7-DS pin)                                                  */
             __IOM uint32_t DPFSA6 : 1;  /*!< [6..6] Deep Software Standby Interrupt Source Security Attribution
                                          *   6 (Target register: DPSIER0.DIRQ6E, DPSIFR0.DIRQ6F, DPSIEGR0.DIRQ6EG)(Tar
-                                         *   get source: IRQ6-DS pin)                                                   */
+                                         *   get source: IRQ6-DS pin)                                                  */
             __IOM uint32_t DPFSA5 : 1;  /*!< [5..5] Deep Software Standby Interrupt Source Security Attribution
                                          *   5 (Target register: DPSIER0.DIRQ5E, DPSIFR0.DIRQ5F, DPSIEGR0.DIRQ5EG)(Tar
-                                         *   get source: IRQ5-DS pin)                                                   */
+                                         *   get source: IRQ5-DS pin)                                                  */
             __IOM uint32_t DPFSA4 : 1;  /*!< [4..4] Deep Software Standby Interrupt Source Security Attribution
                                          *   4 (Target register: DPSIER0.DIRQ4E, DPSIFR0.DIRQ4F, DPSIEGR0.DIRQ4EG)(Tar
-                                         *   get source: IRQ4-DS pin)                                                   */
+                                         *   get source: IRQ4-DS pin)                                                  */
             __IOM uint32_t DPFSA3 : 1;  /*!< [3..3] Deep Software Standby Interrupt Source Security Attribution
                                          *   3 (Target register: DPSIER0.DIRQ3E, DPSIFR0.DIRQ3F, DPSIEGR0.DIRQ3EG)(Tar
-                                         *   get source: IRQ3-DS pin)                                                   */
+                                         *   get source: IRQ3-DS pin)                                                  */
             __IOM uint32_t DPFSA2 : 1;  /*!< [2..2] Deep Software Standby Interrupt Source Security Attribution
                                          *   2 (Target register: DPSIER0.DIRQ2E, DPSIFR0.DIRQ2F, DPSIEGR0.DIRQ2EG)(Tar
-                                         *   get source: IRQ2-DS pin)                                                   */
+                                         *   get source: IRQ2-DS pin)                                                  */
             __IOM uint32_t DPFSA1 : 1;  /*!< [1..1] Deep Software Standby Interrupt Source Security Attribution
                                          *   1 (Target register: DPSIER0.DIRQ1E, DPSIFR0.DIRQ1F, DPSIEGR0.DIRQ1EG)(Tar
-                                         *   get source: IRQ1-DS pin)                                                   */
+                                         *   get source: IRQ1-DS pin)                                                  */
             __IOM uint32_t DPFSA0 : 1;  /*!< [0..0] Deep Software Standby Interrupt Source Security Attribution
                                          *   0 (Target register: DPSIER0.DIRQ0E, DPSIFR0.DIRQ0F, DPSIEGR0.DIRQ0EG)(Tar
-                                         *   get source: IRQ0-DS pin)                                                   */
+                                         *   get source: IRQ0-DS pin)                                                  */
 #else
             __IOM uint32_t DPFSA0 : 1;  /*!< [0..0] Deep Software Standby Interrupt Source Security Attribution
                                          *   0 (Target register: DPSIER0.DIRQ0E, DPSIFR0.DIRQ0F, DPSIEGR0.DIRQ0EG)(Tar
-                                         *   get source: IRQ0-DS pin)                                                   */
+                                         *   get source: IRQ0-DS pin)                                                  */
             __IOM uint32_t DPFSA1 : 1;  /*!< [1..1] Deep Software Standby Interrupt Source Security Attribution
                                          *   1 (Target register: DPSIER0.DIRQ1E, DPSIFR0.DIRQ1F, DPSIEGR0.DIRQ1EG)(Tar
-                                         *   get source: IRQ1-DS pin)                                                   */
+                                         *   get source: IRQ1-DS pin)                                                  */
             __IOM uint32_t DPFSA2 : 1;  /*!< [2..2] Deep Software Standby Interrupt Source Security Attribution
                                          *   2 (Target register: DPSIER0.DIRQ2E, DPSIFR0.DIRQ2F, DPSIEGR0.DIRQ2EG)(Tar
-                                         *   get source: IRQ2-DS pin)                                                   */
+                                         *   get source: IRQ2-DS pin)                                                  */
             __IOM uint32_t DPFSA3 : 1;  /*!< [3..3] Deep Software Standby Interrupt Source Security Attribution
                                          *   3 (Target register: DPSIER0.DIRQ3E, DPSIFR0.DIRQ3F, DPSIEGR0.DIRQ3EG)(Tar
-                                         *   get source: IRQ3-DS pin)                                                   */
+                                         *   get source: IRQ3-DS pin)                                                  */
             __IOM uint32_t DPFSA4 : 1;  /*!< [4..4] Deep Software Standby Interrupt Source Security Attribution
                                          *   4 (Target register: DPSIER0.DIRQ4E, DPSIFR0.DIRQ4F, DPSIEGR0.DIRQ4EG)(Tar
-                                         *   get source: IRQ4-DS pin)                                                   */
+                                         *   get source: IRQ4-DS pin)                                                  */
             __IOM uint32_t DPFSA5 : 1;  /*!< [5..5] Deep Software Standby Interrupt Source Security Attribution
                                          *   5 (Target register: DPSIER0.DIRQ5E, DPSIFR0.DIRQ5F, DPSIEGR0.DIRQ5EG)(Tar
-                                         *   get source: IRQ5-DS pin)                                                   */
+                                         *   get source: IRQ5-DS pin)                                                  */
             __IOM uint32_t DPFSA6 : 1;  /*!< [6..6] Deep Software Standby Interrupt Source Security Attribution
                                          *   6 (Target register: DPSIER0.DIRQ6E, DPSIFR0.DIRQ6F, DPSIEGR0.DIRQ6EG)(Tar
-                                         *   get source: IRQ6-DS pin)                                                   */
+                                         *   get source: IRQ6-DS pin)                                                  */
             __IOM uint32_t DPFSA7 : 1;  /*!< [7..7] Deep Software Standby Interrupt Source Security Attribution
                                          *   7 (Target register: DPSIER0.DIRQ7E, DPSIFR0.DIRQ7F, DPSIEGR0.DIRQ7EG)(Tar
-                                         *   get source: IRQ7-DS pin)                                                   */
+                                         *   get source: IRQ7-DS pin)                                                  */
             __IOM uint32_t DPFSA8 : 1;  /*!< [8..8] Deep Software Standby Interrupt Source Security Attribution
                                          *   8 (Target register: DPSIER1.DIRQ8E, DPSIFR1.DIRQ8F, DPSIEGR1.DIRQ8EG)(Tar
-                                         *   get source: IRQ8-DS pin)                                                   */
+                                         *   get source: IRQ8-DS pin)                                                  */
             __IOM uint32_t DPFSA9 : 1;  /*!< [9..9] Deep Software Standby Interrupt Source Security Attribution
                                          *   9 (Target register: DPSIER1.DIRQ9E, DPSIFR1.DIRQ9F, DPSIEGR1.DIRQ9EG)(Tar
                                          *   get source: IRQ9-DS pin)                                                   */
@@ -2070,19 +2058,19 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint16_t PRCR;           /*!< (@ 0x000003FA) Protect Register                                           */
+        __IOM uint16_t PRCR_S;         /*!< (@ 0x000003FA) Protect Register                                           */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t PRKEY : 8;  /*!< [15..8] PRC Key Code                                                     */
+            __IOM uint16_t PRKEY : 8;  /*!< [15..8] PRC Key Code                                                      */
             uint16_t             : 2;
-            __IOM uint16_t PRC5  : 1;  /*!< [5..5] Protect Bit5                                                      */
-            __IOM uint16_t PRC4  : 1;  /*!< [4..4] Protect Bit4                                                      */
-            __IOM uint16_t PRC3  : 1;  /*!< [3..3] Protect Bit3                                                      */
+            __IOM uint16_t PRC5  : 1;  /*!< [5..5] Protect Bit5                                                       */
+            __IOM uint16_t PRC4  : 1;  /*!< [4..4] Protect Bit4                                                       */
+            __IOM uint16_t PRC3  : 1;  /*!< [3..3] Protect Bit3                                                       */
             uint16_t             : 1;
-            __IOM uint16_t PRC1  : 1;  /*!< [1..1] Protect Bit1                                                      */
-            __IOM uint16_t PRC0  : 1;  /*!< [0..0] Protect Bit0                                                      */
+            __IOM uint16_t PRC1  : 1;  /*!< [1..1] Protect Bit1                                                       */
+            __IOM uint16_t PRC0  : 1;  /*!< [0..0] Protect Bit0                                                       */
 #else
             __IOM uint16_t PRC0  : 1;  /*!< [0..0] Protect Bit0                                                       */
             __IOM uint16_t PRC1  : 1;  /*!< [1..1] Protect Bit1                                                       */
@@ -2093,9 +2081,41 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint16_t             : 2;
             __IOM uint16_t PRKEY : 8;  /*!< [15..8] PRC Key Code                                                      */
 #endif
-        } PRCR_b;
+        } PRCR_S_b;
     };
-    __IM uint32_t RESERVED67;
+    __IM uint16_t RESERVED67;
+
+    union
+    {
+        __IOM uint16_t PRCR_NS;        /*!< (@ 0x000003FE) Protect Register                                           */
+
+        struct
+        {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint16_t PRKEY : 8;  /*!< [15..8] PRC Key Code                                                      */
+            uint16_t             : 4;
+            __IOM uint16_t PRC3  : 1;  /*!< [3..3] Protect Bit3 Enables writing to the registers related
+                                        *   to the PVD.                                                               */
+            uint16_t            : 1;
+            __IOM uint16_t PRC1 : 1;   /*!< [1..1] Protect Bit1 Enables writing to the registers related
+                                        *   to the low power modes, the battery backup function and
+                                        *   the software reset register.                                              */
+            __IOM uint16_t PRC0 : 1;   /*!< [0..0] Protect Bit0 Enables writing to the registers related
+                                        *   to the clock generation circuit.                                          */
+#else
+            __IOM uint16_t PRC0 : 1;   /*!< [0..0] Protect Bit0 Enables writing to the registers related
+                                        *   to the clock generation circuit.                                          */
+            __IOM uint16_t PRC1 : 1;   /*!< [1..1] Protect Bit1 Enables writing to the registers related
+                                        *   to the low power modes, the battery backup function and
+                                        *   the software reset register.                                              */
+            uint16_t            : 1;
+            __IOM uint16_t PRC3 : 1;   /*!< [3..3] Protect Bit3 Enables writing to the registers related
+                                        *   to the PVD.                                                               */
+            uint16_t             : 4;
+            __IOM uint16_t PRKEY : 8;  /*!< [15..8] PRC Key Code                                                      */
+#endif
+        } PRCR_NS_b;
+    };
 
     union
     {
@@ -2116,15 +2136,11 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint8_t LOCOUTCR;        /*!< (@ 0x00000402) LOCO User Trimming Control Register                        */
+        __IOM uint8_t LOCOUTCR;         /*!< (@ 0x00000402) LOCO User Trimming Control Register                        */
 
         struct
         {
-#if defined(__BIG) && defined(__GNUC__)
             __IOM uint8_t LOCOUTRM : 8; /*!< [7..0] LOCO User Trimming                                                 */
-#else
-            __IOM uint8_t LOCOUTRM : 8; /*!< [7..0] LOCO User Trimming                                                 */
-#endif
         } LOCOUTCR_b;
     };
     __IM uint8_t  RESERVED69;
@@ -2261,7 +2277,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
         {
 #if defined(__BIG) && defined(__GNUC__)
             __IOM uint8_t DVBATTADIE : 1; /*!< [7..7] VBATT Tamper Detection Deep Software Standby Release
-                                           *   Signal Enable                                                             */
+                                           *   SignalEnable                                                              */
             __IOM uint8_t DSOSTDIE : 1;   /*!< [6..6] Sub-Clock Oscillation Stop Detection Deep Software StandbyRelease
                                            *   Signal Enable                                                             */
             __IOM uint8_t DIWDTIE  : 1;   /*!< [5..5] IWDT Underflow Deep Software Standby Release Signal Enable         */
@@ -2280,7 +2296,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DSOSTDIE : 1;   /*!< [6..6] Sub-Clock Oscillation Stop Detection Deep Software StandbyRelease
                                            *   Signal Enable                                                             */
             __IOM uint8_t DVBATTADIE : 1; /*!< [7..7] VBATT Tamper Detection Deep Software Standby Release
-                                           *   Signal Enable                                                             */
+                                           *   SignalEnable                                                              */
 #endif
         } DPSIER3_b;
     };
@@ -3513,7 +3529,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t             : 1;
             __IOM uint8_t SOSEL : 1;   /*!< [6..6] Sub-Clock Oscillator Switching                                     */
             uint8_t             : 4;
-            __IOM uint8_t SODRV : 2;   /*!< [1..0] Sub-Clock Oscillator Drive Capability Switching                    */
+            __IOM uint8_t SODRV : 2;   /*!< [1..0] Sub-Clock Oscillator Driving Capacity Switching                    */
 #else
             __IOM uint8_t SODRV : 2;   /*!< [1..0] Sub-Clock Oscillator Driving Capacity Switching                    */
             uint8_t             : 4;
@@ -3807,51 +3823,6 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 } R_SYSTEM_Type;                       /*!< Size = 3456 (0xd80)                                                       */
 
 /* =========================================================================================================================== */
-/* ================                                        R_SYSTEM_NS                                        ================ */
-/* =========================================================================================================================== */
-
-/**
- * @brief System Control (Register Write Protection Function) (R_SYSTEM_NS)
- */
-
-typedef struct                         /*!< (@ 0x07019000) R_SYSTEM_NS Structure                                      */
-{
-    __IM uint16_t RESERVED[511];
-
-    union
-    {
-        __IOM uint16_t PRCR_NS;        /*!< (@ 0x000003FE) Protect Register                                           */
-
-        struct
-        {
-#if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t PRKEY : 8;  /*!< [15..8] PRC Key Code                                                      */
-            uint16_t             : 4;
-            __IOM uint16_t PRC3  : 1;  /*!< [3..3] Protect Bit3 Enables writing to the registers related
-                                        *   to the PVD.                                                               */
-            uint16_t            : 1;
-            __IOM uint16_t PRC1 : 1;   /*!< [1..1] Protect Bit1 Enables writing to the registers related
-                                        *   to the low power modes, the battery backup function and
-                                        *   the software reset register.                                              */
-            __IOM uint16_t PRC0 : 1;   /*!< [0..0] Protect Bit0 Enables writing to the registers related
-                                        *   to the clock generation circuit.                                          */
-#else
-            __IOM uint16_t PRC0 : 1;   /*!< [0..0] Protect Bit0 Enables writing to the registers related
-                                        *   to the clock generation circuit.                                          */
-            __IOM uint16_t PRC1 : 1;   /*!< [1..1] Protect Bit1 Enables writing to the registers related
-                                        *   to the low power modes, the battery backup function and
-                                        *   the software reset register.                                              */
-            uint16_t            : 1;
-            __IOM uint16_t PRC3 : 1;   /*!< [3..3] Protect Bit3 Enables writing to the registers related
-                                        *   to the PVD.                                                               */
-            uint16_t             : 4;
-            __IOM uint16_t PRKEY : 8;  /*!< [15..8] PRC Key Code                                                      */
-#endif
-        } PRCR_NS_b;
-    };
-} R_SYSTEM_NS_Type;                    /*!< Size = 1024 (0x400)                                                       */
-
-/* =========================================================================================================================== */
 /* ================                                          R_MSTP                                           ================ */
 /* =========================================================================================================================== */
 
@@ -3896,23 +3867,23 @@ typedef struct                         /*!< (@ 0x87803000) R_MSTP Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint32_t MSTPB31 : 1; /*!< [31..31] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB31 : 1; /*!< [31..31] Serial Communication Interface 0 Module Stop (Target
                                          *   module: RSCI0)                                                            */
-            __IOM uint32_t MSTPB30 : 1; /*!< [30..30] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB30 : 1; /*!< [30..30] Serial Communication Interface 1 Module Stop (Target
                                          *   module: RSCI1)                                                            */
-            __IOM uint32_t MSTPB29 : 1; /*!< [29..29] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB29 : 1; /*!< [29..29] Serial Communication Interface 2 Module Stop (Target
                                          *   module: RSCI2)                                                            */
-            __IOM uint32_t MSTPB28 : 1; /*!< [28..28] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB28 : 1; /*!< [28..28] Serial Communication Interface 3 Module Stop (Target
                                          *   module: RSCI3)                                                            */
-            __IOM uint32_t MSTPB27 : 1; /*!< [27..27] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB27 : 1; /*!< [27..27] Serial Communication Interface 4 Module Stop (Target
                                          *   module: RSCI4)                                                            */
-            __IOM uint32_t MSTPB26 : 1; /*!< [26..26] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB26 : 1; /*!< [26..26] Serial Communication Interface 5 Module Stop (Target
                                          *   module: RSCI5)                                                            */
-            __IOM uint32_t MSTPB25 : 1; /*!< [25..25] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB25 : 1; /*!< [25..25] Serial Communication Interface 6 Module Stop (Target
                                          *   module: RSCI6)                                                            */
-            __IOM uint32_t MSTPB24 : 1; /*!< [24..24] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB24 : 1; /*!< [24..24] Serial Communication Interface 7 Module Stop (Target
                                          *   module: RSCI7)                                                            */
-            __IOM uint32_t MSTPB23 : 1; /*!< [23..23] Serial Communication Interface 9 Module Stop (Target
+            __IOM uint32_t MSTPB23 : 1; /*!< [23..23] Serial Communication Interface 8 Module Stop (Target
                                          *   module: RSCI8)                                                            */
             __IOM uint32_t MSTPB22 : 1; /*!< [22..22] Serial Communication Interface 9 Module Stop (Target
                                          *   module: RSCI9)                                                            */
@@ -4025,7 +3996,7 @@ typedef struct                         /*!< (@ 0x87803000) R_MSTP Structure     
             __IOM uint32_t MSTPC7 : 1;  /*!< [7..7] Serial Sound Interface 1 Module Stop (Target module:
                                          *   SSIE1)                                                                    */
             uint32_t              : 4;
-            __IOM uint32_t MSTPC2 : 1;  /*!< [2..2] PParallel Data Capture Unit Module Stop (Target module:
+            __IOM uint32_t MSTPC2 : 1;  /*!< [2..2] Parallel Data Capture Unit Module Stop (Target module:
                                          *   PDC)                                                                      */
             __IOM uint32_t MSTPC1 : 1;  /*!< [1..1] CRC Calculator Module Stop (Target module: CRC)                    */
             __IOM uint32_t MSTPC0 : 1;  /*!< [0..0] Clock Frequency Accuracy Measurement Circuit Module Stop
@@ -4138,7 +4109,7 @@ typedef struct                         /*!< (@ 0x87803000) R_MSTP Structure     
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint32_t MSTPF31 : 1; /*!< [31..31]  Phase Counting Interface 0 Module Stop (Target module:
+            __IOM uint32_t MSTPF31 : 1; /*!< [31..31] Phase Counting Interface 0 Module Stop (Target module:
                                          *   PCIF0)                                                                    */
             __IOM uint32_t MSTPF30 : 1; /*!< [30..30] Phase Counting Interface 1 Module Stop (Target module:
                                          *   PCIF1)                                                                    */

@@ -25,7 +25,44 @@
 
 typedef struct                         /*!< (@ 0x87007C00) R_DTC Structure                                            */
 {
-    __IM uint32_t RESERVED[3];
+    union
+    {
+        __IOM uint8_t DTCCR_NS;        /*!< (@ 0x00000000) DTC Control Register for Non-secure Application            */
+
+        struct
+        {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t           : 3;
+            __IOM uint8_t RRS : 1;     /*!< [4..4] DTC Transfer Information Read Skip Enable                          */
+            uint8_t           : 4;
+#else
+            uint8_t           : 4;
+            __IOM uint8_t RRS : 1;     /*!< [4..4] DTC Transfer Information Read Skip Enable                          */
+            uint8_t           : 3;
+#endif
+        } DTCCR_NS_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+
+    union
+    {
+        __IOM uint32_t DTCVBR_NS;      /*!< (@ 0x00000004) DTC Vector Base Register for Non-secure Application        */
+
+        struct
+        {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t DTCVBR_NS : 22; /*!< [31..10] DTC Vector Base Address for Non-secure region(Upper
+                                            *   22 bits)                                                                  */
+            uint32_t : 10;
+#else
+            uint32_t                 : 10;
+            __IOM uint32_t DTCVBR_NS : 22; /*!< [31..10] DTC Vector Base Address for Non-secure region(Upper
+                                            *   22 bits)                                                                  */
+#endif
+        } DTCVBR_NS_b;
+    };
+    __IM uint32_t RESERVED2;
 
     union
     {
@@ -42,7 +79,7 @@ typedef struct                         /*!< (@ 0x87007C00) R_DTC Structure      
 #endif
         } DTCST_b;
     };
-    __IM uint8_t RESERVED1;
+    __IM uint8_t RESERVED3;
 
     union
     {
@@ -53,9 +90,9 @@ typedef struct                         /*!< (@ 0x87007C00) R_DTC Structure      
 #if defined(__BIG) && defined(__GNUC__)
             __IM uint16_t ACT  : 1;    /*!< [15..15] DTC Active Flag                                                  */
             uint16_t           : 7;
-            __IM uint16_t VECN : 8;    /*!< [7..0] DTC-Activating Vector Number Monitoring                            */
+            __IM uint16_t VECN : 8;    /*!< [7..0] DTC Active Vector Number Monitoring Flag                           */
 #else
-            __IM uint16_t VECN : 8;    /*!< [7..0] DTC-Activating Vector Number Monitoring                            */
+            __IM uint16_t VECN : 8;    /*!< [7..0] DTC Active Vector Number Monitoring Flag                           */
             uint16_t           : 7;
             __IM uint16_t ACT  : 1;    /*!< [15..15] DTC Active Flag                                                  */
 #endif
@@ -64,40 +101,40 @@ typedef struct                         /*!< (@ 0x87007C00) R_DTC Structure      
 
     union
     {
-        __IOM uint8_t DTCCR_SEC;       /*!< (@ 0x00000010) DTC Control Register for Secure Region                     */
+        __IOM uint8_t DTCCR_S;         /*!< (@ 0x00000010) DTC Control Register for Secure Application                */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            uint8_t            : 3;
-            __IOM uint8_t RRSS : 1;    /*!< [4..4] DTC Transfer Information Read Skip Enable for secure               */
-            uint8_t            : 4;
+            uint8_t           : 3;
+            __IOM uint8_t RRS : 1;     /*!< [4..4] DTC Transfer Information Read Skip Enable                          */
+            uint8_t           : 4;
 #else
-            uint8_t            : 4;
-            __IOM uint8_t RRSS : 1;    /*!< [4..4] DTC Transfer Information Read Skip Enable for secure               */
-            uint8_t            : 3;
+            uint8_t           : 4;
+            __IOM uint8_t RRS : 1;     /*!< [4..4] DTC Transfer Information Read Skip Enable                          */
+            uint8_t           : 3;
 #endif
-        } DTCCR_SEC_b;
+        } DTCCR_S_b;
     };
-    __IM uint8_t  RESERVED2;
-    __IM uint16_t RESERVED3;
+    __IM uint8_t  RESERVED4;
+    __IM uint16_t RESERVED5;
 
     union
     {
-        __IOM uint32_t DTCVBR_SEC;     /*!< (@ 0x00000014) DTC Vector Base Register for secure Region                 */
+        __IOM uint32_t DTCVBR_S;       /*!< (@ 0x00000014) DTC Vector Base Register for Secure Application            */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint32_t DTCVBR_SEC : 22; /*!< [31..10] DTC Vector Base Address for secure region(Upper 22
-                                             *   bits)                                                                     */
+            __IOM uint32_t DTCVBR_S : 22; /*!< [31..10] DTC Vector Base Address for secure region(Upper 22
+                                           *   bits)                                                                     */
             uint32_t : 10;
 #else
-            uint32_t                  : 10;
-            __IOM uint32_t DTCVBR_SEC : 22; /*!< [31..10] DTC Vector Base Address for secure region(Upper 22
-                                             *   bits)                                                                     */
+            uint32_t                : 10;
+            __IOM uint32_t DTCVBR_S : 22; /*!< [31..10] DTC Vector Base Address for secure region(Upper 22
+                                           *   bits)                                                                     */
 #endif
-        } DTCVBR_SEC_b;
+        } DTCVBR_S_b;
     };
 
     union
@@ -110,7 +147,7 @@ typedef struct                         /*!< (@ 0x87007C00) R_DTC Structure      
                                           *   be added to the DTC forwarding source address                             */
         } DTCDISP_b;
     };
-    __IM uint32_t RESERVED4;
+    __IM uint32_t RESERVED6;
 
     union
     {
@@ -120,30 +157,22 @@ typedef struct                         /*!< (@ 0x87007C00) R_DTC Structure      
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t              : 15;
-            __IOM uint32_t ERRSTS : 1; /*!< [16..16] DTC Error Status Flag                                            */
-            __IM uint32_t  WBCF   : 1; /*!< [15..15] DTC Transfer Information Write Back Status when error
-                                        *   occurs When an error occurs during DTC transfer, it indicates
-                                        *   whether transfer information write back was done.                         */
-            __IM uint32_t ERRTI : 3;   /*!< [14..12] DTC Error Detailed Status Indicates the state that
-                                        *   error occurs.                                                             */
-            uint32_t             : 3;
-            __IM uint32_t ERRSAF : 1;  /*!< [8..8] DTC Error Vector Number SA Monitor Indicates the SA of
-                                        *   vector number causing the error. (*1)                                     */
-            __IM uint32_t ERRVCT : 8;  /*!< [7..0] DTC Error Vector Number                                            */
+            __IOM uint32_t ERRSTS : 1; /*!< [16..16] Error Status Flag                                                */
+            __IM uint32_t  WBCF   : 1; /*!< [15..15] Write-Back Completion Flag                                       */
+            __IM uint32_t  ERRTI  : 3; /*!< [14..12] Error Occurrence Timing Indication                               */
+            uint32_t              : 3;
+            __IM uint32_t ERRSAF  : 1; /*!< [8..8] Error Occurrence Vector Security Attribute                         */
+            __IM uint32_t ERRVCT  : 8; /*!< [7..0] Error Occurrence Vector Number Indication                          */
 #else
-            __IM uint32_t ERRVCT : 8;  /*!< [7..0] DTC Error Vector Number                                            */
-            __IM uint32_t ERRSAF : 1;  /*!< [8..8] DTC Error Vector Number SA Monitor Indicates the SA of
-                                        *   vector number causing the error. (*1)                                     */
-            uint32_t            : 3;
-            __IM uint32_t ERRTI : 3;   /*!< [14..12] DTC Error Detailed Status Indicates the state that
-                                        *   error occurs.                                                             */
-            __IM uint32_t WBCF : 1;    /*!< [15..15] DTC Transfer Information Write Back Status when error
-                                        *   occurs When an error occurs during DTC transfer, it indicates
-                                        *   whether transfer information write back was done.                         */
-            __IOM uint32_t ERRSTS : 1; /*!< [16..16] DTC Error Status Flag                                            */
+            __IM uint32_t ERRVCT  : 8; /*!< [7..0] Error Occurrence Vector Number Indication                          */
+            __IM uint32_t ERRSAF  : 1; /*!< [8..8] Error Occurrence Vector Security Attribute                         */
+            uint32_t              : 3;
+            __IM uint32_t  ERRTI  : 3; /*!< [14..12] Error Occurrence Timing Indication                               */
+            __IM uint32_t  WBCF   : 1; /*!< [15..15] Write-Back Completion Flag                                       */
+            __IOM uint32_t ERRSTS : 1; /*!< [16..16] Error Status Flag                                                */
             uint32_t              : 15;
 #endif
-        } DTEVR_b;
+        } DTCEVR_b;
     };
 
     union
@@ -170,34 +199,34 @@ typedef struct                         /*!< (@ 0x87007C00) R_DTC Structure      
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint8_t              : 7;
-            __IOM uint8_t SQTFRL : 1;  /*!< [0..0] Sequence transfer stop bit                                         */
+            __IOM uint8_t SQTFRL : 1;  /*!< [0..0] Sequence Transfer Terminate                                        */
 #else
-            __IOM uint8_t SQTFRL : 1;  /*!< [0..0] Sequence transfer stop bit                                         */
+            __IOM uint8_t SQTFRL : 1;  /*!< [0..0] Sequence Transfer Terminate                                        */
             uint8_t              : 7;
 #endif
         } DTCOR_b;
     };
-    __IM uint8_t  RESERVED5;
-    __IM uint16_t RESERVED6;
+    __IM uint8_t  RESERVED7;
+    __IM uint16_t RESERVED8;
 
     union
     {
-        __IOM uint16_t DTCSQE;         /*!< (@ 0x0000002C) DTC Sequence transfer Enable Register                      */
+        __IOM uint16_t DTCSQE;         /*!< (@ 0x0000002C) DTC Sequence Transfer Enable Register                      */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint16_t ESPSEL : 1; /*!< [15..15] DTC Sequence Transfer Enable bit                                 */
+            __IOM uint16_t ESPSEL : 1; /*!< [15..15] Sequence Transfer Enable                                         */
             uint16_t              : 7;
-            __IOM uint16_t VECN   : 8; /*!< [7..0] DTC Sequence transfer Vector Number Specified bits                 */
+            __IOM uint16_t VECN   : 8; /*!< [7..0] Sequence Transfer Vector Number Setting                            */
 #else
-            __IOM uint16_t VECN   : 8; /*!< [7..0] DTC Sequence transfer Vector Number Specified bits                 */
+            __IOM uint16_t VECN   : 8; /*!< [7..0] Sequence Transfer Vector Number Setting                            */
             uint16_t              : 7;
-            __IOM uint16_t ESPSEL : 1; /*!< [15..15] DTC Sequence Transfer Enable bit                                 */
+            __IOM uint16_t ESPSEL : 1; /*!< [15..15] Sequence Transfer Enable                                         */
 #endif
         } DTCSQE_b;
     };
-    __IM uint16_t RESERVED7;
+    __IM uint16_t RESERVED9;
 } R_DTC_Type;                          /*!< Size = 48 (0x30)                                                          */
 
 /** @} */ /* End of group Device_Peripheral_peripherals */

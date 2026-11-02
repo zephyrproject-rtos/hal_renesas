@@ -100,9 +100,9 @@ const ioport_api_t g_ioport_on_ioport =
 #if BSP_FEATURE_SYSC_HAS_TAMPICR1 || BSP_FEATURE_RTC_HAS_TCEN
 static const bsp_io_port_pin_t g_vbatt_pins_input[] =
 {
-    BSP_IO_PORT_03_PIN_10,             ///< Associated with TAMPICR1->CH0EN
-    BSP_IO_PORT_03_PIN_11,             ///< Associated with TAMPICR1->CH1EN
-    BSP_IO_PORT_03_PIN_12              ///< Associated with TAMPICR1->CH2EN
+    BSP_FEATURE_IOPORT_VBATT_PIN_INPUT_CH0, ///< Associated with TAMPICR1->CH0EN
+    BSP_FEATURE_IOPORT_VBATT_PIN_INPUT_CH1, ///< Associated with TAMPICR1->CH1EN
+    BSP_FEATURE_IOPORT_VBATT_PIN_INPUT_CH2  ///< Associated with TAMPICR1->CH2EN
 };
 #endif
 
