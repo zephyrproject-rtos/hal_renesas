@@ -17,8 +17,24 @@
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#define BSP_PRV_STACK_LIMIT    ((uint32_t) &g_main_stack[0])
-#define BSP_PRV_STACK_TOP      ((uint32_t) (&g_main_stack[0] + BSP_CFG_STACK_MAIN_BYTES))
+#define BSP_PRV_STACK_LIMIT              ((uint32_t) &g_main_stack[0])
+#define BSP_PRV_STACK_TOP                ((uint32_t) (&g_main_stack[0] + BSP_CFG_STACK_MAIN_BYTES))
+#if BSP_PZ_SECURE_BUILD
+ #define BSP_PZ_IVC_SECURE_IRQ_ENABLE    (0x01000000)
+ #define BSP_PZ_PRCR_WRITE_ENABLE        (0xA510)
+ #define BSP_PZ_PRCR_WRITE_DISABLE       (0xA500)
+#endif
+
+#if defined(__CCRX__)
+ #define BSP_PRV_MAIN_STACK_SECTION      ".bss._g_main_stack"
+ #define BSP_PRV_HEAP_SECTION            ".bss._g_heap"
+#elif defined(__GNUC__)
+ #define BSP_PRV_MAIN_STACK_SECTION      ".bss._g_main_stack"
+ #define BSP_PRV_HEAP_SECTION            ".bss._g_heap"
+#elif defined(__ICCRX__)
+ #define BSP_PRV_MAIN_STACK_SECTION      ".bss"
+ #define BSP_PRV_HEAP_SECTION            ".bss"
+#endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -39,14 +55,25 @@ void    Reset_Handler(void);
 void    Default_Handler(void);
 int32_t main(void);
 
+#if BSP_PZ_SECURE_BUILD
+static void r_bsp_secure_reset_handler(void);
+
+#endif
+
 /* Main stack */
 uint8_t g_main_stack[BSP_CFG_STACK_MAIN_BYTES] BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT)
-BSP_PLACE_IN_SECTION(BSP_SECTION_STACK);
+BSP_PLACE_IN_SECTION(BSP_PRV_MAIN_STACK_SECTION);
+
+#if BSP_PZ_SECURE_BUILD
+
+/* Root interrupt stack used by the ProtectZone hypervisor. */
+static uint8_t g_root_interrupt_stack[BSP_CFG_PZ_ROOT_STACK_SIZE] BSP_PLACE_IN_SECTION(BSP_SECTION_STACK);
+#endif
 
 /* Heap */
 #if (BSP_CFG_HEAP_BYTES > 0)
 BSP_DONT_REMOVE uint8_t g_heap[BSP_CFG_HEAP_BYTES] BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT) \
-    BSP_PLACE_IN_SECTION(BSP_SECTION_HEAP);
+    BSP_PLACE_IN_SECTION(BSP_PRV_HEAP_SECTION);
 #endif
 
 const exc_ptr_t __Vectors[];
@@ -54,7 +81,54 @@ const exc_ptr_t __Vectors[];
 /*******************************************************************************************************************//**
  * MCU starts executing here out of reset. Main stack pointer is set up already.
  **********************************************************************************************************************/
+
 void Reset_Handler (void)
+{
+#if BSP_PZ_SECURE_BUILD
+
+    /* Root stack initialization */
+    __SET_ISP((&g_root_interrupt_stack[0] + BSP_CFG_PZ_ROOT_STACK_SIZE));
+
+    /* Initialize table. */
+    __SET_EXTB(&__Vectors);
+
+    /* Secure IRQ configuration */
+    __SET_IVC(BSP_PZ_IVC_SECURE_IRQ_ENABLE);
+
+    /* Enable interrupt ProtectZone */
+    R_SYSTEM->PRCR_S = BSP_PZ_PRCR_WRITE_ENABLE;
+    R_CPSCU->PRTZCR  = R_CPSCU_PRTZCR_PRTZC_Msk;
+    R_SYSTEM->PRCR_S = BSP_PZ_PRCR_WRITE_DISABLE;
+
+    /* Enable bus access ProtectZone */
+    R_SAU->AAS_b.NS = 1;
+
+    /* Enter Secure World */
+    R_BSP_SecureEnter((uint32_t) (intptr_t) r_bsp_secure_reset_handler, 0);
+#else
+
+    /* Initialize stack. */
+    __SET_ISP(BSP_PRV_STACK_TOP);
+
+    /* Initialize table. */
+    __SET_EXTB(&__Vectors);
+    __SET_INTB(&g_vector_table);
+
+    /* Initialize system using BSP. */
+    SystemInit();
+
+    /* Call user application. */
+    main();
+
+    while (1)
+    {
+        /* Infinite Loop. */
+    }
+#endif
+}
+
+#if BSP_PZ_SECURE_BUILD
+static void r_bsp_secure_reset_handler (void)
 {
     /* Initialize stack. */
     __SET_ISP(BSP_PRV_STACK_TOP);
@@ -74,6 +148,8 @@ void Reset_Handler (void)
         /* Infinite Loop. */
     }
 }
+
+#endif
 
 /*******************************************************************************************************************//**
  * Default exception handler.
@@ -216,6 +292,7 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[] BSP_PLACE_IN_SECTION (BSP_SECTION_FI
 };
 
 #ifndef BSP_BOOTLOADED_APPLICATION
+
 /* Reset vector table. */
 BSP_DONT_REMOVE const exc_ptr_t __Reset_Vector[] BSP_PLACE_IN_SECTION (BSP_SECTION_RESET_VECTOR) =
 {

@@ -700,7 +700,6 @@ typedef enum e_icu_event_rx74n
     ICU_EVENT_GROUP_ETHER_PTPSI0         = (0x056C), // gPTP Status Interrupt 0
     ICU_EVENT_GROUP_ETHER_PTPSI1         = (0x066C), // gPTP Status Interrupt 1
     ICU_EVENT_GROUP_ETHER_FWSI           = (0x076C), // MFWD status interrupt
-    ICU_EVENT_GROUP_ETHER_SWSI           = (0x086C), // ESWM status interrupt
     ICU_EVENT_GROUP_ETHER_CAMI           = (0x096C), // COMA status interrupt
     ICU_EVENT_GROUP_ETHER_EASI0          = (0x0A6C), // ETHA0 status interrupt
     ICU_EVENT_GROUP_ETHER_GWDI0          = (0x0C6C), // GWCA0 data interrupt 0

@@ -37,6 +37,7 @@
 #define BSP_PERIPHERAL_CAN_CHANNEL_MASK                (0x0U)
 #define BSP_PERIPHERAL_CANFD_PRESENT                   (1)
 #define BSP_PERIPHERAL_CANFD_CHANNEL_MASK              (0x1U)
+#define BSP_PERIPHERAL_CANFDG_PRESENT                  (1)
 #define BSP_PERIPHERAL_CEC_PRESENT                     (0)
 #define BSP_PERIPHERAL_CEU_PRESENT                     (0)
 #define BSP_PERIPHERAL_CGC_PRESENT                     (1)

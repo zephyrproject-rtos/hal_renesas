@@ -22,7 +22,7 @@ typedef struct
 {
     union
     {
-        __IOM uint8_t BY;              /*!< (@ 0x00000000) Event Link Software Event Generation Register              */
+        __IOM uint8_t BY;              /*!< (@ 0x00000000) Software Event Generation Register                         */
 
         struct
         {
@@ -43,7 +43,7 @@ typedef struct
 } R_ELC_ELSEGR_Type;                   /*!< Size = 4 (0x4)                                                            */
 
 /**
- * @brief R_ELC_ELSR [ELSR] (Event Link Setting Register [0..91])
+ * @brief R_ELC_ELSR [ELSR] (Event Link Setting Register)
  */
 typedef struct
 {
@@ -80,7 +80,7 @@ typedef struct
 /* =========================================================================================================================== */
 
 /**
- * @brief event link controller (R_ELC)
+ * @brief Event Link Controller (R_ELC)
  */
 
 typedef struct                         /*!< (@ 0x87801000) R_ELC Structure                                            */
@@ -107,274 +107,168 @@ typedef struct                         /*!< (@ 0x87801000) R_ELC Structure      
 
     union
     {
-        __IOM uint32_t ELCSARA;        /*!< (@ 0x00000030) Event Link Controller Security Attribution Register
-                                        *                  A                                                          */
+        __IOM uint32_t ELCSARA;        /*!< (@ 0x00000030) ELC Security Attribution Register A                        */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            uint32_t             : 12;
-            __IOM uint32_t ELOPD : 1;   /*!< [19..19] Event Link Option Setting Register D Security Attribution
-                                         *   Target register: ELOPD                                                    */
-            __IOM uint32_t ELOPC : 1;   /*!< [18..18] Event Link Option Setting Register C Security Attribution
-                                         *   Target register: ELOPC                                                    */
-            __IOM uint32_t ELOPB : 1;   /*!< [17..17] Event Link Option Setting Register B Security AttributionTarget
-                                         *   register: ELOPB                                                           */
-            __IOM uint32_t ELOPA : 1;   /*!< [16..16] Event Link Option Setting Register A Security Attribution
-                                         *   Target register: ELOPA                                                    */
+            uint32_t               : 12;
+            __IOM uint32_t ELOPD   : 1; /*!< [19..19] ELOPD Security Attribution                                       */
+            __IOM uint32_t ELOPC   : 1; /*!< [18..18] ELOPC Security Attribution                                       */
+            __IOM uint32_t ELOPB   : 1; /*!< [17..17] ELOPB Security Attribution                                       */
+            __IOM uint32_t ELOPA   : 1; /*!< [16..16] ELOPA Security Attribution                                       */
             uint32_t               : 11;
-            __IOM uint32_t ELSEGR3 : 1; /*!< [4..4] Event Link Software Event Generation Register 3 Security
-                                         *   Attribution Target register: ELSEGR3                                      */
-            __IOM uint32_t ELSEGR2 : 1; /*!< [3..3] Event Link Software Event Generation Register 2 Security
-                                         *   Attribution Target register: ELSEGR2                                      */
-            __IOM uint32_t ELSEGR1 : 1; /*!< [2..2] Event Link Software Event Generation Register 1 Security
-                                         *   Attribution Target register: ELSEGR1                                      */
-            __IOM uint32_t ELSEGR0 : 1; /*!< [1..1] Event Link Software Event Generation Register 0 Security
-                                         *   Attribution Target register: ELSEGR0                                      */
-            __IOM uint32_t ELCR : 1;    /*!< [0..0] Event Link Controller Register Security Attribution Target
-                                         *   register: ELCR                                                            */
+            __IOM uint32_t ELSEGR3 : 1; /*!< [4..4] ELSEGR3 Security Attribution                                       */
+            __IOM uint32_t ELSEGR2 : 1; /*!< [3..3] ELSEGR2 Security Attribution                                       */
+            __IOM uint32_t ELSEGR1 : 1; /*!< [2..2] ELSEGR1 Security Attribution                                       */
+            __IOM uint32_t ELSEGR0 : 1; /*!< [1..1] ELSEGR0 Security Attribution                                       */
+            __IOM uint32_t ELCR    : 1; /*!< [0..0] ELCR Security Attribution                                          */
 #else
-            __IOM uint32_t ELCR : 1;    /*!< [0..0] Event Link Controller Register Security Attribution Target
-                                         *   register: ELCR                                                            */
-            __IOM uint32_t ELSEGR0 : 1; /*!< [1..1] Event Link Software Event Generation Register 0 Security
-                                         *   Attribution Target register: ELSEGR0                                      */
-            __IOM uint32_t ELSEGR1 : 1; /*!< [2..2] Event Link Software Event Generation Register 1 Security
-                                         *   Attribution Target register: ELSEGR1                                      */
-            __IOM uint32_t ELSEGR2 : 1; /*!< [3..3] Event Link Software Event Generation Register 2 Security
-                                         *   Attribution Target register: ELSEGR2                                      */
-            __IOM uint32_t ELSEGR3 : 1; /*!< [4..4] Event Link Software Event Generation Register 3 Security
-                                         *   Attribution Target register: ELSEGR3                                      */
-            uint32_t             : 11;
-            __IOM uint32_t ELOPA : 1;   /*!< [16..16] Event Link Option Setting Register A Security Attribution
-                                         *   Target register: ELOPA                                                    */
-            __IOM uint32_t ELOPB : 1;   /*!< [17..17] Event Link Option Setting Register B Security AttributionTarget
-                                         *   register: ELOPB                                                           */
-            __IOM uint32_t ELOPC : 1;   /*!< [18..18] Event Link Option Setting Register C Security Attribution
-                                         *   Target register: ELOPC                                                    */
-            __IOM uint32_t ELOPD : 1;   /*!< [19..19] Event Link Option Setting Register D Security Attribution
-                                         *   Target register: ELOPD                                                    */
-            uint32_t : 12;
+            __IOM uint32_t ELCR    : 1; /*!< [0..0] ELCR Security Attribution                                          */
+            __IOM uint32_t ELSEGR0 : 1; /*!< [1..1] ELSEGR0 Security Attribution                                       */
+            __IOM uint32_t ELSEGR1 : 1; /*!< [2..2] ELSEGR1 Security Attribution                                       */
+            __IOM uint32_t ELSEGR2 : 1; /*!< [3..3] ELSEGR2 Security Attribution                                       */
+            __IOM uint32_t ELSEGR3 : 1; /*!< [4..4] ELSEGR3 Security Attribution                                       */
+            uint32_t               : 11;
+            __IOM uint32_t ELOPA   : 1; /*!< [16..16] ELOPA Security Attribution                                       */
+            __IOM uint32_t ELOPB   : 1; /*!< [17..17] ELOPB Security Attribution                                       */
+            __IOM uint32_t ELOPC   : 1; /*!< [18..18] ELOPC Security Attribution                                       */
+            __IOM uint32_t ELOPD   : 1; /*!< [19..19] ELOPD Security Attribution                                       */
+            uint32_t               : 12;
 #endif
         } ELCSARA_b;
     };
 
     union
     {
-        __IOM uint32_t ELCSARB;        /*!< (@ 0x00000034) Event Link Controller Security Attribution Register
-                                        *                  B                                                          */
+        __IOM uint32_t ELCSARB;        /*!< (@ 0x00000034) ELC Security Attribution Register B                        */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t              : 5;
-            __IOM uint32_t ELSR26 : 1; /*!< [26..26] Event Link Setting Register 26 Security Attribution
-                                        *   Target register: ELSR26                                                   */
-            __IOM uint32_t ELSR25 : 1; /*!< [25..25] Event Link Setting Register 25 Security Attribution
-                                        *   Target register: ELSR25                                                   */
-            __IOM uint32_t ELSR24 : 1; /*!< [24..24] Event Link Setting Register 24 Security Attribution
-                                        *   Target register: ELSR24                                                   */
-            __IOM uint32_t ELSR23 : 1; /*!< [23..23] Event Link Setting Register 23 Security Attribution
-                                        *   Target register: ELSR23                                                   */
-            __IOM uint32_t ELSR22 : 1; /*!< [22..22] Event Link Setting Register 22 Security Attribution
-                                        *   Target register: ELSR22                                                   */
-            __IOM uint32_t ELSR21 : 1; /*!< [21..21] Event Link Setting Register 21 Security Attribution
-                                        *   Target register: ELSR21                                                   */
-            __IOM uint32_t ELSR20 : 1; /*!< [20..20] Event Link Setting Register 20 Security Attribution
-                                        *   Target register: ELSR20                                                   */
-            __IOM uint32_t ELSR19 : 1; /*!< [19..19] Event Link Setting Register 19 Security Attribution
-                                        *   Target register: ELSR19                                                   */
-            __IOM uint32_t ELSR18 : 1; /*!< [18..18] Event Link Setting Register 18 Security Attribution
-                                        *   Target register: ELSR18                                                   */
-            __IOM uint32_t ELSR17 : 1; /*!< [17..17] Event Link Setting Register 17 Security Attribution
-                                        *   Target register: ELSR17                                                   */
-            __IOM uint32_t ELSR16 : 1; /*!< [16..16] Event Link Setting Register 16 Security Attribution
-                                        *   Target register: ELSR16                                                   */
-            __IOM uint32_t ELSR15 : 1; /*!< [15..15] Event Link Setting Register 15 Security Attribution
-                                        *   Target register: ELSR15                                                   */
-            __IOM uint32_t ELSR14 : 1; /*!< [14..14] Event Link Setting Register 14 Security Attribution
-                                        *   Target register: ELSR14                                                   */
-            __IOM uint32_t ELSR13 : 1; /*!< [13..13] Event Link Setting Register 13 Security Attribution
-                                        *   Target register: ELSR13                                                   */
-            __IOM uint32_t ELSR12 : 1; /*!< [12..12] Event Link Setting Register 12 Security Attribution
-                                        *   Target register: ELSR12                                                   */
-            __IOM uint32_t ELSR11 : 1; /*!< [11..11] Event Link Setting Register 11 Security Attribution
-                                        *   Target register: ELSR11                                                   */
-            __IOM uint32_t ELSR10 : 1; /*!< [10..10] Event Link Setting Register 10 Security Attribution
-                                        *   Target register: ELSR10                                                   */
-            __IOM uint32_t ELSR9 : 1;  /*!< [9..9] Event Link Setting Register 9 Security Attribution Target
-                                        *   register: ELSR9                                                           */
-            __IOM uint32_t ELSR8 : 1;  /*!< [8..8] Event Link Setting Register 8 Security Attribution Target
-                                        *   register: ELSR8                                                           */
-            __IOM uint32_t ELSR7 : 1;  /*!< [7..7] Event Link Setting Register 7 Security Attribution Target
-                                        *   register: ELSR7                                                           */
-            __IOM uint32_t ELSR6 : 1;  /*!< [6..6] Event Link Setting Register 6 Security Attribution Target
-                                        *   register: ELSR6                                                           */
-            __IOM uint32_t ELSR5 : 1;  /*!< [5..5] Event Link Setting Register 5 Security Attribution Target
-                                        *   register: ELSR5                                                           */
-            __IOM uint32_t ELSR4 : 1;  /*!< [4..4] Event Link Setting Register 4 Security Attribution Target
-                                        *   register: ELSR4                                                           */
-            __IOM uint32_t ELSR3 : 1;  /*!< [3..3] Event Link Setting Register 3 Security Attribution Target
-                                        *   register: ELSR3                                                           */
-            __IOM uint32_t ELSR2 : 1;  /*!< [2..2] Event Link Setting Register 2 Security Attribution Target
-                                        *   register: ELSR2                                                           */
-            __IOM uint32_t ELSR1 : 1;  /*!< [1..1] Event Link Setting Register 1 Security Attribution Target
-                                        *   register: ELSR1                                                           */
-            __IOM uint32_t ELSR0 : 1;  /*!< [0..0] Event Link Setting Register 0 Security Attribution Target
-                                        *   register: ELSR0                                                           */
+            __IOM uint32_t ELSR26 : 1; /*!< [26..26] ELSR26 Security Attribution                                      */
+            __IOM uint32_t ELSR25 : 1; /*!< [25..25] ELSR25 Security Attribution                                      */
+            __IOM uint32_t ELSR24 : 1; /*!< [24..24] ELSR24 Security Attribution                                      */
+            __IOM uint32_t ELSR23 : 1; /*!< [23..23] ELSR23 Security Attribution                                      */
+            __IOM uint32_t ELSR22 : 1; /*!< [22..22] ELSR22 Security Attribution                                      */
+            __IOM uint32_t ELSR21 : 1; /*!< [21..21] ELSR21 Security Attribution                                      */
+            __IOM uint32_t ELSR20 : 1; /*!< [20..20] ELSR20 Security Attribution                                      */
+            __IOM uint32_t ELSR19 : 1; /*!< [19..19] ELSR19 Security Attribution                                      */
+            __IOM uint32_t ELSR18 : 1; /*!< [18..18] ELSR18 Security Attribution                                      */
+            __IOM uint32_t ELSR17 : 1; /*!< [17..17] ELSR17 Security Attribution                                      */
+            __IOM uint32_t ELSR16 : 1; /*!< [16..16] ELSR16 Security Attribution                                      */
+            __IOM uint32_t ELSR15 : 1; /*!< [15..15] ELSR15 Security Attribution                                      */
+            __IOM uint32_t ELSR14 : 1; /*!< [14..14] ELSR14 Security Attribution                                      */
+            __IOM uint32_t ELSR13 : 1; /*!< [13..13] ELSR13 Security Attribution                                      */
+            __IOM uint32_t ELSR12 : 1; /*!< [12..12] ELSR12 Security Attribution                                      */
+            __IOM uint32_t ELSR11 : 1; /*!< [11..11] ELSR11 Security Attribution                                      */
+            __IOM uint32_t ELSR10 : 1; /*!< [10..10] ELSR10 Security Attribution                                      */
+            __IOM uint32_t ELSR9  : 1; /*!< [9..9] ELSR9 Security Attribution                                         */
+            __IOM uint32_t ELSR8  : 1; /*!< [8..8] ELSR8 Security Attribution                                         */
+            __IOM uint32_t ELSR7  : 1; /*!< [7..7] ELSR7 Security Attribution                                         */
+            __IOM uint32_t ELSR6  : 1; /*!< [6..6] ELSR6 Security Attribution                                         */
+            __IOM uint32_t ELSR5  : 1; /*!< [5..5] ELSR5 Security Attribution                                         */
+            __IOM uint32_t ELSR4  : 1; /*!< [4..4] ELSR4 Security Attribution                                         */
+            __IOM uint32_t ELSR3  : 1; /*!< [3..3] ELSR3 Security Attribution                                         */
+            __IOM uint32_t ELSR2  : 1; /*!< [2..2] ELSR2 Security Attribution                                         */
+            __IOM uint32_t ELSR1  : 1; /*!< [1..1] ELSR1 Security Attribution                                         */
+            __IOM uint32_t ELSR0  : 1; /*!< [0..0] ELSR0 Security Attribution                                         */
 #else
-            __IOM uint32_t ELSR0 : 1;  /*!< [0..0] Event Link Setting Register 0 Security Attribution Target
-                                        *   register: ELSR0                                                           */
-            __IOM uint32_t ELSR1 : 1;  /*!< [1..1] Event Link Setting Register 1 Security Attribution Target
-                                        *   register: ELSR1                                                           */
-            __IOM uint32_t ELSR2 : 1;  /*!< [2..2] Event Link Setting Register 2 Security Attribution Target
-                                        *   register: ELSR2                                                           */
-            __IOM uint32_t ELSR3 : 1;  /*!< [3..3] Event Link Setting Register 3 Security Attribution Target
-                                        *   register: ELSR3                                                           */
-            __IOM uint32_t ELSR4 : 1;  /*!< [4..4] Event Link Setting Register 4 Security Attribution Target
-                                        *   register: ELSR4                                                           */
-            __IOM uint32_t ELSR5 : 1;  /*!< [5..5] Event Link Setting Register 5 Security Attribution Target
-                                        *   register: ELSR5                                                           */
-            __IOM uint32_t ELSR6 : 1;  /*!< [6..6] Event Link Setting Register 6 Security Attribution Target
-                                        *   register: ELSR6                                                           */
-            __IOM uint32_t ELSR7 : 1;  /*!< [7..7] Event Link Setting Register 7 Security Attribution Target
-                                        *   register: ELSR7                                                           */
-            __IOM uint32_t ELSR8 : 1;  /*!< [8..8] Event Link Setting Register 8 Security Attribution Target
-                                        *   register: ELSR8                                                           */
-            __IOM uint32_t ELSR9 : 1;  /*!< [9..9] Event Link Setting Register 9 Security Attribution Target
-                                        *   register: ELSR9                                                           */
-            __IOM uint32_t ELSR10 : 1; /*!< [10..10] Event Link Setting Register 10 Security Attribution
-                                        *   Target register: ELSR10                                                   */
-            __IOM uint32_t ELSR11 : 1; /*!< [11..11] Event Link Setting Register 11 Security Attribution
-                                        *   Target register: ELSR11                                                   */
-            __IOM uint32_t ELSR12 : 1; /*!< [12..12] Event Link Setting Register 12 Security Attribution
-                                        *   Target register: ELSR12                                                   */
-            __IOM uint32_t ELSR13 : 1; /*!< [13..13] Event Link Setting Register 13 Security Attribution
-                                        *   Target register: ELSR13                                                   */
-            __IOM uint32_t ELSR14 : 1; /*!< [14..14] Event Link Setting Register 14 Security Attribution
-                                        *   Target register: ELSR14                                                   */
-            __IOM uint32_t ELSR15 : 1; /*!< [15..15] Event Link Setting Register 15 Security Attribution
-                                        *   Target register: ELSR15                                                   */
-            __IOM uint32_t ELSR16 : 1; /*!< [16..16] Event Link Setting Register 16 Security Attribution
-                                        *   Target register: ELSR16                                                   */
-            __IOM uint32_t ELSR17 : 1; /*!< [17..17] Event Link Setting Register 17 Security Attribution
-                                        *   Target register: ELSR17                                                   */
-            __IOM uint32_t ELSR18 : 1; /*!< [18..18] Event Link Setting Register 18 Security Attribution
-                                        *   Target register: ELSR18                                                   */
-            __IOM uint32_t ELSR19 : 1; /*!< [19..19] Event Link Setting Register 19 Security Attribution
-                                        *   Target register: ELSR19                                                   */
-            __IOM uint32_t ELSR20 : 1; /*!< [20..20] Event Link Setting Register 20 Security Attribution
-                                        *   Target register: ELSR20                                                   */
-            __IOM uint32_t ELSR21 : 1; /*!< [21..21] Event Link Setting Register 21 Security Attribution
-                                        *   Target register: ELSR21                                                   */
-            __IOM uint32_t ELSR22 : 1; /*!< [22..22] Event Link Setting Register 22 Security Attribution
-                                        *   Target register: ELSR22                                                   */
-            __IOM uint32_t ELSR23 : 1; /*!< [23..23] Event Link Setting Register 23 Security Attribution
-                                        *   Target register: ELSR23                                                   */
-            __IOM uint32_t ELSR24 : 1; /*!< [24..24] Event Link Setting Register 24 Security Attribution
-                                        *   Target register: ELSR24                                                   */
-            __IOM uint32_t ELSR25 : 1; /*!< [25..25] Event Link Setting Register 25 Security Attribution
-                                        *   Target register: ELSR25                                                   */
-            __IOM uint32_t ELSR26 : 1; /*!< [26..26] Event Link Setting Register 26 Security Attribution
-                                        *   Target register: ELSR26                                                   */
-            uint32_t : 5;
+            __IOM uint32_t ELSR0  : 1; /*!< [0..0] ELSR0 Security Attribution                                         */
+            __IOM uint32_t ELSR1  : 1; /*!< [1..1] ELSR1 Security Attribution                                         */
+            __IOM uint32_t ELSR2  : 1; /*!< [2..2] ELSR2 Security Attribution                                         */
+            __IOM uint32_t ELSR3  : 1; /*!< [3..3] ELSR3 Security Attribution                                         */
+            __IOM uint32_t ELSR4  : 1; /*!< [4..4] ELSR4 Security Attribution                                         */
+            __IOM uint32_t ELSR5  : 1; /*!< [5..5] ELSR5 Security Attribution                                         */
+            __IOM uint32_t ELSR6  : 1; /*!< [6..6] ELSR6 Security Attribution                                         */
+            __IOM uint32_t ELSR7  : 1; /*!< [7..7] ELSR7 Security Attribution                                         */
+            __IOM uint32_t ELSR8  : 1; /*!< [8..8] ELSR8 Security Attribution                                         */
+            __IOM uint32_t ELSR9  : 1; /*!< [9..9] ELSR9 Security Attribution                                         */
+            __IOM uint32_t ELSR10 : 1; /*!< [10..10] ELSR10 Security Attribution                                      */
+            __IOM uint32_t ELSR11 : 1; /*!< [11..11] ELSR11 Security Attribution                                      */
+            __IOM uint32_t ELSR12 : 1; /*!< [12..12] ELSR12 Security Attribution                                      */
+            __IOM uint32_t ELSR13 : 1; /*!< [13..13] ELSR13 Security Attribution                                      */
+            __IOM uint32_t ELSR14 : 1; /*!< [14..14] ELSR14 Security Attribution                                      */
+            __IOM uint32_t ELSR15 : 1; /*!< [15..15] ELSR15 Security Attribution                                      */
+            __IOM uint32_t ELSR16 : 1; /*!< [16..16] ELSR16 Security Attribution                                      */
+            __IOM uint32_t ELSR17 : 1; /*!< [17..17] ELSR17 Security Attribution                                      */
+            __IOM uint32_t ELSR18 : 1; /*!< [18..18] ELSR18 Security Attribution                                      */
+            __IOM uint32_t ELSR19 : 1; /*!< [19..19] ELSR19 Security Attribution                                      */
+            __IOM uint32_t ELSR20 : 1; /*!< [20..20] ELSR20 Security Attribution                                      */
+            __IOM uint32_t ELSR21 : 1; /*!< [21..21] ELSR21 Security Attribution                                      */
+            __IOM uint32_t ELSR22 : 1; /*!< [22..22] ELSR22 Security Attribution                                      */
+            __IOM uint32_t ELSR23 : 1; /*!< [23..23] ELSR23 Security Attribution                                      */
+            __IOM uint32_t ELSR24 : 1; /*!< [24..24] ELSR24 Security Attribution                                      */
+            __IOM uint32_t ELSR25 : 1; /*!< [25..25] ELSR25 Security Attribution                                      */
+            __IOM uint32_t ELSR26 : 1; /*!< [26..26] ELSR26 Security Attribution                                      */
+            uint32_t              : 5;
 #endif
         } ELCSARB_b;
     };
 
     union
     {
-        __IOM uint32_t ELCSARC;        /*!< (@ 0x00000038) Event Link Controller Security Attribution Register
-                                        *                  C                                                          */
+        __IOM uint32_t ELCSARC;        /*!< (@ 0x00000038) ELC Security Attribution Register C                        */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t              : 11;
-            __IOM uint32_t ELSR52 : 1; /*!< [20..20] Event Link Setting Register 52 Security Attribution
-                                        *   Target register: ELSR52                                                   */
-            __IOM uint32_t ELSR51 : 1; /*!< [19..19] Event Link Setting Register 51 Security Attribution
-                                        *   Target register: ELSR51                                                   */
-            __IOM uint32_t ELSR50 : 1; /*!< [18..18] Event Link Setting Register 50 Security Attribution
-                                        *   Target register: ELSR50                                                   */
+            __IOM uint32_t ELSR52 : 1; /*!< [20..20] ELSR52 Security Attribution                                      */
+            __IOM uint32_t ELSR51 : 1; /*!< [19..19] ELSR51 Security Attribution                                      */
+            __IOM uint32_t ELSR50 : 1; /*!< [18..18] ELSR50 Security Attribution                                      */
             uint32_t              : 2;
-            __IOM uint32_t ELSR47 : 1; /*!< [15..15] Event Link Setting Register 15 Security Attribution
-                                        *   Target register: ELSR47                                                   */
-            __IOM uint32_t ELSR46 : 1; /*!< [14..14] Event Link Setting Register 14 Security Attribution
-                                        *   Target register: ELSR46                                                   */
-            uint32_t : 14;
+            __IOM uint32_t ELSR47 : 1; /*!< [15..15] ELSR47 Security Attribution                                      */
+            __IOM uint32_t ELSR46 : 1; /*!< [14..14] ELSR46 Security Attribution                                      */
+            uint32_t              : 14;
 #else
             uint32_t              : 14;
-            __IOM uint32_t ELSR46 : 1; /*!< [14..14] Event Link Setting Register 14 Security Attribution
-                                        *   Target register: ELSR46                                                   */
-            __IOM uint32_t ELSR47 : 1; /*!< [15..15] Event Link Setting Register 15 Security Attribution
-                                        *   Target register: ELSR47                                                   */
+            __IOM uint32_t ELSR46 : 1; /*!< [14..14] ELSR46 Security Attribution                                      */
+            __IOM uint32_t ELSR47 : 1; /*!< [15..15] ELSR47 Security Attribution                                      */
             uint32_t              : 2;
-            __IOM uint32_t ELSR50 : 1; /*!< [18..18] Event Link Setting Register 50 Security Attribution
-                                        *   Target register: ELSR50                                                   */
-            __IOM uint32_t ELSR51 : 1; /*!< [19..19] Event Link Setting Register 51 Security Attribution
-                                        *   Target register: ELSR51                                                   */
-            __IOM uint32_t ELSR52 : 1; /*!< [20..20] Event Link Setting Register 52 Security Attribution
-                                        *   Target register: ELSR52                                                   */
-            uint32_t : 11;
+            __IOM uint32_t ELSR50 : 1; /*!< [18..18] ELSR50 Security Attribution                                      */
+            __IOM uint32_t ELSR51 : 1; /*!< [19..19] ELSR51 Security Attribution                                      */
+            __IOM uint32_t ELSR52 : 1; /*!< [20..20] ELSR52 Security Attribution                                      */
+            uint32_t              : 11;
 #endif
         } ELCSARC_b;
     };
 
     union
     {
-        __IOM uint32_t ELCSARD;        /*!< (@ 0x0000003C) Event Link Controller Security Attribution Register
-                                        *                  D                                                          */
+        __IOM uint32_t ELCSARD;        /*!< (@ 0x0000003C) ELC Security Attribution Register D                        */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t              : 4;
-            __IOM uint32_t ELSR91 : 1; /*!< [27..27] Event Link Setting Register 91 Security Attribution
-                                        *   Target register: ELSR91                                                   */
-            __IOM uint32_t ELSR90 : 1; /*!< [26..26] Event Link Setting Register 90 Security Attribution
-                                        *   Target register: ELSR90                                                   */
-            __IOM uint32_t ELSR89 : 1; /*!< [25..25] Event Link Setting Register 89 Security Attribution
-                                        *   Target register: ELSR89                                                   */
-            __IOM uint32_t ELSR88 : 1; /*!< [24..24] Event Link Setting Register 88 Security Attribution
-                                        *   Target register: ELSR88                                                   */
+            __IOM uint32_t ELSR91 : 1; /*!< [27..27] ELSR91 Security Attribution                                      */
+            __IOM uint32_t ELSR90 : 1; /*!< [26..26] ELSR90 Security Attribution                                      */
+            __IOM uint32_t ELSR89 : 1; /*!< [25..25] ELSR89 Security Attribution                                      */
+            __IOM uint32_t ELSR88 : 1; /*!< [24..24] ELSR88 Security Attribution                                      */
             uint32_t              : 9;
-            __IOM uint32_t ELSR78 : 1; /*!< [14..14] Event Link Setting Register 78 Security Attribution
-                                        *   Target register: ELSR78                                                   */
-            __IOM uint32_t ELSR77 : 1; /*!< [13..13] Event Link Setting Register 77 Security Attribution
-                                        *   Target register: ELSR77                                                   */
-            __IOM uint32_t ELSR76 : 1; /*!< [12..12] Event Link Setting Register 76 Security Attribution
-                                        *   Target register: ELSR76                                                   */
-            __IOM uint32_t ELSR75 : 1; /*!< [11..11] Event Link Setting Register 75 Security Attribution
-                                        *   Target register: ELSR75                                                   */
-            __IOM uint32_t ELSR74 : 1; /*!< [10..10] Event Link Setting Register 74 Security Attribution
-                                        *   Target register: ELSR74                                                   */
-            __IOM uint32_t ELSR73 : 1; /*!< [9..9] Event Link Setting Register 73 Security Attribution Target
-                                        *   register: ELSR73                                                          */
-            uint32_t : 9;
+            __IOM uint32_t ELSR78 : 1; /*!< [14..14] ELSR78 Security Attribution                                      */
+            __IOM uint32_t ELSR77 : 1; /*!< [13..13] ELSR77 Security Attribution                                      */
+            __IOM uint32_t ELSR76 : 1; /*!< [12..12] ELSR76 Security Attribution                                      */
+            __IOM uint32_t ELSR75 : 1; /*!< [11..11] ELSR75 Security Attribution                                      */
+            __IOM uint32_t ELSR74 : 1; /*!< [10..10] ELSR74 Security Attribution                                      */
+            __IOM uint32_t ELSR73 : 1; /*!< [9..9] ELSR73 Security Attribution                                        */
+            uint32_t              : 9;
 #else
             uint32_t              : 9;
-            __IOM uint32_t ELSR73 : 1; /*!< [9..9] Event Link Setting Register 73 Security Attribution Target
-                                        *   register: ELSR73                                                          */
-            __IOM uint32_t ELSR74 : 1; /*!< [10..10] Event Link Setting Register 74 Security Attribution
-                                        *   Target register: ELSR74                                                   */
-            __IOM uint32_t ELSR75 : 1; /*!< [11..11] Event Link Setting Register 75 Security Attribution
-                                        *   Target register: ELSR75                                                   */
-            __IOM uint32_t ELSR76 : 1; /*!< [12..12] Event Link Setting Register 76 Security Attribution
-                                        *   Target register: ELSR76                                                   */
-            __IOM uint32_t ELSR77 : 1; /*!< [13..13] Event Link Setting Register 77 Security Attribution
-                                        *   Target register: ELSR77                                                   */
-            __IOM uint32_t ELSR78 : 1; /*!< [14..14] Event Link Setting Register 78 Security Attribution
-                                        *   Target register: ELSR78                                                   */
+            __IOM uint32_t ELSR73 : 1; /*!< [9..9] ELSR73 Security Attribution                                        */
+            __IOM uint32_t ELSR74 : 1; /*!< [10..10] ELSR74 Security Attribution                                      */
+            __IOM uint32_t ELSR75 : 1; /*!< [11..11] ELSR75 Security Attribution                                      */
+            __IOM uint32_t ELSR76 : 1; /*!< [12..12] ELSR76 Security Attribution                                      */
+            __IOM uint32_t ELSR77 : 1; /*!< [13..13] ELSR77 Security Attribution                                      */
+            __IOM uint32_t ELSR78 : 1; /*!< [14..14] ELSR78 Security Attribution                                      */
             uint32_t              : 9;
-            __IOM uint32_t ELSR88 : 1; /*!< [24..24] Event Link Setting Register 88 Security Attribution
-                                        *   Target register: ELSR88                                                   */
-            __IOM uint32_t ELSR89 : 1; /*!< [25..25] Event Link Setting Register 89 Security Attribution
-                                        *   Target register: ELSR89                                                   */
-            __IOM uint32_t ELSR90 : 1; /*!< [26..26] Event Link Setting Register 90 Security Attribution
-                                        *   Target register: ELSR90                                                   */
-            __IOM uint32_t ELSR91 : 1; /*!< [27..27] Event Link Setting Register 91 Security Attribution
-                                        *   Target register: ELSR91                                                   */
-            uint32_t : 4;
+            __IOM uint32_t ELSR88 : 1; /*!< [24..24] ELSR88 Security Attribution                                      */
+            __IOM uint32_t ELSR89 : 1; /*!< [25..25] ELSR89 Security Attribution                                      */
+            __IOM uint32_t ELSR90 : 1; /*!< [26..26] ELSR90 Security Attribution                                      */
+            __IOM uint32_t ELSR91 : 1; /*!< [27..27] ELSR91 Security Attribution                                      */
+            uint32_t              : 4;
 #endif
         } ELCSARD_b;
     };
@@ -455,11 +349,12 @@ typedef struct                         /*!< (@ 0x87801000) R_ELC Structure      
 #endif
         } ELOPD_b;
     };
-    __IM uint8_t  RESERVED10;
-    __IM uint16_t RESERVED11;
-    __IM uint32_t RESERVED12[24];
+    __IM uint8_t          RESERVED10;
+    __IM uint16_t         RESERVED11;
+    __IM uint32_t         RESERVED12[24];
+    __IOM R_ELC_ELSR_Type ELSR[92];    /*!< (@ 0x00000100) Event Link Setting Register                                */
+} R_ELC_Type;                          /*!< Size = 624 (0x270)                                                        */
 
-    __IOM R_ELC_ELSR_Type ELSR[92];    /*!< (@ 0x00000100) Event Link Setting Register [0..91]                        */
-} R_ELC_Type;                          /*!< Size = 440 (0x1b8)                                                        */
+/** @} */ /* End of group Device_Peripheral_peripherals */
 
 #endif /* R_ELC_REG_H */

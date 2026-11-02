@@ -8,6 +8,14 @@
 #define R_CPSCU_POSMSK_H
 
 /* =========================================================================================================================== */
+/* ================                                Pos/Mask Peripheral Section                                ================ */
+/* =========================================================================================================================== */
+
+/** @addtogroup PosMask_peripherals
+ * @{
+ */
+
+/* =========================================================================================================================== */
 /* ================                                          R_CPSCU                                          ================ */
 /* =========================================================================================================================== */
 
@@ -663,29 +671,28 @@
 #define R_CPSCU_EXDMACCHSAR_SADMACX0_Pos    (0UL)          /*!< SADMACX0 (Bit 0)                                      */
 #define R_CPSCU_EXDMACCHSAR_SADMACX0_Msk    (0x1UL)        /*!< SADMACX0 (Bitfield-Mask: 0x01)                        */
 /* =======================================================  DMACCHSAR  ======================================================= */
-#define R_CPSCU_DMACCHSAR_SADMAC07_Pos      (7UL)          /*!< SADMAC07 (Bit 7)                                      */
-#define R_CPSCU_DMACCHSAR_SADMAC07_Msk      (0x80UL)       /*!< SADMAC07 (Bitfield-Mask: 0x01)                        */
-#define R_CPSCU_DMACCHSAR_SADMAC06_Pos      (6UL)          /*!< SADMAC06 (Bit 6)                                      */
-#define R_CPSCU_DMACCHSAR_SADMAC06_Msk      (0x40UL)       /*!< SADMAC06 (Bitfield-Mask: 0x01)                        */
-#define R_CPSCU_DMACCHSAR_SADMAC05_Pos      (5UL)          /*!< SADMAC05 (Bit 5)                                      */
-#define R_CPSCU_DMACCHSAR_SADMAC05_Msk      (0x20UL)       /*!< SADMAC05 (Bitfield-Mask: 0x01)                        */
-#define R_CPSCU_DMACCHSAR_SADMAC04_Pos      (4UL)          /*!< SADMAC04 (Bit 4)                                      */
-#define R_CPSCU_DMACCHSAR_SADMAC04_Msk      (0x10UL)       /*!< SADMAC04 (Bitfield-Mask: 0x01)                        */
-#define R_CPSCU_DMACCHSAR_SADMAC03_Pos      (3UL)          /*!< SADMAC03 (Bit 3)                                      */
-#define R_CPSCU_DMACCHSAR_SADMAC03_Msk      (0x8UL)        /*!< SADMAC03 (Bitfield-Mask: 0x01)                        */
-#define R_CPSCU_DMACCHSAR_SADMAC02_Pos      (2UL)          /*!< SADMAC02 (Bit 2)                                      */
-#define R_CPSCU_DMACCHSAR_SADMAC02_Msk      (0x4UL)        /*!< SADMAC02 (Bitfield-Mask: 0x01)                        */
-#define R_CPSCU_DMACCHSAR_SADMAC01_Pos      (1UL)          /*!< SADMAC01 (Bit 1)                                      */
-#define R_CPSCU_DMACCHSAR_SADMAC01_Msk      (0x2UL)        /*!< SADMAC01 (Bitfield-Mask: 0x01)                        */
-#define R_CPSCU_DMACCHSAR_SADMAC00_Pos      (0UL)          /*!< SADMAC00 (Bit 0)                                      */
-#define R_CPSCU_DMACCHSAR_SADMAC00_Msk      (0x1UL)        /*!< SADMAC00 (Bitfield-Mask: 0x01)                        */
-#define R_CPSCU_DMACCHSAR_all_Msk           (0xffUL)       /*!< SADMAC00 to 07 (Bitfield-Mask: 0xff)                  */
+#define R_CPSCU_DMACCHSAR_SADMAC7_Pos       (7UL)          /*!< SADMAC7 (Bit 7)                                       */
+#define R_CPSCU_DMACCHSAR_SADMAC7_Msk       (0x80UL)       /*!< SADMAC7 (Bitfield-Mask: 0x01)                         */
+#define R_CPSCU_DMACCHSAR_SADMAC6_Pos       (6UL)          /*!< SADMAC6 (Bit 6)                                       */
+#define R_CPSCU_DMACCHSAR_SADMAC6_Msk       (0x40UL)       /*!< SADMAC6 (Bitfield-Mask: 0x01)                         */
+#define R_CPSCU_DMACCHSAR_SADMAC5_Pos       (5UL)          /*!< SADMAC5 (Bit 5)                                       */
+#define R_CPSCU_DMACCHSAR_SADMAC5_Msk       (0x20UL)       /*!< SADMAC5 (Bitfield-Mask: 0x01)                         */
+#define R_CPSCU_DMACCHSAR_SADMAC4_Pos       (4UL)          /*!< SADMAC4 (Bit 4)                                       */
+#define R_CPSCU_DMACCHSAR_SADMAC4_Msk       (0x10UL)       /*!< SADMAC4 (Bitfield-Mask: 0x01)                         */
+#define R_CPSCU_DMACCHSAR_SADMAC3_Pos       (3UL)          /*!< SADMAC3 (Bit 3)                                       */
+#define R_CPSCU_DMACCHSAR_SADMAC3_Msk       (0x8UL)        /*!< SADMAC3 (Bitfield-Mask: 0x01)                         */
+#define R_CPSCU_DMACCHSAR_SADMAC2_Pos       (2UL)          /*!< SADMAC2 (Bit 2)                                       */
+#define R_CPSCU_DMACCHSAR_SADMAC2_Msk       (0x4UL)        /*!< SADMAC2 (Bitfield-Mask: 0x01)                         */
+#define R_CPSCU_DMACCHSAR_SADMAC1_Pos       (1UL)          /*!< SADMAC1 (Bit 1)                                       */
+#define R_CPSCU_DMACCHSAR_SADMAC1_Msk       (0x2UL)        /*!< SADMAC1 (Bitfield-Mask: 0x01)                         */
+#define R_CPSCU_DMACCHSAR_SADMAC0_Pos       (0UL)          /*!< SADMAC0 (Bit 0)                                       */
+#define R_CPSCU_DMACCHSAR_SADMAC0_Msk       (0x1UL)        /*!< SADMAC0 (Bitfield-Mask: 0x01)                         */
 /* ======================================================  SRAMSABAR0  ======================================================= */
 #define R_CPSCU_SRAMSABAR0_SRAMSABAR_Pos    (13UL)         /*!< SRAMSABAR (Bit 13)                                    */
-#define R_CPSCU_SRAMSABAR0_SRAMSABAR_Msk    (0x001fe000UL) /*!< SRAMSABAR (Bitfield-Mask: 0xff)                       */
+#define R_CPSCU_SRAMSABAR0_SRAMSABAR_Msk    (0x1fe000UL)   /*!< SRAMSABAR (Bitfield-Mask: 0xff)                       */
 /* ======================================================  SRAMSABAR1  ======================================================= */
 #define R_CPSCU_SRAMSABAR1_SRAMSABAR_Pos    (13UL)         /*!< SRAMSABAR (Bit 13)                                    */
-#define R_CPSCU_SRAMSABAR1_SRAMSABAR_Msk    (0x001fe000UL) /*!< SRAMSABAR (Bitfield-Mask: 0xff)                       */
+#define R_CPSCU_SRAMSABAR1_SRAMSABAR_Msk    (0x1fe000UL)   /*!< SRAMSABAR (Bitfield-Mask: 0xff)                       */
 /* =======================================================  CACHESAR  ======================================================== */
 #define R_CPSCU_CACHESAR_CACHEESA_Pos       (2UL)          /*!< CACHEESA (Bit 2)                                      */
 #define R_CPSCU_CACHESAR_CACHEESA_Msk       (0x4UL)        /*!< CACHEESA (Bitfield-Mask: 0x01)                        */

@@ -8,12 +8,14 @@
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
 #include "bsp_api.h"
+#include "bsp_pz_hypervisor.h"
 
 #if BSP_FEATURE_PZ_HAS_PROTECTZONE
 
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+ #define BSP_NS_RESET_PSW_VALUE    0x0000000U
  #define BSP_PRV_MS_REG_KEY        (0xA500U)
  #define FSP_NOT_DEFINED           (0)
 
@@ -26,13 +28,15 @@
  #define EXDMACX_REGISTER_SHIFT    (0)
 
 /* Use legacy tail-chaining to find NS */
- #define RAM_NS_START              ((uint32_t *) ((((uint32_t) gp_ddsc_RAM_START + (BSP_FEATURE_SRAM_SIZE / 2)) & \
-                                                   0xFFFFE000) & (~BSP_FEATURE_PZ_S_OFFSET)))
- #define LRAM_NS_START             ((uint32_t *) ((((uint32_t) gp_ddsc_LRAM_START + (BSP_FEATURE_LRAM_SIZE / 2)) & \
-                                                   0xFFFFE000) & (~BSP_FEATURE_PZ_S_OFFSET)))
+ #define RAM_NS_START              ((((uint32_t) gp_ddsc_RAM_START + (BSP_FEATURE_SRAM_SIZE / 2)) & \
+                                     0xFFFFE000) & (~BSP_FEATURE_PZ_S_OFFSET))
+ #define LRAM_NS_START             ((((uint32_t) gp_ddsc_LRAM_START + (BSP_FEATURE_LRAM_SIZE / 2)) & \
+                                     0xFFFFE000) & (~BSP_FEATURE_PZ_S_OFFSET))
 
- #define RAM_NS_START_S_ALIAS      (uint32_t *) ((uint32_t) RAM_NS_START)
- #define LRAM_NS_START_S_ALIAS     (uint32_t *) ((uint32_t) LRAM_NS_START)
+ #define RAM_NS_START_S_ALIAS      ((uint32_t) RAM_NS_START)
+ #define LRAM_NS_START_S_ALIAS     ((uint32_t) LRAM_NS_START)
+
+ #define BSP_PZ_PMSAR2_SETTING     (0x6000U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -41,15 +45,14 @@
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)
  **********************************************************************************************************************/
-void R_BSP_SAUInit(void);
-void R_BSP_SecurityInit(void);
-void R_BSP_PinCfgSecurityInit(void);
-void R_BSP_ElcCfgSecurityInit(void);
+BSP_WEAK_REFERENCE void R_BSP_SAUInit(void);
+BSP_WEAK_REFERENCE void R_BSP_SecurityInit(void);
+BSP_WEAK_REFERENCE void R_BSP_PinCfgSecurityInit(void);
+BSP_WEAK_REFERENCE void R_BSP_ElcCfgSecurityInit(void);
 
 /***********************************************************************************************************************
  * External symbols
  **********************************************************************************************************************/
-
  #if BSP_PZ_SECURE_BUILD
 
 /*******************************************************************************************************************//**
@@ -62,11 +65,11 @@ void R_BSP_ElcCfgSecurityInit(void);
 void R_BSP_SAUInit (void)
 {
     /* Divide the SRAM area into S/NS. */
-    R_CPSCU->SRAMSABAR0 = (uint32_t) RAM_NS_START_S_ALIAS & R_CPSCU_SRAMSABAR0_SRAMSABAR_Msk;
-    R_CPSCU->SRAMSABAR1 = (uint32_t) RAM_NS_START_S_ALIAS & R_CPSCU_SRAMSABAR1_SRAMSABAR_Msk;
+    R_CPSCU->SRAMSABAR0 = (uint32_t) (RAM_NS_START_S_ALIAS & R_CPSCU_SRAMSABAR0_SRAMSABAR_Msk);
+    R_CPSCU->SRAMSABAR1 = (uint32_t) (RAM_NS_START_S_ALIAS & R_CPSCU_SRAMSABAR1_SRAMSABAR_Msk);
 
   #if BSP_FEATURE_BSP_HAS_LRAM == 1
-    R_CPSCU->LRMSABAR0 = (uint32_t) LRAM_NS_START_S_ALIAS & R_CPSCU_LRMSABAR0_LRMSABA_Msk;
+    R_CPSCU->LRMSABAR0 = (uint32_t) (LRAM_NS_START_S_ALIAS & R_CPSCU_LRMSABAR0_LRMSABA_Msk);
     if (BSP_FEATURE_LRAM0_SIZE > R_CPSCU->LRMSABAR0)
     {
         R_CPSCU->LRMSABAR1 = 0x00000000;
@@ -77,6 +80,48 @@ void R_BSP_SAUInit (void)
     }
   #endif
 }
+
+/*******************************************************************************************************************//**
+ * @addtogroup BSP_MCU
+ * @{
+ **********************************************************************************************************************/
+
+/******************************************************************************
+ * R_BSP_NonSecureEnter() processes the following.
+ * - Calling NonSecure from Secure
+ * - Calling a secure service call
+ *****************************************************************************/
+void R_BSP_NonSecureEnter (void)
+{
+    uint32_t const * p_ns_reset_vector =
+        (uint32_t const *) ((uintptr_t) gp_ddsc_FLASH_START - BSP_FEATURE_PZ_S_OFFSET - sizeof(uint32_t));
+    uintptr_t ns_entry = *p_ns_reset_vector;
+    uintptr_t ns_psw   = BSP_NS_RESET_PSW_VALUE;
+
+  #if defined(__CCRX__)
+    R_BSP_NonSecureEnter_ASM(ns_entry, ns_psw);
+  #else
+
+    /* This is a naked/stackless function. Do not pass arguments to the inline assembly when the GCC compiler is
+     * used. */
+    __asm volatile (
+        "mov %0, r1                  \n" /* r1 = PC */
+        "mov %1, r2                  \n" /* r2 = PSW */
+        "trcall %2                   \n" /* Call r_bsp_trcall_enter_ns() */
+        "_SpinProtectZone_end:       \n"
+   #if defined(__ICCRX__)
+        "bra.a _SpinProtectZone_end  \n"
+   #else
+        "bra _SpinProtectZone_end    \n"
+   #endif
+        :
+        : "r" (ns_entry), "r" (ns_psw), "i" (BSP_PZ_TRCALL_VECTOR_ENTER_NS)
+        : "memory"
+        );
+  #endif
+}
+
+/** @} (end addtogroup BSP_MCU) */
 
 /*******************************************************************************************************************//**
  * Initialize security features for ProtectZone.
@@ -90,18 +135,8 @@ void R_BSP_SecurityInit (void)
     /* Disable PRCR for SARs. */
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_SAR);
 
-    /* Protected zone interrupts enabled */
-    R_CPSCU->PRTZCR = 0x00000001;
-
-    /* Prohibit Secure instruction access to Non-Secure area */
-    R_SAU->AAS = 0x00000001;
-
     /* SAU initialization. */
     R_BSP_SAUInit();
-
-    /* IVC Register setting(IVC.NSIC = 1) */
-    /* Interrupts of level 15 or lower can only be accepted when the PSW.I bit is "1". */
-    __asm volatile ("mvtc %0, ivc" : : "r" (0x01000000) :);
 
     /* Set ProtectZone filter exception response. */
     R_BUS->OAD.MSAPT  = BSP_PRV_MS_REG_KEY + 0U;
@@ -123,10 +158,12 @@ void R_BSP_SecurityInit (void)
     FSP_HARDWARE_REGISTER_WAIT(R_PSCU->MSSAR, BSP_PZ_CFG_MSSAR);
 
     /* Initializing TFU security attributes */
-  #ifdef __TFU_SECURE
+  #if defined(__CCRX__) || defined(__GNUC__)
+   #ifdef __TFU_SECURE
     R_CPSCU->TFUSAR = 0x00000000;
-  #else
+   #else
     R_CPSCU->TFUSAR = 0x00000001;
+   #endif
   #endif
 
     /* Initializing EXDMAC security attributes */
@@ -280,6 +317,7 @@ void R_BSP_SecurityInit (void)
 /* This function is overridden by tooling. */
 BSP_WEAK_REFERENCE void R_BSP_PinCfgSecurityInit (void)
 {
+    R_PMISC->PMSAR[2].PMSAR = BSP_PZ_PMSAR2_SETTING;
 }
 
 /* This function is overridden by tooling. */
