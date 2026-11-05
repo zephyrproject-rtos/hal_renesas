@@ -40,10 +40,10 @@ extern "C" {
  #define FSP_VERSION_BUILD           (0U)
 
 /** Public FSP version name. */
- #define FSP_VERSION_STRING          ("1.0.0-beta.1")
+ #define FSP_VERSION_STRING          ("1.0.0")
 
 /** Unique FSP version ID. */
- #define FSP_VERSION_BUILD_STRING    ("Built with RX Flexible Software Package version 1.0.0-beta.1")
+ #define FSP_VERSION_BUILD_STRING    ("Built with RX Flexible Software Package version 1.0.0")
 
 /**********************************************************************************************************************
  * Typedef definitions

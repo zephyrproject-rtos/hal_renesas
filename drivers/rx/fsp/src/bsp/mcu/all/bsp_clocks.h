@@ -12,6 +12,9 @@
  **********************************************************************************************************************/
 #include "bsp_clock_cfg.h"
 #include "bsp_api.h"
+#if BSP_PZ_SECURE_BUILD
+ #include "bsp_pz_api.h"
+#endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
@@ -1604,6 +1607,14 @@ void bsp_prv_set_pfb(void);
 #if BSP_CFG_SLEEP_MODE_DELAY_ENABLE || BSP_CFG_RTOS_SLEEP_MODE_DELAY_ENABLE
 bool bsp_prv_clock_prepare_pre_sleep(void);
 void bsp_prv_clock_prepare_post_sleep(bool cpuclk_slowed);
+
+#endif
+
+#if BSP_PZ_SECURE_BUILD
+bsp_ssc_err_t R_BSP_SystemCoreClockSet(intptr_t p_system_core_clock, intptr_t arg1, intptr_t arg2, intptr_t arg3);
+
+#elif BSP_PZ_NONSECURE_BUILD
+void r_bsp_ns_system_core_clock_init(void);
 
 #endif
 

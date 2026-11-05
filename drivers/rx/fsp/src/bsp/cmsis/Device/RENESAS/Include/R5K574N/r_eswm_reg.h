@@ -32,6 +32,23 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 1;
+            __IOM uint32_t SSICM1 : 3; /*!< [30..28] SSICM1                                                           */
+            uint32_t              : 2;
+            __IOM uint32_t SSIGM1 : 1; /*!< [25..25] SSIGM1                                                           */
+            __IOM uint32_t SSIM1  : 1; /*!< [24..24] SSIM1                                                            */
+            uint32_t              : 1;
+            __IOM uint32_t SSICM0 : 3; /*!< [22..20] SSICM0                                                           */
+            uint32_t              : 2;
+            __IOM uint32_t SSIGM0 : 1; /*!< [17..17] SSIGM0                                                           */
+            __IOM uint32_t SSIM0  : 1; /*!< [16..16] SSIM0                                                            */
+            uint32_t              : 9;
+            __IOM uint32_t SEICM  : 3; /*!< [6..4] SEICM                                                              */
+            uint32_t              : 2;
+            __IOM uint32_t SEIGM  : 1; /*!< [1..1] SEIGM                                                              */
+            __IOM uint32_t SEIM   : 1; /*!< [0..0] SEIM                                                               */
+#else
             __IOM uint32_t SEIM   : 1; /*!< [0..0] SEIM                                                               */
             __IOM uint32_t SEIGM  : 1; /*!< [1..1] SEIGM                                                              */
             uint32_t              : 2;
@@ -47,6 +64,7 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             uint32_t              : 2;
             __IOM uint32_t SSICM1 : 3; /*!< [30..28] SSICM1                                                           */
             uint32_t              : 1;
+#endif
         } TPEMIMC0_b;
     };
 
@@ -57,6 +75,28 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 1;
+            __IOM uint32_t CSICM : 3;  /*!< [30..28] CSICM                                                            */
+            uint32_t             : 2;
+            __IOM uint32_t CSIGM : 1;  /*!< [25..25] CSIGM                                                            */
+            __IOM uint32_t CSIM  : 1;  /*!< [24..24] CSIM                                                             */
+            uint32_t             : 1;
+            __IOM uint32_t CEICM : 3;  /*!< [22..20] CEICM                                                            */
+            uint32_t             : 2;
+            __IOM uint32_t CEIGM : 1;  /*!< [17..17] CEIGM                                                            */
+            __IOM uint32_t CEIM  : 1;  /*!< [16..16] CEIM                                                             */
+            uint32_t             : 1;
+            __IOM uint32_t FSICM : 3;  /*!< [14..12] FSICM                                                            */
+            uint32_t             : 2;
+            __IOM uint32_t FSIGM : 1;  /*!< [9..9] FSIGM                                                              */
+            __IOM uint32_t FSIM  : 1;  /*!< [8..8] FSIM                                                               */
+            uint32_t             : 1;
+            __IOM uint32_t FEICM : 3;  /*!< [6..4] FEICM                                                              */
+            uint32_t             : 2;
+            __IOM uint32_t FEIGM : 1;  /*!< [1..1] FEIGM                                                              */
+            __IOM uint32_t FEIM  : 1;  /*!< [0..0] FEIM                                                               */
+#else
             __IOM uint32_t FEIM  : 1;  /*!< [0..0] FEIM                                                               */
             __IOM uint32_t FEIGM : 1;  /*!< [1..1] FEIGM                                                              */
             uint32_t             : 2;
@@ -77,6 +117,7 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             uint32_t             : 2;
             __IOM uint32_t CSICM : 3;  /*!< [30..28] CSICM                                                            */
             uint32_t             : 1;
+#endif
         } TPEMIMC1_b;
     };
 
@@ -87,6 +128,20 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 15;
+            __IOM uint32_t GEIM1  : 1; /*!< [16..16] GEIM1                                                            */
+            uint32_t              : 1;
+            __IOM uint32_t GSICM0 : 3; /*!< [14..12] GSICM0                                                           */
+            uint32_t              : 2;
+            __IOM uint32_t GSIGM0 : 1; /*!< [9..9] GSIGM0                                                             */
+            __IOM uint32_t GSIM0  : 1; /*!< [8..8] GSIM0                                                              */
+            uint32_t              : 1;
+            __IOM uint32_t GEICM0 : 3; /*!< [6..4] GEICM0                                                             */
+            uint32_t              : 2;
+            __IOM uint32_t GEIGM0 : 1; /*!< [1..1] GEIGM0                                                             */
+            __IOM uint32_t GEIM0  : 1; /*!< [0..0] GEIM0                                                              */
+#else
             __IOM uint32_t GEIM0  : 1; /*!< [0..0] GEIM0                                                              */
             __IOM uint32_t GEIGM0 : 1; /*!< [1..1] GEIGM0                                                             */
             uint32_t              : 2;
@@ -99,6 +154,7 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             uint32_t              : 1;
             __IOM uint32_t GEIM1  : 1; /*!< [16..16] GEIM1                                                            */
             uint32_t              : 15;
+#endif
         } TPEMIMC2_b;
     };
 
@@ -109,6 +165,23 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 9;
+            __IOM uint32_t RSICM0 : 3; /*!< [22..20] RSICM0                                                           */
+            uint32_t              : 2;
+            __IOM uint32_t RSIGM0 : 1; /*!< [17..17] RSIGM0                                                           */
+            __IOM uint32_t RSIM0  : 1; /*!< [16..16] RSIM0                                                            */
+            uint32_t              : 1;
+            __IOM uint32_t ESICM0 : 3; /*!< [14..12] ESICM0                                                           */
+            uint32_t              : 2;
+            __IOM uint32_t ESIGM0 : 1; /*!< [9..9] ESIGM0                                                             */
+            __IOM uint32_t ESIM0  : 1; /*!< [8..8] ESIM0                                                              */
+            uint32_t              : 1;
+            __IOM uint32_t EEICM0 : 3; /*!< [6..4] EEICM0                                                             */
+            uint32_t              : 2;
+            __IOM uint32_t EEIGM0 : 1; /*!< [1..1] EEIGM0                                                             */
+            __IOM uint32_t EEIM0  : 1; /*!< [0..0] EEIM0                                                              */
+#else
             __IOM uint32_t EEIM0  : 1; /*!< [0..0] EEIM0                                                              */
             __IOM uint32_t EEIGM0 : 1; /*!< [1..1] EEIGM0                                                             */
             uint32_t              : 2;
@@ -124,6 +197,7 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             uint32_t              : 2;
             __IOM uint32_t RSICM0 : 3; /*!< [22..20] RSICM0                                                           */
             uint32_t              : 9;
+#endif
         } TPEMIMC3_b;
     };
 
@@ -134,6 +208,23 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 9;
+            __IOM uint32_t RSICM1 : 3; /*!< [22..20] RSICM1                                                           */
+            uint32_t              : 2;
+            __IOM uint32_t RSIGM1 : 1; /*!< [17..17] RSIGM1                                                           */
+            __IOM uint32_t RSIM1  : 1; /*!< [16..16] RSIM1                                                            */
+            uint32_t              : 1;
+            __IOM uint32_t ESICM1 : 3; /*!< [14..12] ESICM1                                                           */
+            uint32_t              : 2;
+            __IOM uint32_t ESIGM1 : 1; /*!< [9..9] ESIGM1                                                             */
+            __IOM uint32_t ESIM1  : 1; /*!< [8..8] ESIM1                                                              */
+            uint32_t              : 1;
+            __IOM uint32_t EEICM1 : 3; /*!< [6..4] EEICM1                                                             */
+            uint32_t              : 2;
+            __IOM uint32_t EEIGM1 : 1; /*!< [1..1] EEIGM1                                                             */
+            __IOM uint32_t EEIM1  : 1; /*!< [0..0] EEIM1                                                              */
+#else
             __IOM uint32_t EEIM1  : 1; /*!< [0..0] EEIM1                                                              */
             __IOM uint32_t EEIGM1 : 1; /*!< [1..1] EEIGM1                                                             */
             uint32_t              : 2;
@@ -149,35 +240,48 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             uint32_t              : 2;
             __IOM uint32_t RSICM1 : 3; /*!< [22..20] RSICM1                                                           */
             uint32_t              : 9;
+#endif
         } TPEMIMC4_b;
     };
     __IM uint32_t RESERVED[27];
 
     union
     {
-        __IOM uint32_t TPEMIMC60;       /*!< (@ 0x00000080) TOP Module Error and Monitoring Interrupt Mapping
-                                         *                  Configuration Register 6t (TPEMIMC6t) (t
-                                         *                  = 0, 1)                                                    */
+        __IOM uint32_t TPEMIMC60;      /*!< (@ 0x00000080) TOP Module Error and Monitoring Interrupt Mapping
+                                        *                  Configuration Register 6t (TPEMIMC6t) (t
+                                        *                  = 0, 1)                                                    */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 28;
+            __IOM uint32_t GTSICM0 : 3; /*!< [3..1] GTSICM0                                                            */
+            __IOM uint32_t GTSIM0  : 1; /*!< [0..0] GTSIM0                                                             */
+#else
             __IOM uint32_t GTSIM0  : 1; /*!< [0..0] GTSIM0                                                             */
             __IOM uint32_t GTSICM0 : 3; /*!< [3..1] GTSICM0                                                            */
             uint32_t               : 28;
+#endif
         } TPEMIMC60_b;
     };
 
     union
     {
-        __IOM uint32_t TPEMIMC61;       /*!< (@ 0x00000084) TOP Module Error and Monitoring Interrupt Mapping
-                                         *                  Configuration Register 6t (TPEMIMC6t) (t
-                                         *                  = 0, 1)                                                    */
+        __IOM uint32_t TPEMIMC61;      /*!< (@ 0x00000084) TOP Module Error and Monitoring Interrupt Mapping
+                                        *                  Configuration Register 6t (TPEMIMC6t) (t
+                                        *                  = 0, 1)                                                    */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 28;
+            __IOM uint32_t GTSICM0 : 3; /*!< [3..1] GTSICM0                                                            */
+            __IOM uint32_t GTSIM0  : 1; /*!< [0..0] GTSIM0                                                             */
+#else
             __IOM uint32_t GTSIM0  : 1; /*!< [0..0] GTSIM0                                                             */
             __IOM uint32_t GTSICM0 : 3; /*!< [3..1] GTSICM0                                                            */
             uint32_t               : 28;
+#endif
         } TPEMIMC61_b;
     };
     __IM uint32_t RESERVED1[30];
@@ -190,10 +294,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC70_b;
     };
 
@@ -205,10 +316,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC71_b;
     };
 
@@ -220,10 +338,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC72_b;
     };
 
@@ -235,10 +360,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC73_b;
     };
 
@@ -250,10 +382,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC74_b;
     };
 
@@ -265,10 +404,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC75_b;
     };
 
@@ -280,10 +426,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC76_b;
     };
 
@@ -295,10 +448,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC77_b;
     };
 
@@ -310,10 +470,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC78_b;
     };
 
@@ -325,10 +492,17 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 21;
+            __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 5;
             __IOM uint32_t GDICM1 : 3; /*!< [10..8] GDICM1                                                            */
             uint32_t              : 21;
+#endif
         } TPEMIMC79_b;
     };
 
@@ -340,8 +514,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC710_b;
     };
 
@@ -353,8 +532,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC711_b;
     };
 
@@ -366,8 +550,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC712_b;
     };
 
@@ -379,8 +568,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC713_b;
     };
 
@@ -392,8 +586,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC714_b;
     };
 
@@ -405,8 +604,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC715_b;
     };
 
@@ -418,8 +622,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC716_b;
     };
 
@@ -431,8 +640,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC717_b;
     };
 
@@ -444,8 +658,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC718_b;
     };
 
@@ -457,8 +676,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC719_b;
     };
 
@@ -470,8 +694,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC720_b;
     };
 
@@ -483,8 +712,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC721_b;
     };
 
@@ -496,8 +730,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC722_b;
     };
 
@@ -509,8 +748,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC723_b;
     };
 
@@ -522,8 +766,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC724_b;
     };
 
@@ -535,8 +784,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC725_b;
     };
 
@@ -548,8 +802,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC726_b;
     };
 
@@ -561,8 +820,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC727_b;
     };
 
@@ -574,8 +838,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC728_b;
     };
 
@@ -587,8 +856,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC729_b;
     };
 
@@ -600,8 +874,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC730_b;
     };
 
@@ -613,8 +892,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC731_b;
     };
 
@@ -626,8 +910,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC732_b;
     };
 
@@ -639,8 +928,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC733_b;
     };
 
@@ -652,8 +946,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC734_b;
     };
 
@@ -665,8 +964,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC735_b;
     };
 
@@ -678,8 +982,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC736_b;
     };
 
@@ -691,8 +1000,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC737_b;
     };
 
@@ -704,8 +1018,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC738_b;
     };
 
@@ -717,8 +1036,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC739_b;
     };
 
@@ -730,8 +1054,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC740_b;
     };
 
@@ -743,8 +1072,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC741_b;
     };
 
@@ -756,8 +1090,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC742_b;
     };
 
@@ -769,8 +1108,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC743_b;
     };
 
@@ -782,8 +1126,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC744_b;
     };
 
@@ -795,8 +1144,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC745_b;
     };
 
@@ -808,8 +1162,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC746_b;
     };
 
@@ -821,8 +1180,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC747_b;
     };
 
@@ -834,8 +1198,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC748_b;
     };
 
@@ -847,8 +1216,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC749_b;
     };
 
@@ -860,8 +1234,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC750_b;
     };
 
@@ -873,8 +1252,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC751_b;
     };
 
@@ -886,8 +1270,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC752_b;
     };
 
@@ -899,8 +1288,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC753_b;
     };
 
@@ -912,8 +1306,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC754_b;
     };
 
@@ -925,8 +1324,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC755_b;
     };
 
@@ -938,8 +1342,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC756_b;
     };
 
@@ -951,8 +1360,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC757_b;
     };
 
@@ -964,8 +1378,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC758_b;
     };
 
@@ -977,8 +1396,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC759_b;
     };
 
@@ -990,8 +1414,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC760_b;
     };
 
@@ -1003,8 +1432,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC761_b;
     };
 
@@ -1016,8 +1450,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC762_b;
     };
 
@@ -1029,8 +1468,13 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 29;
+            __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
+#else
             __IOM uint32_t GDICM0 : 3; /*!< [2..0] GDICM0                                                             */
             uint32_t              : 29;
+#endif
         } TPEMIMC763_b;
     };
     __IM uint32_t RESERVED2[320];
@@ -1042,6 +1486,15 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 26;
+            __IOM uint32_t EIM1 : 1;   /*!< [5..5] EIM1                                                               */
+            __IOM uint32_t EIM0 : 1;   /*!< [4..4] EIM0                                                               */
+            uint32_t            : 1;
+            __IOM uint32_t GIM0 : 1;   /*!< [2..2] GIM0                                                               */
+            __IOM uint32_t CIM  : 1;   /*!< [1..1] CIM                                                                */
+            __IOM uint32_t FWM  : 1;   /*!< [0..0] FWM                                                                */
+#else
             __IOM uint32_t FWM  : 1;   /*!< [0..0] FWM                                                                */
             __IOM uint32_t CIM  : 1;   /*!< [1..1] CIM                                                                */
             __IOM uint32_t GIM0 : 1;   /*!< [2..2] GIM0                                                               */
@@ -1049,16 +1502,30 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             __IOM uint32_t EIM0 : 1;   /*!< [4..4] EIM0                                                               */
             __IOM uint32_t EIM1 : 1;   /*!< [5..5] EIM1                                                               */
             uint32_t            : 26;
+#endif
         } TSIM_b;
     };
 
     union
     {
-        __IOM uint32_t TFIM;             /*!< (@ 0x00000704) TOP Module Forwarding Engine Interrupt Mirroring
-                                          *                  Register (TFIM)                                            */
+        __IOM uint32_t TFIM;           /*!< (@ 0x00000704) TOP Module Forwarding Engine Interrupt Mirroring
+                                        *                  Register (TFIM)                                            */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 22;
+            __IOM uint32_t FWMISIM0 : 1; /*!< [9..9] FWMISIM0                                                           */
+            __IOM uint32_t FWEISIM8 : 1; /*!< [8..8] FWEISIM8                                                           */
+            __IOM uint32_t FWEISIM7 : 1; /*!< [7..7] FWEISIM7                                                           */
+            __IOM uint32_t FWEISIM6 : 1; /*!< [6..6] FWEISIM6                                                           */
+            __IOM uint32_t FWEISIM5 : 1; /*!< [5..5] FWEISIM5                                                           */
+            __IOM uint32_t FWEISIM4 : 1; /*!< [4..4] FWEISIM4                                                           */
+            __IOM uint32_t FWEISIM3 : 1; /*!< [3..3] FWEISIM3                                                           */
+            __IOM uint32_t FWEISIM2 : 1; /*!< [2..2] FWEISIM2                                                           */
+            __IOM uint32_t FWEISIM1 : 1; /*!< [1..1] FWEISIM1                                                           */
+            __IOM uint32_t FWEISIM0 : 1; /*!< [0..0] FWEISIM0                                                           */
+#else
             __IOM uint32_t FWEISIM0 : 1; /*!< [0..0] FWEISIM0                                                           */
             __IOM uint32_t FWEISIM1 : 1; /*!< [1..1] FWEISIM1                                                           */
             __IOM uint32_t FWEISIM2 : 1; /*!< [2..2] FWEISIM2                                                           */
@@ -1070,33 +1537,54 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             __IOM uint32_t FWEISIM8 : 1; /*!< [8..8] FWEISIM8                                                           */
             __IOM uint32_t FWMISIM0 : 1; /*!< [9..9] FWMISIM0                                                           */
             uint32_t                : 22;
+#endif
         } TFIM_b;
     };
 
     union
     {
-        __IOM uint32_t TCIM;             /*!< (@ 0x00000708) TOP Module Common Interrupt Mirroring Register
-                                          *                  (TCIM)                                                     */
+        __IOM uint32_t TCIM;           /*!< (@ 0x00000708) TOP Module Common Interrupt Mirroring Register
+                                        *                  (TCIM)                                                     */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 27;
+            __IOM uint32_t CAMISIM1 : 1; /*!< [4..4] CAMISIM1                                                           */
+            __IOM uint32_t CAMISIM0 : 1; /*!< [3..3] CAMISIM0                                                           */
+            __IOM uint32_t CAEISIM1 : 1; /*!< [2..2] CAEISIM1                                                           */
+            __IOM uint32_t CAEISIM0 : 1; /*!< [1..1] CAEISIM0                                                           */
+            __IOM uint32_t RSSISIM  : 1; /*!< [0..0] RSSISIM                                                            */
+#else
             __IOM uint32_t RSSISIM  : 1; /*!< [0..0] RSSISIM                                                            */
             __IOM uint32_t CAEISIM0 : 1; /*!< [1..1] CAEISIM0                                                           */
             __IOM uint32_t CAEISIM1 : 1; /*!< [2..2] CAEISIM1                                                           */
             __IOM uint32_t CAMISIM0 : 1; /*!< [3..3] CAMISIM0                                                           */
             __IOM uint32_t CAMISIM1 : 1; /*!< [4..4] CAMISIM1                                                           */
             uint32_t                : 27;
+#endif
         } TCIM_b;
     };
     __IM uint32_t RESERVED3;
 
     union
     {
-        __IOM uint32_t TGIM0;             /*!< (@ 0x00000710) TOP Module GWCA0 Interrupt Mirroring Register
-                                           *                  (TGIM0)                                                    */
+        __IOM uint32_t TGIM0;          /*!< (@ 0x00000710) TOP Module GWCA0 Interrupt Mirroring Register
+                                        *                  (TGIM0)                                                    */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                 : 24;
+            __IOM uint32_t GWEISIM5  : 1; /*!< [7..7] GWEISIM5                                                           */
+            __IOM uint32_t GWEISIM4  : 1; /*!< [6..6] GWEISIM4                                                           */
+            __IOM uint32_t GWEISIM3  : 1; /*!< [5..5] GWEISIM3                                                           */
+            __IOM uint32_t GWEISIM2  : 1; /*!< [4..4] GWEISIM2                                                           */
+            __IOM uint32_t GWEISIM1  : 1; /*!< [3..3] GWEISIM1                                                           */
+            __IOM uint32_t GWEISIM0  : 1; /*!< [2..2] GWEISIM0                                                           */
+            __IOM uint32_t GWTSDISIM : 1; /*!< [1..1] GWTSDISIM                                                          */
+            __IOM uint32_t GWDISIM   : 1; /*!< [0..0] GWDISIM                                                            */
+#else
             __IOM uint32_t GWDISIM   : 1; /*!< [0..0] GWDISIM                                                            */
             __IOM uint32_t GWTSDISIM : 1; /*!< [1..1] GWTSDISIM                                                          */
             __IOM uint32_t GWEISIM0  : 1; /*!< [2..2] GWEISIM0                                                           */
@@ -1106,39 +1594,58 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             __IOM uint32_t GWEISIM4  : 1; /*!< [6..6] GWEISIM4                                                           */
             __IOM uint32_t GWEISIM5  : 1; /*!< [7..7] GWEISIM5                                                           */
             uint32_t                 : 24;
+#endif
         } TGIM0_b;
     };
     __IM uint32_t RESERVED4[3];
 
     union
     {
-        __IOM uint32_t TEIM0;            /*!< (@ 0x00000720) TOP Module ETHA0 Interrupt Mirroring Register
-                                          *                  (TEIM0)                                                    */
+        __IOM uint32_t TEIM0;          /*!< (@ 0x00000720) TOP Module ETHA0 Interrupt Mirroring Register
+                                        *                  (TEIM0)                                                    */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 27;
+            __IOM uint32_t MMISIM   : 1; /*!< [4..4] MMISIM                                                             */
+            __IOM uint32_t MEISIM   : 1; /*!< [3..3] MEISIM                                                             */
+            __IOM uint32_t EAEISIM2 : 1; /*!< [2..2] EAEISIM2                                                           */
+            __IOM uint32_t EAEISIM1 : 1; /*!< [1..1] EAEISIM1                                                           */
+            __IOM uint32_t EAEISIM0 : 1; /*!< [0..0] EAEISIM0                                                           */
+#else
             __IOM uint32_t EAEISIM0 : 1; /*!< [0..0] EAEISIM0                                                           */
             __IOM uint32_t EAEISIM1 : 1; /*!< [1..1] EAEISIM1                                                           */
             __IOM uint32_t EAEISIM2 : 1; /*!< [2..2] EAEISIM2                                                           */
             __IOM uint32_t MEISIM   : 1; /*!< [3..3] MEISIM                                                             */
             __IOM uint32_t MMISIM   : 1; /*!< [4..4] MMISIM                                                             */
             uint32_t                : 27;
+#endif
         } TEIM0_b;
     };
 
     union
     {
-        __IOM uint32_t TEIM1;            /*!< (@ 0x00000724) TOP Module ETHA1 Interrupt Mirroring Register
-                                          *                  (TEIM1)                                                    */
+        __IOM uint32_t TEIM1;          /*!< (@ 0x00000724) TOP Module ETHA1 Interrupt Mirroring Register
+                                        *                  (TEIM1)                                                    */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 27;
+            __IOM uint32_t MMISIM   : 1; /*!< [4..4] MMISIM                                                             */
+            __IOM uint32_t MEISIM   : 1; /*!< [3..3] MEISIM                                                             */
+            __IOM uint32_t EAEISIM2 : 1; /*!< [2..2] EAEISIM2                                                           */
+            __IOM uint32_t EAEISIM1 : 1; /*!< [1..1] EAEISIM1                                                           */
+            __IOM uint32_t EAEISIM0 : 1; /*!< [0..0] EAEISIM0                                                           */
+#else
             __IOM uint32_t EAEISIM0 : 1; /*!< [0..0] EAEISIM0                                                           */
             __IOM uint32_t EAEISIM1 : 1; /*!< [1..1] EAEISIM1                                                           */
             __IOM uint32_t EAEISIM2 : 1; /*!< [2..2] EAEISIM2                                                           */
             __IOM uint32_t MEISIM   : 1; /*!< [3..3] MEISIM                                                             */
             __IOM uint32_t MMISIM   : 1; /*!< [4..4] MMISIM                                                             */
             uint32_t                : 27;
+#endif
         } TEIM1_b;
     };
     __IM uint32_t RESERVED5[25398];
@@ -1149,12 +1656,21 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 22;
+            __IOM uint32_t RMRST1 : 1; /*!< [9..9] RMII Interface reset 1                                             */
+            __IOM uint32_t RMRST0 : 1; /*!< [8..8] RMII Interface reset 0                                             */
+            uint32_t              : 6;
+            __IOM uint32_t RGRST1 : 1; /*!< [1..1] RGMII Interface reset 1                                            */
+            __IOM uint32_t RGRST0 : 1; /*!< [0..0] RGMII Interface reset 0                                            */
+#else
             __IOM uint32_t RGRST0 : 1; /*!< [0..0] RGMII Interface reset 0                                            */
             __IOM uint32_t RGRST1 : 1; /*!< [1..1] RGMII Interface reset 1                                            */
             uint32_t              : 6;
             __IOM uint32_t RMRST0 : 1; /*!< [8..8] RMII Interface reset 0                                             */
             __IOM uint32_t RMRST1 : 1; /*!< [9..9] RMII Interface reset 1                                             */
             uint32_t              : 22;
+#endif
         } MIIRR_b;
     };
 
@@ -1164,12 +1680,21 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 19;
+            __IOM uint32_t TXCIDE : 1; /*!< [12..12] TXC Internal delay enable in RGMII                               */
+            uint32_t              : 3;
+            __IOM uint32_t DIVSTP : 1; /*!< [8..8] Clock Divider Stop                                                 */
+            uint32_t              : 6;
+            __IOM uint32_t MIISEL : 2; /*!< [1..0] MII select                                                         */
+#else
             __IOM uint32_t MIISEL : 2; /*!< [1..0] MII select                                                         */
             uint32_t              : 6;
             __IOM uint32_t DIVSTP : 1; /*!< [8..8] Clock Divider Stop                                                 */
             uint32_t              : 3;
             __IOM uint32_t TXCIDE : 1; /*!< [12..12] TXC Internal delay enable in RGMII                               */
             uint32_t              : 19;
+#endif
         } MIICR0_b;
     };
 
@@ -1179,12 +1704,21 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 19;
+            __IOM uint32_t TXCIDE : 1; /*!< [12..12] TXC Internal delay enable in RGMII                               */
+            uint32_t              : 3;
+            __IOM uint32_t DIVSTP : 1; /*!< [8..8] Clock Divider Stop                                                 */
+            uint32_t              : 6;
+            __IOM uint32_t MIISEL : 2; /*!< [1..0] MII select                                                         */
+#else
             __IOM uint32_t MIISEL : 2; /*!< [1..0] MII select                                                         */
             uint32_t              : 6;
             __IOM uint32_t DIVSTP : 1; /*!< [8..8] Clock Divider Stop                                                 */
             uint32_t              : 3;
             __IOM uint32_t TXCIDE : 1; /*!< [12..12] TXC Internal delay enable in RGMII                               */
             uint32_t              : 19;
+#endif
         } MIICR1_b;
     };
     __IM uint32_t RESERVED6;
@@ -1195,9 +1729,15 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 30;
+            __IOM uint32_t MCCES1 : 1; /*!< [1..1] Media clock capture event select 1                                 */
+            __IOM uint32_t MCCES0 : 1; /*!< [0..0] Media clock capture event select 0                                 */
+#else
             __IOM uint32_t MCCES0 : 1; /*!< [0..0] Media clock capture event select 0                                 */
             __IOM uint32_t MCCES1 : 1; /*!< [1..1] Media clock capture event select 1                                 */
             uint32_t              : 30;
+#endif
         } MCCESR_b;
     };
     __IM uint32_t RESERVED7[3];
@@ -1208,6 +1748,20 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 3;
+            __IOM uint32_t MSS3 : 5;   /*!< [28..24] Select signal to output ET_TAS_STA3 pin from race_etha0_tas_gate_stat
+                                        *   [8:0] and race_etha1_tas_gate_state[8:0]                                  */
+            uint32_t            : 3;
+            __IOM uint32_t MSS2 : 5;   /*!< [20..16] Select signal to output ET_TAS_STA2 pin from race_etha0_tas_gate_stat
+                                        *   [8:0] and race_etha1_tas_gate_state[8:0]                                  */
+            uint32_t            : 3;
+            __IOM uint32_t MSS1 : 5;   /*!< [12..8] Select signal to output ET_TAS_STA1 pin from race_etha0_tas_gate_state
+                                        *   8:0] and race_etha1_tas_gate_state[8:0]                                   */
+            uint32_t            : 3;
+            __IOM uint32_t MSS0 : 5;   /*!< [4..0] Select signal to output ET_TAS_STA0 pin from race_etha0_tas_gate_state[
+                                        *   :0] and race_etha1_tas_gate_state[8:0]                                    */
+#else
             __IOM uint32_t MSS0 : 5;   /*!< [4..0] Select signal to output ET_TAS_STA0 pin from race_etha0_tas_gate_state[
                                         *   :0] and race_etha1_tas_gate_state[8:0]                                    */
             uint32_t            : 3;
@@ -1220,9 +1774,26 @@ typedef struct                         /*!< (@ 0x874C8000) R_ESWM Structure     
             __IOM uint32_t MSS3 : 5;   /*!< [28..24] Select signal to output ET_TAS_STA3 pin from race_etha0_tas_gate_stat
                                         *   [8:0] and race_etha1_tas_gate_state[8:0]                                  */
             uint32_t : 3;
+#endif
         } TASSTSR_b;
     };
-} R_ESWM_Type;                         /*!< Size = 103460 (0x19424)                                                   */
+
+    union
+    {
+        __IOM uint32_t ETHBUSCR;       /*!< (@ 0x00019424) Ether Bus Control Register                                 */
+
+        struct
+        {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 31;
+            __IOM uint32_t ENDIAN : 1; /*!< [0..0] Bus Endian Select                                                  */
+#else
+            __IOM uint32_t ENDIAN : 1; /*!< [0..0] Bus Endian Select                                                  */
+            uint32_t              : 31;
+#endif
+        } ETHBUSCR_b;
+    };
+} R_ESWM_Type;                         /*!< Size = 103464 (0x19428)                                                   */
 
 /** @} */ /* End of group Device_Peripheral_peripheralAddr */
 

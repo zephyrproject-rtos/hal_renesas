@@ -31,6 +31,16 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 8;
+            __IOM uint32_t CAIPV : 3;  /*!< [23..21] CAIPV                                                            */
+            uint32_t             : 1;
+            __IOM uint32_t FBIPV : 4;  /*!< [19..16] FBIPV                                                            */
+            __IOM uint32_t EAIPV : 4;  /*!< [15..12] EAIPV                                                            */
+            __IOM uint32_t FWIPV : 4;  /*!< [11..8] FWIPV                                                             */
+            __IOM uint32_t GWIPV : 4;  /*!< [7..4] GWIPV                                                              */
+            __IOM uint32_t TIPV  : 4;  /*!< [3..0] TIPV                                                               */
+#else
             __IOM uint32_t TIPV  : 4;  /*!< [3..0] TIPV                                                               */
             __IOM uint32_t GWIPV : 4;  /*!< [7..4] GWIPV                                                              */
             __IOM uint32_t FWIPV : 4;  /*!< [11..8] FWIPV                                                             */
@@ -39,6 +49,7 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             uint32_t             : 1;
             __IOM uint32_t CAIPV : 3;  /*!< [23..21] CAIPV                                                            */
             uint32_t             : 8;
+#endif
         } RIPV_b;
     };
 
@@ -48,8 +59,13 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t          : 31;
+            __IOM uint32_t RR : 1;     /*!< [0..0] RR                                                                 */
+#else
             __IOM uint32_t RR : 1;     /*!< [0..0] RR                                                                 */
             uint32_t          : 31;
+#endif
         } RRC_b;
     };
 
@@ -60,12 +76,21 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RCE  : 1;   /*!< [16..16] RCE                                                              */
+            uint32_t            : 13;
+            __IOM uint32_t ACE2 : 1;   /*!< [2..2] ACE2                                                               */
+            __IOM uint32_t ACE1 : 1;   /*!< [1..1] ACE1                                                               */
+            __IOM uint32_t ACE0 : 1;   /*!< [0..0] ACE0                                                               */
+#else
             __IOM uint32_t ACE0 : 1;   /*!< [0..0] ACE0                                                               */
             __IOM uint32_t ACE1 : 1;   /*!< [1..1] ACE1                                                               */
             __IOM uint32_t ACE2 : 1;   /*!< [2..2] ACE2                                                               */
             uint32_t            : 13;
             __IOM uint32_t RCE  : 1;   /*!< [16..16] RCE                                                              */
             uint32_t            : 15;
+#endif
         } RCEC_b;
     };
 
@@ -76,125 +101,190 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RCD  : 1;   /*!< [16..16] RCD                                                              */
+            uint32_t            : 13;
+            __IOM uint32_t ACD2 : 1;   /*!< [2..2] ACD2                                                               */
+            __IOM uint32_t ACD1 : 1;   /*!< [1..1] ACD1                                                               */
+            __IOM uint32_t ACD0 : 1;   /*!< [0..0] ACD0                                                               */
+#else
             __IOM uint32_t ACD0 : 1;   /*!< [0..0] ACD0                                                               */
             __IOM uint32_t ACD1 : 1;   /*!< [1..1] ACD1                                                               */
             __IOM uint32_t ACD2 : 1;   /*!< [2..2] ACD2                                                               */
             uint32_t            : 13;
             __IOM uint32_t RCD  : 1;   /*!< [16..16] RCD                                                              */
             uint32_t            : 15;
+#endif
         } RCDC_b;
     };
     __IM uint32_t RESERVED[4];
 
     union
     {
-        __IOM uint32_t CABPIBWMC0;       /*!< (@ 0x00000020) Common Agent Buffer Pool IPV Based Watermark
-                                          *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
+        __IOM uint32_t CABPIBWMC0;     /*!< (@ 0x00000020) Common Agent Buffer Pool IPV Based Watermark
+                                        *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 6;
+            __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
+            uint32_t               : 6;
+            __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
+#else
             __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
             uint32_t               : 6;
             __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
             uint32_t               : 6;
+#endif
         } CABPIBWMC0_b;
     };
 
     union
     {
-        __IOM uint32_t CABPIBWMC1;       /*!< (@ 0x00000024) Common Agent Buffer Pool IPV Based Watermark
-                                          *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
+        __IOM uint32_t CABPIBWMC1;     /*!< (@ 0x00000024) Common Agent Buffer Pool IPV Based Watermark
+                                        *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 6;
+            __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
+            uint32_t               : 6;
+            __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
+#else
             __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
             uint32_t               : 6;
             __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
             uint32_t               : 6;
+#endif
         } CABPIBWMC1_b;
     };
 
     union
     {
-        __IOM uint32_t CABPIBWMC2;       /*!< (@ 0x00000028) Common Agent Buffer Pool IPV Based Watermark
-                                          *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
+        __IOM uint32_t CABPIBWMC2;     /*!< (@ 0x00000028) Common Agent Buffer Pool IPV Based Watermark
+                                        *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 6;
+            __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
+            uint32_t               : 6;
+            __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
+#else
             __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
             uint32_t               : 6;
             __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
             uint32_t               : 6;
+#endif
         } CABPIBWMC2_b;
     };
 
     union
     {
-        __IOM uint32_t CABPIBWMC3;       /*!< (@ 0x0000002C) Common Agent Buffer Pool IPV Based Watermark
-                                          *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
+        __IOM uint32_t CABPIBWMC3;     /*!< (@ 0x0000002C) Common Agent Buffer Pool IPV Based Watermark
+                                        *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 6;
+            __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
+            uint32_t               : 6;
+            __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
+#else
             __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
             uint32_t               : 6;
             __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
             uint32_t               : 6;
+#endif
         } CABPIBWMC3_b;
     };
 
     union
     {
-        __IOM uint32_t CABPIBWMC4;       /*!< (@ 0x00000030) Common Agent Buffer Pool IPV Based Watermark
-                                          *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
+        __IOM uint32_t CABPIBWMC4;     /*!< (@ 0x00000030) Common Agent Buffer Pool IPV Based Watermark
+                                        *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 6;
+            __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
+            uint32_t               : 6;
+            __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
+#else
             __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
             uint32_t               : 6;
             __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
             uint32_t               : 6;
+#endif
         } CABPIBWMC4_b;
     };
 
     union
     {
-        __IOM uint32_t CABPIBWMC5;       /*!< (@ 0x00000034) Common Agent Buffer Pool IPV Based Watermark
-                                          *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
+        __IOM uint32_t CABPIBWMC5;     /*!< (@ 0x00000034) Common Agent Buffer Pool IPV Based Watermark
+                                        *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 6;
+            __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
+            uint32_t               : 6;
+            __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
+#else
             __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
             uint32_t               : 6;
             __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
             uint32_t               : 6;
+#endif
         } CABPIBWMC5_b;
     };
 
     union
     {
-        __IOM uint32_t CABPIBWMC6;       /*!< (@ 0x00000038) Common Agent Buffer Pool IPV Based Watermark
-                                          *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
+        __IOM uint32_t CABPIBWMC6;     /*!< (@ 0x00000038) Common Agent Buffer Pool IPV Based Watermark
+                                        *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 6;
+            __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
+            uint32_t               : 6;
+            __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
+#else
             __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
             uint32_t               : 6;
             __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
             uint32_t               : 6;
+#endif
         } CABPIBWMC6_b;
     };
 
     union
     {
-        __IOM uint32_t CABPIBWMC7;       /*!< (@ 0x0000003C) Common Agent Buffer Pool IPV Based Watermark
-                                          *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
+        __IOM uint32_t CABPIBWMC7;     /*!< (@ 0x0000003C) Common Agent Buffer Pool IPV Based Watermark
+                                        *                  Configuration Register (CABPIBWMCi) (i=0..7)               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 6;
+            __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
+            uint32_t               : 6;
+            __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
+#else
             __IOM uint32_t IBUWMPN : 10; /*!< [9..0] IBUWMPN                                                            */
             uint32_t               : 6;
             __IOM uint32_t IBSWMPN : 10; /*!< [25..16] IBSWMPN                                                          */
             uint32_t               : 6;
+#endif
         } CABPIBWMC7_b;
     };
 
@@ -205,10 +295,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 6;
+            __IOM uint32_t WMCL : 10;  /*!< [25..16] WMCL                                                             */
+            uint32_t            : 6;
+            __IOM uint32_t WMFL : 10;  /*!< [9..0] WMFL                                                               */
+#else
             __IOM uint32_t WMFL : 10;  /*!< [9..0] WMFL                                                               */
             uint32_t            : 6;
             __IOM uint32_t WMCL : 10;  /*!< [25..16] WMCL                                                             */
             uint32_t            : 6;
+#endif
         } CABPWMLC_b;
     };
     __IM uint32_t RESERVED1[3];
@@ -221,10 +318,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 6;
+            __IOM uint32_t PAL : 10;   /*!< [25..16] PAL                                                              */
+            uint32_t           : 6;
+            __IOM uint32_t PDL : 10;   /*!< [9..0] PDL                                                                */
+#else
             __IOM uint32_t PDL : 10;   /*!< [9..0] PDL                                                                */
             uint32_t           : 6;
             __IOM uint32_t PAL : 10;   /*!< [25..16] PAL                                                              */
             uint32_t           : 6;
+#endif
         } CABPPFLC0_b;
     };
 
@@ -236,10 +340,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 6;
+            __IOM uint32_t PAL : 10;   /*!< [25..16] PAL                                                              */
+            uint32_t           : 6;
+            __IOM uint32_t PDL : 10;   /*!< [9..0] PDL                                                                */
+#else
             __IOM uint32_t PDL : 10;   /*!< [9..0] PDL                                                                */
             uint32_t           : 6;
             __IOM uint32_t PAL : 10;   /*!< [25..16] PAL                                                              */
             uint32_t           : 6;
+#endif
         } CABPPFLC1_b;
     };
     __IM uint32_t RESERVED2[2];
@@ -252,10 +363,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 6;
+            __IOM uint32_t PWMCL : 10; /*!< [25..16] PWMCL                                                            */
+            uint32_t             : 6;
+            __IOM uint32_t PWMFL : 10; /*!< [9..0] PWMFL                                                              */
+#else
             __IOM uint32_t PWMFL : 10; /*!< [9..0] PWMFL                                                              */
             uint32_t             : 6;
             __IOM uint32_t PWMCL : 10; /*!< [25..16] PWMCL                                                            */
             uint32_t             : 6;
+#endif
         } CABPPWMLC0_b;
     };
 
@@ -267,10 +385,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 6;
+            __IOM uint32_t PWMCL : 10; /*!< [25..16] PWMCL                                                            */
+            uint32_t             : 6;
+            __IOM uint32_t PWMFL : 10; /*!< [9..0] PWMFL                                                              */
+#else
             __IOM uint32_t PWMFL : 10; /*!< [9..0] PWMFL                                                              */
             uint32_t             : 6;
             __IOM uint32_t PWMCL : 10; /*!< [25..16] PWMCL                                                            */
             uint32_t             : 6;
+#endif
         } CABPPWMLC1_b;
     };
 
@@ -282,10 +407,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 6;
+            __IOM uint32_t PWMCL : 10; /*!< [25..16] PWMCL                                                            */
+            uint32_t             : 6;
+            __IOM uint32_t PWMFL : 10; /*!< [9..0] PWMFL                                                              */
+#else
             __IOM uint32_t PWMFL : 10; /*!< [9..0] PWMFL                                                              */
             uint32_t             : 6;
             __IOM uint32_t PWMCL : 10; /*!< [25..16] PWMCL                                                            */
             uint32_t             : 6;
+#endif
         } CABPPWMLC2_b;
     };
     __IM uint32_t RESERVED3[13];
@@ -298,10 +430,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 6;
+            __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
+            uint32_t            : 6;
+            __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
+#else
             __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
             uint32_t            : 6;
             __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
             uint32_t            : 6;
+#endif
         } CABPPPFLC00_b;
     };
 
@@ -313,10 +452,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 6;
+            __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
+            uint32_t            : 6;
+            __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
+#else
             __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
             uint32_t            : 6;
             __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
             uint32_t            : 6;
+#endif
         } CABPPPFLC01_b;
     };
 
@@ -328,10 +474,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 6;
+            __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
+            uint32_t            : 6;
+            __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
+#else
             __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
             uint32_t            : 6;
             __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
             uint32_t            : 6;
+#endif
         } CABPPPFLC10_b;
     };
 
@@ -343,10 +496,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 6;
+            __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
+            uint32_t            : 6;
+            __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
+#else
             __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
             uint32_t            : 6;
             __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
             uint32_t            : 6;
+#endif
         } CABPPPFLC11_b;
     };
 
@@ -358,10 +518,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 6;
+            __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
+            uint32_t            : 6;
+            __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
+#else
             __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
             uint32_t            : 6;
             __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
             uint32_t            : 6;
+#endif
         } CABPPPFLC20_b;
     };
 
@@ -373,10 +540,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 6;
+            __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
+            uint32_t            : 6;
+            __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
+#else
             __IOM uint32_t PPDL : 10;  /*!< [9..0] PPDL                                                               */
             uint32_t            : 6;
             __IOM uint32_t PPAL : 10;  /*!< [25..16] PPAL                                                             */
             uint32_t            : 6;
+#endif
         } CABPPPFLC21_b;
     };
     __IM uint32_t RESERVED4[18];
@@ -389,10 +563,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 6;
+            __IOM uint32_t MNNPN : 10; /*!< [25..16] MNNPN                                                            */
+            uint32_t             : 6;
+            __IOM uint32_t MXNPN : 10; /*!< [9..0] MXNPN                                                              */
+#else
             __IOM uint32_t MXNPN : 10; /*!< [9..0] MXNPN                                                              */
             uint32_t             : 6;
             __IOM uint32_t MNNPN : 10; /*!< [25..16] MNNPN                                                            */
             uint32_t             : 6;
+#endif
         } CABPULC0_b;
     };
 
@@ -404,10 +585,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 6;
+            __IOM uint32_t MNNPN : 10; /*!< [25..16] MNNPN                                                            */
+            uint32_t             : 6;
+            __IOM uint32_t MXNPN : 10; /*!< [9..0] MXNPN                                                              */
+#else
             __IOM uint32_t MXNPN : 10; /*!< [9..0] MXNPN                                                              */
             uint32_t             : 6;
             __IOM uint32_t MNNPN : 10; /*!< [25..16] MNNPN                                                            */
             uint32_t             : 6;
+#endif
         } CABPULC1_b;
     };
 
@@ -419,10 +607,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 6;
+            __IOM uint32_t MNNPN : 10; /*!< [25..16] MNNPN                                                            */
+            uint32_t             : 6;
+            __IOM uint32_t MXNPN : 10; /*!< [9..0] MXNPN                                                              */
+#else
             __IOM uint32_t MXNPN : 10; /*!< [9..0] MXNPN                                                              */
             uint32_t             : 6;
             __IOM uint32_t MNNPN : 10; /*!< [25..16] MNNPN                                                            */
             uint32_t             : 6;
+#endif
         } CABPULC2_b;
     };
     __IM uint32_t RESERVED5[13];
@@ -434,9 +629,15 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 30;
+            __IOM uint32_t BPR   : 1;  /*!< [1..1] BPR                                                                */
+            __IOM uint32_t BPIOG : 1;  /*!< [0..0] BPIOG                                                              */
+#else
             __IOM uint32_t BPIOG : 1;  /*!< [0..0] BPIOG                                                              */
             __IOM uint32_t BPR   : 1;  /*!< [1..1] BPR                                                                */
             uint32_t             : 30;
+#endif
         } CABPIRM_b;
     };
 
@@ -447,10 +648,17 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 6;
+            __IOM uint32_t TPC : 10;   /*!< [25..16] TPC                                                              */
+            uint32_t           : 6;
+            __IOM uint32_t RPC : 10;   /*!< [9..0] RPC                                                                */
+#else
             __IOM uint32_t RPC : 10;   /*!< [9..0] RPC                                                                */
             uint32_t           : 6;
             __IOM uint32_t TPC : 10;   /*!< [25..16] TPC                                                              */
             uint32_t           : 6;
+#endif
         } CABPPCM_b;
     };
 
@@ -461,8 +669,13 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t LRC : 10;   /*!< [9..0] LRC                                                                */
+#else
             __IOM uint32_t LRC : 10;   /*!< [9..0] LRC                                                                */
             uint32_t           : 22;
+#endif
         } CABPLCM_b;
     };
     __IM uint32_t RESERVED6[13];
@@ -474,8 +687,13 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t RPCP : 10;  /*!< [9..0] RPCP                                                               */
+#else
             __IOM uint32_t RPCP : 10;  /*!< [9..0] RPCP                                                               */
             uint32_t            : 22;
+#endif
         } CABPCPM0_b;
     };
 
@@ -486,8 +704,13 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t RPCP : 10;  /*!< [9..0] RPCP                                                               */
+#else
             __IOM uint32_t RPCP : 10;  /*!< [9..0] RPCP                                                               */
             uint32_t            : 22;
+#endif
         } CABPCPM1_b;
     };
 
@@ -498,8 +721,13 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t RPCP : 10;  /*!< [9..0] RPCP                                                               */
+#else
             __IOM uint32_t RPCP : 10;  /*!< [9..0] RPCP                                                               */
             uint32_t            : 22;
+#endif
         } CABPCPM2_b;
     };
     __IM uint32_t RESERVED7[29];
@@ -512,8 +740,13 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 22;
+            __IOM uint32_t RPMCP : 10; /*!< [9..0] RPMCP                                                              */
+#else
             __IOM uint32_t RPMCP : 10; /*!< [9..0] RPMCP                                                              */
             uint32_t             : 22;
+#endif
         } CABPMCPM0_b;
     };
 
@@ -525,8 +758,13 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 22;
+            __IOM uint32_t RPMCP : 10; /*!< [9..0] RPMCP                                                              */
+#else
             __IOM uint32_t RPMCP : 10; /*!< [9..0] RPMCP                                                              */
             uint32_t             : 22;
+#endif
         } CABPMCPM1_b;
     };
 
@@ -538,8 +776,13 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 22;
+            __IOM uint32_t RPMCP : 10; /*!< [9..0] RPMCP                                                              */
+#else
             __IOM uint32_t RPMCP : 10; /*!< [9..0] RPMCP                                                              */
             uint32_t             : 22;
+#endif
         } CABPMCPM2_b;
     };
     __IM uint32_t RESERVED8[61];
@@ -551,20 +794,30 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 22;
+            __IOM uint32_t RDNRR : 10; /*!< [9..0] RDNRR                                                              */
+#else
             __IOM uint32_t RDNRR : 10; /*!< [9..0] RDNRR                                                              */
             uint32_t             : 22;
+#endif
         } CARDNM_b;
     };
 
     union
     {
-        __IOM uint32_t CARDMNM;         /*!< (@ 0x00000304) Common Agent Rejected Descriptor Maximum Number
-                                         *                  Monitoring Register (CARDMNM)                              */
+        __IOM uint32_t CARDMNM;        /*!< (@ 0x00000304) Common Agent Rejected Descriptor Maximum Number
+                                        *                  Monitoring Register (CARDMNM)                              */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 22;
+            __IOM uint32_t RDMNRR : 10; /*!< [9..0] RDMNRR                                                             */
+#else
             __IOM uint32_t RDMNRR : 10; /*!< [9..0] RDMNRR                                                             */
             uint32_t              : 22;
+#endif
         } CARDMNM_b;
     };
     __IM uint32_t RESERVED9[2];
@@ -583,11 +836,23 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
     union
     {
-        __IOM uint32_t CAEIS0;          /*!< (@ 0x00000400) Common Agent Error Interrupt Status Register
-                                         *                  0 (CAEIS0)                                                 */
+        __IOM uint32_t CAEIS0;         /*!< (@ 0x00000400) Common Agent Error Interrupt Status Register
+                                        *                  0 (CAEIS0)                                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 12;
+            __IOM uint32_t EEIPLN  : 4; /*!< [19..16] EEIPLN                                                           */
+            uint32_t               : 5;
+            __IOM uint32_t WMFLOS  : 1; /*!< [10..10] WMFLOS                                                           */
+            __IOM uint32_t WMCLOS  : 1; /*!< [9..9] WMCLOS                                                             */
+            __IOM uint32_t BPOPS   : 1; /*!< [8..8] BPOPS                                                              */
+            uint32_t               : 5;
+            __IOM uint32_t BPECCES : 1; /*!< [2..2] BPECCES                                                            */
+            __IOM uint32_t DSECCES : 1; /*!< [1..1] DSECCES                                                            */
+            __IOM uint32_t PECCES  : 1; /*!< [0..0] PECCES                                                             */
+#else
             __IOM uint32_t PECCES  : 1; /*!< [0..0] PECCES                                                             */
             __IOM uint32_t DSECCES : 1; /*!< [1..1] DSECCES                                                            */
             __IOM uint32_t BPECCES : 1; /*!< [2..2] BPECCES                                                            */
@@ -598,16 +863,27 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             uint32_t               : 5;
             __IOM uint32_t EEIPLN  : 4; /*!< [19..16] EEIPLN                                                           */
             uint32_t               : 12;
+#endif
         } CAEIS0_b;
     };
 
     union
     {
-        __IOM uint32_t CAEIE0;          /*!< (@ 0x00000404) Common Agent Error Interrupt Enable0 Register
-                                         *                  (CAEIE0)                                                   */
+        __IOM uint32_t CAEIE0;         /*!< (@ 0x00000404) Common Agent Error Interrupt Enable0 Register
+                                        *                  (CAEIE0)                                                   */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 21;
+            __IOM uint32_t WMFLOE  : 1; /*!< [10..10] WMFLOE                                                           */
+            __IOM uint32_t WMCLOE  : 1; /*!< [9..9] WMCLOE                                                             */
+            __IOM uint32_t BPOPE   : 1; /*!< [8..8] BPOPE                                                              */
+            uint32_t               : 5;
+            __IOM uint32_t BPECCEE : 1; /*!< [2..2] BPECCEE                                                            */
+            __IOM uint32_t DSECCEE : 1; /*!< [1..1] DSECCEE                                                            */
+            __IOM uint32_t PECCEE  : 1; /*!< [0..0] PECCEE                                                             */
+#else
             __IOM uint32_t PECCEE  : 1; /*!< [0..0] PECCEE                                                             */
             __IOM uint32_t DSECCEE : 1; /*!< [1..1] DSECCEE                                                            */
             __IOM uint32_t BPECCEE : 1; /*!< [2..2] BPECCEE                                                            */
@@ -616,16 +892,27 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             __IOM uint32_t WMCLOE  : 1; /*!< [9..9] WMCLOE                                                             */
             __IOM uint32_t WMFLOE  : 1; /*!< [10..10] WMFLOE                                                           */
             uint32_t               : 21;
+#endif
         } CAEIE0_b;
     };
 
     union
     {
-        __IOM uint32_t CAEID0;          /*!< (@ 0x00000408) Common Agent Error Interrupt Disable Register
-                                         *                  0 (CAEID0)                                                 */
+        __IOM uint32_t CAEID0;         /*!< (@ 0x00000408) Common Agent Error Interrupt Disable Register
+                                        *                  0 (CAEID0)                                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 21;
+            __IOM uint32_t WMFLOD  : 1; /*!< [10..10] WMFLOD                                                           */
+            __IOM uint32_t WMCLOD  : 1; /*!< [9..9] WMCLOD                                                             */
+            __IOM uint32_t BPOPD   : 1; /*!< [8..8] BPOPD                                                              */
+            uint32_t               : 5;
+            __IOM uint32_t BPECCED : 1; /*!< [2..2] BPECCED                                                            */
+            __IOM uint32_t DSECCED : 1; /*!< [1..1] DSECCED                                                            */
+            __IOM uint32_t PECCED  : 1; /*!< [0..0] PECCED                                                             */
+#else
             __IOM uint32_t PECCED  : 1; /*!< [0..0] PECCED                                                             */
             __IOM uint32_t DSECCED : 1; /*!< [1..1] DSECCED                                                            */
             __IOM uint32_t BPECCED : 1; /*!< [2..2] BPECCED                                                            */
@@ -634,17 +921,28 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             __IOM uint32_t WMCLOD  : 1; /*!< [9..9] WMCLOD                                                             */
             __IOM uint32_t WMFLOD  : 1; /*!< [10..10] WMFLOD                                                           */
             uint32_t               : 21;
+#endif
         } CAEID0_b;
     };
     __IM uint32_t RESERVED11;
 
     union
     {
-        __IOM uint32_t CAEIS1;           /*!< (@ 0x00000410) Common Agent Error Interrupt Status Register
-                                          *                  1 (CAEIS1)                                                 */
+        __IOM uint32_t CAEIS1;         /*!< (@ 0x00000410) Common Agent Error Interrupt Status Register
+                                        *                  1 (CAEIS1)                                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 13;
+            __IOM uint32_t PWMFLOS2 : 1; /*!< [18..18] PWMFLOS2                                                         */
+            __IOM uint32_t PWMFLOS1 : 1; /*!< [17..17] PWMFLOS1                                                         */
+            __IOM uint32_t PWMFLOS0 : 1; /*!< [16..16] PWMFLOS0                                                         */
+            uint32_t                : 13;
+            __IOM uint32_t PWMCLOS2 : 1; /*!< [2..2] PWMCLOS2                                                           */
+            __IOM uint32_t PWMCLOS1 : 1; /*!< [1..1] PWMCLOS1                                                           */
+            __IOM uint32_t PWMCLOS0 : 1; /*!< [0..0] PWMCLOS0                                                           */
+#else
             __IOM uint32_t PWMCLOS0 : 1; /*!< [0..0] PWMCLOS0                                                           */
             __IOM uint32_t PWMCLOS1 : 1; /*!< [1..1] PWMCLOS1                                                           */
             __IOM uint32_t PWMCLOS2 : 1; /*!< [2..2] PWMCLOS2                                                           */
@@ -653,16 +951,27 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             __IOM uint32_t PWMFLOS1 : 1; /*!< [17..17] PWMFLOS1                                                         */
             __IOM uint32_t PWMFLOS2 : 1; /*!< [18..18] PWMFLOS2                                                         */
             uint32_t                : 13;
+#endif
         } CAEIS1_b;
     };
 
     union
     {
-        __IOM uint32_t CAEIE1;           /*!< (@ 0x00000414) Common Agent Error Interrupt Enable Register
-                                          *                  1 (CAEIE1)                                                 */
+        __IOM uint32_t CAEIE1;         /*!< (@ 0x00000414) Common Agent Error Interrupt Enable Register
+                                        *                  1 (CAEIE1)                                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 13;
+            __IOM uint32_t PWMFLOE2 : 1; /*!< [18..18] PWMFLOE2                                                         */
+            __IOM uint32_t PWMFLOE1 : 1; /*!< [17..17] PWMFLOE1                                                         */
+            __IOM uint32_t PWMFLOE0 : 1; /*!< [16..16] PWMFLOE0                                                         */
+            uint32_t                : 13;
+            __IOM uint32_t PWMCLOE2 : 1; /*!< [2..2] PWMCLOE2                                                           */
+            __IOM uint32_t PWMCLOE1 : 1; /*!< [1..1] PWMCLOE1                                                           */
+            __IOM uint32_t PWMCLOE0 : 1; /*!< [0..0] PWMCLOE0                                                           */
+#else
             __IOM uint32_t PWMCLOE0 : 1; /*!< [0..0] PWMCLOE0                                                           */
             __IOM uint32_t PWMCLOE1 : 1; /*!< [1..1] PWMCLOE1                                                           */
             __IOM uint32_t PWMCLOE2 : 1; /*!< [2..2] PWMCLOE2                                                           */
@@ -671,16 +980,27 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             __IOM uint32_t PWMFLOE1 : 1; /*!< [17..17] PWMFLOE1                                                         */
             __IOM uint32_t PWMFLOE2 : 1; /*!< [18..18] PWMFLOE2                                                         */
             uint32_t                : 13;
+#endif
         } CAEIE1_b;
     };
 
     union
     {
-        __IOM uint32_t CAEID1;           /*!< (@ 0x00000418) Common Agent Error Interrupt Disable Register
-                                          *                  1 (CAEID1)                                                 */
+        __IOM uint32_t CAEID1;         /*!< (@ 0x00000418) Common Agent Error Interrupt Disable Register
+                                        *                  1 (CAEID1)                                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 13;
+            __IOM uint32_t PWMFLOD2 : 1; /*!< [18..18] PWMFLOD2                                                         */
+            __IOM uint32_t PWMFLOD1 : 1; /*!< [17..17] PWMFLOD1                                                         */
+            __IOM uint32_t PWMFLOD0 : 1; /*!< [16..16] PWMFLOD0                                                         */
+            uint32_t                : 13;
+            __IOM uint32_t PWMCLOD2 : 1; /*!< [2..2] PWMCLOD2                                                           */
+            __IOM uint32_t PWMCLOD1 : 1; /*!< [1..1] PWMCLOD1                                                           */
+            __IOM uint32_t PWMCLOD0 : 1; /*!< [0..0] PWMCLOD0                                                           */
+#else
             __IOM uint32_t PWMCLOD0 : 1; /*!< [0..0] PWMCLOD0                                                           */
             __IOM uint32_t PWMCLOD1 : 1; /*!< [1..1] PWMCLOD1                                                           */
             __IOM uint32_t PWMCLOD2 : 1; /*!< [2..2] PWMCLOD2                                                           */
@@ -689,6 +1009,7 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             __IOM uint32_t PWMFLOD1 : 1; /*!< [17..17] PWMFLOD1                                                         */
             __IOM uint32_t PWMFLOD2 : 1; /*!< [18..18] PWMFLOD2                                                         */
             uint32_t                : 13;
+#endif
         } CAEID1_b;
     };
     __IM uint32_t RESERVED12[9];
@@ -700,9 +1021,15 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 30;
+            __IOM uint32_t PFS1 : 1;   /*!< [1..1] PFS1                                                               */
+            __IOM uint32_t PFS0 : 1;   /*!< [0..0] PFS0                                                               */
+#else
             __IOM uint32_t PFS0 : 1;   /*!< [0..0] PFS0                                                               */
             __IOM uint32_t PFS1 : 1;   /*!< [1..1] PFS1                                                               */
             uint32_t            : 30;
+#endif
         } CAMIS0_b;
     };
 
@@ -713,9 +1040,15 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 30;
+            __IOM uint32_t PFE1 : 1;   /*!< [1..1] PFE1                                                               */
+            __IOM uint32_t PFE0 : 1;   /*!< [0..0] PFE0                                                               */
+#else
             __IOM uint32_t PFE0 : 1;   /*!< [0..0] PFE0                                                               */
             __IOM uint32_t PFE1 : 1;   /*!< [1..1] PFE1                                                               */
             uint32_t            : 30;
+#endif
         } CAMIE0_b;
     };
 
@@ -726,9 +1059,15 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 30;
+            __IOM uint32_t PFD1 : 1;   /*!< [1..1] PFD1                                                               */
+            __IOM uint32_t PFD0 : 1;   /*!< [0..0] PFD0                                                               */
+#else
             __IOM uint32_t PFD0 : 1;   /*!< [0..0] PFD0                                                               */
             __IOM uint32_t PFD1 : 1;   /*!< [1..1] PFD1                                                               */
             uint32_t            : 30;
+#endif
         } CAMID0_b;
     };
     __IM uint32_t RESERVED13;
@@ -740,6 +1079,15 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 26;
+            __IOM uint32_t PPFS5 : 1;  /*!< [5..5] PPFS5                                                              */
+            __IOM uint32_t PPFS4 : 1;  /*!< [4..4] PPFS4                                                              */
+            __IOM uint32_t PPFS3 : 1;  /*!< [3..3] PPFS3                                                              */
+            __IOM uint32_t PPFS2 : 1;  /*!< [2..2] PPFS2                                                              */
+            __IOM uint32_t PPFS1 : 1;  /*!< [1..1] PPFS1                                                              */
+            __IOM uint32_t PPFS0 : 1;  /*!< [0..0] PPFS0                                                              */
+#else
             __IOM uint32_t PPFS0 : 1;  /*!< [0..0] PPFS0                                                              */
             __IOM uint32_t PPFS1 : 1;  /*!< [1..1] PPFS1                                                              */
             __IOM uint32_t PPFS2 : 1;  /*!< [2..2] PPFS2                                                              */
@@ -747,6 +1095,7 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             __IOM uint32_t PPFS4 : 1;  /*!< [4..4] PPFS4                                                              */
             __IOM uint32_t PPFS5 : 1;  /*!< [5..5] PPFS5                                                              */
             uint32_t             : 26;
+#endif
         } CAMIS1_b;
     };
 
@@ -757,6 +1106,15 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 26;
+            __IOM uint32_t PPFE5 : 1;  /*!< [5..5] PPFE5                                                              */
+            __IOM uint32_t PPFE4 : 1;  /*!< [4..4] PPFE4                                                              */
+            __IOM uint32_t PPFE3 : 1;  /*!< [3..3] PPFE3                                                              */
+            __IOM uint32_t PPFE2 : 1;  /*!< [2..2] PPFE2                                                              */
+            __IOM uint32_t PPFE1 : 1;  /*!< [1..1] PPFE1                                                              */
+            __IOM uint32_t PPFE0 : 1;  /*!< [0..0] PPFE0                                                              */
+#else
             __IOM uint32_t PPFE0 : 1;  /*!< [0..0] PPFE0                                                              */
             __IOM uint32_t PPFE1 : 1;  /*!< [1..1] PPFE1                                                              */
             __IOM uint32_t PPFE2 : 1;  /*!< [2..2] PPFE2                                                              */
@@ -764,6 +1122,7 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             __IOM uint32_t PPFE4 : 1;  /*!< [4..4] PPFE4                                                              */
             __IOM uint32_t PPFE5 : 1;  /*!< [5..5] PPFE5                                                              */
             uint32_t             : 26;
+#endif
         } CAMIE1_b;
     };
 
@@ -774,6 +1133,15 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 26;
+            __IOM uint32_t PPFD5 : 1;  /*!< [5..5] PPFD5                                                              */
+            __IOM uint32_t PPFD4 : 1;  /*!< [4..4] PPFD4                                                              */
+            __IOM uint32_t PPFD3 : 1;  /*!< [3..3] PPFD3                                                              */
+            __IOM uint32_t PPFD2 : 1;  /*!< [2..2] PPFD2                                                              */
+            __IOM uint32_t PPFD1 : 1;  /*!< [1..1] PPFD1                                                              */
+            __IOM uint32_t PPFD0 : 1;  /*!< [0..0] PPFD0                                                              */
+#else
             __IOM uint32_t PPFD0 : 1;  /*!< [0..0] PPFD0                                                              */
             __IOM uint32_t PPFD1 : 1;  /*!< [1..1] PPFD1                                                              */
             __IOM uint32_t PPFD2 : 1;  /*!< [2..2] PPFD2                                                              */
@@ -781,6 +1149,7 @@ typedef struct                         /*!< (@ 0x874C9000) R_COMA Structure     
             __IOM uint32_t PPFD4 : 1;  /*!< [4..4] PPFD4                                                              */
             __IOM uint32_t PPFD5 : 1;  /*!< [5..5] PPFD5                                                              */
             uint32_t             : 26;
+#endif
         } CAMID1_b;
     };
 } R_COMA_Type;                         /*!< Size = 1116 (0x45c)                                                       */

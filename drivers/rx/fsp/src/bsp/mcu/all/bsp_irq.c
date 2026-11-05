@@ -14,6 +14,10 @@
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+#if BSP_PZ_SECURE_BUILD
+ #define BSP_ICU0SAR_REGISTER_NUM     8
+ #define BSP_ICU0SAR_REGISTER_SIZE    32
+#endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -26,6 +30,11 @@ uint32_t g_current_isr_number;
 
 /* This table is used to store the context in the ISR. */
 void * gp_renesas_isr_context[BSP_ICU_VECTOR_MAX_ENTRIES];
+#if defined(__ICCRX__)
+extern const fsp_vector_t g_vector_table[];
+#else
+extern void * g_vector_table[];
+#endif
 
 /***********************************************************************************************************************
  * Private global variables and functions
@@ -101,7 +110,7 @@ uint32_t R_BSP_GetCurrentIpl (void)
     __GET_PSW(current_psw);
 
     /* Return IPL value. */
-    return (current_psw >> BSP_CPU_PSW_IPL_OFFSET) & 0xF;
+    return (current_psw >> BSP_CPU_PSW_IPL_OFFSET) & BSP_FEATURE_PSW_IPL_MASK;
 }
 
 /*******************************************************************************************************************//**
@@ -118,9 +127,9 @@ void R_BSP_SetIpl (uint32_t interrupt_mask_level)
     /* Get PSW register value. */
     __GET_PSW(current_psw);
 
-    current_psw = current_psw & ~((uint32_t) 0xF << BSP_CPU_PSW_IPL_OFFSET);
+    current_psw = current_psw & ~((uint32_t) BSP_FEATURE_PSW_IPL_MASK << BSP_CPU_PSW_IPL_OFFSET);
 
-    current_psw = current_psw | ((interrupt_mask_level & 0xF) << BSP_CPU_PSW_IPL_OFFSET);
+    current_psw = current_psw | ((interrupt_mask_level & BSP_FEATURE_PSW_IPL_MASK) << BSP_CPU_PSW_IPL_OFFSET);
 
     /* Set the variable to PSW. */
     __SET_PSW(current_psw);
@@ -321,6 +330,11 @@ void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority, void * p_contex
  **********************************************************************************************************************/
 void bsp_irq_cfg (void)
 {
+#if BSP_PZ_SECURE_BUILD
+    uint32_t   icu0sar_register[BSP_ICU0SAR_REGISTER_NUM] = {0};
+    uint32_t * p_icu0sar = (uint32_t *) &R_CPSCU->ICU0SAR0;
+#endif
+
     /* Enable selectable interrupts */
     bsp_selectable_irq_cfg();
 
@@ -328,6 +342,34 @@ void bsp_irq_cfg (void)
     bsp_group_irq_cfg();
 
     g_current_isr_number = BSP_IRQ_DISABLED;
+#if BSP_PZ_SECURE_BUILD
+    for (uint8_t irq = 0; irq < BSP_ICU_VECTOR_MAX_ENTRIES - 1; irq++)
+    {
+        /* Set as Secure if a valid handler is registered in Secure vector or Secure group IRQ. */
+        if ((g_vector_table[irq] != Reserved_Isr) && (g_vector_table[irq] != NULL))
+        {
+            icu0sar_register[irq / BSP_ICU0SAR_REGISTER_SIZE] |= (0x1UL << (irq % BSP_ICU0SAR_REGISTER_SIZE));
+
+            /* If IPR is different bit, also set this as Secure attribute. */
+            uint8_t ipr = bsp_get_interrupt_priority(irq);
+            if (ipr != irq)
+            {
+                icu0sar_register[ipr / BSP_ICU0SAR_REGISTER_SIZE] |= (0x1UL << (ipr % BSP_ICU0SAR_REGISTER_SIZE));
+            }
+        }
+    }
+
+    /* Disable PRCR for SARs. */
+    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_SAR);
+    for (uint8_t i = 0; i < BSP_ICU0SAR_REGISTER_NUM; i++)
+    {
+        *p_icu0sar = ~icu0sar_register[i];
+        p_icu0sar += 1;
+    }
+
+    /* Reenable PRCR for SARs. */
+    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_SAR);
+#endif
 
     /* Enable interrupts */
     __SETPSW_I();

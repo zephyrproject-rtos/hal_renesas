@@ -1,4 +1,9 @@
-/* generated configuration header file - do not edit */
+/*
+ * Copyright (c) 2020-2026 Renesas Electronics Corporation and/or its affiliates
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #ifndef R_IOPORT_CFG_H_
 #define R_IOPORT_CFG_H_
 #ifdef __cplusplus

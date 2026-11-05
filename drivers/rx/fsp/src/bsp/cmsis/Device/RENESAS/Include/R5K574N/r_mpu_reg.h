@@ -27,17 +27,15 @@ typedef struct
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint32_t RSPN : 27;  /*!< [31..5] Area start page number bit Area start page number information
-                                        *   used for area determination                                               */
-            uint32_t           : 2;
-            __IOM uint32_t ICA : 1;    /*!< [2..2] Instruction cache attribute setting bit                            */
-            __IOM uint32_t DCA : 2;    /*!< [1..0] Data cache attribute setting bit                                   */
-#else
-            __IOM uint32_t DCA  : 2;   /*!< [1..0] Data cache attribute setting bit                                   */
-            __IOM uint32_t ICA  : 1;   /*!< [2..2] Instruction cache attribute setting bit                            */
+            __IOM uint32_t RSPN : 27;  /*!< [31..5] Region Start Page Number                                          */
             uint32_t            : 2;
-            __IOM uint32_t RSPN : 27;  /*!< [31..5] Area start page number bit Area start page number information
-                                        *   used for area determination                                               */
+            __IOM uint32_t ICA  : 1;   /*!< [2..2] Instruction Cache Attribute Setting                                */
+            __IOM uint32_t DCA  : 2;   /*!< [1..0] Data Cache Attribute Setting                                       */
+#else
+            __IOM uint32_t DCA  : 2;   /*!< [1..0] Data Cache Attribute Setting                                       */
+            __IOM uint32_t ICA  : 1;   /*!< [2..2] Instruction Cache Attribute Setting                                */
+            uint32_t            : 2;
+            __IOM uint32_t RSPN : 27;  /*!< [31..5] Region Start Page Number                                          */
 #endif
         } ST_b;
     };
@@ -49,17 +47,15 @@ typedef struct
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
-            __IOM uint32_t REPN : 27;  /*!< [31..5] Area end page number bit Area end page number information
-                                        *   used for area determination                                               */
-            uint32_t           : 1;
-            __IOM uint32_t UAC : 3;    /*!< [3..1] Access control bit in user mode                                    */
-            __IOM uint32_t V   : 1;    /*!< [0..0] Valid bit                                                          */
-#else
-            __IOM uint32_t V    : 1;   /*!< [0..0] Valid bit                                                          */
-            __IOM uint32_t UAC  : 3;   /*!< [3..1] Access control bit in user mode                                    */
+            __IOM uint32_t REPN : 27;  /*!< [31..5] Region-End Page Number                                            */
             uint32_t            : 1;
-            __IOM uint32_t REPN : 27;  /*!< [31..5] Area end page number bit Area end page number information
-                                        *   used for area determination                                               */
+            __IOM uint32_t UAC  : 3;   /*!< [3..1] Access Control in User Mode                                        */
+            __IOM uint32_t V    : 1;   /*!< [0..0] Valid                                                              */
+#else
+            __IOM uint32_t V    : 1;   /*!< [0..0] Valid                                                              */
+            __IOM uint32_t UAC  : 3;   /*!< [3..1] Access Control in User Mode                                        */
+            uint32_t            : 1;
+            __IOM uint32_t REPN : 27;  /*!< [31..5] Region-End Page Number                                            */
 #endif
         } EN_b;
     };
@@ -80,7 +76,7 @@ typedef struct
 /* =========================================================================================================================== */
 
 /**
- * @brief Renesas Memory Protection Unit (R_MPU)
+ * @brief CPU Memory Protection Unit (R_MPU)
  */
 
 typedef struct                         /*!< (@ 0x81000800) R_MPU Structure                                            */
@@ -90,15 +86,15 @@ typedef struct                         /*!< (@ 0x81000800) R_MPU Structure      
 
     union
     {
-        __IOM uint32_t MPEN;           /*!< (@ 0x00000100) Memory protection function enable register                 */
+        __IOM uint32_t MPEN;           /*!< (@ 0x00000100) Memory-Protection Enable Register                          */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t            : 31;
-            __IOM uint32_t MPEN : 1;   /*!< [0..0] Memory protection function enable bit                              */
+            __IOM uint32_t MPEN : 1;   /*!< [0..0] Memory-Protection Enable                                           */
 #else
-            __IOM uint32_t MPEN : 1;   /*!< [0..0] Memory protection function enable bit                              */
+            __IOM uint32_t MPEN : 1;   /*!< [0..0] Memory-Protection Enable                                           */
             uint32_t            : 31;
 #endif
         } MPEN_b;
@@ -106,23 +102,23 @@ typedef struct                         /*!< (@ 0x81000800) R_MPU Structure      
 
     union
     {
-        __IOM uint32_t MPBAC;          /*!< (@ 0x00000104) Background access control register                         */
+        __IOM uint32_t MPBAC;          /*!< (@ 0x00000104) Background Access Control Register                         */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t            : 13;
-            __IOM uint32_t ICA  : 1;   /*!< [18..18] Instruction cache attribute setting bit                          */
-            __IOM uint32_t DCA  : 2;   /*!< [17..16] Data cache attribute setting bit                                 */
+            __IOM uint32_t ICA  : 1;   /*!< [18..18] Instruction Cache Attribute Setting                              */
+            __IOM uint32_t DCA  : 2;   /*!< [17..16] Data Cache Attribute Setting                                     */
             uint32_t            : 12;
-            __IOM uint32_t UBAC : 3;   /*!< [3..1] These bits are read as 0. The write value should be 0              */
+            __IOM uint32_t UBAC : 3;   /*!< [3..1] Background Access Control in User Mode                             */
             uint32_t            : 1;
 #else
             uint32_t            : 1;
-            __IOM uint32_t UBAC : 3;   /*!< [3..1] These bits are read as 0. The write value should be 0              */
+            __IOM uint32_t UBAC : 3;   /*!< [3..1] Background Access Control in User Mode                             */
             uint32_t            : 12;
-            __IOM uint32_t DCA  : 2;   /*!< [17..16] Data cache attribute setting bit                                 */
-            __IOM uint32_t ICA  : 1;   /*!< [18..18] Instruction cache attribute setting bit                          */
+            __IOM uint32_t DCA  : 2;   /*!< [17..16] Data Cache Attribute Setting                                     */
+            __IOM uint32_t ICA  : 1;   /*!< [18..18] Instruction Cache Attribute Setting                              */
             uint32_t            : 13;
 #endif
         } MPBAC_b;
@@ -130,15 +126,15 @@ typedef struct                         /*!< (@ 0x81000800) R_MPU Structure      
 
     union
     {
-        __IOM uint32_t MPECLR;         /*!< (@ 0x00000108) Memory protection error status clear register              */
+        __IOM uint32_t MPECLR;         /*!< (@ 0x00000108) Memory-Protection Error Status Clear Register              */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t           : 31;
-            __IOM uint32_t CLR : 1;    /*!< [0..0] Error status clear bit                                             */
+            __IOM uint32_t CLR : 1;    /*!< [0..0] Error Status Clear                                                 */
 #else
-            __IOM uint32_t CLR : 1;    /*!< [0..0] Error status clear bit                                             */
+            __IOM uint32_t CLR : 1;    /*!< [0..0] Error Status Clear                                                 */
             uint32_t           : 31;
 #endif
         } MPECLR_b;
@@ -146,19 +142,19 @@ typedef struct                         /*!< (@ 0x81000800) R_MPU Structure      
 
     union
     {
-        __IOM uint32_t MPESTS;         /*!< (@ 0x0000010C) Memory protection error status register                    */
+        __IOM uint32_t MPESTS;         /*!< (@ 0x0000010C) Memory-Protection Error Status Register                    */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t            : 29;
-            __IM uint32_t DRW   : 1;   /*!< [2..2] Data read/write bit                                                */
-            __IM uint32_t DMPER : 1;   /*!< [1..1] Data memory protection error occurrence bit                        */
-            __IM uint32_t IMPER : 1;   /*!< [0..0] Instruction memory protection error occurrence bit                 */
+            __IM uint32_t DRW   : 1;   /*!< [2..2] Data Read/Write Flag                                               */
+            __IM uint32_t DMPER : 1;   /*!< [1..1] Data Memory-Protection Error Generation Flag                       */
+            __IM uint32_t IMPER : 1;   /*!< [0..0] Instruction Memory-Protection Error Generation Flag                */
 #else
-            __IM uint32_t IMPER : 1;   /*!< [0..0] Instruction memory protection error occurrence bit                 */
-            __IM uint32_t DMPER : 1;   /*!< [1..1] Data memory protection error occurrence bit                        */
-            __IM uint32_t DRW   : 1;   /*!< [2..2] Data read/write bit                                                */
+            __IM uint32_t IMPER : 1;   /*!< [0..0] Instruction Memory-Protection Error Generation Flag                */
+            __IM uint32_t DMPER : 1;   /*!< [1..1] Data Memory-Protection Error Generation Flag                       */
+            __IM uint32_t DRW   : 1;   /*!< [2..2] Data Read/Write Flag                                               */
             uint32_t            : 29;
 #endif
         } MPESTS_b;
@@ -167,36 +163,36 @@ typedef struct                         /*!< (@ 0x81000800) R_MPU Structure      
 
     union
     {
-        __IM uint32_t MPDEA;           /*!< (@ 0x00000114) Memory protection data error address register              */
+        __IM uint32_t MPDEA;           /*!< (@ 0x00000114) Data Memory-Protection Error Address Register              */
 
         struct
         {
-            __IM uint32_t DEA : 32;    /*!< [31..0] Data memory protection error address bit                          */
+            __IM uint32_t DEA : 32;    /*!< [31..0] Data Memory-Protection Error Address                              */
         } MPDEA_b;
     };
     __IM uint32_t RESERVED2[2];
 
     union
     {
-        __IOM uint32_t MPSA;           /*!< (@ 0x00000120) Area search address register                               */
+        __IOM uint32_t MPSA;           /*!< (@ 0x00000120) Region Search Address Register                             */
 
         struct
         {
-            __IOM uint32_t SA : 32;    /*!< [31..0] Search area address bit                                           */
+            __IOM uint32_t SA : 32;    /*!< [31..0] Region Search Address                                             */
         } MPSA_b;
     };
 
     union
     {
-        __IOM uint16_t MPOPS;          /*!< (@ 0x00000124) Area aearch operation register                             */
+        __IOM uint16_t MPOPS;          /*!< (@ 0x00000124) Region Search Operation Register                           */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint16_t         : 15;
-            __IOM uint16_t S : 1;      /*!< [0..0] Search area operation bit                                          */
+            __IOM uint16_t S : 1;      /*!< [0..0] Regions Search Operation                                           */
 #else
-            __IOM uint16_t S : 1;      /*!< [0..0] Search area operation bit                                          */
+            __IOM uint16_t S : 1;      /*!< [0..0] Regions Search Operation                                           */
             uint16_t         : 15;
 #endif
         } MPOPS_b;
@@ -204,15 +200,15 @@ typedef struct                         /*!< (@ 0x81000800) R_MPU Structure      
 
     union
     {
-        __IOM uint16_t MPOPI;          /*!< (@ 0x00000126) Memory protection operation invalidate register            */
+        __IOM uint16_t MPOPI;          /*!< (@ 0x00000126) Region Invalidation Operation Register                     */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint16_t           : 15;
-            __IOM uint16_t INV : 1;    /*!< [0..0] Invalidation area activation bit                                   */
+            __IOM uint16_t INV : 1;    /*!< [0..0] Region Invalidation Start                                          */
 #else
-            __IOM uint16_t INV : 1;    /*!< [0..0] Invalidation area activation bit                                   */
+            __IOM uint16_t INV : 1;    /*!< [0..0] Region Invalidation Start                                          */
             uint16_t           : 15;
 #endif
         } MPOPI_b;
@@ -220,21 +216,21 @@ typedef struct                         /*!< (@ 0x81000800) R_MPU Structure      
 
     union
     {
-        __IOM uint32_t MHITI;          /*!< (@ 0x00000128) Instruction hit area register                              */
+        __IOM uint32_t MHITI;          /*!< (@ 0x00000128) Instruction-Hit Region Register                            */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t            : 8;
-            __IM uint32_t HITI  : 8;   /*!< [23..16] Instruction hit area bit                                         */
+            __IM uint32_t HITI  : 8;   /*!< [23..16] Instruction-Hit Region                                           */
             uint32_t            : 12;
-            __IM uint32_t UHACI : 3;   /*!< [3..1] Instruction hit area access control bit in user mode               */
+            __IM uint32_t UHACI : 3;   /*!< [3..1] Instruction-Hit Region Access Control in User Mode                 */
             uint32_t            : 1;
 #else
             uint32_t            : 1;
-            __IM uint32_t UHACI : 3;   /*!< [3..1] Instruction hit area access control bit in user mode               */
+            __IM uint32_t UHACI : 3;   /*!< [3..1] Instruction-Hit Region Access Control in User Mode                 */
             uint32_t            : 12;
-            __IM uint32_t HITI  : 8;   /*!< [23..16] Instruction hit area bit                                         */
+            __IM uint32_t HITI  : 8;   /*!< [23..16] Instruction-Hit Region                                           */
             uint32_t            : 8;
 #endif
         } MHITI_b;
@@ -242,21 +238,21 @@ typedef struct                         /*!< (@ 0x81000800) R_MPU Structure      
 
     union
     {
-        __IOM uint32_t MHITD;          /*!< (@ 0x0000012C) Memory hit data register                                   */
+        __IOM uint32_t MHITD;          /*!< (@ 0x0000012C) Data-Hit Region Register                                   */
 
         struct
         {
 #if defined(__BIG) && defined(__GNUC__)
             uint32_t            : 8;
-            __IM uint32_t HITD  : 8;   /*!< [23..16] Data hit area bit                                                */
+            __IM uint32_t HITD  : 8;   /*!< [23..16] Data-Hit Region                                                  */
             uint32_t            : 12;
-            __IM uint32_t UHACD : 3;   /*!< [3..1] Data hit area access control bit in user mode                      */
+            __IM uint32_t UHACD : 3;   /*!< [3..1] Data-Hit Region Access Control in User Mode                        */
             uint32_t            : 1;
 #else
             uint32_t            : 1;
-            __IM uint32_t UHACD : 3;   /*!< [3..1] Data hit area access control bit in user mode                      */
+            __IM uint32_t UHACD : 3;   /*!< [3..1] Data-Hit Region Access Control in User Mode                        */
             uint32_t            : 12;
-            __IM uint32_t HITD  : 8;   /*!< [23..16] Data hit area bit                                                */
+            __IM uint32_t HITD  : 8;   /*!< [23..16] Data-Hit Region                                                  */
             uint32_t            : 8;
 #endif
         } MHITD_b;

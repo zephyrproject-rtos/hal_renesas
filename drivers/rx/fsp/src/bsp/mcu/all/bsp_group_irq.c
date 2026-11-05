@@ -27,35 +27,71 @@
  **********************************************************************************************************************/
 const icu_event_t g_group_irq_table[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS] =
 {
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
+#if BSP_PZ_NONSECURE_BUILD
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
+    ICU_EVENT_FIXED_ICU_GROUPIL0_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
+    ICU_EVENT_FIXED_ICU_GROUPBL0_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
+    ICU_EVENT_FIXED_ICU_GROUPBL1_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
+    ICU_EVENT_FIXED_ICU_GROUPAL0_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
+    ICU_EVENT_FIXED_ICU_GROUPAL1_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
+    ICU_EVENT_FIXED_ICU_GROUPAL2_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
+    ICU_EVENT_FIXED_ICU_GROUPAL3_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
+    ICU_EVENT_FIXED_ICU_GROUPAL4_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
+    ICU_EVENT_FIXED_ICU_GROUPAL5_NS,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
+    ICU_EVENT_FIXED_ICU_GROUPAL6_NS,
+ #endif
+#else
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
     ICU_EVENT_FIXED_ICU_GROUPIL0,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL1
+    ICU_EVENT_FIXED_ICU_GROUPIL1,
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
     ICU_EVENT_FIXED_ICU_GROUPBL0,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
     ICU_EVENT_FIXED_ICU_GROUPBL1,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
     ICU_EVENT_FIXED_ICU_GROUPAL0,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
     ICU_EVENT_FIXED_ICU_GROUPAL1,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
     ICU_EVENT_FIXED_ICU_GROUPAL2,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
     ICU_EVENT_FIXED_ICU_GROUPAL3,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
     ICU_EVENT_FIXED_ICU_GROUPAL4,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
     ICU_EVENT_FIXED_ICU_GROUPAL5,
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
     ICU_EVENT_FIXED_ICU_GROUPAL6,
+ #endif
 #endif
 
 #if BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ
@@ -217,7 +253,16 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For IL0 */
         case BSP_GRP_IRQ_IL0:
         {
-            ret = R_ICU->GENIL0 & group_irq_bitmask;
+            ret = R_ICU->GENIL0_S & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL1
+
+        /* For IL1 */
+        case BSP_GRP_IRQ_IL1:
+        {
+            ret = R_ICU->GENIL1_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -226,7 +271,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For BL0 */
         case BSP_GRP_IRQ_BL0:
         {
-            ret = R_ICU->GENBL0 & group_irq_bitmask;
+            ret = R_ICU->GENBL0_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -235,7 +280,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For BL1 */
         case BSP_GRP_IRQ_BL1:
         {
-            ret = R_ICU->GENBL1 & group_irq_bitmask;
+            ret = R_ICU->GENBL1_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -244,7 +289,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For AL0 */
         case BSP_GRP_IRQ_AL0:
         {
-            ret = R_ICU->GENAL0 & group_irq_bitmask;
+            ret = R_ICU->GENAL0_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -253,7 +298,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For AL1 */
         case BSP_GRP_IRQ_AL1:
         {
-            ret = R_ICU->GENAL1 & group_irq_bitmask;
+            ret = R_ICU->GENAL1_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -262,7 +307,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For AL2 */
         case BSP_GRP_IRQ_AL2:
         {
-            ret = R_ICU->GENAL2 & group_irq_bitmask;
+            ret = R_ICU->GENAL2_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -271,7 +316,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For AL3 */
         case BSP_GRP_IRQ_AL3:
         {
-            ret = R_ICU->GENAL3 & group_irq_bitmask;
+            ret = R_ICU->GENAL3_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -280,7 +325,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For AL4 */
         case BSP_GRP_IRQ_AL4:
         {
-            ret = R_ICU->GENAL4 & group_irq_bitmask;
+            ret = R_ICU->GENAL4_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -289,7 +334,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For AL5 */
         case BSP_GRP_IRQ_AL5:
         {
-            ret = R_ICU->GENAL5 & group_irq_bitmask;
+            ret = R_ICU->GENAL5_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -298,7 +343,7 @@ uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
         /* For AL6 */
         case BSP_GRP_IRQ_AL6:
         {
-            ret = R_ICU->GENAL6 & group_irq_bitmask;
+            ret = R_ICU->GENAL6_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -329,8 +374,18 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For IL0 */
         case BSP_GRP_IRQ_IL0:
         {
-            status  = R_ICU->GRPIL0;
-            status &= R_ICU->GENIL0;
+            status  = R_ICU->GRPIL0_S;
+            status &= R_ICU->GENIL0_S;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL1
+
+        /* For IL1 */
+        case BSP_GRP_IRQ_IL1:
+        {
+            status  = R_ICU->GRPIL1_S;
+            status &= R_ICU->GENIL1_S;
             break;
         }
  #endif
@@ -339,8 +394,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For BL0 */
         case BSP_GRP_IRQ_BL0:
         {
-            status  = R_ICU->GRPBL0;
-            status &= R_ICU->GENBL0;
+            status  = R_ICU->GRPBL0_S;
+            status &= R_ICU->GENBL0_S;
             break;
         }
  #endif
@@ -349,8 +404,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For BL1 */
         case BSP_GRP_IRQ_BL1:
         {
-            status  = R_ICU->GRPBL1;
-            status &= R_ICU->GENBL1;
+            status  = R_ICU->GRPBL1_S;
+            status &= R_ICU->GENBL1_S;
             break;
         }
  #endif
@@ -359,8 +414,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For AL0 */
         case BSP_GRP_IRQ_AL0:
         {
-            status  = R_ICU->GRPAL0;
-            status &= R_ICU->GENAL0;
+            status  = R_ICU->GRPAL0_S;
+            status &= R_ICU->GENAL0_S;
             break;
         }
  #endif
@@ -369,8 +424,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For AL1 */
         case BSP_GRP_IRQ_AL1:
         {
-            status  = R_ICU->GRPAL1;
-            status &= R_ICU->GENAL1;
+            status  = R_ICU->GRPAL1_S;
+            status &= R_ICU->GENAL1_S;
             break;
         }
  #endif
@@ -379,8 +434,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For AL2 */
         case BSP_GRP_IRQ_AL2:
         {
-            status  = R_ICU->GRPAL2;
-            status &= R_ICU->GENAL2;
+            status  = R_ICU->GRPAL2_S;
+            status &= R_ICU->GENAL2_S;
             break;
         }
  #endif
@@ -389,8 +444,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For AL3 */
         case BSP_GRP_IRQ_AL3:
         {
-            status  = R_ICU->GRPAL3;
-            status &= R_ICU->GENAL3;
+            status  = R_ICU->GRPAL3_S;
+            status &= R_ICU->GENAL3_S;
             break;
         }
  #endif
@@ -399,8 +454,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For AL4 */
         case BSP_GRP_IRQ_AL4:
         {
-            status  = R_ICU->GRPAL4;
-            status &= R_ICU->GENAL4;
+            status  = R_ICU->GRPAL4_S;
+            status &= R_ICU->GENAL4_S;
             break;
         }
  #endif
@@ -409,8 +464,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For AL5 */
         case BSP_GRP_IRQ_AL5:
         {
-            status  = R_ICU->GRPAL5;
-            status &= R_ICU->GENAL5;
+            status  = R_ICU->GRPAL5_S;
+            status &= R_ICU->GENAL5_S;
             break;
         }
  #endif
@@ -419,8 +474,8 @@ uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
         /* For AL6 */
         case BSP_GRP_IRQ_AL6:
         {
-            status  = R_ICU->GRPAL6;
-            status &= R_ICU->GENAL6;
+            status  = R_ICU->GRPAL6_S;
+            status &= R_ICU->GENAL6_S;
             break;
         }
  #endif
@@ -446,7 +501,16 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For IL0 */
         case BSP_GRP_IRQ_IL0:
         {
-            cfg = R_ICU->GENIL0;
+            cfg = R_ICU->GENIL0_S;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL1
+
+        /* For IL1 */
+        case BSP_GRP_IRQ_IL1:
+        {
+            cfg = R_ICU->GENIL1_S;
             break;
         }
  #endif
@@ -455,7 +519,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For BL0 */
         case BSP_GRP_IRQ_BL0:
         {
-            cfg = R_ICU->GENBL0;
+            cfg = R_ICU->GENBL0_S;
             break;
         }
  #endif
@@ -464,7 +528,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For BL1 */
         case BSP_GRP_IRQ_BL1:
         {
-            cfg = R_ICU->GENBL1;
+            cfg = R_ICU->GENBL1_S;
             break;
         }
  #endif
@@ -473,7 +537,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For AL0 */
         case BSP_GRP_IRQ_AL0:
         {
-            cfg = R_ICU->GENAL0;
+            cfg = R_ICU->GENAL0_S;
             break;
         }
  #endif
@@ -482,7 +546,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For AL1 */
         case BSP_GRP_IRQ_AL1:
         {
-            cfg = R_ICU->GENAL1;
+            cfg = R_ICU->GENAL1_S;
             break;
         }
  #endif
@@ -491,7 +555,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For AL2 */
         case BSP_GRP_IRQ_AL2:
         {
-            cfg = R_ICU->GENAL2;
+            cfg = R_ICU->GENAL2_S;
             break;
         }
  #endif
@@ -500,7 +564,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For AL3 */
         case BSP_GRP_IRQ_AL3:
         {
-            cfg = R_ICU->GENAL3;
+            cfg = R_ICU->GENAL3_S;
             break;
         }
  #endif
@@ -509,7 +573,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For AL4 */
         case BSP_GRP_IRQ_AL4:
         {
-            cfg = R_ICU->GENAL4;
+            cfg = R_ICU->GENAL4_S;
             break;
         }
  #endif
@@ -518,7 +582,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For AL5 */
         case BSP_GRP_IRQ_AL5:
         {
-            cfg = R_ICU->GENAL5;
+            cfg = R_ICU->GENAL5_S;
             break;
         }
  #endif
@@ -527,7 +591,7 @@ uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
         /* For AL6 */
         case BSP_GRP_IRQ_AL6:
         {
-            cfg = R_ICU->GENAL6;
+            cfg = R_ICU->GENAL6_S;
             break;
         }
  #endif
@@ -550,6 +614,15 @@ void R_BSP_GroupIrqStatusClear (uint8_t irq, uint8_t factor)
 
         /* For IL0 */
         case BSP_GRP_IRQ_IL0:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL1
+
+        /* For IL1 */
+        case BSP_GRP_IRQ_IL1:
         {
             FSP_PARAMETER_NOT_USED(factor);
             break;
@@ -656,7 +729,16 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For IL0 */
         case BSP_GRP_IRQ_IL0:
         {
-            R_ICU->GENIL0 = R_ICU->GENIL0 | group_irq_bitmask;
+            R_ICU->GENIL0_S = R_ICU->GENIL0_S | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL1
+
+        /* For IL1 */
+        case BSP_GRP_IRQ_IL1:
+        {
+            R_ICU->GENIL1_S = R_ICU->GENIL1_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -665,7 +747,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For BL0 */
         case BSP_GRP_IRQ_BL0:
         {
-            R_ICU->GENBL0 = R_ICU->GENBL0 | group_irq_bitmask;
+            R_ICU->GENBL0_S = R_ICU->GENBL0_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -674,7 +756,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For BL1 */
         case BSP_GRP_IRQ_BL1:
         {
-            R_ICU->GENBL1 = R_ICU->GENBL1 | group_irq_bitmask;
+            R_ICU->GENBL1_S = R_ICU->GENBL1_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -683,7 +765,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For AL0 */
         case BSP_GRP_IRQ_AL0:
         {
-            R_ICU->GENAL0 = R_ICU->GENAL0 | group_irq_bitmask;
+            R_ICU->GENAL0_S = R_ICU->GENAL0_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -692,7 +774,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For AL1 */
         case BSP_GRP_IRQ_AL1:
         {
-            R_ICU->GENAL1 = R_ICU->GENAL1 | group_irq_bitmask;
+            R_ICU->GENAL1_S = R_ICU->GENAL1_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -701,7 +783,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For AL2 */
         case BSP_GRP_IRQ_AL2:
         {
-            R_ICU->GENAL2 = R_ICU->GENAL2 | group_irq_bitmask;
+            R_ICU->GENAL2_S = R_ICU->GENAL2_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -710,7 +792,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For AL3 */
         case BSP_GRP_IRQ_AL3:
         {
-            R_ICU->GENAL3 = R_ICU->GENAL3 | group_irq_bitmask;
+            R_ICU->GENAL3_S = R_ICU->GENAL3_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -719,7 +801,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For AL4 */
         case BSP_GRP_IRQ_AL4:
         {
-            R_ICU->GENAL4 = R_ICU->GENAL4 | group_irq_bitmask;
+            R_ICU->GENAL4_S = R_ICU->GENAL4_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -728,7 +810,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For AL5 */
         case BSP_GRP_IRQ_AL5:
         {
-            R_ICU->GENAL5 = R_ICU->GENAL5 | group_irq_bitmask;
+            R_ICU->GENAL5_S = R_ICU->GENAL5_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -737,7 +819,7 @@ void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
         /* For AL6 */
         case BSP_GRP_IRQ_AL6:
         {
-            R_ICU->GENAL6 = R_ICU->GENAL6 | group_irq_bitmask;
+            R_ICU->GENAL6_S = R_ICU->GENAL6_S | group_irq_bitmask;
             break;
         }
  #endif
@@ -759,7 +841,16 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For IL0 */
         case BSP_GRP_IRQ_IL0:
         {
-            R_ICU->GENIL0 = R_ICU->GENIL0 & group_irq_bitmask;
+            R_ICU->GENIL0_S = R_ICU->GENIL0_S & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL1
+
+        /* For IL1 */
+        case BSP_GRP_IRQ_IL1:
+        {
+            R_ICU->GENIL1_S = R_ICU->GENIL1_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -768,7 +859,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For BL0 */
         case BSP_GRP_IRQ_BL0:
         {
-            R_ICU->GENBL0 = R_ICU->GENBL0 & group_irq_bitmask;
+            R_ICU->GENBL0_S = R_ICU->GENBL0_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -777,7 +868,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For BL1 */
         case BSP_GRP_IRQ_BL1:
         {
-            R_ICU->GENBL1 = R_ICU->GENBL1 & group_irq_bitmask;
+            R_ICU->GENBL1_S = R_ICU->GENBL1_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -786,7 +877,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For AL0 */
         case BSP_GRP_IRQ_AL0:
         {
-            R_ICU->GENAL0 = R_ICU->GENAL0 & group_irq_bitmask;
+            R_ICU->GENAL0_S = R_ICU->GENAL0_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -795,7 +886,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For AL1 */
         case BSP_GRP_IRQ_AL1:
         {
-            R_ICU->GENAL1 = R_ICU->GENAL1 & group_irq_bitmask;
+            R_ICU->GENAL1_S = R_ICU->GENAL1_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -804,7 +895,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For AL2 */
         case BSP_GRP_IRQ_AL2:
         {
-            R_ICU->GENAL2 = R_ICU->GENAL2 & group_irq_bitmask;
+            R_ICU->GENAL2_S = R_ICU->GENAL2_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -813,7 +904,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For AL3 */
         case BSP_GRP_IRQ_AL3:
         {
-            R_ICU->GENAL3 = R_ICU->GENAL3 & group_irq_bitmask;
+            R_ICU->GENAL3_S = R_ICU->GENAL3_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -822,7 +913,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For AL4 */
         case BSP_GRP_IRQ_AL4:
         {
-            R_ICU->GENAL4 = R_ICU->GENAL4 & group_irq_bitmask;
+            R_ICU->GENAL4_S = R_ICU->GENAL4_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -831,7 +922,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For AL5 */
         case BSP_GRP_IRQ_AL5:
         {
-            R_ICU->GENAL5 = R_ICU->GENAL5 & group_irq_bitmask;
+            R_ICU->GENAL5_S = R_ICU->GENAL5_S & group_irq_bitmask;
             break;
         }
  #endif
@@ -840,7 +931,7 @@ void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
         /* For AL6 */
         case BSP_GRP_IRQ_AL6:
         {
-            R_ICU->GENAL6 = R_ICU->GENAL6 & group_irq_bitmask;
+            R_ICU->GENAL6_S = R_ICU->GENAL6_S & group_irq_bitmask;
             break;
         }
  #endif

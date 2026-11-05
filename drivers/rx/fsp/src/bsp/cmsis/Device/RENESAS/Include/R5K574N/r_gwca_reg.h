@@ -31,8 +31,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 30;
+            __IOM uint32_t OPC : 2;    /*!< [1..0] OPC                                                                */
+#else
             __IOM uint32_t OPC : 2;    /*!< [1..0] OPC                                                                */
             uint32_t           : 30;
+#endif
         } GWMC_b;
     };
 
@@ -42,8 +47,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 30;
+            __IOM uint32_t OPS : 2;    /*!< [1..0] OPS                                                                */
+#else
             __IOM uint32_t OPS : 2;    /*!< [1..0] OPS                                                                */
             uint32_t           : 30;
+#endif
         } GWMS_b;
     };
     __IM uint32_t RESERVED[2];
@@ -55,6 +65,24 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 1;
+            __IOM uint32_t IPVR7 : 3;  /*!< [30..28] IPVR7                                                            */
+            uint32_t             : 1;
+            __IOM uint32_t IPVR6 : 3;  /*!< [26..24] IPVR6                                                            */
+            uint32_t             : 1;
+            __IOM uint32_t IPVR5 : 3;  /*!< [22..20] IPVR5                                                            */
+            uint32_t             : 1;
+            __IOM uint32_t IPVR4 : 3;  /*!< [18..16] IPVR4                                                            */
+            uint32_t             : 1;
+            __IOM uint32_t IPVR3 : 3;  /*!< [14..12] IPVR3                                                            */
+            uint32_t             : 1;
+            __IOM uint32_t IPVR2 : 3;  /*!< [10..8] IPVR2                                                             */
+            uint32_t             : 1;
+            __IOM uint32_t IPVR1 : 3;  /*!< [6..4] IPVR1                                                              */
+            uint32_t             : 1;
+            __IOM uint32_t IPVR0 : 3;  /*!< [2..0] IPVR0                                                              */
+#else
             __IOM uint32_t IPVR0 : 3;  /*!< [2..0] IPVR0                                                              */
             uint32_t             : 1;
             __IOM uint32_t IPVR1 : 3;  /*!< [6..4] IPVR1                                                              */
@@ -71,6 +99,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t             : 1;
             __IOM uint32_t IPVR7 : 3;  /*!< [30..28] IPVR7                                                            */
             uint32_t             : 1;
+#endif
         } GWIRC_b;
     };
 
@@ -81,6 +110,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t RDQSL7 : 1; /*!< [7..7] RDQSL7                                                             */
+            __IOM uint32_t RDQSL6 : 1; /*!< [6..6] RDQSL6                                                             */
+            __IOM uint32_t RDQSL5 : 1; /*!< [5..5] RDQSL5                                                             */
+            __IOM uint32_t RDQSL4 : 1; /*!< [4..4] RDQSL4                                                             */
+            __IOM uint32_t RDQSL3 : 1; /*!< [3..3] RDQSL3                                                             */
+            __IOM uint32_t RDQSL2 : 1; /*!< [2..2] RDQSL2                                                             */
+            __IOM uint32_t RDQSL1 : 1; /*!< [1..1] RDQSL1                                                             */
+            __IOM uint32_t RDQSL0 : 1; /*!< [0..0] RDQSL0                                                             */
+#else
             __IOM uint32_t RDQSL0 : 1; /*!< [0..0] RDQSL0                                                             */
             __IOM uint32_t RDQSL1 : 1; /*!< [1..1] RDQSL1                                                             */
             __IOM uint32_t RDQSL2 : 1; /*!< [2..2] RDQSL2                                                             */
@@ -90,6 +130,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t RDQSL6 : 1; /*!< [6..6] RDQSL6                                                             */
             __IOM uint32_t RDQSL7 : 1; /*!< [7..7] RDQSL7                                                             */
             uint32_t              : 24;
+#endif
         } GWRDQSC_b;
     };
 
@@ -99,6 +140,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 24;
+            __IOM uint32_t RDQD7 : 1;  /*!< [7..7] RDQD7                                                              */
+            __IOM uint32_t RDQD6 : 1;  /*!< [6..6] RDQD6                                                              */
+            __IOM uint32_t RDQD5 : 1;  /*!< [5..5] RDQD5                                                              */
+            __IOM uint32_t RDQD4 : 1;  /*!< [4..4] RDQD4                                                              */
+            __IOM uint32_t RDQD3 : 1;  /*!< [3..3] RDQD3                                                              */
+            __IOM uint32_t RDQD2 : 1;  /*!< [2..2] RDQD2                                                              */
+            __IOM uint32_t RDQD1 : 1;  /*!< [1..1] RDQD1                                                              */
+            __IOM uint32_t RDQD0 : 1;  /*!< [0..0] RDQD0                                                              */
+#else
             __IOM uint32_t RDQD0 : 1;  /*!< [0..0] RDQD0                                                              */
             __IOM uint32_t RDQD1 : 1;  /*!< [1..1] RDQD1                                                              */
             __IOM uint32_t RDQD2 : 1;  /*!< [2..2] RDQD2                                                              */
@@ -108,6 +160,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t RDQD6 : 1;  /*!< [6..6] RDQD6                                                              */
             __IOM uint32_t RDQD7 : 1;  /*!< [7..7] RDQD7                                                              */
             uint32_t             : 24;
+#endif
         } GWRDQC_b;
     };
 
@@ -118,6 +171,16 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t RDQA7 : 4;  /*!< [31..28] RDQA7                                                            */
+            __IOM uint32_t RDQA6 : 4;  /*!< [27..24] RDQA6                                                            */
+            __IOM uint32_t RDQA5 : 4;  /*!< [23..20] RDQA5                                                            */
+            __IOM uint32_t RDQA4 : 4;  /*!< [19..16] RDQA4                                                            */
+            __IOM uint32_t RDQA3 : 4;  /*!< [15..12] RDQA3                                                            */
+            __IOM uint32_t RDQA2 : 4;  /*!< [11..8] RDQA2                                                             */
+            __IOM uint32_t RDQA1 : 4;  /*!< [7..4] RDQA1                                                              */
+            __IOM uint32_t RDQA0 : 4;  /*!< [3..0] RDQA0                                                              */
+#else
             __IOM uint32_t RDQA0 : 4;  /*!< [3..0] RDQA0                                                              */
             __IOM uint32_t RDQA1 : 4;  /*!< [7..4] RDQA1                                                              */
             __IOM uint32_t RDQA2 : 4;  /*!< [11..8] RDQA2                                                             */
@@ -126,6 +189,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t RDQA5 : 4;  /*!< [23..20] RDQA5                                                            */
             __IOM uint32_t RDQA6 : 4;  /*!< [27..24] RDQA6                                                            */
             __IOM uint32_t RDQA7 : 4;  /*!< [31..28] RDQA7                                                            */
+#endif
         } GWRDQAC_b;
     };
 
@@ -135,8 +199,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 31;
+            __IOM uint32_t RCPT : 1;   /*!< [0..0] RCPT                                                               */
+#else
             __IOM uint32_t RCPT : 1;   /*!< [0..0] RCPT                                                               */
             uint32_t            : 31;
+#endif
         } GWRGC_b;
     };
     __IM uint32_t RESERVED1[7];
@@ -148,8 +217,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 16;
+            __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
+#else
             __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
             uint32_t           : 16;
+#endif
         } GWRMFSC0_b;
     };
 
@@ -160,8 +234,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 16;
+            __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
+#else
             __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
             uint32_t           : 16;
+#endif
         } GWRMFSC1_b;
     };
 
@@ -172,8 +251,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 16;
+            __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
+#else
             __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
             uint32_t           : 16;
+#endif
         } GWRMFSC2_b;
     };
 
@@ -184,8 +268,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 16;
+            __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
+#else
             __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
             uint32_t           : 16;
+#endif
         } GWRMFSC3_b;
     };
 
@@ -196,8 +285,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 16;
+            __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
+#else
             __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
             uint32_t           : 16;
+#endif
         } GWRMFSC4_b;
     };
 
@@ -208,8 +302,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 16;
+            __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
+#else
             __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
             uint32_t           : 16;
+#endif
         } GWRMFSC5_b;
     };
 
@@ -220,8 +319,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 16;
+            __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
+#else
             __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
             uint32_t           : 16;
+#endif
         } GWRMFSC6_b;
     };
 
@@ -232,8 +336,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 16;
+            __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
+#else
             __IOM uint32_t MFS : 16;   /*!< [15..0] MFS                                                               */
             uint32_t           : 16;
+#endif
         } GWRMFSC7_b;
     };
 
@@ -244,8 +353,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
+#else
             __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQDC0_b;
     };
 
@@ -256,8 +370,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
+#else
             __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQDC1_b;
     };
 
@@ -268,8 +387,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
+#else
             __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQDC2_b;
     };
 
@@ -280,8 +404,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
+#else
             __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQDC3_b;
     };
 
@@ -292,8 +421,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
+#else
             __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQDC4_b;
     };
 
@@ -304,8 +438,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
+#else
             __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQDC5_b;
     };
 
@@ -316,8 +455,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
+#else
             __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQDC6_b;
     };
 
@@ -328,8 +472,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
+#else
             __IOM uint32_t DQD : 10;   /*!< [9..0] DQD                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQDC7_b;
     };
 
@@ -340,8 +489,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
+#else
             __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQM0_b;
     };
 
@@ -352,8 +506,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
+#else
             __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQM1_b;
     };
 
@@ -364,8 +523,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
+#else
             __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQM2_b;
     };
 
@@ -376,8 +540,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
+#else
             __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQM3_b;
     };
 
@@ -388,8 +557,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
+#else
             __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQM4_b;
     };
 
@@ -400,8 +574,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
+#else
             __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQM5_b;
     };
 
@@ -412,8 +591,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
+#else
             __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQM6_b;
     };
 
@@ -424,8 +608,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 22;
+            __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
+#else
             __IOM uint32_t DNQ : 10;   /*!< [9..0] DNQ                                                                */
             uint32_t           : 22;
+#endif
         } GWRDQM7_b;
     };
 
@@ -436,8 +625,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
+#else
             __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
             uint32_t            : 22;
+#endif
         } GWRDQMLM0_b;
     };
 
@@ -448,8 +642,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
+#else
             __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
             uint32_t            : 22;
+#endif
         } GWRDQMLM1_b;
     };
 
@@ -460,8 +659,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
+#else
             __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
             uint32_t            : 22;
+#endif
         } GWRDQMLM2_b;
     };
 
@@ -472,8 +676,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
+#else
             __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
             uint32_t            : 22;
+#endif
         } GWRDQMLM3_b;
     };
 
@@ -484,8 +693,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
+#else
             __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
             uint32_t            : 22;
+#endif
         } GWRDQMLM4_b;
     };
 
@@ -496,8 +710,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
+#else
             __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
             uint32_t            : 22;
+#endif
         } GWRDQMLM5_b;
     };
 
@@ -508,8 +727,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
+#else
             __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
             uint32_t            : 22;
+#endif
         } GWRDQMLM6_b;
     };
 
@@ -520,8 +744,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
+#else
             __IOM uint32_t DMLQ : 10;  /*!< [9..0] DMLQ                                                               */
             uint32_t            : 22;
+#endif
         } GWRDQMLM7_b;
     };
     __IM uint32_t RESERVED2[16];
@@ -533,9 +762,15 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 30;
+            __IOM uint32_t MTR   : 1;  /*!< [1..1] MTR                                                                */
+            __IOM uint32_t MTIOG : 1;  /*!< [0..0] MTIOG                                                              */
+#else
             __IOM uint32_t MTIOG : 1;  /*!< [0..0] MTIOG                                                              */
             __IOM uint32_t MTR   : 1;  /*!< [1..1] MTR                                                                */
             uint32_t             : 30;
+#endif
         } GWMTIRM_b;
     };
 
@@ -546,12 +781,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 10;
+            __IOM uint32_t MSENL  : 6; /*!< [21..16] MSENL                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t MNL    : 3; /*!< [10..8] MNL                                                               */
+            uint32_t              : 2;
+            __IOM uint32_t MNRCNL : 6; /*!< [5..0] MNRCNL                                                             */
+#else
             __IOM uint32_t MNRCNL : 6; /*!< [5..0] MNRCNL                                                             */
             uint32_t              : 2;
             __IOM uint32_t MNL    : 3; /*!< [10..8] MNL                                                               */
             uint32_t              : 5;
             __IOM uint32_t MSENL  : 6; /*!< [21..16] MSENL                                                            */
             uint32_t              : 10;
+#endif
         } GWMSTLS_b;
     };
 
@@ -562,9 +806,15 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t MTL  : 1;   /*!< [31..31] MTL                                                              */
+            uint32_t            : 30;
+            __IOM uint32_t MTLF : 1;   /*!< [0..0] MTLF                                                               */
+#else
             __IOM uint32_t MTLF : 1;   /*!< [0..0] MTLF                                                               */
             uint32_t            : 30;
             __IOM uint32_t MTL  : 1;   /*!< [31..31] MTL                                                              */
+#endif
         } GWMSTLR_b;
     };
 
@@ -575,8 +825,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 26;
+            __IOM uint32_t MSENS : 6;  /*!< [5..0] MSENS                                                              */
+#else
             __IOM uint32_t MSENS : 6;  /*!< [5..0] MSENS                                                              */
             uint32_t             : 26;
+#endif
         } GWMSTSS_b;
     };
 
@@ -587,6 +842,15 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t MTS    : 1; /*!< [31..31] MTS                                                              */
+            uint32_t              : 14;
+            __IOM uint32_t MTSEF  : 1; /*!< [16..16] MTSEF                                                            */
+            uint32_t              : 5;
+            __IOM uint32_t MNR    : 3; /*!< [10..8] MNR                                                               */
+            uint32_t              : 2;
+            __IOM uint32_t MNRCNR : 6; /*!< [5..0] MNRCNR                                                             */
+#else
             __IOM uint32_t MNRCNR : 6; /*!< [5..0] MNRCNR                                                             */
             uint32_t              : 2;
             __IOM uint32_t MNR    : 3; /*!< [10..8] MNR                                                               */
@@ -594,6 +858,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t MTSEF  : 1; /*!< [16..16] MTSEF                                                            */
             uint32_t              : 14;
             __IOM uint32_t MTS    : 1; /*!< [31..31] MTS                                                              */
+#endif
         } GWMSTSR_b;
     };
     __IM uint32_t RESERVED3[3];
@@ -604,8 +869,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 16;
+            __IOM uint32_t MAUP : 16;  /*!< [15..0] MAUP                                                              */
+#else
             __IOM uint32_t MAUP : 16;  /*!< [15..0] MAUP                                                              */
             uint32_t            : 16;
+#endif
         } GWMAC0_b;
     };
 
@@ -626,12 +896,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 13;
+            __IOM uint32_t VEM   : 3;  /*!< [18..16] VEM                                                              */
+            uint32_t             : 7;
+            __IOM uint32_t CTVUM : 1;  /*!< [8..8] CTVUM                                                              */
+            uint32_t             : 7;
+            __IOM uint32_t VIM   : 1;  /*!< [0..0] VIM                                                                */
+#else
             __IOM uint32_t VIM   : 1;  /*!< [0..0] VIM                                                                */
             uint32_t             : 7;
             __IOM uint32_t CTVUM : 1;  /*!< [8..8] CTVUM                                                              */
             uint32_t             : 7;
             __IOM uint32_t VEM   : 3;  /*!< [18..16] VEM                                                              */
             uint32_t             : 13;
+#endif
         } GWVCC_b;
     };
 
@@ -641,12 +920,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t STD : 1;    /*!< [31..31] STD                                                              */
+            __IOM uint32_t STP : 3;    /*!< [30..28] STP                                                              */
+            __IOM uint32_t STV : 12;   /*!< [27..16] STV                                                              */
+            __IOM uint32_t CTD : 1;    /*!< [15..15] CTD                                                              */
+            __IOM uint32_t CTP : 3;    /*!< [14..12] CTP                                                              */
+            __IOM uint32_t CTV : 12;   /*!< [11..0] CTV                                                               */
+#else
             __IOM uint32_t CTV : 12;   /*!< [11..0] CTV                                                               */
             __IOM uint32_t CTP : 3;    /*!< [14..12] CTP                                                              */
             __IOM uint32_t CTD : 1;    /*!< [15..15] CTD                                                              */
             __IOM uint32_t STV : 12;   /*!< [27..16] STV                                                              */
             __IOM uint32_t STP : 3;    /*!< [30..28] STP                                                              */
             __IOM uint32_t STD : 1;    /*!< [31..31] STD                                                              */
+#endif
         } GWVTC_b;
     };
 
@@ -657,6 +945,18 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 23;
+            __IOM uint32_t UT   : 1;   /*!< [8..8] UT                                                                 */
+            __IOM uint32_t SCRT : 1;   /*!< [7..7] SCRT                                                               */
+            __IOM uint32_t SCT  : 1;   /*!< [6..6] SCT                                                                */
+            __IOM uint32_t CRT  : 1;   /*!< [5..5] CRT                                                                */
+            __IOM uint32_t CT   : 1;   /*!< [4..4] CT                                                                 */
+            __IOM uint32_t CSRT : 1;   /*!< [3..3] CSRT                                                               */
+            __IOM uint32_t CST  : 1;   /*!< [2..2] CST                                                                */
+            __IOM uint32_t RT   : 1;   /*!< [1..1] RT                                                                 */
+            __IOM uint32_t NT   : 1;   /*!< [0..0] NT                                                                 */
+#else
             __IOM uint32_t NT   : 1;   /*!< [0..0] NT                                                                 */
             __IOM uint32_t RT   : 1;   /*!< [1..1] RT                                                                 */
             __IOM uint32_t CST  : 1;   /*!< [2..2] CST                                                                */
@@ -667,19 +967,25 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t SCRT : 1;   /*!< [7..7] SCRT                                                               */
             __IOM uint32_t UT   : 1;   /*!< [8..8] UT                                                                 */
             uint32_t            : 23;
+#endif
         } GWTTFC_b;
     };
     __IM uint32_t RESERVED5;
 
     union
     {
-        __IOM uint32_t GWTDCAC00;       /*!< (@ 0x00000140) GWCA Timestamp Descriptor Chain Address Configuration
-                                         *                  Register 0s (GWTDCAC0s) (s = 0, 1)                         */
+        __IOM uint32_t GWTDCAC00;      /*!< (@ 0x00000140) GWCA Timestamp Descriptor Chain Address Configuration
+                                        *                  Register 0s (GWTDCAC0s) (s = 0, 1)                         */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 24;
+            __IOM uint32_t TSCCAUP : 8; /*!< [7..0] TSCCAUP                                                            */
+#else
             __IOM uint32_t TSCCAUP : 8; /*!< [7..0] TSCCAUP                                                            */
             uint32_t               : 24;
+#endif
         } GWTDCAC00_b;
     };
 
@@ -696,13 +1002,18 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
     union
     {
-        __IOM uint32_t GWTDCAC10;       /*!< (@ 0x00000148) GWCA Timestamp Descriptor Chain Address Configuration
-                                         *                  Register 0s (GWTDCAC0s) (s = 0, 1)                         */
+        __IOM uint32_t GWTDCAC10;      /*!< (@ 0x00000148) GWCA Timestamp Descriptor Chain Address Configuration
+                                        *                  Register 0s (GWTDCAC0s) (s = 0, 1)                         */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 24;
+            __IOM uint32_t TSCCAUP : 8; /*!< [7..0] TSCCAUP                                                            */
+#else
             __IOM uint32_t TSCCAUP : 8; /*!< [7..0] TSCCAUP                                                            */
             uint32_t               : 24;
+#endif
         } GWTDCAC10_b;
     };
 
@@ -725,11 +1036,19 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 21;
+            __IOM uint32_t OSID : 3;   /*!< [10..8] OSID                                                              */
+            uint32_t            : 5;
+            __IOM uint32_t DCS  : 2;   /*!< [2..1] DCS                                                                */
+            __IOM uint32_t TE   : 1;   /*!< [0..0] TE                                                                 */
+#else
             __IOM uint32_t TE   : 1;   /*!< [0..0] TE                                                                 */
             __IOM uint32_t DCS  : 2;   /*!< [2..1] DCS                                                                */
             uint32_t            : 5;
             __IOM uint32_t OSID : 3;   /*!< [10..8] OSID                                                              */
             uint32_t            : 21;
+#endif
         } GWTSDCC0_b;
     };
 
@@ -740,11 +1059,19 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 21;
+            __IOM uint32_t OSID : 3;   /*!< [10..8] OSID                                                              */
+            uint32_t            : 5;
+            __IOM uint32_t DCS  : 2;   /*!< [2..1] DCS                                                                */
+            __IOM uint32_t TE   : 1;   /*!< [0..0] TE                                                                 */
+#else
             __IOM uint32_t TE   : 1;   /*!< [0..0] TE                                                                 */
             __IOM uint32_t DCS  : 2;   /*!< [2..1] DCS                                                                */
             uint32_t            : 5;
             __IOM uint32_t OSID : 3;   /*!< [10..8] OSID                                                              */
             uint32_t            : 21;
+#endif
         } GWTSDCC1_b;
     };
     __IM uint32_t RESERVED7[6];
@@ -755,8 +1082,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 27;
+            __IOM uint32_t TNTR : 5;   /*!< [4..0] TNTR                                                               */
+#else
             __IOM uint32_t TNTR : 5;   /*!< [4..0] TNTR                                                               */
             uint32_t            : 27;
+#endif
         } GWTSNM_b;
     };
 
@@ -767,8 +1099,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 27;
+            __IOM uint32_t TMNTR : 5;  /*!< [4..0] TMNTR                                                              */
+#else
             __IOM uint32_t TMNTR : 5;  /*!< [4..0] TMNTR                                                              */
             uint32_t             : 27;
+#endif
         } GWTSMNM_b;
     };
     __IM uint32_t RESERVED8[2];
@@ -779,9 +1116,15 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 30;
+            __IOM uint32_t AMP  : 1;   /*!< [1..1] AMP                                                                */
+            __IOM uint32_t AMPR : 1;   /*!< [0..0] AMPR                                                               */
+#else
             __IOM uint32_t AMPR : 1;   /*!< [0..0] AMPR                                                               */
             __IOM uint32_t AMP  : 1;   /*!< [1..1] AMP                                                                */
             uint32_t            : 30;
+#endif
         } GWAC_b;
     };
 
@@ -792,8 +1135,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t DCBAUP : 8; /*!< [7..0] DCBAUP                                                             */
+#else
             __IOM uint32_t DCBAUP : 8; /*!< [7..0] DCBAUP                                                             */
             uint32_t              : 24;
+#endif
         } GWDCBAC0_b;
     };
 
@@ -816,12 +1164,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 14;
+            __IOM uint32_t TSDMN : 2;  /*!< [17..16] TSDMN                                                            */
+            uint32_t             : 3;
+            __IOM uint32_t TXDMN : 5;  /*!< [12..8] TXDMN                                                             */
+            uint32_t             : 3;
+            __IOM uint32_t RXDMN : 5;  /*!< [4..0] RXDMN                                                              */
+#else
             __IOM uint32_t RXDMN : 5;  /*!< [4..0] RXDMN                                                              */
             uint32_t             : 3;
             __IOM uint32_t TXDMN : 5;  /*!< [12..8] TXDMN                                                             */
             uint32_t             : 3;
             __IOM uint32_t TSDMN : 2;  /*!< [17..16] TSDMN                                                            */
             uint32_t             : 14;
+#endif
         } GWMDNC_b;
     };
     __IM uint32_t  RESERVED10[23];
@@ -838,6 +1195,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 24;
+            __IOM uint32_t PPPL7 : 1;  /*!< [7..7] PPPL7                                                              */
+            __IOM uint32_t PPPL6 : 1;  /*!< [6..6] PPPL6                                                              */
+            __IOM uint32_t PPPL5 : 1;  /*!< [5..5] PPPL5                                                              */
+            __IOM uint32_t PPPL4 : 1;  /*!< [4..4] PPPL4                                                              */
+            __IOM uint32_t PPPL3 : 1;  /*!< [3..3] PPPL3                                                              */
+            __IOM uint32_t PPPL2 : 1;  /*!< [2..2] PPPL2                                                              */
+            __IOM uint32_t PPPL1 : 1;  /*!< [1..1] PPPL1                                                              */
+            __IOM uint32_t PPPL0 : 1;  /*!< [0..0] PPPL0                                                              */
+#else
             __IOM uint32_t PPPL0 : 1;  /*!< [0..0] PPPL0                                                              */
             __IOM uint32_t PPPL1 : 1;  /*!< [1..1] PPPL1                                                              */
             __IOM uint32_t PPPL2 : 1;  /*!< [2..2] PPPL2                                                              */
@@ -847,6 +1215,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t PPPL6 : 1;  /*!< [6..6] PPPL6                                                              */
             __IOM uint32_t PPPL7 : 1;  /*!< [7..7] PPPL7                                                              */
             uint32_t             : 24;
+#endif
         } GWTPC0_b;
     };
 
@@ -857,6 +1226,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 24;
+            __IOM uint32_t PPPL7 : 1;  /*!< [7..7] PPPL7                                                              */
+            __IOM uint32_t PPPL6 : 1;  /*!< [6..6] PPPL6                                                              */
+            __IOM uint32_t PPPL5 : 1;  /*!< [5..5] PPPL5                                                              */
+            __IOM uint32_t PPPL4 : 1;  /*!< [4..4] PPPL4                                                              */
+            __IOM uint32_t PPPL3 : 1;  /*!< [3..3] PPPL3                                                              */
+            __IOM uint32_t PPPL2 : 1;  /*!< [2..2] PPPL2                                                              */
+            __IOM uint32_t PPPL1 : 1;  /*!< [1..1] PPPL1                                                              */
+            __IOM uint32_t PPPL0 : 1;  /*!< [0..0] PPPL0                                                              */
+#else
             __IOM uint32_t PPPL0 : 1;  /*!< [0..0] PPPL0                                                              */
             __IOM uint32_t PPPL1 : 1;  /*!< [1..1] PPPL1                                                              */
             __IOM uint32_t PPPL2 : 1;  /*!< [2..2] PPPL2                                                              */
@@ -866,6 +1246,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t PPPL6 : 1;  /*!< [6..6] PPPL6                                                              */
             __IOM uint32_t PPPL7 : 1;  /*!< [7..7] PPPL7                                                              */
             uint32_t             : 24;
+#endif
         } GWTPC1_b;
     };
     __IM uint32_t RESERVED12[30];
@@ -877,9 +1258,15 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 30;
+            __IOM uint32_t ARR   : 1;  /*!< [1..1] ARR                                                                */
+            __IOM uint32_t ARIOG : 1;  /*!< [0..0] ARIOG                                                              */
+#else
             __IOM uint32_t ARIOG : 1;  /*!< [0..0] ARIOG                                                              */
             __IOM uint32_t ARR   : 1;  /*!< [1..1] ARR                                                                */
             uint32_t             : 30;
+#endif
         } GWARIRM_b;
     };
     __IM uint32_t RESERVED13[31];
@@ -891,6 +1278,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -904,6 +1306,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC0_b;
     };
 
@@ -914,6 +1317,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -927,6 +1345,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC1_b;
     };
 
@@ -937,6 +1356,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -950,6 +1384,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC2_b;
     };
 
@@ -960,6 +1395,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -973,6 +1423,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC3_b;
     };
 
@@ -983,6 +1434,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -996,6 +1462,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC4_b;
     };
 
@@ -1006,6 +1473,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1019,6 +1501,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC5_b;
     };
 
@@ -1029,6 +1512,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1042,6 +1540,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC6_b;
     };
 
@@ -1052,6 +1551,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1065,6 +1579,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC7_b;
     };
 
@@ -1075,6 +1590,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1088,6 +1618,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC8_b;
     };
 
@@ -1098,6 +1629,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1111,6 +1657,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC9_b;
     };
 
@@ -1121,6 +1668,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1134,6 +1696,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC10_b;
     };
 
@@ -1144,6 +1707,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1157,6 +1735,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC11_b;
     };
 
@@ -1167,6 +1746,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1180,6 +1774,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC12_b;
     };
 
@@ -1190,6 +1785,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1203,6 +1813,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC13_b;
     };
 
@@ -1213,6 +1824,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1226,6 +1852,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC14_b;
     };
 
@@ -1236,6 +1863,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1249,6 +1891,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC15_b;
     };
 
@@ -1259,6 +1902,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1272,6 +1930,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC16_b;
     };
 
@@ -1282,6 +1941,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1295,6 +1969,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC17_b;
     };
 
@@ -1305,6 +1980,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1318,6 +2008,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC18_b;
     };
 
@@ -1328,6 +2019,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1341,6 +2047,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC19_b;
     };
 
@@ -1351,6 +2058,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1364,6 +2086,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC20_b;
     };
 
@@ -1374,6 +2097,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1387,6 +2125,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC21_b;
     };
 
@@ -1397,6 +2136,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1410,6 +2164,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC22_b;
     };
 
@@ -1420,6 +2175,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1433,6 +2203,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC23_b;
     };
 
@@ -1443,6 +2214,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1456,6 +2242,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC24_b;
     };
 
@@ -1466,6 +2253,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1479,6 +2281,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC25_b;
     };
 
@@ -1489,6 +2292,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1502,6 +2320,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC26_b;
     };
 
@@ -1512,6 +2331,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1525,6 +2359,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC27_b;
     };
 
@@ -1535,6 +2370,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1548,6 +2398,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC28_b;
     };
 
@@ -1558,6 +2409,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1571,6 +2437,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC29_b;
     };
 
@@ -1581,6 +2448,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1594,6 +2476,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC30_b;
     };
 
@@ -1604,6 +2487,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1617,6 +2515,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC31_b;
     };
 
@@ -1627,6 +2526,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1640,6 +2554,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC32_b;
     };
 
@@ -1650,6 +2565,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1663,6 +2593,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC33_b;
     };
 
@@ -1673,6 +2604,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1686,6 +2632,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC34_b;
     };
 
@@ -1696,6 +2643,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1709,6 +2671,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC35_b;
     };
 
@@ -1719,6 +2682,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1732,6 +2710,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC36_b;
     };
 
@@ -1742,6 +2721,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1755,6 +2749,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC37_b;
     };
 
@@ -1765,6 +2760,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1778,6 +2788,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC38_b;
     };
 
@@ -1788,6 +2799,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1801,6 +2827,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC39_b;
     };
 
@@ -1811,6 +2838,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1824,6 +2866,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC40_b;
     };
 
@@ -1834,6 +2877,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1847,6 +2905,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC41_b;
     };
 
@@ -1857,6 +2916,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1870,6 +2944,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC42_b;
     };
 
@@ -1880,6 +2955,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1893,6 +2983,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC43_b;
     };
 
@@ -1903,6 +2994,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1916,6 +3022,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC44_b;
     };
 
@@ -1926,6 +3033,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1939,6 +3061,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC45_b;
     };
 
@@ -1949,6 +3072,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1962,6 +3100,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC46_b;
     };
 
@@ -1972,6 +3111,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -1985,6 +3139,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC47_b;
     };
 
@@ -1995,6 +3150,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2008,6 +3178,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC48_b;
     };
 
@@ -2018,6 +3189,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2031,6 +3217,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC49_b;
     };
 
@@ -2041,6 +3228,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2054,6 +3256,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC50_b;
     };
 
@@ -2064,6 +3267,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2077,6 +3295,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC51_b;
     };
 
@@ -2087,6 +3306,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2100,6 +3334,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC52_b;
     };
 
@@ -2110,6 +3345,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2123,6 +3373,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC53_b;
     };
 
@@ -2133,6 +3384,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2146,6 +3412,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC54_b;
     };
 
@@ -2156,6 +3423,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2169,6 +3451,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC55_b;
     };
 
@@ -2179,6 +3462,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2192,6 +3490,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC56_b;
     };
 
@@ -2202,6 +3501,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2215,6 +3529,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC57_b;
     };
 
@@ -2225,6 +3540,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2238,6 +3568,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC58_b;
     };
 
@@ -2248,6 +3579,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2261,6 +3607,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC59_b;
     };
 
@@ -2271,6 +3618,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2284,6 +3646,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC60_b;
     };
 
@@ -2294,6 +3657,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2307,6 +3685,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC61_b;
     };
 
@@ -2317,6 +3696,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2330,6 +3724,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC62_b;
     };
 
@@ -2340,6 +3735,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 1;
+            __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
+            uint32_t            : 3;
+            __IOM uint32_t BALR : 1;   /*!< [24..24] BALR                                                             */
+            uint32_t            : 5;
+            __IOM uint32_t DCP  : 3;   /*!< [18..16] DCP                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t DQT  : 1;   /*!< [11..11] DQT                                                              */
+            __IOM uint32_t SL   : 1;   /*!< [10..10] SL                                                               */
+            __IOM uint32_t ETS  : 1;   /*!< [9..9] ETS                                                                */
+            __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
+            uint32_t            : 6;
+            __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
+#else
             __IOM uint32_t SM   : 2;   /*!< [1..0] SM                                                                 */
             uint32_t            : 6;
             __IOM uint32_t EDE  : 1;   /*!< [8..8] EDE                                                                */
@@ -2353,6 +3763,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t            : 3;
             __IOM uint32_t OSID : 3;   /*!< [30..28] OSID                                                             */
             uint32_t            : 1;
+#endif
         } GWDCC63_b;
     };
     __IM uint32_t RESERVED14[192];
@@ -2364,8 +3775,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 26;
+            __IOM uint32_t AARA : 6;   /*!< [5..0] AARA                                                               */
+#else
             __IOM uint32_t AARA : 6;   /*!< [5..0] AARA                                                               */
             uint32_t            : 26;
+#endif
         } GWAARSS_b;
     };
 
@@ -2376,12 +3792,21 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t AARS   : 1; /*!< [31..31] AARS                                                             */
+            uint32_t              : 13;
+            __IOM uint32_t AARSSF : 1; /*!< [17..17] AARSSF                                                           */
+            __IOM uint32_t AARSEF : 1; /*!< [16..16] AARSEF                                                           */
+            uint32_t              : 8;
+            __IOM uint32_t ACARU  : 8; /*!< [7..0] ACARU                                                              */
+#else
             __IOM uint32_t ACARU  : 8; /*!< [7..0] ACARU                                                              */
             uint32_t              : 8;
             __IOM uint32_t AARSEF : 1; /*!< [16..16] AARSEF                                                           */
             __IOM uint32_t AARSSF : 1; /*!< [17..17] AARSSF                                                           */
             uint32_t              : 13;
             __IOM uint32_t AARS   : 1; /*!< [31..31] AARS                                                             */
+#endif
         } GWAARSR0_b;
     };
 
@@ -2399,49 +3824,69 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
     union
     {
-        __IOM uint32_t GWIDAUAS0;       /*!< (@ 0x00000840) GWCA Incremental Data Area Used Area Size Register
-                                         *                  i (GWIDAUASi) (i = 0 to 3)                                 */
+        __IOM uint32_t GWIDAUAS0;      /*!< (@ 0x00000840) GWCA Incremental Data Area Used Area Size Register
+                                        *                  i (GWIDAUASi) (i = 0 to 3)                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 8;
+            __IOM uint32_t IDAUAS : 24; /*!< [23..0] IDAUAS                                                            */
+#else
             __IOM uint32_t IDAUAS : 24; /*!< [23..0] IDAUAS                                                            */
             uint32_t              : 8;
+#endif
         } GWIDAUAS0_b;
     };
 
     union
     {
-        __IOM uint32_t GWIDAUAS1;       /*!< (@ 0x00000844) GWCA Incremental Data Area Used Area Size Register
-                                         *                  i (GWIDAUASi) (i = 0 to 3)                                 */
+        __IOM uint32_t GWIDAUAS1;      /*!< (@ 0x00000844) GWCA Incremental Data Area Used Area Size Register
+                                        *                  i (GWIDAUASi) (i = 0 to 3)                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 8;
+            __IOM uint32_t IDAUAS : 24; /*!< [23..0] IDAUAS                                                            */
+#else
             __IOM uint32_t IDAUAS : 24; /*!< [23..0] IDAUAS                                                            */
             uint32_t              : 8;
+#endif
         } GWIDAUAS1_b;
     };
 
     union
     {
-        __IOM uint32_t GWIDAUAS2;       /*!< (@ 0x00000848) GWCA Incremental Data Area Used Area Size Register
-                                         *                  i (GWIDAUASi) (i = 0 to 3)                                 */
+        __IOM uint32_t GWIDAUAS2;      /*!< (@ 0x00000848) GWCA Incremental Data Area Used Area Size Register
+                                        *                  i (GWIDAUASi) (i = 0 to 3)                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 8;
+            __IOM uint32_t IDAUAS : 24; /*!< [23..0] IDAUAS                                                            */
+#else
             __IOM uint32_t IDAUAS : 24; /*!< [23..0] IDAUAS                                                            */
             uint32_t              : 8;
+#endif
         } GWIDAUAS2_b;
     };
 
     union
     {
-        __IOM uint32_t GWIDAUAS3;       /*!< (@ 0x0000084C) GWCA Incremental Data Area Used Area Size Register
-                                         *                  i (GWIDAUASi) (i = 0 to 3)                                 */
+        __IOM uint32_t GWIDAUAS3;      /*!< (@ 0x0000084C) GWCA Incremental Data Area Used Area Size Register
+                                        *                  i (GWIDAUASi) (i = 0 to 3)                                 */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 8;
+            __IOM uint32_t IDAUAS : 24; /*!< [23..0] IDAUAS                                                            */
+#else
             __IOM uint32_t IDAUAS : 24; /*!< [23..0] IDAUAS                                                            */
             uint32_t              : 8;
+#endif
         } GWIDAUAS3_b;
     };
     __IM uint32_t RESERVED16[12];
@@ -2453,8 +3898,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t IDAS : 24;  /*!< [23..0] IDAS                                                              */
+#else
             __IOM uint32_t IDAS : 24;  /*!< [23..0] IDAS                                                              */
             uint32_t            : 8;
+#endif
         } GWIDASM0_b;
     };
 
@@ -2465,8 +3915,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t IDAS : 24;  /*!< [23..0] IDAS                                                              */
+#else
             __IOM uint32_t IDAS : 24;  /*!< [23..0] IDAS                                                              */
             uint32_t            : 8;
+#endif
         } GWIDASM1_b;
     };
 
@@ -2477,8 +3932,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t IDAS : 24;  /*!< [23..0] IDAS                                                              */
+#else
             __IOM uint32_t IDAS : 24;  /*!< [23..0] IDAS                                                              */
             uint32_t            : 8;
+#endif
         } GWIDASM2_b;
     };
 
@@ -2489,8 +3949,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t IDAS : 24;  /*!< [23..0] IDAS                                                              */
+#else
             __IOM uint32_t IDAS : 24;  /*!< [23..0] IDAS                                                              */
             uint32_t            : 8;
+#endif
         } GWIDASM3_b;
     };
     __IM uint32_t RESERVED17[28];
@@ -2502,8 +3967,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t IDASAU : 8; /*!< [7..0] IDASAU                                                             */
+#else
             __IOM uint32_t IDASAU : 8; /*!< [7..0] IDASAU                                                             */
             uint32_t              : 24;
+#endif
         } GWIDASAM00_b;
     };
 
@@ -2525,8 +3995,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t IDASAU : 8; /*!< [7..0] IDASAU                                                             */
+#else
             __IOM uint32_t IDASAU : 8; /*!< [7..0] IDASAU                                                             */
             uint32_t              : 24;
+#endif
         } GWIDASAM10_b;
     };
 
@@ -2548,8 +4023,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t IDASAU : 8; /*!< [7..0] IDASAU                                                             */
+#else
             __IOM uint32_t IDASAU : 8; /*!< [7..0] IDASAU                                                             */
             uint32_t              : 24;
+#endif
         } GWIDASAM20_b;
     };
 
@@ -2571,8 +4051,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t IDASAU : 8; /*!< [7..0] IDASAU                                                             */
+#else
             __IOM uint32_t IDASAU : 8; /*!< [7..0] IDASAU                                                             */
             uint32_t              : 24;
+#endif
         } GWIDASAM30_b;
     };
 
@@ -2595,8 +4080,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t IDACAU : 8; /*!< [7..0] IDACAU                                                             */
+#else
             __IOM uint32_t IDACAU : 8; /*!< [7..0] IDACAU                                                             */
             uint32_t              : 24;
+#endif
         } GWIDACAM00_b;
     };
 
@@ -2618,8 +4108,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t IDACAU : 8; /*!< [7..0] IDACAU                                                             */
+#else
             __IOM uint32_t IDACAU : 8; /*!< [7..0] IDACAU                                                             */
             uint32_t              : 24;
+#endif
         } GWIDACAM10_b;
     };
 
@@ -2641,8 +4136,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t IDACAU : 8; /*!< [7..0] IDACAU                                                             */
+#else
             __IOM uint32_t IDACAU : 8; /*!< [7..0] IDACAU                                                             */
             uint32_t              : 24;
+#endif
         } GWIDACAM20_b;
     };
 
@@ -2664,8 +4164,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 24;
+            __IOM uint32_t IDACAU : 8; /*!< [7..0] IDACAU                                                             */
+#else
             __IOM uint32_t IDACAU : 8; /*!< [7..0] IDACAU                                                             */
             uint32_t              : 24;
+#endif
         } GWIDACAM30_b;
     };
 
@@ -2683,15 +4188,22 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
     union
     {
-        __IOM uint32_t GWGRLC;           /*!< (@ 0x00000A00) GWCA Global Rate Limiter Configuration Register
-                                          *                  (GWGRLC)                                                   */
+        __IOM uint32_t GWGRLC;         /*!< (@ 0x00000A00) GWCA Global Rate Limiter Configuration Register
+                                        *                  (GWGRLC)                                                   */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 14;
+            __IOM uint32_t GRLULRS : 1;  /*!< [17..17] GRLULRS                                                          */
+            __IOM uint32_t GRLE    : 1;  /*!< [16..16] GRLE                                                             */
+            __IOM uint32_t GRLIV   : 16; /*!< [15..0] GRLIV                                                             */
+#else
             __IOM uint32_t GRLIV   : 16; /*!< [15..0] GRLIV                                                             */
             __IOM uint32_t GRLE    : 1;  /*!< [16..16] GRLE                                                             */
             __IOM uint32_t GRLULRS : 1;  /*!< [17..17] GRLULRS                                                          */
             uint32_t               : 14;
+#endif
         } GWGRLC_b;
     };
 
@@ -2702,8 +4214,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 8;
+            __IOM uint32_t GRLUL : 24; /*!< [23..0] GRLUL                                                             */
+#else
             __IOM uint32_t GRLUL : 24; /*!< [23..0] GRLUL                                                             */
             uint32_t             : 8;
+#endif
         } GWGRLULC_b;
     };
     __IM uint32_t RESERVED20[30];
@@ -2715,10 +4232,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
+#else
             __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
             uint32_t            : 4;
             __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
             uint32_t            : 15;
+#endif
         } GWRLC0_b;
     };
 
@@ -2729,8 +4253,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
+#else
             __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
             uint32_t            : 8;
+#endif
         } GWRLULC0_b;
     };
 
@@ -2741,10 +4270,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
+#else
             __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
             uint32_t            : 4;
             __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
             uint32_t            : 15;
+#endif
         } GWRLC1_b;
     };
 
@@ -2755,8 +4291,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
+#else
             __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
             uint32_t            : 8;
+#endif
         } GWRLULC1_b;
     };
 
@@ -2767,10 +4308,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
+#else
             __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
             uint32_t            : 4;
             __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
             uint32_t            : 15;
+#endif
         } GWRLC2_b;
     };
 
@@ -2781,8 +4329,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
+#else
             __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
             uint32_t            : 8;
+#endif
         } GWRLULC2_b;
     };
 
@@ -2793,10 +4346,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
+#else
             __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
             uint32_t            : 4;
             __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
             uint32_t            : 15;
+#endif
         } GWRLC3_b;
     };
 
@@ -2807,8 +4367,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
+#else
             __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
             uint32_t            : 8;
+#endif
         } GWRLULC3_b;
     };
 
@@ -2819,10 +4384,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
+#else
             __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
             uint32_t            : 4;
             __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
             uint32_t            : 15;
+#endif
         } GWRLC4_b;
     };
 
@@ -2833,8 +4405,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
+#else
             __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
             uint32_t            : 8;
+#endif
         } GWRLULC4_b;
     };
 
@@ -2845,10 +4422,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
+#else
             __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
             uint32_t            : 4;
             __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
             uint32_t            : 15;
+#endif
         } GWRLC5_b;
     };
 
@@ -2859,8 +4443,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
+#else
             __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
             uint32_t            : 8;
+#endif
         } GWRLULC5_b;
     };
 
@@ -2871,10 +4460,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
+#else
             __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
             uint32_t            : 4;
             __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
             uint32_t            : 15;
+#endif
         } GWRLC6_b;
     };
 
@@ -2885,8 +4481,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
+#else
             __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
             uint32_t            : 8;
+#endif
         } GWRLULC6_b;
     };
 
@@ -2897,10 +4498,17 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 15;
+            __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
+            uint32_t            : 4;
+            __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
+#else
             __IOM uint32_t RLIV : 12;  /*!< [11..0] RLIV                                                              */
             uint32_t            : 4;
             __IOM uint32_t RLE  : 1;   /*!< [16..16] RLE                                                              */
             uint32_t            : 15;
+#endif
         } GWRLC7_b;
     };
 
@@ -2911,8 +4519,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 8;
+            __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
+#else
             __IOM uint32_t RLUL : 24;  /*!< [23..0] RLUL                                                              */
             uint32_t            : 8;
+#endif
         } GWRLULC7_b;
     };
     __IM uint32_t RESERVED21[48];
@@ -2924,8 +4537,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 22;
+            __IOM uint32_t IDPV : 10;  /*!< [9..0] IDPV                                                               */
+#else
             __IOM uint32_t IDPV : 10;  /*!< [9..0] IDPV                                                               */
             uint32_t            : 22;
+#endif
         } GWIDPC_b;
     };
     __IM uint32_t RESERVED22[31];
@@ -2937,8 +4555,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC0_b;
     };
 
@@ -2949,8 +4572,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC1_b;
     };
 
@@ -2961,8 +4589,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC2_b;
     };
 
@@ -2973,8 +4606,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC3_b;
     };
 
@@ -2985,8 +4623,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC4_b;
     };
 
@@ -2997,8 +4640,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC5_b;
     };
 
@@ -3009,8 +4657,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC6_b;
     };
 
@@ -3021,8 +4674,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC7_b;
     };
 
@@ -3033,8 +4691,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC8_b;
     };
 
@@ -3045,8 +4708,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC9_b;
     };
 
@@ -3057,8 +4725,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC10_b;
     };
 
@@ -3069,8 +4742,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC11_b;
     };
 
@@ -3081,8 +4759,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC12_b;
     };
 
@@ -3093,8 +4776,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC13_b;
     };
 
@@ -3105,8 +4793,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC14_b;
     };
 
@@ -3117,8 +4810,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC15_b;
     };
 
@@ -3129,8 +4827,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC16_b;
     };
 
@@ -3141,8 +4844,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC17_b;
     };
 
@@ -3153,8 +4861,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC18_b;
     };
 
@@ -3165,8 +4878,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC19_b;
     };
 
@@ -3177,8 +4895,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC20_b;
     };
 
@@ -3189,8 +4912,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC21_b;
     };
 
@@ -3201,8 +4929,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC22_b;
     };
 
@@ -3213,8 +4946,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC23_b;
     };
 
@@ -3225,8 +4963,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC24_b;
     };
 
@@ -3237,8 +4980,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC25_b;
     };
 
@@ -3249,8 +4997,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC26_b;
     };
 
@@ -3261,8 +5014,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC27_b;
     };
 
@@ -3273,8 +5031,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC28_b;
     };
 
@@ -3285,8 +5048,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC29_b;
     };
 
@@ -3297,8 +5065,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC30_b;
     };
 
@@ -3309,8 +5082,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC31_b;
     };
 
@@ -3321,8 +5099,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC32_b;
     };
 
@@ -3333,8 +5116,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC33_b;
     };
 
@@ -3345,8 +5133,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC34_b;
     };
 
@@ -3357,8 +5150,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC35_b;
     };
 
@@ -3369,8 +5167,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC36_b;
     };
 
@@ -3381,8 +5184,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC37_b;
     };
 
@@ -3393,8 +5201,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC38_b;
     };
 
@@ -3405,8 +5218,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC39_b;
     };
 
@@ -3417,8 +5235,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC40_b;
     };
 
@@ -3429,8 +5252,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC41_b;
     };
 
@@ -3441,8 +5269,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC42_b;
     };
 
@@ -3453,8 +5286,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC43_b;
     };
 
@@ -3465,8 +5303,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC44_b;
     };
 
@@ -3477,8 +5320,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC45_b;
     };
 
@@ -3489,8 +5337,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC46_b;
     };
 
@@ -3501,8 +5354,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC47_b;
     };
 
@@ -3513,8 +5371,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC48_b;
     };
 
@@ -3525,8 +5388,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC49_b;
     };
 
@@ -3537,8 +5405,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC50_b;
     };
 
@@ -3549,8 +5422,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC51_b;
     };
 
@@ -3561,8 +5439,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC52_b;
     };
 
@@ -3573,8 +5456,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC53_b;
     };
 
@@ -3585,8 +5473,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC54_b;
     };
 
@@ -3597,8 +5490,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC55_b;
     };
 
@@ -3609,8 +5507,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC56_b;
     };
 
@@ -3621,8 +5524,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC57_b;
     };
 
@@ -3633,8 +5541,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC58_b;
     };
 
@@ -3645,8 +5558,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC59_b;
     };
 
@@ -3657,8 +5575,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC60_b;
     };
 
@@ -3669,8 +5592,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC61_b;
     };
 
@@ -3681,8 +5609,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC62_b;
     };
 
@@ -3693,8 +5626,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC63_b;
     };
 
@@ -3705,8 +5643,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 20;
+            __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
+#else
             __IOM uint32_t IDV : 12;   /*!< [11..0] IDV                                                               */
             uint32_t           : 20;
+#endif
         } GWIDC64_b;
     };
     __IM uint32_t RESERVED23[191];
@@ -3743,25 +5686,35 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
     union
     {
-        __IOM uint32_t GWTSOVFECN;       /*!< (@ 0x0000100C) GWCA Timestamp Overflow Error Counter Register
-                                          *                  (GWTSOVFECN)                                               */
+        __IOM uint32_t GWTSOVFECN;     /*!< (@ 0x0000100C) GWCA Timestamp Overflow Error Counter Register
+                                        *                  (GWTSOVFECN)                                               */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 16;
+            __IOM uint32_t TSOVFEN : 16; /*!< [15..0] TSOVFEN                                                           */
+#else
             __IOM uint32_t TSOVFEN : 16; /*!< [15..0] TSOVFEN                                                           */
             uint32_t               : 16;
+#endif
         } GWTSOVFECN_b;
     };
 
     union
     {
-        __IOM uint32_t GWUSMFSECN;       /*!< (@ 0x00001010) GWCA Under Switch Minimum Frame Size Error Counter
-                                          *                  Register (GWUSMFSECN)                                      */
+        __IOM uint32_t GWUSMFSECN;     /*!< (@ 0x00001010) GWCA Under Switch Minimum Frame Size Error Counter
+                                        *                  Register (GWUSMFSECN)                                      */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 16;
+            __IOM uint32_t USMFSEN : 16; /*!< [15..0] USMFSEN                                                           */
+#else
             __IOM uint32_t USMFSEN : 16; /*!< [15..0] USMFSEN                                                           */
             uint32_t               : 16;
+#endif
         } GWUSMFSECN_b;
     };
 
@@ -3771,8 +5724,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 16;
+            __IOM uint32_t TFEN : 16;  /*!< [15..0] TFEN                                                              */
+#else
             __IOM uint32_t TFEN : 16;  /*!< [15..0] TFEN                                                              */
             uint32_t            : 16;
+#endif
         } GWTFECN_b;
     };
 
@@ -3782,21 +5740,31 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t SEQEN : 16; /*!< [15..0] SEQEN                                                             */
+#else
             __IOM uint32_t SEQEN : 16; /*!< [15..0] SEQEN                                                             */
             uint32_t             : 16;
+#endif
         } GWSEQECN_b;
     };
     __IM uint32_t RESERVED24;
 
     union
     {
-        __IOM uint32_t GWTXDNECN;       /*!< (@ 0x00001020) GWCA TX Descriptor Number Error Counter Register
-                                         *                  (GWTXDNECN)                                                */
+        __IOM uint32_t GWTXDNECN;      /*!< (@ 0x00001020) GWCA TX Descriptor Number Error Counter Register
+                                        *                  (GWTXDNECN)                                                */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 16;
+            __IOM uint32_t TXDNEN : 16; /*!< [15..0] TXDNEN                                                            */
+#else
             __IOM uint32_t TXDNEN : 16; /*!< [15..0] TXDNEN                                                            */
             uint32_t              : 16;
+#endif
         } GWTXDNECN_b;
     };
 
@@ -3806,8 +5774,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 16;
+            __IOM uint32_t FSEN : 16;  /*!< [15..0] FSEN                                                              */
+#else
             __IOM uint32_t FSEN : 16;  /*!< [15..0] FSEN                                                              */
             uint32_t            : 16;
+#endif
         } GWFSECN_b;
     };
 
@@ -3818,20 +5791,30 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t TDFEN : 16; /*!< [15..0] TDFEN                                                             */
+#else
             __IOM uint32_t TDFEN : 16; /*!< [15..0] TDFEN                                                             */
             uint32_t             : 16;
+#endif
         } GWTDFECN_b;
     };
 
     union
     {
-        __IOM uint32_t GWTSDNECN;       /*!< (@ 0x0000102C) GWCA Timestamp Descriptor Number Error Counter
-                                         *                  Register (GWTSDNECN)                                       */
+        __IOM uint32_t GWTSDNECN;      /*!< (@ 0x0000102C) GWCA Timestamp Descriptor Number Error Counter
+                                        *                  Register (GWTSDNECN)                                       */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 16;
+            __IOM uint32_t TSDNEN : 16; /*!< [15..0] TSDNEN                                                            */
+#else
             __IOM uint32_t TSDNEN : 16; /*!< [15..0] TSDNEN                                                            */
             uint32_t              : 16;
+#endif
         } GWTSDNECN_b;
     };
 
@@ -3842,8 +5825,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t DQOEN : 16; /*!< [15..0] DQOEN                                                             */
+#else
             __IOM uint32_t DQOEN : 16; /*!< [15..0] DQOEN                                                             */
             uint32_t             : 16;
+#endif
         } GWDQOECN_b;
     };
 
@@ -3854,8 +5842,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t DQSEN : 16; /*!< [15..0] DQSEN                                                             */
+#else
             __IOM uint32_t DQSEN : 16; /*!< [15..0] DQSEN                                                             */
             uint32_t             : 16;
+#endif
         } GWDQSECN_b;
     };
 
@@ -3865,8 +5858,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 16;
+            __IOM uint32_t DFEN : 16;  /*!< [15..0] DFEN                                                              */
+#else
             __IOM uint32_t DFEN : 16;  /*!< [15..0] DFEN                                                              */
             uint32_t            : 16;
+#endif
         } GWDFECN_b;
     };
 
@@ -3877,8 +5875,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t            : 16;
+            __IOM uint32_t DSEN : 16;  /*!< [15..0] DSEN                                                              */
+#else
             __IOM uint32_t DSEN : 16;  /*!< [15..0] DSEN                                                              */
             uint32_t            : 16;
+#endif
         } GWDSECN_b;
     };
 
@@ -3888,8 +5891,13 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t DSZEN : 16; /*!< [15..0] DSZEN                                                             */
+#else
             __IOM uint32_t DSZEN : 16; /*!< [15..0] DSZEN                                                             */
             uint32_t             : 16;
+#endif
         } GWDSZECN_b;
     };
 
@@ -3900,20 +5908,30 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 16;
+            __IOM uint32_t DCTEN : 16; /*!< [15..0] DCTEN                                                             */
+#else
             __IOM uint32_t DCTEN : 16; /*!< [15..0] DCTEN                                                             */
             uint32_t             : 16;
+#endif
         } GWDCTECN_b;
     };
 
     union
     {
-        __IOM uint32_t GWRXDNECN;       /*!< (@ 0x00001048) GWCA RX Descriptor Number Error Counter Register
-                                         *                  (GWRXDNECN)                                                */
+        __IOM uint32_t GWRXDNECN;      /*!< (@ 0x00001048) GWCA RX Descriptor Number Error Counter Register
+                                        *                  (GWRXDNECN)                                                */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 16;
+            __IOM uint32_t RXDNEN : 16; /*!< [15..0] RXDNEN                                                            */
+#else
             __IOM uint32_t RXDNEN : 16; /*!< [15..0] RXDNEN                                                            */
             uint32_t              : 16;
+#endif
         } GWRXDNECN_b;
     };
     __IM uint32_t  RESERVED25[45];
@@ -3942,9 +5960,15 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 30;
+            __IOM uint32_t TSDIS1 : 1; /*!< [1..1] TSDIS1                                                             */
+            __IOM uint32_t TSDIS0 : 1; /*!< [0..0] TSDIS0                                                             */
+#else
             __IOM uint32_t TSDIS0 : 1; /*!< [0..0] TSDIS0                                                             */
             __IOM uint32_t TSDIS1 : 1; /*!< [1..1] TSDIS1                                                             */
             uint32_t              : 30;
+#endif
         } GWTSDIS_b;
     };
 
@@ -3955,9 +5979,15 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 30;
+            __IOM uint32_t TSDIE1 : 1; /*!< [1..1] TSDIE1                                                             */
+            __IOM uint32_t TSDIE0 : 1; /*!< [0..0] TSDIE0                                                             */
+#else
             __IOM uint32_t TSDIE0 : 1; /*!< [0..0] TSDIE0                                                             */
             __IOM uint32_t TSDIE1 : 1; /*!< [1..1] TSDIE1                                                             */
             uint32_t              : 30;
+#endif
         } GWTSDIE_b;
     };
 
@@ -3968,19 +5998,57 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 30;
+            __IOM uint32_t TSDID1 : 1; /*!< [1..1] TSDID1                                                             */
+            __IOM uint32_t TSDID0 : 1; /*!< [0..0] TSDID0                                                             */
+#else
             __IOM uint32_t TSDID0 : 1; /*!< [0..0] TSDID0                                                             */
             __IOM uint32_t TSDID1 : 1; /*!< [1..1] TSDID1                                                             */
             uint32_t              : 30;
+#endif
         } GWTSDID_b;
     };
     __IM uint32_t RESERVED27;
 
     union
     {
-        __IOM uint32_t GWEIS0;            /*!< (@ 0x00001190) GWCA Error Interrupt Status Register 0 (GWEIS0)            */
+        __IOM uint32_t GWEIS0;         /*!< (@ 0x00001190) GWCA Error Interrupt Status Register 0 (GWEIS0)            */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                 : 2;
+            __IOM uint32_t TSDNES1   : 1; /*!< [29..29] TSDNES1                                                          */
+            __IOM uint32_t TSDNES0   : 1; /*!< [28..28] TSDNES0                                                          */
+            uint32_t                 : 2;
+            __IOM uint32_t TDFES1    : 1; /*!< [25..25] TDFES1                                                           */
+            __IOM uint32_t TDFES0    : 1; /*!< [24..24] TDFES0                                                           */
+            __IOM uint32_t FSES7     : 1; /*!< [23..23] FSES7                                                            */
+            __IOM uint32_t FSES6     : 1; /*!< [22..22] FSES6                                                            */
+            __IOM uint32_t FSES5     : 1; /*!< [21..21] FSES5                                                            */
+            __IOM uint32_t FSES4     : 1; /*!< [20..20] FSES4                                                            */
+            __IOM uint32_t FSES3     : 1; /*!< [19..19] FSES3                                                            */
+            __IOM uint32_t FSES2     : 1; /*!< [18..18] FSES2                                                            */
+            __IOM uint32_t FSES1     : 1; /*!< [17..17] FSES1                                                            */
+            __IOM uint32_t FSES0     : 1; /*!< [16..16] FSES0                                                            */
+            __IOM uint32_t TSHES     : 1; /*!< [15..15] TSHES                                                            */
+            __IOM uint32_t TXDNES    : 1; /*!< [14..14] TXDNES                                                           */
+            uint32_t                 : 1;
+            __IOM uint32_t SEQES     : 1; /*!< [12..12] SEQES                                                            */
+            __IOM uint32_t TFES      : 1; /*!< [11..11] TFES                                                             */
+            __IOM uint32_t USMFSES   : 1; /*!< [10..10] USMFSES                                                          */
+            __IOM uint32_t TSOVFES   : 1; /*!< [9..9] TSOVFES                                                            */
+            __IOM uint32_t L23UECCES : 1; /*!< [8..8] L23UECCES                                                          */
+            __IOM uint32_t TSECCES   : 1; /*!< [7..7] TSECCES                                                            */
+            __IOM uint32_t AECCES    : 1; /*!< [6..6] AECCES                                                             */
+            __IOM uint32_t MECCES    : 1; /*!< [5..5] MECCES                                                             */
+            __IOM uint32_t DSECCES   : 1; /*!< [4..4] DSECCES                                                            */
+            __IOM uint32_t PECCES    : 1; /*!< [3..3] PECCES                                                             */
+            __IOM uint32_t TECCES    : 1; /*!< [2..2] TECCES                                                             */
+            __IOM uint32_t DECCES    : 1; /*!< [1..1] DECCES                                                             */
+            __IOM uint32_t AES       : 1; /*!< [0..0] AES                                                                */
+#else
             __IOM uint32_t AES       : 1; /*!< [0..0] AES                                                                */
             __IOM uint32_t DECCES    : 1; /*!< [1..1] DECCES                                                             */
             __IOM uint32_t TECCES    : 1; /*!< [2..2] TECCES                                                             */
@@ -4011,15 +6079,48 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t TSDNES0   : 1; /*!< [28..28] TSDNES0                                                          */
             __IOM uint32_t TSDNES1   : 1; /*!< [29..29] TSDNES1                                                          */
             uint32_t                 : 2;
+#endif
         } GWEIS0_b;
     };
 
     union
     {
-        __IOM uint32_t GWEIE0;            /*!< (@ 0x00001194) GWCA Error Interrupt Enable Register 0 (GWEIE0)            */
+        __IOM uint32_t GWEIE0;         /*!< (@ 0x00001194) GWCA Error Interrupt Enable Register 0 (GWEIE0)            */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                 : 2;
+            __IOM uint32_t TSDNEE1   : 1; /*!< [29..29] TSDNEE1                                                          */
+            __IOM uint32_t TSDNEE0   : 1; /*!< [28..28] TSDNEE0                                                          */
+            uint32_t                 : 2;
+            __IOM uint32_t TDFEE1    : 1; /*!< [25..25] TDFEE1                                                           */
+            __IOM uint32_t TDFEE0    : 1; /*!< [24..24] TDFEE0                                                           */
+            __IOM uint32_t FSEE7     : 1; /*!< [23..23] FSEE7                                                            */
+            __IOM uint32_t FSEE6     : 1; /*!< [22..22] FSEE6                                                            */
+            __IOM uint32_t FSEE5     : 1; /*!< [21..21] FSEE5                                                            */
+            __IOM uint32_t FSEE4     : 1; /*!< [20..20] FSEE4                                                            */
+            __IOM uint32_t FSEE3     : 1; /*!< [19..19] FSEE3                                                            */
+            __IOM uint32_t FSEE2     : 1; /*!< [18..18] FSEE2                                                            */
+            __IOM uint32_t FSEE1     : 1; /*!< [17..17] FSEE1                                                            */
+            __IOM uint32_t FSEE0     : 1; /*!< [16..16] FSEE0                                                            */
+            __IOM uint32_t TSHEE     : 1; /*!< [15..15] TSHEE                                                            */
+            __IOM uint32_t TXDNEE    : 1; /*!< [14..14] TXDNEE                                                           */
+            uint32_t                 : 1;
+            __IOM uint32_t SEQEE     : 1; /*!< [12..12] SEQEE                                                            */
+            __IOM uint32_t TFEE      : 1; /*!< [11..11] TFEE                                                             */
+            __IOM uint32_t USMFSEE   : 1; /*!< [10..10] USMFSEE                                                          */
+            __IOM uint32_t TSOVFEE   : 1; /*!< [9..9] TSOVFEE                                                            */
+            __IOM uint32_t L23UECCEE : 1; /*!< [8..8] L23UECCEE                                                          */
+            __IOM uint32_t TSECCEE   : 1; /*!< [7..7] TSECCEE                                                            */
+            __IOM uint32_t AECCEE    : 1; /*!< [6..6] AECCEE                                                             */
+            __IOM uint32_t MECCEE    : 1; /*!< [5..5] MECCEE                                                             */
+            __IOM uint32_t DSECCEE   : 1; /*!< [4..4] DSECCEE                                                            */
+            __IOM uint32_t PECCEE    : 1; /*!< [3..3] PECCEE                                                             */
+            __IOM uint32_t TECCEE    : 1; /*!< [2..2] TECCEE                                                             */
+            __IOM uint32_t DECCEE    : 1; /*!< [1..1] DECCEE                                                             */
+            __IOM uint32_t AEE       : 1; /*!< [0..0] AEE                                                                */
+#else
             __IOM uint32_t AEE       : 1; /*!< [0..0] AEE                                                                */
             __IOM uint32_t DECCEE    : 1; /*!< [1..1] DECCEE                                                             */
             __IOM uint32_t TECCEE    : 1; /*!< [2..2] TECCEE                                                             */
@@ -4050,15 +6151,48 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t TSDNEE0   : 1; /*!< [28..28] TSDNEE0                                                          */
             __IOM uint32_t TSDNEE1   : 1; /*!< [29..29] TSDNEE1                                                          */
             uint32_t                 : 2;
+#endif
         } GWEIE0_b;
     };
 
     union
     {
-        __IOM uint32_t GWEID0;            /*!< (@ 0x00001198) GWCA Error Interrupt Disable Register 0 (GWEID0)           */
+        __IOM uint32_t GWEID0;         /*!< (@ 0x00001198) GWCA Error Interrupt Disable Register 0 (GWEID0)           */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                 : 2;
+            __IOM uint32_t TSDNED1   : 1; /*!< [29..29] TSDNED1                                                          */
+            __IOM uint32_t TSDNED0   : 1; /*!< [28..28] TSDNED0                                                          */
+            uint32_t                 : 2;
+            __IOM uint32_t TDFED1    : 1; /*!< [25..25] TDFED1                                                           */
+            __IOM uint32_t TDFED0    : 1; /*!< [24..24] TDFED0                                                           */
+            __IOM uint32_t FSED7     : 1; /*!< [23..23] FSED7                                                            */
+            __IOM uint32_t FSED6     : 1; /*!< [22..22] FSED6                                                            */
+            __IOM uint32_t FSED5     : 1; /*!< [21..21] FSED5                                                            */
+            __IOM uint32_t FSED4     : 1; /*!< [20..20] FSED4                                                            */
+            __IOM uint32_t FSED3     : 1; /*!< [19..19] FSED3                                                            */
+            __IOM uint32_t FSED2     : 1; /*!< [18..18] FSED2                                                            */
+            __IOM uint32_t FSED1     : 1; /*!< [17..17] FSED1                                                            */
+            __IOM uint32_t FSED0     : 1; /*!< [16..16] FSED0                                                            */
+            __IOM uint32_t TSHED     : 1; /*!< [15..15] TSHED                                                            */
+            __IOM uint32_t TXDNED    : 1; /*!< [14..14] TXDNED                                                           */
+            __IOM uint32_t IIPED     : 1; /*!< [13..13] IIPED                                                            */
+            __IOM uint32_t SEQED     : 1; /*!< [12..12] SEQED                                                            */
+            __IOM uint32_t TFED      : 1; /*!< [11..11] TFED                                                             */
+            __IOM uint32_t USMFSED   : 1; /*!< [10..10] USMFSED                                                          */
+            __IOM uint32_t TSOVFED   : 1; /*!< [9..9] TSOVFED                                                            */
+            __IOM uint32_t L23UECCED : 1; /*!< [8..8] L23UECCED                                                          */
+            __IOM uint32_t TSECCED   : 1; /*!< [7..7] TSECCED                                                            */
+            __IOM uint32_t AECCED    : 1; /*!< [6..6] AECCED                                                             */
+            __IOM uint32_t MECCED    : 1; /*!< [5..5] MECCED                                                             */
+            __IOM uint32_t DSECCED   : 1; /*!< [4..4] DSECCED                                                            */
+            __IOM uint32_t PECCED    : 1; /*!< [3..3] PECCED                                                             */
+            __IOM uint32_t DECCED    : 1; /*!< [2..2] DECCED                                                             */
+            __IOM uint32_t TECCED    : 1; /*!< [1..1] TECCED                                                             */
+            __IOM uint32_t AED       : 1; /*!< [0..0] AED                                                                */
+#else
             __IOM uint32_t AED       : 1; /*!< [0..0] AED                                                                */
             __IOM uint32_t TECCED    : 1; /*!< [1..1] TECCED                                                             */
             __IOM uint32_t DECCED    : 1; /*!< [2..2] DECCED                                                             */
@@ -4089,6 +6223,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t TSDNED0   : 1; /*!< [28..28] TSDNED0                                                          */
             __IOM uint32_t TSDNED1   : 1; /*!< [29..29] TSDNED1                                                          */
             uint32_t                 : 2;
+#endif
         } GWEID0_b;
     };
     __IM uint32_t RESERVED28;
@@ -4099,6 +6234,26 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 8;
+            __IOM uint32_t DQSES7 : 1; /*!< [23..23] DQSES7                                                           */
+            __IOM uint32_t DQSES6 : 1; /*!< [22..22] DQSES6                                                           */
+            __IOM uint32_t DQSES5 : 1; /*!< [21..21] DQSES5                                                           */
+            __IOM uint32_t DQSES4 : 1; /*!< [20..20] DQSES4                                                           */
+            __IOM uint32_t DQSES3 : 1; /*!< [19..19] DQSES3                                                           */
+            __IOM uint32_t DQSES2 : 1; /*!< [18..18] DQSES2                                                           */
+            __IOM uint32_t DQSES1 : 1; /*!< [17..17] DQSES1                                                           */
+            __IOM uint32_t DQSES0 : 1; /*!< [16..16] DQSES0                                                           */
+            uint32_t              : 8;
+            __IOM uint32_t DQOES7 : 1; /*!< [7..7] DQOES7                                                             */
+            __IOM uint32_t DQOES6 : 1; /*!< [6..6] DQOES6                                                             */
+            __IOM uint32_t DQOES5 : 1; /*!< [5..5] DQOES5                                                             */
+            __IOM uint32_t DQOES4 : 1; /*!< [4..4] DQOES4                                                             */
+            __IOM uint32_t DQOES3 : 1; /*!< [3..3] DQOES3                                                             */
+            __IOM uint32_t DQOES2 : 1; /*!< [2..2] DQOES2                                                             */
+            __IOM uint32_t DQOES1 : 1; /*!< [1..1] DQOES1                                                             */
+            __IOM uint32_t DQOES0 : 1; /*!< [0..0] DQOES0                                                             */
+#else
             __IOM uint32_t DQOES0 : 1; /*!< [0..0] DQOES0                                                             */
             __IOM uint32_t DQOES1 : 1; /*!< [1..1] DQOES1                                                             */
             __IOM uint32_t DQOES2 : 1; /*!< [2..2] DQOES2                                                             */
@@ -4117,6 +6272,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t DQSES6 : 1; /*!< [22..22] DQSES6                                                           */
             __IOM uint32_t DQSES7 : 1; /*!< [23..23] DQSES7                                                           */
             uint32_t              : 8;
+#endif
         } GWEIS1_b;
     };
 
@@ -4126,6 +6282,26 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 8;
+            __IOM uint32_t DQSEE7 : 1; /*!< [23..23] DQSEE7                                                           */
+            __IOM uint32_t DQSEE6 : 1; /*!< [22..22] DQSEE6                                                           */
+            __IOM uint32_t DQSEE5 : 1; /*!< [21..21] DQSEE5                                                           */
+            __IOM uint32_t DQSEE4 : 1; /*!< [20..20] DQSEE4                                                           */
+            __IOM uint32_t DQSEE3 : 1; /*!< [19..19] DQSEE3                                                           */
+            __IOM uint32_t DQSEE2 : 1; /*!< [18..18] DQSEE2                                                           */
+            __IOM uint32_t DQSEE1 : 1; /*!< [17..17] DQSEE1                                                           */
+            __IOM uint32_t DQSEE0 : 1; /*!< [16..16] DQSEE0                                                           */
+            uint32_t              : 8;
+            __IOM uint32_t DQOEE7 : 1; /*!< [7..7] DQOEE7                                                             */
+            __IOM uint32_t DQOEE6 : 1; /*!< [6..6] DQOEE6                                                             */
+            __IOM uint32_t DQOEE5 : 1; /*!< [5..5] DQOEE5                                                             */
+            __IOM uint32_t DQOEE4 : 1; /*!< [4..4] DQOEE4                                                             */
+            __IOM uint32_t DQOEE3 : 1; /*!< [3..3] DQOEE3                                                             */
+            __IOM uint32_t DQOEE2 : 1; /*!< [2..2] DQOEE2                                                             */
+            __IOM uint32_t DQOEE1 : 1; /*!< [1..1] DQOEE1                                                             */
+            __IOM uint32_t DQOEE0 : 1; /*!< [0..0] DQOEE0                                                             */
+#else
             __IOM uint32_t DQOEE0 : 1; /*!< [0..0] DQOEE0                                                             */
             __IOM uint32_t DQOEE1 : 1; /*!< [1..1] DQOEE1                                                             */
             __IOM uint32_t DQOEE2 : 1; /*!< [2..2] DQOEE2                                                             */
@@ -4144,6 +6320,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t DQSEE6 : 1; /*!< [22..22] DQSEE6                                                           */
             __IOM uint32_t DQSEE7 : 1; /*!< [23..23] DQSEE7                                                           */
             uint32_t              : 8;
+#endif
         } GWEIE1_b;
     };
 
@@ -4153,6 +6330,26 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 8;
+            __IOM uint32_t DQSED7 : 1; /*!< [23..23] DQSED7                                                           */
+            __IOM uint32_t DQSED6 : 1; /*!< [22..22] DQSED6                                                           */
+            __IOM uint32_t DQSED5 : 1; /*!< [21..21] DQSED5                                                           */
+            __IOM uint32_t DQSED4 : 1; /*!< [20..20] DQSED4                                                           */
+            __IOM uint32_t DQSED3 : 1; /*!< [19..19] DQSED3                                                           */
+            __IOM uint32_t DQSED2 : 1; /*!< [18..18] DQSED2                                                           */
+            __IOM uint32_t DQSED1 : 1; /*!< [17..17] DQSED1                                                           */
+            __IOM uint32_t DQSED0 : 1; /*!< [16..16] DQSED0                                                           */
+            uint32_t              : 8;
+            __IOM uint32_t DQOED7 : 1; /*!< [7..7] DQOED7                                                             */
+            __IOM uint32_t DQOED6 : 1; /*!< [6..6] DQOED6                                                             */
+            __IOM uint32_t DQOED5 : 1; /*!< [5..5] DQOED5                                                             */
+            __IOM uint32_t DQOED4 : 1; /*!< [4..4] DQOED4                                                             */
+            __IOM uint32_t DQOED3 : 1; /*!< [3..3] DQOED3                                                             */
+            __IOM uint32_t DQOED2 : 1; /*!< [2..2] DQOED2                                                             */
+            __IOM uint32_t DQOED1 : 1; /*!< [1..1] DQOED1                                                             */
+            __IOM uint32_t DQOED0 : 1; /*!< [0..0] DQOED0                                                             */
+#else
             __IOM uint32_t DQOED0 : 1; /*!< [0..0] DQOED0                                                             */
             __IOM uint32_t DQOED1 : 1; /*!< [1..1] DQOED1                                                             */
             __IOM uint32_t DQOED2 : 1; /*!< [2..2] DQOED2                                                             */
@@ -4171,6 +6368,7 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t DQSED6 : 1; /*!< [22..22] DQSED6                                                           */
             __IOM uint32_t DQSED7 : 1; /*!< [23..23] DQSED7                                                           */
             uint32_t              : 8;
+#endif
         } GWEID1_b;
     };
     __IM uint32_t  RESERVED29[21];
@@ -4195,11 +6393,19 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 28;
+            __IOM uint32_t IAOES3 : 1; /*!< [3..3] IAOES3                                                             */
+            __IOM uint32_t IAOES2 : 1; /*!< [2..2] IAOES2                                                             */
+            __IOM uint32_t IAOES1 : 1; /*!< [1..1] IAOES1                                                             */
+            __IOM uint32_t IAOES0 : 1; /*!< [0..0] IAOES0                                                             */
+#else
             __IOM uint32_t IAOES0 : 1; /*!< [0..0] IAOES0                                                             */
             __IOM uint32_t IAOES1 : 1; /*!< [1..1] IAOES1                                                             */
             __IOM uint32_t IAOES2 : 1; /*!< [2..2] IAOES2                                                             */
             __IOM uint32_t IAOES3 : 1; /*!< [3..3] IAOES3                                                             */
             uint32_t              : 28;
+#endif
         } GWEIS3_b;
     };
 
@@ -4209,11 +6415,19 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 28;
+            __IOM uint32_t IAOEE3 : 1; /*!< [3..3] IAOEE3                                                             */
+            __IOM uint32_t IAOEE2 : 1; /*!< [2..2] IAOEE2                                                             */
+            __IOM uint32_t IAOEE1 : 1; /*!< [1..1] IAOEE1                                                             */
+            __IOM uint32_t IAOEE0 : 1; /*!< [0..0] IAOEE0                                                             */
+#else
             __IOM uint32_t IAOEE0 : 1; /*!< [0..0] IAOEE0                                                             */
             __IOM uint32_t IAOEE1 : 1; /*!< [1..1] IAOEE1                                                             */
             __IOM uint32_t IAOEE2 : 1; /*!< [2..2] IAOEE2                                                             */
             __IOM uint32_t IAOEE3 : 1; /*!< [3..3] IAOEE3                                                             */
             uint32_t              : 28;
+#endif
         } GWEIE3_b;
     };
 
@@ -4223,21 +6437,41 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 28;
+            __IOM uint32_t IAOED3 : 1; /*!< [3..3] IAOED3                                                             */
+            __IOM uint32_t IAOED2 : 1; /*!< [2..2] IAOED2                                                             */
+            __IOM uint32_t IAOED1 : 1; /*!< [1..1] IAOED1                                                             */
+            __IOM uint32_t IAOED0 : 1; /*!< [0..0] IAOED0                                                             */
+#else
             __IOM uint32_t IAOED0 : 1; /*!< [0..0] IAOED0                                                             */
             __IOM uint32_t IAOED1 : 1; /*!< [1..1] IAOED1                                                             */
             __IOM uint32_t IAOED2 : 1; /*!< [2..2] IAOED2                                                             */
             __IOM uint32_t IAOED3 : 1; /*!< [3..3] IAOED3                                                             */
             uint32_t              : 28;
+#endif
         } GWEID3_b;
     };
     __IM uint32_t RESERVED32;
 
     union
     {
-        __IOM uint32_t GWEIS4;          /*!< (@ 0x00001290) GWCA Error Interrupt Status Register 4 (GWEIS4)            */
+        __IOM uint32_t GWEIS4;         /*!< (@ 0x00001290) GWCA Error Interrupt Status Register 4 (GWEIS4)            */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 2;
+            __IOM uint32_t DSECN   : 6; /*!< [29..24] DSECN                                                            */
+            uint32_t               : 6;
+            __IOM uint32_t DSEIOS  : 1; /*!< [17..17] DSEIOS                                                           */
+            __IOM uint32_t DSES    : 1; /*!< [16..16] DSES                                                             */
+            uint32_t               : 2;
+            __IOM uint32_t DSSECN  : 6; /*!< [13..8] DSSECN                                                            */
+            uint32_t               : 6;
+            __IOM uint32_t DSSEIOS : 1; /*!< [1..1] DSSEIOS                                                            */
+            __IOM uint32_t DSSES   : 1; /*!< [0..0] DSSES                                                              */
+#else
             __IOM uint32_t DSSES   : 1; /*!< [0..0] DSSES                                                              */
             __IOM uint32_t DSSEIOS : 1; /*!< [1..1] DSSEIOS                                                            */
             uint32_t               : 6;
@@ -4248,46 +6482,75 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             uint32_t               : 6;
             __IOM uint32_t DSECN   : 6; /*!< [29..24] DSECN                                                            */
             uint32_t               : 2;
+#endif
         } GWEIS4_b;
     };
 
     union
     {
-        __IOM uint32_t GWEIE4;          /*!< (@ 0x00001294) GWCA Error Interrupt Enable Register 4 (GWEIE4)            */
+        __IOM uint32_t GWEIE4;         /*!< (@ 0x00001294) GWCA Error Interrupt Enable Register 4 (GWEIE4)            */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 14;
+            __IOM uint32_t DSEIOE  : 1; /*!< [17..17] DSEIOE                                                           */
+            __IOM uint32_t DSEE    : 1; /*!< [16..16] DSEE                                                             */
+            uint32_t               : 14;
+            __IOM uint32_t DSSEIOE : 1; /*!< [1..1] DSSEIOE                                                            */
+            __IOM uint32_t DSSEE   : 1; /*!< [0..0] DSSEE                                                              */
+#else
             __IOM uint32_t DSSEE   : 1; /*!< [0..0] DSSEE                                                              */
             __IOM uint32_t DSSEIOE : 1; /*!< [1..1] DSSEIOE                                                            */
             uint32_t               : 14;
             __IOM uint32_t DSEE    : 1; /*!< [16..16] DSEE                                                             */
             __IOM uint32_t DSEIOE  : 1; /*!< [17..17] DSEIOE                                                           */
             uint32_t               : 14;
+#endif
         } GWEIE4_b;
     };
 
     union
     {
-        __IOM uint32_t GWEID4;          /*!< (@ 0x00001298) GWCA Error Interrupt Disable Register 4 (GWEID4)           */
+        __IOM uint32_t GWEID4;         /*!< (@ 0x00001298) GWCA Error Interrupt Disable Register 4 (GWEID4)           */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t               : 14;
+            __IOM uint32_t DSEIOD  : 1; /*!< [17..17] DSEIOD                                                           */
+            __IOM uint32_t DSED    : 1; /*!< [16..16] DSED                                                             */
+            uint32_t               : 14;
+            __IOM uint32_t DSSEIOD : 1; /*!< [1..1] DSSEIOD                                                            */
+            __IOM uint32_t DSSED   : 1; /*!< [0..0] DSSED                                                              */
+#else
             __IOM uint32_t DSSED   : 1; /*!< [0..0] DSSED                                                              */
             __IOM uint32_t DSSEIOD : 1; /*!< [1..1] DSSEIOD                                                            */
             uint32_t               : 14;
             __IOM uint32_t DSED    : 1; /*!< [16..16] DSED                                                             */
             __IOM uint32_t DSEIOD  : 1; /*!< [17..17] DSEIOD                                                           */
             uint32_t               : 14;
+#endif
         } GWEID4_b;
     };
     __IM uint32_t RESERVED33;
 
     union
     {
-        __IOM uint32_t GWEIS5;           /*!< (@ 0x000012A0) GWCA Error Interrupt Status Register 5 (GWEIS5)            */
+        __IOM uint32_t GWEIS5;         /*!< (@ 0x000012A0) GWCA Error Interrupt Status Register 5 (GWEIS5)            */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 14;
+            __IOM uint32_t RXDNEIOS : 1; /*!< [17..17] RXDNEIOS                                                         */
+            __IOM uint32_t RXDNES   : 1; /*!< [16..16] RXDNES                                                           */
+            uint32_t                : 2;
+            __IOM uint32_t DCTECN   : 6; /*!< [13..8] DCTECN                                                            */
+            uint32_t                : 6;
+            __IOM uint32_t DCTEIOS  : 1; /*!< [1..1] DCTEIOS                                                            */
+            __IOM uint32_t DCTES    : 1; /*!< [0..0] DCTES                                                              */
+#else
             __IOM uint32_t DCTES    : 1; /*!< [0..0] DCTES                                                              */
             __IOM uint32_t DCTEIOS  : 1; /*!< [1..1] DCTEIOS                                                            */
             uint32_t                : 6;
@@ -4296,40 +6559,59 @@ typedef struct                         /*!< (@ 0x874CE000) R_GWCA0 Structure    
             __IOM uint32_t RXDNES   : 1; /*!< [16..16] RXDNES                                                           */
             __IOM uint32_t RXDNEIOS : 1; /*!< [17..17] RXDNEIOS                                                         */
             uint32_t                : 14;
+#endif
         } GWEIS5_b;
     };
 
     union
     {
-        __IOM uint32_t GWEIE5;           /*!< (@ 0x000012A4) GWCA Error Interrupt Enable Register 5 (GWEIE5)            */
+        __IOM uint32_t GWEIE5;         /*!< (@ 0x000012A4) GWCA Error Interrupt Enable Register 5 (GWEIE5)            */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 14;
+            __IOM uint32_t RXDNEIOE : 1; /*!< [17..17] RXDNEIOE                                                         */
+            __IOM uint32_t RXDNEE   : 1; /*!< [16..16] RXDNEE                                                           */
+            uint32_t                : 14;
+            __IOM uint32_t DCTEIOE  : 1; /*!< [1..1] DCTEIOE                                                            */
+            __IOM uint32_t DCTEE    : 1; /*!< [0..0] DCTEE                                                              */
+#else
             __IOM uint32_t DCTEE    : 1; /*!< [0..0] DCTEE                                                              */
             __IOM uint32_t DCTEIOE  : 1; /*!< [1..1] DCTEIOE                                                            */
             uint32_t                : 14;
             __IOM uint32_t RXDNEE   : 1; /*!< [16..16] RXDNEE                                                           */
             __IOM uint32_t RXDNEIOE : 1; /*!< [17..17] RXDNEIOE                                                         */
             uint32_t                : 14;
+#endif
         } GWEIE5_b;
     };
 
     union
     {
-        __IOM uint32_t GWEID5;           /*!< (@ 0x000012A8) GWCA Error Interrupt Disable Register 5 (GWEID5)           */
+        __IOM uint32_t GWEID5;         /*!< (@ 0x000012A8) GWCA Error Interrupt Disable Register 5 (GWEID5)           */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                : 15;
+            __IOM uint32_t RXDNEIOD : 1; /*!< [16..16] RXDNEIOD                                                         */
+            __IOM uint32_t RXDNED   : 1; /*!< [15..15] RXDNED                                                           */
+            uint32_t                : 13;
+            __IOM uint32_t DCTEIOD  : 1; /*!< [1..1] DCTEIOD                                                            */
+            __IOM uint32_t DCTED    : 1; /*!< [0..0] DCTED                                                              */
+#else
             __IOM uint32_t DCTED    : 1; /*!< [0..0] DCTED                                                              */
             __IOM uint32_t DCTEIOD  : 1; /*!< [1..1] DCTEIOD                                                            */
             uint32_t                : 13;
             __IOM uint32_t RXDNED   : 1; /*!< [15..15] RXDNED                                                           */
             __IOM uint32_t RXDNEIOD : 1; /*!< [16..16] RXDNEIOD                                                         */
             uint32_t                : 15;
+#endif
         } GWEID5_b;
     };
-} R_GWCA0_Type;                          /*!< Size = 4780 (0x12ac)                                                      */
+} R_GWCA0_Type;                        /*!< Size = 4780 (0x12ac)                                                      */
 
 /** @} */ /* End of group Device_Peripheral_peripherals */
 
-#endif                                   /* R_GWCA_REG_H */
+#endif                                 /* R_GWCA_REG_H */

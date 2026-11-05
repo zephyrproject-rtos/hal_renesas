@@ -31,8 +31,13 @@ typedef struct                         /*!< (@ 0x81000400) R_SAU Structure      
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t          : 31;
+            __IOM uint32_t NS : 1;     /*!< [0..0] Non-secure Address Space Setting                                   */
+#else
             __IOM uint32_t NS : 1;     /*!< [0..0] Non-secure Address Space Setting                                   */
             uint32_t          : 31;
+#endif
         } AAS_b;
     };
 
@@ -42,9 +47,15 @@ typedef struct                         /*!< (@ 0x81000400) R_SAU Structure      
 
         struct
         {
-            __IM uint32_t ISER : 1;    /*!< [0..0] Instruction Access Secure Exception Flag                           */
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 30;
+            __IM uint32_t DSER : 1;    /*!< [1..1] Data Access Secure Exception Occurrence Flag                       */
+            __IM uint32_t ISER : 1;    /*!< [0..0] Instruction Access Secure Exception Occurrence Flag                */
+#else
+            __IM uint32_t ISER : 1;    /*!< [0..0] Instruction Access Secure Exception Occurrence Flag                */
             __IM uint32_t DSER : 1;    /*!< [1..1] Data Access Secure Exception Occurrence Flag                       */
             uint32_t           : 30;
+#endif
         } SESTS_b;
     };
 
@@ -54,8 +65,13 @@ typedef struct                         /*!< (@ 0x81000400) R_SAU Structure      
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t           : 31;
+            __IOM uint32_t CLR : 1;    /*!< [0..0] Exception Status Clear                                             */
+#else
             __IOM uint32_t CLR : 1;    /*!< [0..0] Exception Status Clear                                             */
             uint32_t           : 31;
+#endif
         } SECLR_b;
     };
 

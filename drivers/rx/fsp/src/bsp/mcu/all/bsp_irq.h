@@ -178,7 +178,7 @@ __STATIC_INLINE uint32_t R_BSP_GetCurrentIpl (void)
     __GET_PSW(current_psw);
 
     /* Return IPL value. */
-    return (current_psw >> BSP_CPU_PSW_IPL_OFFSET) & 0xF;
+    return (current_psw >> BSP_CPU_PSW_IPL_OFFSET) & BSP_FEATURE_PSW_IPL_MASK;
 }
 
 /*******************************************************************************************************************//**
@@ -195,9 +195,9 @@ __STATIC_INLINE void R_BSP_SetIpl (uint32_t interrupt_mask_level)
     /* Get PSW register value. */
     __GET_PSW(current_psw);
 
-    current_psw = current_psw & ~((uint32_t) 0xF << BSP_CPU_PSW_IPL_OFFSET);
+    current_psw = current_psw & ~((uint32_t) BSP_FEATURE_PSW_IPL_MASK << BSP_CPU_PSW_IPL_OFFSET);
 
-    current_psw = current_psw | ((interrupt_mask_level & 0xF) << BSP_CPU_PSW_IPL_OFFSET);
+    current_psw = current_psw | ((interrupt_mask_level & BSP_FEATURE_PSW_IPL_MASK) << BSP_CPU_PSW_IPL_OFFSET);
 
     /* Set the variable to PSW. */
     __SET_PSW(current_psw);

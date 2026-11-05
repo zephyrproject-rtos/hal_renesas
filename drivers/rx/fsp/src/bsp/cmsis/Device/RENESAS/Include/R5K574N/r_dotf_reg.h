@@ -71,6 +71,6 @@ typedef struct                         /*!< (@ 0x87868800) R_DOTF Structure     
             __IOM uint32_t B00 : 32;   /*!< [31..0] Bit 0                                                             */
         } REG03_b;
     };
-} R_DOTF0_Type;                         /*!< Size = 144 (0x90)                                                         */
+} R_DOTF0_Type;                        /*!< Size = 144 (0x90)                                                         */
 
 #endif /* R_DOTF_REG_H */
