@@ -214,16 +214,12 @@ void SystemInit (void)
 #endif
 
 #if __FPU_USED
-    /* Zephyr has its own FPU management: arch/arm/core/cortex_m/prep_c.c */
-    /* z_arm_floating_point_init */
- #if BSP_CFG_RTOS != 3
 
     /* Enable the FPU only when it is used.
      * Code taken from Section 7.1, Cortex-M4 TRM (DDI0439C) */
 
     /* Set bits 20-23 (CP10 and CP11) to enable FPU. */
     SCB->CPACR = (uint32_t) CP_MASK;
- #endif /* BSP_CFG_RTOS != 3 */
 #endif
 
 #if BSP_TZ_SECURE_BUILD
