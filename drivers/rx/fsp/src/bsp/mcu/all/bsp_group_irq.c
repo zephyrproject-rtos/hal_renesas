@@ -65,6 +65,10 @@ const icu_event_t g_group_irq_table[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS] =
 
 void * gp_renesas_group_irq_context[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
 
+/** Callbacks of the group interrupt factors, registered at runtime by the driver. */
+bsp_grp_irq_cb_t g_bsp_group_irq_callback_list[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][
+    BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
+
 /** This array holds callback functions. */
 bsp_grp_irq_nmi_cb_t g_bsp_group_irq_sources[BSP_FEATURE_ICU_NMIER_MAX_INDEX + 1] BSP_SECTION_EARLY_INIT;
 
@@ -885,8 +889,6 @@ void group_irq_isr (void) {
         /* Get the current irq status register. */
         if (0U != (status & (1U << factor)))
         {
-            extern const bsp_grp_irq_cb_t g_bsp_group_irq_callback_list[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][
-                BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
             g_bsp_group_irq_callback_list[index][factor]();
         }
     }

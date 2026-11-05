@@ -57,6 +57,8 @@ typedef void (* bsp_grp_irq_nmi_cb_t)(bsp_grp_irq_nmi_t irq);
 extern const icu_event_t g_group_irq_table[];
 extern void            * gp_renesas_group_irq_context[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][
     BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
+extern bsp_grp_irq_cb_t g_bsp_group_irq_callback_list[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][
+    BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
