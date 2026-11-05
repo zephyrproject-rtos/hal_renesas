@@ -156,7 +156,8 @@ fsp_err_t RP_LVD_IsEnable (lvd_ctrl_t * const p_api_ctrl, bool * is_enabled)
  * @retval FSP_SUCCESS                     Setting was successful.
  * @retval FSP_ERR_ASSERTION               p_ctrl is NULL.
  * @retval FSP_ERR_NOT_OPEN                Module not opened.
- * @retval FSP_ERR_INVALID_ARGUMENT        Trigger both edge when in reset action.
+ * @retval FSP_ERR_INVALID_ARGUMENT        Both edges requested in reset action.
+ * @retval FSP_ERR_UNSUPPORTED             Rising edge reset not supported on this device.
  **********************************************************************************************************************/
 fsp_err_t RP_LVD_TriggerSet (lvd_ctrl_t * const p_api_ctrl, bool reset_action, lvd_voltage_slope_t voltage_slope)
 {
@@ -170,16 +171,25 @@ fsp_err_t RP_LVD_TriggerSet (lvd_ctrl_t * const p_api_ctrl, bool reset_action, l
     /* Reset response is not accepted in case voltage slope is both edges */
     FSP_ERROR_RETURN((reset_action == false) || (voltage_slope != LVD_VOLTAGE_SLOPE_BOTH),
                      FSP_ERR_INVALID_ARGUMENT);
+
+ #if BSP_FEATURE_LVD_SUPPORT_RESET_ON_RISING_EDGE == 0
+
+    /* Reset on rising edge is not supported on this device. */
+    FSP_ERROR_RETURN((reset_action == false) || (voltage_slope != LVD_VOLTAGE_SLOPE_RISING),
+                     FSP_ERR_UNSUPPORTED);
+ #endif
 #endif
 
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LVD);
 
     if (reset_action)
     {
+#if BSP_FEATURE_LVD_SUPPORT_RESET_ON_RISING_EDGE
         *g_lvdncmpcr_lut[channel_index] &= ~(R_SYSTEM_LVD1CMPCR_LVDE_Msk);
         *g_lvdnfcr_lut[channel_index]    = (voltage_slope == LVD_VOLTAGE_SLOPE_RISING);
         *g_lvdncmpcr_lut[channel_index] |= R_SYSTEM_LVD1CMPCR_LVDE_Msk;
         R_BSP_SoftwareDelay(LVD_STABILIZATION_TIME_US, BSP_DELAY_UNITS_MICROSECONDS);
+#endif
     }
     else
     {
