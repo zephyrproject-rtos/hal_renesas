@@ -54,3 +54,7 @@ endif()
 # ICU
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_EXT_IRQ
 	fsp/src/r_icu/r_icu.c)
+
+# OSTM
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_OSTM
+	fsp/src/r_ostm/r_ostm.c)
