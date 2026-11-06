@@ -48,3 +48,9 @@ elseif(CONFIG_SOC_R7F70254XFABG_C
 	zephyr_include_directories(fsp/src/bsp/mcu/${CONFIG_SOC_SERIES}/rh850u2b10)
 
 endif()
+
+# Optional build base on feature configuration
+
+# ICU
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_EXT_IRQ
+	fsp/src/r_icu/r_icu.c)
