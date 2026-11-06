@@ -55,6 +55,14 @@ endif()
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_EXT_IRQ
 	fsp/src/r_icu/r_icu.c)
 
+# IOPORT
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_IOPORT
+	fsp/src/r_ioport/r_ioport.c)
+
 # OSTM
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_OSTM
 	fsp/src/r_ostm/r_ostm.c)
+
+# RLIN3_UART
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_RLIN3_UART
+	fsp/src/r_rlin3_uart/r_rlin3_uart.c)
