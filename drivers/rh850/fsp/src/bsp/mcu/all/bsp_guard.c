@@ -578,9 +578,10 @@ static void bsp_peg_protection_status (bsp_guard_protection_status_t * p_status)
         bsp_guard_protection_status(p_pegcap_reg, p_guard_status);
 
 #if (BSP_FEATURE_PEGCAP_M_IS_AVAILABLE == 1)
-
-        /* Move to the next capture module (PEGCAP_M for PE0, PE1, PE2, PE3), Not available in U2Cx device  */
-        p_pegcap_reg = (R_PEGCAP_S_PE0CL0_Type *) g_pegcap_m_baseaddress[index_access]; /* PRQA S 0306 # Advisory R-11.4 */
+        if (sizeof(g_pegcap_m_baseaddress) / sizeof(uint32_t) > index_access) {
+            /* Move to the next capture module (PEGCAP_M for PE0, PE1, PE2, PE3), Not available in U2Cx device  */
+            p_pegcap_reg = (R_PEGCAP_S_PE0CL0_Type *) g_pegcap_m_baseaddress[index_access]; /* PRQA S 0306 # Advisory R-11.4 */
+        }
 #endif
     }
 }

@@ -50,10 +50,10 @@ extern "C" {
  #elif defined(__GNUC__)
 
 /** Pragma to support for interrupt function */
-  #define BSP_INTERRUPT_ATTRIBUTE            __attribute__((interrupt))          ///< General interrupt attribute for HighTec
-  #define BSP_FEINT_INTERRUPT_ATTRIBUTE      __attribute__((interrupt("FEINT"))) ///< FEINT interrupt attribute for HighTec
-  #define BSP_FENMI_INTERRUPT_ATTRIBUTE      __attribute__((interrupt("FEINT"))) ///< FENMI interrupt attribute for HighTec
-  #define BSP_DIRECT_INTERRUPT_ATTRIBUTE                                         ///< Direct Vector Interrupt attribute placeholder for HighTec
+  #define BSP_INTERRUPT_ATTRIBUTE                                         ///< General interrupt attribute for GCC
+  #define BSP_FEINT_INTERRUPT_ATTRIBUTE                                   ///< FEINT interrupt attribute for GCC
+  #define BSP_FENMI_INTERRUPT_ATTRIBUTE                                   ///< FENMI interrupt attribute for GCC
+  #define BSP_DIRECT_INTERRUPT_ATTRIBUTE                                  ///< Direct Vector Interrupt attribute placeholder for GCC
 
  #elif (__ICCRH850__)
 
