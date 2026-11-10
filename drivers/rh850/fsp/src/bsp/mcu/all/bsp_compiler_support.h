@@ -200,20 +200,20 @@
 #elif defined(__GNUC__)
 
 /* Create the pragma inline statement with the function name as argument */
- #define BSP_PRAGMA_SECTION_OPTION_BYTE           ".OPBT_top"                                            ///< Section name: option bytes (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_DEFAULT               "default"                                              ///< Default section (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_CRUN_CODE_TEXT        ".CRUN_CODE.text"                                      ///< CRUN text section (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_CRUN_CODE_DATA        ".CRUN_CODE.data"                                      ///< CRUN data section (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_CRUN_CODE_ROM_DATA    ".CRUN_CODE.rodata"                                    ///< CRUN read-only data section (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_CRUN_CODE_BSS         ".CRUN_CODE.bss"                                       ///< CRUN BSS section (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_CRUN_INTVECT_PE0      ".CRUN_inttable_PE0.data"                              ///< CRUN interrupt table (PE0) (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_INTVECT_PE0           ".inttable_PE0.data"                                   ///< Interrupt table section (PE0) (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_INTVECT_PE1           ".inttable_PE1.data"                                   ///< Interrupt table section (PE1) (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_INTVECT_PE2           ".inttable_PE2.data"                                   ///< Interrupt table section (PE2) (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_INTVECT_PE3           ".inttable_PE3.data"                                   ///< Interrupt table section (PE3) (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_INTVECT_PE4           ".inttable_PE4.data"                                   ///< Interrupt table section (PE4) (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_INTVECT_PE5           ".inttable_PE5.data"                                   ///< Interrupt table section (PE5) (used for BSP_PRAGMA_PLACE_IN_SECTION)
- #define BSP_PRAGMA_SECTION_INTVECT_PE6           ".inttable_PE6.data"                                   ///< Interrupt table section (PE6) (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_OPTION_BYTE           OPBT_top                                               ///< Section name: option bytes (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_DEFAULT               default                                                ///< Default section (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_CRUN_CODE_TEXT        CRUN_CODE_text                                         ///< CRUN text section (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_CRUN_CODE_DATA        CRUN_CODE_data                                         ///< CRUN data section (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_CRUN_CODE_ROM_DATA    CRUN_CODE_rodata                                       ///< CRUN read-only data section (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_CRUN_CODE_BSS         CRUN_CODE_bss                                          ///< CRUN BSS section (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_CRUN_INTVECT_PE0      CRUN_inttable_PE0_data                                 ///< CRUN interrupt table (PE0) (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_INTVECT_PE0           inttable_PE0_data                                      ///< Interrupt table section (PE0) (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_INTVECT_PE1           inttable_PE1_data                                      ///< Interrupt table section (PE1) (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_INTVECT_PE2           inttable_PE2_data                                      ///< Interrupt table section (PE2) (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_INTVECT_PE3           inttable_PE3_data                                      ///< Interrupt table section (PE3) (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_INTVECT_PE4           inttable_PE4_data                                      ///< Interrupt table section (PE4) (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_INTVECT_PE5           inttable_PE5_data                                      ///< Interrupt table section (PE5) (used for BSP_PRAGMA_PLACE_IN_SECTION)
+ #define BSP_PRAGMA_SECTION_INTVECT_PE6           inttable_PE6_data                                      ///< Interrupt table section (PE6) (used for BSP_PRAGMA_PLACE_IN_SECTION)
 
  #define BSP_PRAGMA_SECTION_CRUN_DATA             data                                                   ///< Generic data section tag
  #define BSP_PRAGMA_SECTION_CRUN_ROM_DATA         rodata                                                 ///< Generic read-only data section tag
@@ -223,7 +223,7 @@
  #define BSP_PRAGMA_SECTION_ROM_DATA              rodata                                                 ///< Read-only data section
  #define BSP_PRAGMA_SECTION_BSS                   bss                                                    ///< BSS section
  #define BSP_PRAGMA_SECTION_TEXT                  text                                                   ///< Text/code section
- #define BSP_PRAGMA_PLACE_IN_SECTION(sec, name)    BSP_PRAGMA_HELPER(clang section sec = name)           ///< Place symbol in section
+ #define BSP_PRAGMA_PLACE_IN_SECTION(sec, name)   BSP_PRAGMA_HELPER(ghs section sec = name)             ///< Place symbol in section
 
  #define BSP_PRAGMA_MEMORY_ATTRIBUTE_SMALL                                                               ///< Small  memory attribute
  #define BSP_PRAGMA_MEMORY_ATTRIBUTE_MEDIUM                                                              ///< Medium memory attribute
@@ -235,6 +235,9 @@
  #define BSP_FORCE_INLINE                         __attribute__((always_inline))                         ///< Force inline for functions
  #define BSP_NO_INLINE                            __attribute__((noinline))                              ///< Prevent function inlining
  #define BSP_ALIGN_VARIABLE(x)                     __attribute__((aligned(x)))                           ///< Force variable alignment to x-byte boundary
+
+ #define BSP_SECTION_FENMI_TEXT                   "FENMI.text"                                           ///< Section name for FENMI handler code
+ #define BSP_SECTION_FEINT_TEXT                   "FEINT.text"                                           ///< Section name for FEINT handler code
 
  #define BSP_SECTION_STACK_PE0_BSS                ".pe0_stack.bss"                                       ///< Section name for stack (PE0)
  #define BSP_SECTION_STACK_PE1_BSS                ".pe1_stack.bss"                                       ///< Section name for stack (PE1)

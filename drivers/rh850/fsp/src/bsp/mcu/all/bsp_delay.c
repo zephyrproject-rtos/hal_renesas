@@ -163,7 +163,7 @@ loop_label:
     loop r6, loop_label
 }
 
-#elif defined(__ghs__) || defined(__GNUC__) || defined(__ICCRH850__)
+#elif defined(__ghs__) || defined(__ICCRH850__)
 
 static void bsp_prv_software_delay_loop (volatile uint32_t loop_cnt)
 {
@@ -172,6 +172,21 @@ static void bsp_prv_software_delay_loop (volatile uint32_t loop_cnt)
         "    nop                 \n"
         "    nop                 \n"
         "loop %0, loop_label       "
+         : "+r" (loop_cnt)
+         :
+         : "memory"
+    );
+}
+
+#elif defined(__GNUC__)
+
+static void bsp_prv_software_delay_loop (volatile uint32_t loop_cnt)
+{
+    __asm__ volatile (
+        "loop_label%=:             \n"
+        "    nop                 \n"
+        "    nop                 \n"
+        "loop %0, loop_label%=      "
          : "+r" (loop_cnt)
          :
          : "memory"

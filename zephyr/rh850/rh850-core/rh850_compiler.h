@@ -41,6 +41,12 @@
  #include "rh850_iar.h"
 
 /*
+ * GCC Compiler (experimental)
+ */
+#elif defined(__GNUC__)
+ #include "rh850_gcc.h"
+
+/*
  * Not supported Compiler
  */
 #else
