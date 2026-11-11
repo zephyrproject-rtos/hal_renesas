@@ -27,7 +27,7 @@ FSP_HEADER
  **********************************************************************************************************************/
 
 /* If Code Flash programming is enabled, then all API functions must execute out of RAM. */
-#define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".ram_code_from_flash")
+#define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".ramfunc")
 
 /***********************************************************************************************************************
  * Typedef definitions
