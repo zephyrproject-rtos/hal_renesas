@@ -36,6 +36,7 @@ fsp_err_t RP_ULPT_CompareMatchEnable(timer_ctrl_t * const        p_ctrl,
                                      timer_compare_match_t const match_channel);
 fsp_err_t RP_ULPT_CompareMatchDisable(timer_ctrl_t * const        p_ctrl,
                                       timer_compare_match_t const match_channel);
+fsp_err_t RP_ULPT_EventClear(timer_ctrl_t * const p_ctrl, uint8_t const event);
 
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 
