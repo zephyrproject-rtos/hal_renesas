@@ -45,3 +45,15 @@ Patch List:
      warning
    Impacted files:
       drivers/rx/fsp/src/bsp/mcu/all/bsp_compiler_support.h
+
+   * Adapt BSP_ICU_IRQ_HANDLER for Zephyr: remove "setpsw i" and "rte", and
+     pass the IRQ number as a register operand to allow runtime values
+   Impacted files:
+      drivers/rx/fsp/src/bsp/mcu/all/bsp_irq.h
+
+   * Define the writable `g_bsp_group_irq_callback_list` in bsp_group_irq.c and
+     declare it in bsp_group_irq.h, instead of the `const` table generated in
+     vector_data.c, so the Zephyr driver can register callbacks at runtime
+   Impacted files:
+      drivers/rx/fsp/src/bsp/mcu/all/bsp_group_irq.c
+      drivers/rx/fsp/src/bsp/mcu/all/bsp_group_irq.h

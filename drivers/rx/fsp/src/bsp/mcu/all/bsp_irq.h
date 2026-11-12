@@ -27,25 +27,21 @@ FSP_HEADER
  #define BSP_ICU_IRQ_HANDLER(num, isr)                                                            \
     /* Push All register. */                                                                      \
     __asm volatile ("pushm  r1-r15                          \n"                                   \
-                                       /* uint32_t previous_isr_number = g_current_isr_number; */ \
+                    /* uint32_t previous_isr_number = g_current_isr_number; */                    \
                     "mov.l	%0, r7                          \n"                                   \
                     "mov.l	[r7], r10                       \n"                                   \
-                                       /* g_current_isr_number = num; */                          \
-                    "mov.l	%1, [r7]                        \n"                                   \
-                                       /* Enable Nested interrupt. */                             \
-                    "setpsw i                               \n"                                   \
-                                       /* isr() */                                                \
-                    "mov.l	%2, r8                          \n"                                   \
+                    /* g_current_isr_number = num; */                                             \
+                    "mov.l	%2 , [r7]                       \n"                                   \
+                    /* isr() */                                                                   \
+                    "mov.l	%1, r8                          \n"                                   \
                     "jsr    r8                              \n"                                   \
-                                       /* g_current_isr_number = previous_isr_number; */          \
+                    /* g_current_isr_number = previous_isr_number; */                             \
                     "mov.l	r10, [r7]                       \n"                                   \
-                                       /* Pop All register. */                                    \
-                    "popm   r1-r15                          \n"                                   \
-                                       /* Return from isr. */                                     \
-                    "rte" :                                                                       \
+                    /* Pop All register. */                                                       \
+                    "popm   r1-r15                          \n":                                  \
                     : "i" (&g_current_isr_number),                                                \
-                    "i" (num),                                                                    \
-                    "i" (&isr));                                                                  \
+                    "i" (&isr),                                                                   \
+                    "r" (num));
 
 #endif
 
