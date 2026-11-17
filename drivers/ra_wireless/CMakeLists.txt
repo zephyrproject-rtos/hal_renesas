@@ -48,9 +48,6 @@ set(srcs
 	fsp/src/bsp_w/cmsis/Device/RENESAS/Source/GCC/deepsleep.S
 )
 
-zephyr_blobs_verify(FILES ${hal_blobs_dir}/ra6b1/libentropy.a REQUIRED)
-zephyr_library_link_libraries(${hal_blobs_dir}/ra6b1/libentropy.a)
-
 # Optional build base on feature configuration
 zephyr_library_sources_ifdef(CONFIG_UART_RA6B1 fsp/src/r_uart_w_b/r_uart_w_b.c)
 

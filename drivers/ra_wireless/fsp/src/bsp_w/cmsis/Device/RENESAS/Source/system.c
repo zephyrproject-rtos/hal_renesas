@@ -261,8 +261,6 @@ void SystemInit (void)
 #if BSP_MCU_GROUP_RA6B1 || BSP_MCU_GROUP_RA6U1
  #if !BSP_TZ_NONSECURE_BUILD
     bsp_prv_rsip_fetch_KeyIndex();
-
-    BSP_CHECK_FATAL(bsp_entropy_generate(15) == FSP_SUCCESS);
  #endif
 #endif
 
