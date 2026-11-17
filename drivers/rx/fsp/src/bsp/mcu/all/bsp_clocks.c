@@ -480,6 +480,13 @@ static void bsp_prv_init_rtc(void);
  * environment is initialized. */
 static uint32_t g_clock_freq[BSP_PRV_NUM_CLOCKS]  BSP_PLACE_IN_SECTION(BSP_SECTION_NOINIT);
 
+#if BSP_PZ_SECURE_BUILD
+static bool r_bsp_check_address_non_secure(uintptr_t address, size_t size);
+
+/* This pointer stores the address of the Non-Secure system core clock variable. */
+static uint32_t * gp_ns_system_core_clock;
+#endif
+
 /*******************************************************************************************************************//**
  * @internal
  * @addtogroup BSP_MCU_PRV Internal BSP Documentation
@@ -565,6 +572,8 @@ void bsp_prv_prepare_pll (uint32_t clock, uint32_t const * const p_pll_hz)
  **********************************************************************************************************************/
 void SystemCoreClockUpdate (void)
 {
+    /* Non-Secure SystemCoreClock is not updated in the Non-Secure world. */
+#if !BSP_PZ_NONSECURE_BUILD
     uint32_t clock_index = R_SYSTEM->SCKSCR;
 
     uint8_t cpuclk_div = (uint8_t) ((R_SYSTEM->SCKDIVCR2 & R_SYSTEM_SCKDIVCR2_CPUCK0_Msk) >>
@@ -590,6 +599,16 @@ void SystemCoreClockUpdate (void)
     {
         SystemCoreClock = g_clock_freq[clock_index] >> cpuclk_div;
     }
+
+ #if BSP_PZ_SECURE_BUILD
+
+    /* Update the Non-Secure SystemCoreClock value. */
+    if (r_bsp_check_address_non_secure((uintptr_t) gp_ns_system_core_clock, sizeof(SystemCoreClock)))
+    {
+        *gp_ns_system_core_clock = SystemCoreClock;
+    }
+ #endif
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -786,7 +805,9 @@ void bsp_prv_clock_set (uint32_t clock, uint32_t sckdivcr, uint16_t sckdivcr2)
     /* Clock is now at requested frequency. */
 
     /* Update the CMSIS core clock variable so that it reflects the new ICLK frequency. */
+#if !BSP_PZ_NONSECURE_BUILD
     SystemCoreClock = clock_freq_hz_post_change;
+#endif
 }
 
 #if BSP_CFG_SLEEP_MODE_DELAY_ENABLE || BSP_CFG_RTOS_SLEEP_MODE_DELAY_ENABLE
@@ -848,9 +869,19 @@ static void bsp_prv_clock_set_hard_reset (void)
     bsp_prv_set_wait_state_frequency(BSP_STARTUP_MRICLK_HZ, BSP_STARTUP_MRPCLK_HZ);
 
  #if BSP_FEATURE_CGC_HAS_SRAMWTSC
+  #if !BSP_PZ_NONSECURE_BUILD
     R_SRAM->SRAMPRCR_S = BSP_PRV_SRAM_UNLOCK;
-    R_SRAM->SRAMWTSC   = BSP_PRV_SRAM_WAIT_CYCLES;
+  #else
+    R_SRAM->SRAMPRCR_NS = BSP_PRV_SRAM_UNLOCK;
+  #endif
+
+    R_SRAM->SRAMWTSC = BSP_PRV_SRAM_WAIT_CYCLES;
+
+  #if !BSP_PZ_NONSECURE_BUILD
     R_SRAM->SRAMPRCR_S = BSP_PRV_SRAM_LOCK;
+  #else
+    R_SRAM->SRAMPRCR_NS = BSP_PRV_SRAM_LOCK;
+  #endif
  #endif
 
  #if BSP_PRV_ICLK_DIV_VALUE >= BSP_PRV_SCKDIVCR_DIV_VALUE(BSP_FEATURE_CGC_ICLK_DIV_RESET)
@@ -1066,7 +1097,11 @@ void bsp_soft_reset_prepare (void)
 void bsp_clock_init (void)
 {
     /* Unlock CGC and LPM protection registers. */
-    R_SYSTEM->PRCR = (uint16_t) BSP_PRV_PRCR_UNLOCK;
+#if !BSP_PZ_NONSECURE_BUILD
+    R_SYSTEM->PRCR_S = (uint16_t) BSP_PRV_PRCR_UNLOCK;
+#else
+    R_SYSTEM->PRCR_NS = (uint16_t) BSP_PRV_PRCR_UNLOCK;
+#endif
 
     bsp_clock_freq_var_init();
 
@@ -1399,8 +1434,32 @@ void bsp_clock_init (void)
                              BSP_CFG_DSMIFCLK_SOURCE);
 #endif
 
+    /* Set the ENCCLK0 clock if it exists on the MCU */
+#if BSP_FEATURE_BSP_HAS_ENC0_CLOCK && (BSP_CFG_ENCCLK0_SOURCE != BSP_CLOCKS_CLOCK_DISABLED)
+    bsp_peripheral_clock_set(&R_SYSTEM->ENCCKCR0, &R_SYSTEM->ENCCKDIVCR0, BSP_CFG_ENCCLK0_DIV, BSP_CFG_ENCCLK0_SOURCE);
+#endif
+
+    /* Set the ENCCLK1 clock if it exists on the MCU */
+#if BSP_FEATURE_BSP_HAS_ENC1_CLOCK && (BSP_CFG_ENCCLK1_SOURCE != BSP_CLOCKS_CLOCK_DISABLED)
+    bsp_peripheral_clock_set(&R_SYSTEM->ENCCKCR1, &R_SYSTEM->ENCCKDIVCR1, BSP_CFG_ENCCLK1_DIV, BSP_CFG_ENCCLK1_SOURCE);
+#endif
+
+    /* Set the ED3CLK0 clock if it exists on the MCU */
+#if BSP_FEATURE_BSP_HAS_ED30_CLOCK && (BSP_CFG_ED3CLK0_SOURCE != BSP_CLOCKS_CLOCK_DISABLED)
+    bsp_peripheral_clock_set(&R_SYSTEM->ED3CKCR0, &R_SYSTEM->ED3CKDIVCR0, BSP_CFG_ED3CLK0_DIV, BSP_CFG_ED3CLK0_SOURCE);
+#endif
+
+    /* Set the ED3CLK1 clock if it exists on the MCU */
+#if BSP_FEATURE_BSP_HAS_ED31_CLOCK && (BSP_CFG_ED3CLK1_SOURCE != BSP_CLOCKS_CLOCK_DISABLED)
+    bsp_peripheral_clock_set(&R_SYSTEM->ED3CKCR1, &R_SYSTEM->ED3CKDIVCR1, BSP_CFG_ED3CLK1_DIV, BSP_CFG_ED3CLK1_SOURCE);
+#endif
+
     /* Lock CGC and LPM protection registers. */
-    R_SYSTEM->PRCR = (uint16_t) BSP_PRV_PRCR_LOCK;
+#if !BSP_PZ_NONSECURE_BUILD
+    R_SYSTEM->PRCR_S = (uint16_t) BSP_PRV_PRCR_LOCK;
+#else
+    R_SYSTEM->PRCR_NS = (uint16_t) BSP_PRV_PRCR_LOCK;
+#endif
 }
 
 #if BSP_CLOCK_CFG_SUBCLOCK_POPULATED
@@ -1497,14 +1556,25 @@ static uint8_t bsp_clock_set_prechange (uint32_t requested_freq_hz)
     if (requested_freq_hz > BSP_FEATURE_BSP_SYS_CLOCK_FREQ_NO_RAM_WAITS)
     {
         /* Unlock SRAM protecti control register. */
+ #if !BSP_PZ_NONSECURE_BUILD
         R_SRAM->SRAMPRCR_S = BSP_PRV_SRAM_UNLOCK;
+ #else
+        R_SRAM->SRAMPRCR_NS = BSP_PRV_SRAM_UNLOCK;
+ #endif
 
         /* Set SRAM Wait Control register */
         R_SRAM->SRAMWTSC = BSP_FEATURE_SRAM_SRAMWTSC_WAIT_CYCLE_ENABLE;
 
         /* Lock SRAM protecti control register. */
+ #if !BSP_PZ_NONSECURE_BUILD
         R_SRAM->SRAMPRCR_S = BSP_PRV_SRAM_LOCK;
+ #else
+        R_SRAM->SRAMPRCR_NS = BSP_PRV_SRAM_LOCK;
+ #endif
     }
+
+#else
+    FSP_PARAMETER_NOT_USED(requested_freq_hz);
 #endif
 
     return 0;
@@ -1526,14 +1596,25 @@ static void bsp_clock_set_postchange (uint32_t updated_freq_hz, uint8_t new_rom_
     if (updated_freq_hz <= BSP_FEATURE_BSP_SYS_CLOCK_FREQ_NO_RAM_WAITS)
     {
         /* Unlock SRAM protecti control register. */
+ #if !BSP_PZ_NONSECURE_BUILD
         R_SRAM->SRAMPRCR_S = BSP_PRV_SRAM_UNLOCK;
+ #else
+        R_SRAM->SRAMPRCR_NS = BSP_PRV_SRAM_UNLOCK;
+ #endif
 
         /* Set SRAM Wait Control register */
         R_SRAM->SRAMWTSC = BSP_PRV_SRAMWTSC_WAIT_CYCLES_DISABLE;
 
         /* Lock SRAM protecti control register. */
+ #if !BSP_PZ_NONSECURE_BUILD
         R_SRAM->SRAMPRCR_S = BSP_PRV_SRAM_LOCK;
+ #else
+        R_SRAM->SRAMPRCR_NS = BSP_PRV_SRAM_LOCK;
+ #endif
     }
+
+#else
+    FSP_PARAMETER_NOT_USED(updated_freq_hz);
 #endif
 }
 
@@ -1650,11 +1731,21 @@ void R_BSP_OctaclkUpdate (bsp_octaclk_settings_t * p_octaclk_setting)
   #define OSPI_UNIT_COUNT    (1U)
  #endif
 
+ #if !BSP_PZ_NONSECURE_BUILD
+
     /* Store initial value of CGC and LPM protection registers. */
-    uint16_t bsp_prv_prcr_orig = R_SYSTEM->PRCR;
+    uint16_t bsp_prv_prcr_orig = R_SYSTEM->PRCR_S;
 
     /* Unlock CGC and LPM protection registers. */
-    R_SYSTEM->PRCR = (uint16_t) BSP_PRV_PRCR_UNLOCK;
+    R_SYSTEM->PRCR_S = (uint16_t) BSP_PRV_PRCR_UNLOCK;
+ #else
+
+    /* Store initial value of CGC and LPM protection registers. */
+    uint16_t bsp_prv_prcr_orig = R_SYSTEM->PRCR_NS;
+
+    /* Unlock CGC and LPM protection registers. */
+    R_SYSTEM->PRCR_NS = (uint16_t) BSP_PRV_PRCR_UNLOCK;
+ #endif
 
     /* Request to change the XSPI Clock. */
 
@@ -1704,7 +1795,11 @@ void R_BSP_OctaclkUpdate (bsp_octaclk_settings_t * p_octaclk_setting)
     }
 
     /* Restore CGC and LPM protection registers. */
-    R_SYSTEM->PRCR = (uint16_t) (BSP_PRV_PRCR_KEY | bsp_prv_prcr_orig);
+ #if !BSP_PZ_NONSECURE_BUILD
+    R_SYSTEM->PRCR_S = (uint16_t) (BSP_PRV_PRCR_KEY | bsp_prv_prcr_orig);
+ #else
+    R_SYSTEM->PRCR_NS = (uint16_t) (BSP_PRV_PRCR_KEY | bsp_prv_prcr_orig);
+ #endif
 #else
     FSP_PARAMETER_NOT_USED(p_octaclk_setting);
 #endif
@@ -1823,6 +1918,71 @@ void R_BSP_Init_RTC (void)
     R_SYSTEM->TAMPICR1 = 0U;
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_OM_LPC_BATT_SWR);
  #endif
+}
+
+#endif
+
+#if BSP_PZ_SECURE_BUILD
+
+/*******************************************************************************************************************//**
+ * Initialize ProtectZone system core clock synchronization.
+ * This SSC function stores the Non-Secure SystemCoreClock address in a Secure variable
+ * and initializes the value with the current Secure SystemCoreClock.
+ **********************************************************************************************************************/
+bsp_ssc_err_t R_BSP_SystemCoreClockSet (intptr_t p_system_core_clock, intptr_t arg1, intptr_t arg2, intptr_t arg3)
+{
+    FSP_PARAMETER_NOT_USED(arg1);
+    FSP_PARAMETER_NOT_USED(arg2);
+    FSP_PARAMETER_NOT_USED(arg3);
+
+    if (!r_bsp_check_address_non_secure((uintptr_t) p_system_core_clock, sizeof(SystemCoreClock)))
+    {
+        return BSP_SSC_ERR_FUNCTION_INVALID_POINTER;
+    }
+
+    /* Copy the current SystemCoreClock value to the specified Non-Secure address. */
+    *((uint32_t *) p_system_core_clock) = SystemCoreClock;
+
+    /* Store the Non-Secure SystemCoreClock address for future updates. */
+    gp_ns_system_core_clock = (uint32_t *) p_system_core_clock;
+
+    return BSP_SSC_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * Check whether the specified address is in Non-Secure RAM.
+ **********************************************************************************************************************/
+bool r_bsp_check_address_non_secure (uintptr_t address, size_t size)
+{
+    /* Start address of the Non-Secure RAM region. */
+    uintptr_t ns_ram_start = ((uintptr_t) gp_ddsc_RAM_END - BSP_FEATURE_PZ_S_OFFSET + sizeof(uint32_t));
+
+    /* End address of the Non-Secure RAM region. */
+    uintptr_t ns_ram_end = (BSP_FEATURE_RAM_START_ADDRESS + BSP_FEATURE_RAM_START_SIZE) -
+                           BSP_FEATURE_PZ_S_OFFSET;
+
+    /* Verify that the passed address is located within the valid Non-Secure RAM region. */
+    if ((ns_ram_start <= address) && (address <= ns_ram_end) && (size <= (ns_ram_end - address)))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+#elif BSP_PZ_NONSECURE_BUILD
+
+/*******************************************************************************************************************//**
+ * Initialize ProtectZone system core clock synchronization.
+ * This function passes the Non-Secure SystemCoreClock address to the Secure world
+ * through R_BSP_SystemCoreClockSet().
+ **********************************************************************************************************************/
+void r_bsp_ns_system_core_clock_init (void)
+{
+    SystemCoreClock = 0;
+
+    /* Call R_BSP_SystemCoreClockSet. */
+    R_BSP_CallSSCFromNonSecure((intptr_t) &SystemCoreClock, 0, 0, 0, BSP_SSCID_SYSTEM_CLOCK_SET);
 }
 
 #endif

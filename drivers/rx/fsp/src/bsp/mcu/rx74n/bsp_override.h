@@ -19,6 +19,7 @@
  **********************************************************************************************************************/
 #include "../all/endian/bsp_transfer_endian_override.h"
 #include "../all/endian/bsp_sdmmc_endian_override.h"
+#include "../all/endian/bsp_i3c_endian_override.h"
 
 /***********************************************************************************************************************
  * Macro definitions

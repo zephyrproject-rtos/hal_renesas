@@ -6,7 +6,7 @@ Origin:
    https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp
 
 Status:
-   Version 1.0.0-beta.1
+   Version 1.0.0
 
 Purpose:
    Flexible Software Package (FSP) for Renesas RX MCU Family.
@@ -19,7 +19,7 @@ Dependencies:
     None.
 
 URL:
-   N/A
+   https://github.com/renesas/rx-fsp
 
 Commit:
    N/A

@@ -23,7 +23,7 @@
 
 /*******************************************************************************************************************//**
  * Configure selectable irq depend on RX MCU.
- * RX74M has three selectable irq register(SLIXR, SLIR).
+ * RX74M has three selectable irq register(SLIXR, SLIXR).
  **********************************************************************************************************************/
 void bsp_selectable_irq_cfg (void)
 {

@@ -457,7 +457,9 @@
 #define R_ESWM_TASSTSR_MSS2_Msk         (0x1f0000UL)   /*!< MSS2 (Bitfield-Mask: 0x1f)                            */
 #define R_ESWM_TASSTSR_MSS3_Pos         (24UL)         /*!< MSS3 (Bit 24)                                         */
 #define R_ESWM_TASSTSR_MSS3_Msk         (0x1f000000UL) /*!< MSS3 (Bitfield-Mask: 0x1f)                            */
-
+/* =======================================================  ETHBUSCR  ======================================================== */
+#define R_ESWM_ETHBUSCR_ENDIAN_Pos      (0UL)          /*!< ENDIAN (Bit 0)                                        */
+#define R_ESWM_ETHBUSCR_ENDIAN_Msk      (0x1UL)        /*!< ENDIAN (Bitfield-Mask: 0x01)                          */
 /** @} */ /* End of group PosMask_peripherals */
 
 #endif                                                 /* R_ESWM_POSMSK_H */

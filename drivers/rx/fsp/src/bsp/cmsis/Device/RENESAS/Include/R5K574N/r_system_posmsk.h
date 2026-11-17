@@ -27,19 +27,28 @@
 /* =========================================================  MDSAR  ========================================================= */
 #define R_SYSTEM_MDSAR_NONSEC8_Pos              (8UL)          /*!< NONSEC8 (Bit 8)                                       */
 #define R_SYSTEM_MDSAR_NONSEC8_Msk              (0x100UL)      /*!< NONSEC8 (Bitfield-Mask: 0x01)                         */
-/* =========================================================  PRCR  ========================================================== */
-#define R_SYSTEM_PRCR_PRKEY_Pos                 (8UL)          /*!< PRKEY (Bit 8)                                         */
-#define R_SYSTEM_PRCR_PRKEY_Msk                 (0xff00UL)     /*!< PRKEY (Bitfield-Mask: 0xff)                           */
-#define R_SYSTEM_PRCR_PRC5_Pos                  (5UL)          /*!< PRC5 (Bit 5)                                          */
-#define R_SYSTEM_PRCR_PRC5_Msk                  (0x20UL)       /*!< PRC5 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PRCR_PRC4_Pos                  (4UL)          /*!< PRC4 (Bit 4)                                          */
-#define R_SYSTEM_PRCR_PRC4_Msk                  (0x10UL)       /*!< PRC4 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PRCR_PRC3_Pos                  (3UL)          /*!< PRC3 (Bit 3)                                          */
-#define R_SYSTEM_PRCR_PRC3_Msk                  (0x8UL)        /*!< PRC3 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PRCR_PRC1_Pos                  (1UL)          /*!< PRC1 (Bit 1)                                          */
-#define R_SYSTEM_PRCR_PRC1_Msk                  (0x2UL)        /*!< PRC1 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PRCR_PRC0_Pos                  (0UL)          /*!< PRC0 (Bit 0)                                          */
-#define R_SYSTEM_PRCR_PRC0_Msk                  (0x1UL)        /*!< PRC0 (Bitfield-Mask: 0x01)                            */
+/* ========================================================  PRCR_S  ========================================================= */
+#define R_SYSTEM_PRCR_S_PRKEY_Pos               (8UL)          /*!< PRKEY (Bit 8)                                         */
+#define R_SYSTEM_PRCR_S_PRKEY_Msk               (0xff00UL)     /*!< PRKEY (Bitfield-Mask: 0xff)                           */
+#define R_SYSTEM_PRCR_S_PRC5_Pos                (5UL)          /*!< PRC5 (Bit 5)                                          */
+#define R_SYSTEM_PRCR_S_PRC5_Msk                (0x20UL)       /*!< PRC5 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_S_PRC4_Pos                (4UL)          /*!< PRC4 (Bit 4)                                          */
+#define R_SYSTEM_PRCR_S_PRC4_Msk                (0x10UL)       /*!< PRC4 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_S_PRC3_Pos                (3UL)          /*!< PRC3 (Bit 3)                                          */
+#define R_SYSTEM_PRCR_S_PRC3_Msk                (0x8UL)        /*!< PRC3 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_S_PRC1_Pos                (1UL)          /*!< PRC1 (Bit 1)                                          */
+#define R_SYSTEM_PRCR_S_PRC1_Msk                (0x2UL)        /*!< PRC1 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_S_PRC0_Pos                (0UL)          /*!< PRC0 (Bit 0)                                          */
+#define R_SYSTEM_PRCR_S_PRC0_Msk                (0x1UL)        /*!< PRC0 (Bitfield-Mask: 0x01)                            */
+/* ========================================================  PRCR_NS  ======================================================== */
+#define R_SYSTEM_PRCR_NS_PRKEY_Pos              (8UL)          /*!< PRKEY (Bit 8)                                         */
+#define R_SYSTEM_PRCR_NS_PRKEY_Msk              (0xff00UL)     /*!< PRKEY (Bitfield-Mask: 0xff)                           */
+#define R_SYSTEM_PRCR_NS_PRC3_Pos               (3UL)          /*!< PRC3 (Bit 3)                                          */
+#define R_SYSTEM_PRCR_NS_PRC3_Msk               (0x8UL)        /*!< PRC3 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_NS_PRC1_Pos               (1UL)          /*!< PRC1 (Bit 1)                                          */
+#define R_SYSTEM_PRCR_NS_PRC1_Msk               (0x2UL)        /*!< PRC1 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_NS_PRC0_Pos               (0UL)          /*!< PRC0 (Bit 0)                                          */
+#define R_SYSTEM_PRCR_NS_PRC0_Msk               (0x1UL)        /*!< PRC0 (Bitfield-Mask: 0x01)                            */
 /* ========================================================  PVDSAR  ========================================================= */
 #define R_SYSTEM_PVDSAR_NONSEC1_Pos             (1UL)          /*!< NONSEC1 (Bit 1)                                       */
 #define R_SYSTEM_PVDSAR_NONSEC1_Msk             (0x2UL)        /*!< NONSEC1 (Bitfield-Mask: 0x01)                         */
@@ -1205,20 +1214,6 @@
 #define R_SYSTEM_DCCR_WCODE_Msk                 (0xfeUL)       /*!< WCODE (Bitfield-Mask: 0x7f)                           */
 #define R_SYSTEM_DCCR_DSTBYCON_Pos              (0UL)          /*!< DSTBYCON (Bit 0)                                      */
 #define R_SYSTEM_DCCR_DSTBYCON_Msk              (0x1UL)        /*!< DSTBYCON (Bitfield-Mask: 0x01)                        */
-
-/* =========================================================================================================================== */
-/* ================                                        R_SYSTEM_NS                                        ================ */
-/* =========================================================================================================================== */
-
-/* ========================================================  PRCR_NS  ======================================================== */
-#define R_SYSTEM_NS_PRCR_NS_PRKEY_Pos    (8UL)      /*!< PRKEY (Bit 8)                                         */
-#define R_SYSTEM_NS_PRCR_NS_PRKEY_Msk    (0xff00UL) /*!< PRKEY (Bitfield-Mask: 0xff)                           */
-#define R_SYSTEM_NS_PRCR_NS_PRC3_Pos     (3UL)      /*!< PRC3 (Bit 3)                                          */
-#define R_SYSTEM_NS_PRCR_NS_PRC3_Msk     (0x8UL)    /*!< PRC3 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_NS_PRCR_NS_PRC1_Pos     (1UL)      /*!< PRC1 (Bit 1)                                          */
-#define R_SYSTEM_NS_PRCR_NS_PRC1_Msk     (0x2UL)    /*!< PRC1 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_NS_PRCR_NS_PRC0_Pos     (0UL)      /*!< PRC0 (Bit 0)                                          */
-#define R_SYSTEM_NS_PRCR_NS_PRC0_Msk     (0x1UL)    /*!< PRC0 (Bitfield-Mask: 0x01)                            */
 
 /* =========================================================================================================================== */
 /* ================                                          R_MSTP                                           ================ */
