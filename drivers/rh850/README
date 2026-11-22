@@ -1,0 +1,60 @@
+Flexible Software Package (FSP)
+###############################
+
+Origin:
+   Renesas Electronics Corporation
+   https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp
+
+Status:
+   version v1.0.0
+
+Purpose:
+   Flexible Software Package (FSP) for Renesas RH850 MCU Family.
+
+Description:
+   This package is a snapshot from the RH850 FSP software released by Renesas Electronics Corporation
+   It contain the HAL and a set of device headers files for the Renesas RH850 MCUs
+
+Dependencies:
+    None.
+
+URL:
+   N/A
+
+Commit:
+   N/A
+
+Maintained-by:
+   Renesas Electronics Corporation
+
+License:
+   BSD-3-Clause
+
+License Link:
+   https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Add experimental GCC compiler support in BSP compiler support layer
+     Use section names without quotes for BSP_PRAGMA_SECTION_* macros, place symbols in section
+     with `ghs section` pragma and add BSP_SECTION_FENMI_TEXT, BSP_SECTION_FEINT_TEXT section names
+   Impacted files:
+      drivers/rh850/fsp/src/bsp/mcu/all/bsp_compiler_support.h
+
+   * Add GCC-specific software delay loop using unique asm labels (%=) and split it from
+     the GHS/IAR variant
+   Impacted files:
+      drivers/rh850/fsp/src/bsp/mcu/all/bsp_delay.c
+
+   * Add bound-check for g_pegcap_m_baseaddress before indexing it when moving to the next
+     PEGCAP_M module
+   Impacted files:
+      drivers/rh850/fsp/src/bsp/mcu/all/bsp_guard.c
+
+   * Add experimental GCC backend for the RH850 core access layer and define the interrupt
+     attribute macros as empty for GCC
+   Impacted files:
+      zephyr/rh850/portable/bsp_exceptions.h
+      zephyr/rh850/rh850-core/G4-profile/rh850_gcc_g4.h
+      zephyr/rh850/rh850-core/rh850_compiler.h
+      zephyr/rh850/rh850-core/rh850_gcc.h
