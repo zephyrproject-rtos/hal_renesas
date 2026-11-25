@@ -59,7 +59,7 @@
 
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector) (ICU_##vector)
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ICU_, vector)
 
 #define BSP_MAX_CLOCK_CHANGE_THRESHOLD (300000000U)
 

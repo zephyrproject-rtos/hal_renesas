@@ -57,3 +57,7 @@ Patch List:
    Impacted files:
       drivers/rx/fsp/src/bsp/mcu/all/bsp_group_irq.c
       drivers/rx/fsp/src/bsp/mcu/all/bsp_group_irq.h
+
+   * Modify BSP_PRV_IELS_ENUM to use CONCAT instead of "##"
+   Impacted files:
+      zephyr/rx/rx_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
