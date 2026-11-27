@@ -57,3 +57,8 @@ Patch List:
    Impacted files:
       drivers/rx/fsp/src/bsp/mcu/all/bsp_group_irq.c
       drivers/rx/fsp/src/bsp/mcu/all/bsp_group_irq.h
+
+   * Update PLACE_IN_RAM_SECTION definitions in r_mram.h to use the standard `.ramfunc` section
+     instead of legacy `.ram_code_from_flash`
+   Impacted files:
+      drivers/rx/fsp/inc/instances/r_mram.h
