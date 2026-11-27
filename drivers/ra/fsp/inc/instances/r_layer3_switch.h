@@ -635,7 +635,7 @@ typedef struct st_layer3_switch_extended_cfg
     IRQn_Type etha_error_irq_port_1;                                                    ///< ETHA error interrupt number for port 1.
     uint8_t   etha_error_ipl_port_0;                                                    ///< ETHA error interrupt priority for port 0.
     uint8_t   etha_error_ipl_port_1;                                                    ///< ETHA error interrupt priority for port 1.
-    uint8_t   gptp_timer_numbers[BSP_FEATURE_ESWM_GPTP_TIMER_NUM];                      ///< List of timer numbers for transmission/reception timestamp.
+    uint8_t   gptp_timer_numbers[BSP_FEATURE_ETHER_NUM_CHANNELS];                      ///< List of timer numbers for transmission/reception timestamp.
 } layer3_switch_extended_cfg_t;
 
 /** LAYER3_SWITCH control block. DO NOT INITIALIZE. Initialization occurs when @ref ether_switch_api_t::open is called. */
